@@ -1,6 +1,16 @@
 # Hapi/AngularJS/MongoDB (HAM)
 
 This Web App is meant to consume data from content API's, currently Drupal is our primary data provider.
+=======
+# MAHRIO
+  -MongoDB
+  -AngularJS
+  -Hapi
+  -Raspberry Pi
+  -Ionic
+  -Oauth
+
+This open-source projects aims at building a seed project with shared code between web and mobile app. It includes a server instance connected to a database along with token-based and Oauth authentication. The Raspberry Pi mini computer is to be determined.
 
 ##Instructions in Vagrant
  - Install Vagrant http://www.vagrantup.com
