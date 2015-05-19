@@ -1,0 +1,40 @@
+
+<div class="container">
+  <div ng-show="role=='admin'">
+    <form novalidate="novalidate" ng-submit="makeAdmin()">
+      <div ng-show="madeAdmin" class="row form-group">
+        <div class="col-xs-12">
+          <div role="alert" class="alert alert-success text-center">The email ({{madeAdmin}}) now has admin rights.</div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-xs-6">
+          <input type="email" ng-model="email" placeholder="Copy and paste email to make admin" class="form-control"/>
+        </div>
+        <div class="col-xs-6">
+          <button type="submit" class="btn btn-primary btn-block">Make Admin</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <hr/>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <tr>
+        <th>Actiond</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+      </tr>
+      <tr ng-repeat="elem in usersList track by $index">
+        <td>
+          <button ng-click="removeEntry(elem._id, $index)" ng-show="role=='admin'" class="btn btn-danger">  Remove</button>
+          <button ng-click="removeEntry(elem._id, $index)" class="btn btn-success">  Message</button>
+        </td>
+        <td>{{elem.name}}</td>
+        <td>{{elem.email}}</td>
+        <td>{{elem.role}}</td>
+      </tr>
+    </table>
+  </div>
+</div>

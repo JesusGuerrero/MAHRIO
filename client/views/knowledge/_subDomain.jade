@@ -1,0 +1,22 @@
+doctype
+html(lang="en")
+    include ../common/_head
+    style( type="text/css")
+        |   .overlay-layer { padding: 50px 0 !important; }
+    body
+        header( class="header" id="home" )
+            div( class="overlay-layer" )
+                include ../components/navigation/_anyUser
+
+               .container
+                  .row
+                     .col-xs-2
+                         a( href="/knowledge/get-articles" )
+                             | Back
+                     .col-xs-10
+                        h2
+                            != content[0].node.title.replace(/(<([^>]+)>)/ig,"")
+                        != content[0].node.Body
+
+
+    include ../common/_scriptUtil

@@ -1,0 +1,4 @@
+
+<div class="list-group"><a href="javascript:void(0)" ng-class="conversation._id === currentConversation._id ? 'active' : ''" ng-repeat="conversation in conversationList track by $index" ng-click="loadConversation(conversation._id)" class="list-group-item">
+    <h5 class="list-group-item-heading">  {{conversation.members}}</h5>
+    <p class="list-group-item-text">  {{conversation.lastMessage | limitTo : 40}}</p></a></div>

@@ -1,0 +1,7 @@
+div(ng-class="right ? 'pull-right': ''")
+    |   {{config.start}} - {{config.end}} / {{config.total}}
+    .btn-group
+        button.btn.btn-default.btn-sm(ng-class="config.start === 1 ? 'disabled':''")
+            i.fa.fa-chevron-left
+        button.btn.btn-default.btn-sm(ng-class="config.end === config.total ? 'disabled':''")
+            i.fa.fa-chevron-right

@@ -1,0 +1,26 @@
+doctype
+html(lang="en", itemtype="http://schema.org/WebPage" itemscope ng-app="baseApp")
+
+  include common/_head
+  
+  body(ng-cloak)
+    header( class="header" id="home" )
+      div( class="" style='background: #ffffff;' )
+
+        ng-switch( on="role")
+          div( ng-switch-when="admin" ng-controller='AdminHeaderController')
+            include components/navigation/_adminUser
+          div( ng-switch-when="user" )
+            include components/navigation/_authUser
+          div( ng-switch-default )
+            include components/navigation/_anyUser
+
+        div(ui-view)
+
+    include common/_scriptApp
+  script
+    | $(document).on('click','.navbar-collapse.in',function(e) {
+    |   if( $(e.target).is('a') && ( $(e.target).attr('class') != 'dropdown-toggle' ) ) {
+    |     $(this).collapse('hide');
+    |   }
+    | });

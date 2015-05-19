@@ -1,0 +1,21 @@
+
+<div class="box-body no-padding">
+  <div class="table-responsive">
+    <table class="table table-mailbox">
+      <tr ng-repeat="message in messages" ng-class="message.read ? '' : 'bg-warning'" i-check-box="i-check-box">
+        <td class="mailbox-check">
+          <input type="checkbox"/>
+        </td>
+        <td ng-show="message.starred !== undefined" class="mailbox-star"><i ng-class="message.starred ? 'fa-star' : 'fa-star-o'" class="fa text-yellow"></i></td>
+        <td ng-show="message.from" class="mailbox-name"><a popover="popover">{{message.from}}</a></td>
+        <td ng-show="message.to" class="mailbox-name"><a popover="popover">{{message.to}}</a></td>
+        <td class="mailbox-subject"><a href="#">{{message.subject}}</a></td>
+        <td class="mailbox-attachment">  &nbsp;</td>
+        <td class="mailbox-date">  {{message.time | date: mediumDate}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="box-footer clearfixN">
+    <pagination right="right" config="config"></pagination>
+  </div>
+</div>

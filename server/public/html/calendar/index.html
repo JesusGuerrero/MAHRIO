@@ -1,0 +1,53 @@
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="box-primary">
+      <div class="box-header">
+        <h4 class="box-title">  Draggable Events</h4>
+      </div>
+      <div class="box-body">
+        <div id="external-events" class="external-events">
+          <div class="external-event bg-green">  Play</div>
+          <div class="external-event bg-navy">  Work</div>
+        </div>
+        <p>
+          <input type="checkbox" id="drop-remove"/>
+          <label for="drop-remove">  remove after drop</label>
+        </p>
+      </div>
+    </div>
+    <div class="box box-primary">
+      <div class="box-header">
+        <h3 class="box-title">  Create Event</h3>
+      </div>
+      <div class="box-body">
+        <div style="width: 100%; margin-bottom: 10px;" class="btn-group">
+          <button type="button" id="color-chooser-btn" data-toggle="dropdown" class="btn btn-danger btn-block btn-sm dropdown-toggle">  Color<span class="caret"></span></button>
+          <ul id="color-chooser" class="dropdown-menu">
+            <li><a href="#" class="text-green"><i class="fa fa-square">  Green</i></a></li>
+            <li><a href="#" class="text-blue"><i class="fa fa-square">  Blue</i></a></li>
+            <li><a href="#" class="text-yellow"><i class="fa fa-square">  Yellow</i></a></li>
+            <li><a href="#" class="text-navy"><i class="fa fa-square">  Navy</i></a></li>
+            <li><a href="#" class="text-aqua"><i class="fa fa-square">  Aqua</i></a></li>
+            <li><a href="#" class="text-purple"><i class="fa fa-square">  Purple</i></a></li>
+            <li><a href="#" class="text-red"><i class="fa fa-square">  Red</i></a></li>
+          </ul>
+        </div>
+        <div class="input-group">
+          <input id="new-event" type="text" placeholder="Event Title" class="form-control"/>
+          <div class="input-group-btn">
+            <button id="add-new-event" type="button" class="btn btn-default btn-flat">  Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <modal-window template-url="/assets/html/calendar/modalEditEvent" modal-id="modalEditEvent"></modal-window>
+  </div>
+  <div class="col-md-9">
+    <div class="box box-primary">
+      <div class="box-body no-padding">
+        <div id="calendar" calendar="calendar" modal-id="modalEditEvent"></div>
+      </div>
+    </div>
+  </div>
+</div>

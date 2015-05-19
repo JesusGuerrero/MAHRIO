@@ -1,0 +1,23 @@
+
+<div>
+  <div class="small-box">
+    <button ng-click="composeMessage()" class="btn btn-block btn-primary margin-bottom"><i class="fa fa-pencil">&nbsp;Compose Message</i></button>
+  </div>
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">  Folders</h3>
+      <div class="box-tools">
+        <button data-widget="collapse" box-widget="box-widget" class="btn btn-box-tool"><i class="fa fa-minus"></i></button>
+      </div>
+    </div>
+    <div class="box-body no-padding">
+      <ul class="nav nav-pills nav-stacked">
+        <li ui-sref-active="active"><a ui-sref="mail.inbox" ui-sref-opts="{reload: true}"><i class="fa fa-inbox">   Inbox</i><small ng-show="properties.inboxCount" class="label pull-right bg-green">  {{properties.inboxCount}} New</small></a></li>
+        <li ui-sref-active="active"><a ui-sref="mail.starred" ui-sref-opts="{reload: true}"><i class="fa fa-star">   Starred</i></a></li>
+        <li ui-sref-active="active"><a ui-sref="mail.drafts" ui-sref-opts="{reload: true}"><i class="fa fa-pencil-square-o">   Drafts</i><small ng-show="properties.draftCount" class="label pull-right bg-yellow">  {{properties.draftCount}}</small></a></li>
+        <li ui-sref-active="active"><a ui-sref="mail.sent" ui-sref-opts="{reload: true}"><i class="fa fa-mail-forward">   Sent</i></a></li>
+        <li ui-sref-active="active"><a ui-sref="mail.archived" ui-sref-opts="{reload: true}"><i class="fa fa-folder">   Archived</i></a></li>
+      </ul>
+    </div>
+  </div>
+</div>

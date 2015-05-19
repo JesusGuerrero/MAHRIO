@@ -1,0 +1,21 @@
+
+<div class="content-wrapper">
+  <ng-switch on="role">
+    <div ng-switch-when="admin">
+      <ng-include src="'/assets/html/layout/header/secondaryTop'"></ng-include>
+    </div>
+    <div ng-switch-when="any" ng-show="subHeader" class="container">
+      <section class="content-header">
+        <h1>   Top Navigation<small>  Example 2.0</small></h1>
+      </section>
+    </div>
+  </ng-switch>
+  <ng-switch on="role">
+    <section ng-switch-when="admin" class="content">
+      <div ng-transclude="ng-transclude"></div>
+    </section>
+    <section ng-switch-when="any" class="content">
+      <div ng-transclude="ng-transclude" class="container"></div>
+    </section>
+  </ng-switch>
+</div>

@@ -1,0 +1,65 @@
+.row
+    .col-md-3
+        .box-primary
+            .box-header
+                h4.box-title
+                    |   Draggable Events
+            .box-body
+                .external-events( id="external-events")
+                    .external-event.bg-green
+                        |   Play
+                    .external-event.bg-navy
+                        |   Work
+                p
+                    input( type='checkbox' id='drop-remove')
+                    label( for='drop-remove')
+                        |   remove after drop
+        .box.box-primary
+            .box-header
+                h3.box-title
+                    |   Create Event
+            .box-body
+                .btn-group(style="width: 100%; margin-bottom: 10px;")
+                    button.btn.btn-danger.btn-block.btn-sm.dropdown-toggle( type="button" id="color-chooser-btn" data-toggle="dropdown")
+                        |   Color
+                        span.caret
+                    ul.dropdown-menu(id="color-chooser")
+                        li
+                            a.text-green( href="#")
+                                i.fa.fa-square
+                                    |   Green
+                        li
+                            a.text-blue( href="#")
+                                i.fa.fa-square
+                                    |   Blue
+                        li
+                            a.text-yellow( href="#")
+                                i.fa.fa-square
+                                    |   Yellow
+                        li
+                            a.text-navy( href="#")
+                                i.fa.fa-square
+                                    |   Navy
+                        li
+                            a.text-aqua( href="#")
+                                i.fa.fa-square
+                                    |   Aqua
+                        li
+                            a.text-purple( href="#")
+                                i.fa.fa-square
+                                    |   Purple
+                        li
+                            a.text-red( href="#")
+                                i.fa.fa-square
+                                    |   Red
+                .input-group
+                    input.form-control( id="new-event" type="text" placeholder="Event Title")
+                    .input-group-btn
+                        button.btn.btn-default.btn-flat( id="add-new-event" type="button")
+                            |   Add
+        modal-window( template-url="/assets/html/calendar/modalEditEvent" modal-id="modalEditEvent")
+    .col-md-9
+        .box.box-primary
+            .box-body.no-padding
+                div( id="calendar" calendar modal-id="modalEditEvent")
+

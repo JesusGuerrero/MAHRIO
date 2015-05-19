@@ -1,0 +1,63 @@
+
+.header {
+  background: @gray-lighter;
+  .overlay-layer {
+    padding: 0px 0;
+    height: auto;
+    #intro-section {
+      margin-top: 100px;
+      color: #fff;
+      h1 {
+        font-size: 4em;
+      }
+      p {
+        font-size: 1.5em;
+      }
+    }
+    #registration-form {
+      margin-top: 100px;
+      background: #ffffff;
+      padding: 15px 32px 32px 32px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 3px 0px #000000;
+      h4 {
+        margin-bottom: 25px;
+      }
+      #cf-message {
+        height: 100px;
+      }
+    }
+  }
+}
+@media (max-width: 991px){
+  .header {
+    .overlay-layer {
+      padding-top: 0px;
+      #intro-section {
+        text-align: center;
+      }
+      #registration-form {
+        margin-top: 30px;
+      }
+    }
+  }
+}
+@media (max-width: 580px){
+  .col-right {
+    padding: 0;
+  }
+  .header {
+    .overlay-layer {
+      #intro-section {
+        margin-top: 0;
+      }
+      #registration-form {
+        margin-top: 0;
+        padding: 7px 16px 16px 16px;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+      }
+    }
+  }
+}

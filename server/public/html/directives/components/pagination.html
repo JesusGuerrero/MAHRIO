@@ -1,0 +1,7 @@
+
+<div ng-class="right ? 'pull-right': ''">  {{config.start}} - {{config.end}} / {{config.total}}
+  <div class="btn-group">
+    <button ng-class="config.start === 1 ? 'disabled':''" class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
+    <button ng-class="config.end === config.total ? 'disabled':''" class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
+  </div>
+</div>

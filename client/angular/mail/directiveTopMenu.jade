@@ -1,0 +1,22 @@
+.box-header.with-border
+    h3.box-title
+        |   {{config.title}}
+    .box-tools.pull-right
+        .has-feedback
+            input.form-control.input-small( type="text" placeholder="Search Mail")
+            span.glyphicon.glyphicon-search.form-control-feedback
+
+
+    .mailbox-controls
+        button.btn.btn-default.btn-sm.checkbox-toggle( i-check-all="mailbox-check")
+            i.fa.fa-square-o
+        .btn-group
+            button.btn.btn-default.btn-sm
+                i.fa.fa-trash-o
+            button.btn.btn-default.btn-sm
+                i.fa.fa-reply
+            button.btn.btn-default.btn-sm
+                i.fa.fa-share
+        button.btn.btn-default.btn-sm
+            i.fa.fa-refresh
+        pagination( right config="config.pagination" )

@@ -1,0 +1,21 @@
+
+<div class="container">
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <tr>
+        <th>Action</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Question</th>
+      </tr>
+      <tr ng-repeat="elem in questionsList track by $index">
+        <td>
+          <button ng-click="removeEntry(elem._id, $index)" class="btn btn-danger">  Remove</button>
+        </td>
+        <td>{{elem.name}}</td>
+        <td>{{elem.email}}</td>
+        <td>{{elem.question}}</td>
+      </tr>
+    </table>
+  </div>
+</div>

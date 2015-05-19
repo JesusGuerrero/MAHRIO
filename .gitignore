@@ -1,0 +1,10 @@
+.DS_Store
+.env
+.idea/
+.vagrant/
+node_modules/
+bower_components/
+logs/
+*.log
+mongoDB/data/
+mongoDB/logs/

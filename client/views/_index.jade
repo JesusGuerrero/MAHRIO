@@ -1,0 +1,22 @@
+doctype
+html(lang="en")
+    include common/_head
+    body
+        header( class="header" id="home" style="background: none" )
+            div( class="overlay-layer" )
+                .hidden(id="loadVideoBG")
+                include components/navigation/_anyUser
+
+                case page
+                    when 'questions':   include pages/_question
+                    when 'notFound':    include pages/_notFound
+                    default:            include components/_callToAction
+        include components/_modal
+
+        include common/_scriptUtil
+script.
+    require(['jquery'], function($){
+        $('#loginButton').on('click', function(){
+            $('#mainModal').modal('show');
+        })
+    });

@@ -1,0 +1,26 @@
+.modal.fade(id="{{modalId}}" tabindex="-1" role="dialog"
+            aria-labelledby="{{modalId}}" aria-hidden="true")
+    .modal-dialog.modal-lg
+        .modal-content
+            .modal-header
+                button( type="button" class="close" data-dismiss="modal"
+                aria-label="Close")
+                    span( aria-hidden="true")
+                        |   &times;
+
+                h4( class="modal-title")
+                    |   Compose New Message
+            .modal-body(ng-transclude)
+
+            .modal-footer
+                .pull-right
+                    button.btn.btn-default( ng-click="save()" )
+                        i.fa.fa-pencil
+                        |   Draft
+                    button.btn.btn-primary( ng-click="send()" )
+                        i.fa.fa-envelope
+                        |   Send
+                button.btn.btn-default.pull-left(
+                                    data-dismiss="modal" aria-label="Close")
+                    i.fa.fa-times
+                    |   Discard

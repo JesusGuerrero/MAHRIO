@@ -1,0 +1,59 @@
+.navbar.navbar-default(style="visibility: hidden")
+.navbar.navbar-default.navbar-fixed-top
+    .container
+        .navbar-header
+            button( type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#seed-navigation" )
+                span.sr-only
+                    != lang.sr.toggleNavigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+
+            a( class="navbar-brand" href="/app#/" )
+                img( src="/assets/img/logo.jpg" style="margin-top:-7px; width: 35px;")
+            //
+                != lang.components.navigation.title
+
+        #seed-navigation.navbar-collapse.collapse
+            ul.nav.navbar-nav
+                li.dropdown
+                    a(href="javascript:void(0)" data-toggle="dropdown")
+                        |   Content
+                        span.caret
+                    ul( class="dropdown-menu" role="menu")
+                        li.dropdown-submenu
+                            a( data-toggle='dropdown')
+                                | Domains
+                            ul( class="dropdown-menu" role="menu")
+                                li
+                                    a( href='/knowledge/information_technology')
+                                        | Information Technology
+                li
+                    a(href="/app#/users")
+                        |   Users
+                li
+                    a(href="/app#/questions")
+                        |   Questions
+                li
+                    a(href="/app#/conversations")
+                        |   Conversations
+                li
+                    a(href="/app#/calendar")
+                        |   Calendar
+                li
+                    a(href="/app#/mailbox")
+                        |   Mailbox
+                li
+                    a(href="#" ng-click='getSessionToCMS()')
+                        |   CMS
+
+            ul.nav.navbar-nav.navbar-right
+                li
+                    a( href="/app#/messages")
+                        notifications-bar
+                li
+                    a( href="javascript: void(0)" ng-click="logout()" )
+                        != lang.components.navigation.logout
+                li
+                    a( href="/app#/" )
+                        != lang.components.navigation.backToApp

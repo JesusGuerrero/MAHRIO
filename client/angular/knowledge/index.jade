@@ -1,0 +1,17 @@
+.col-md-3
+    .box.box-solid
+        .box-header.with-border
+            h4.box-title
+                |   Knowledge Domains
+        .box-body
+            .box-group(id="accordion")
+                .panel.box.box-primary(ng-repeat="domain in domains")
+                    .box-header.with-border
+                        h4.box-title
+                            a( href="javascript:void(0)" data-toggle="collapse" data-target="#collapse{{$index}}"
+                                data-parent="#accordion" )
+                                |   {{domain}}
+
+                    .panel-collapse.collapse( id="collapse{{$index}}" ng-class="!$index ? 'in':''")
+                        .box-body
+                            |   THIS IS HOW WE DO IT

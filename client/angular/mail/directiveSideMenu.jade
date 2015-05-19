@@ -1,0 +1,38 @@
+div
+    .small-box
+        button.btn.btn-block.btn-primary.margin-bottom(ng-click="composeMessage()")
+            i.fa.fa-pencil
+                | &nbsp;Compose Message
+    .box.box-primary
+        .box-header.with-border
+            h3.box-title
+                |   Folders
+            .box-tools
+                button.btn.btn-box-tool( data-widget="collapse" box-widget)
+                    i.fa.fa-minus
+        .box-body.no-padding
+            ul.nav.nav-pills.nav-stacked
+                li(ui-sref-active="active")
+                    a(ui-sref="mail.inbox" ui-sref-opts="{reload: true}")
+                        i.fa.fa-inbox
+                            |    Inbox
+                        small.label.pull-right.bg-green( ng-show="properties.inboxCount")
+                            |   {{properties.inboxCount}} New
+                li(ui-sref-active="active")
+                    a(ui-sref="mail.starred" ui-sref-opts="{reload: true}")
+                        i.fa.fa-star
+                            |    Starred
+                li(ui-sref-active="active")
+                    a(ui-sref="mail.drafts" ui-sref-opts="{reload: true}")
+                        i.fa.fa-pencil-square-o
+                            |    Drafts
+                        small.label.pull-right.bg-yellow( ng-show="properties.draftCount")
+                            |   {{properties.draftCount}}
+                li(ui-sref-active="active")
+                    a(ui-sref="mail.sent" ui-sref-opts="{reload: true}")
+                        i.fa.fa-mail-forward
+                            |    Sent
+                li(ui-sref-active="active")
+                    a(ui-sref="mail.archived" ui-sref-opts="{reload: true}")
+                        i.fa.fa-folder
+                            |    Archived

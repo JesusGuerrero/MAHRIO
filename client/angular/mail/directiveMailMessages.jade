@@ -1,0 +1,26 @@
+.box-body.no-padding
+    .table-responsive
+        table.table.table-mailbox
+            tr(ng-repeat="message in messages track by $index"
+                    ng-class="message.read != undefined && !message.read ? 'bg-warning' : ''" i-check-box)
+                td.mailbox-check
+                    input( type="checkbox")
+                td.mailbox-star( ng-show="message.starred !== undefined")
+                    a( href="javascript:void();" ng-click="toggleStar($index)")
+                        i.fa.text-yellow(ng-class="message.starred ? 'fa-star' : 'fa-star-o'")
+                td.mailbox-name(ng-show="message.from")
+                    a(popover)
+                        | {{message.from}}
+                td.mailbox-name(ng-show="message.to")
+                    a(popover)
+                        | {{message.to}}
+                td.mailbox-subject
+                    a( ui-sref="mail.view" ui-sref-opts="{reload: true}")
+                        | {{message.subject}}
+                td.mailbox-attachment
+                    |   &nbsp;
+                td.mailbox-date
+                    |   {{message.time | date: mediumDate}}
+
+    .box-footer.clearfixN
+        pagination( right config="config.pagination" )

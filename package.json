@@ -1,0 +1,62 @@
+{
+  "name": "WhichDegreeWebApp",
+  "version": "0.0.2",
+  "description": "WhichDegree.co is a domain-based degree exploration platform whos mission is to connect you to straight-talk from professionals.",
+  "main": "server/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "make test"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JesusGuerrero/WebApp-HAM.git"
+  },
+  "author": "Jesus Rocha",
+  "license": "private",
+  "dependencies": {
+    "async": "^0.9.0",
+    "bell": "latest",
+    "boom": "^2.5.1",
+    "crypto": "0.0.3",
+    "good": "latest",
+    "good-console": "^5.0.0",
+    "hapi": "latest",
+    "hapi-auth-bearer-token": "latest",
+    "hapi-auth-cookie": "latest",
+    "jade": "^1.9.1",
+    "mongoose": "~3.8.16",
+    "mongoose-unique-validator": "~0.4.1",
+    "node-env-file": "^0.1.4",
+    "q": "^1.1.2",
+    "request": "^2.51.0",
+    "socket.io": "^1.3.5",
+    "underscore": "^1.8.2"
+  },
+  "devDependencies": {
+    "bower": "^1.3.12",
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-jade": "^0.12.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-exec": "^0.4.6",
+    "grunt-karma": "^0.9.0",
+    "install": "^0.1.8",
+    "karma": "^0.12.24",
+    "karma-jasmine": "^0.2.3",
+    "karma-junit-reporter": "^0.2.2",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "lab": "^4.0.1",
+    "load-grunt-tasks": "^1.0.0",
+    "sinon": "^1.10.3"
+  }
+}

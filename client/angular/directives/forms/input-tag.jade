@@ -1,0 +1,14 @@
+ng-form(name="form")
+  .form-group( ng-class="{true: 'has-error'}[ hasError() ]")
+    label( for="{{id}}" ng-show="label")
+      | {{label}}
+    div( ng-class="{true: 'input-group'}[ icon !== '']" )
+      input( id="{{id}}" type="{{type}}" name="input" ng-model="dataEntry" placeholder="{{placeholder}}"
+          maxlength="{{maxLength}}" class="form-control" ng-minlength="{{minLength}}" ng-required="{{required}}"
+          ng-pattern="regx.pattern" )
+      span.input-group-addon( ng-show="icon")
+        i( class="fa fa-{{icon}}" style="width: 30px")
+
+    div( ng-class="{true: 'ng-hide'}[ !hasError() ]")
+      small.text-danger
+        | {{ regex.message }}

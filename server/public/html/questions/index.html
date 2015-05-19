@@ -1,0 +1,61 @@
+
+<ng-switch on="role">
+  <div ng-switch-when="admin">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tr>
+          <th>Action</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Question</th>
+        </tr>
+        <tr ng-repeat="elem in questionsList track by $index">
+          <td>
+            <button ng-click="removeEntry(elem._id, $index)" ng-show="role=='admin'" class="btn btn-danger">  Remove</button>
+            <button ng-click="removeEntry(elem._id, $index)" ng-show="role!=='user'" class="btn btn-danger">  Answer</button>
+          </td>
+          <td>{{elem.name}}</td>
+          <td>{{elem.email}}</td>
+          <td>{{elem.question}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div ng-switch-default="ng-switch-default">
+    <div class="row">
+      <div class="col-md-7 col-sm-12 text-left">
+        <div id="intro-section">
+          <h1> Free Consulting</h1>
+          <p class="transparent-text">
+             Our values put the knowledge seeker first. We want to connect our experiences, even if it means
+             hiring a domain-expert, because we value the knowledge, reward, and happiness that can be achieved.
+             Ask us all your questions.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-5 col-sm-12 col-right">
+        <div id="registration-form">
+          <h4 class="text-center">Ask About Anything Degree-Related</h4>
+          <form name="questions" id="questions">
+            <div class="form-group">
+              <div role="alert" id="error" style="display: none" class="alert alert-danger">  Please Try Again!</div>
+              <div role="alert" id="valid" style="display: none" class="alert alert-success text-center">  Thank You! We'll reach out soon.</div>
+            </div>
+            <div class="form-group input-group-lg">
+              <input type="text" name="name" placeholder="Name" class="form-control"/>
+            </div>
+            <div class="form-group input-group-lg">
+              <input type="email" name="email" placeholder="Email" class="form-control"/>
+            </div>
+            <div class="form-group input-group-lg">
+              <input name="question" rows="8" placeholder="Question" class="form-control"/>
+            </div>
+            <div class="form-group input-group-lg">
+              <button class="btn btn-primary btn-block btn-lg">  Ask Question</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-switch>

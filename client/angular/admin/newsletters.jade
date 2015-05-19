@@ -1,0 +1,21 @@
+.table-responsive
+    table.table.table-striped
+        tr
+            th
+                | Action
+            th
+                | Name
+            th
+                | Email
+            th
+                | Domain
+        tr(ng-repeat="elem in newsletterList track by $index")
+            td
+                button.btn.btn-danger(ng-click="removeEntry(elem._id, $index)")
+                    |   Remove
+            td
+                | {{elem.name}}
+            td
+                | {{elem.email}}
+            td
+                | {{elem.domain}}

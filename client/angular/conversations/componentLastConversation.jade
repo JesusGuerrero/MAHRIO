@@ -1,0 +1,41 @@
+style
+    |   .rightMessage { float: right; clear: both; text-align: right; width: 100%; }
+    |   .leftMessage { float: left; clear: both; text-align: left; width: 100%;  }
+.row
+    .col-xs-12
+        p
+            strong
+                |   Members: {{currentConversation.currentMembers}}
+.box.box-primary.direct-chat.direct-chat-primary
+    .box-header.with-border
+        h3.box-title
+            |   Direct Chat
+        .box-tools.pull-right
+            span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")
+                |   3
+            button.btn.btn-box-tool( data-widget="collapse")
+                i.fa.fa-minus
+            button.btn.btn-box-tool( data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle")
+                i.fa.fa-comments
+            button.btn.btn-box-tool( data-widget="remove")
+                i.fa.fa-times
+    .box-body
+        .direct-chat-messages
+            div.direct-chat-msg( ng-repeat="message in currentConversation.messages track by $index"
+                ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'left' : 'right'")
+                .direct-chat-info.clearfix
+                    span.direct-chat-name(ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-left' : 'pull-right'")
+                        |   {{currentConversation.members[message._user][0].email}}
+                    span.direct-chat-timestamp(ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-right' : 'pull-left'")
+                        |   {{message.created | date : 'MM-dd h:mm a' }}
+                img.direct-chat-img( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user1-128x128.jpg" alt="message user image")
+                .direct-chat-text
+                    |   {{message.content}}
+
+
+    .box-footer
+        .input-group
+            input.form-control( type="text" name="message" placeholder="Type Message ..." ng-model="newMessage")
+            span.input-group-btn
+                button.btn.btn-primary.btn-flat( type="button" ng-click="sendMessage()")
+                    |   Send

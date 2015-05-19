@@ -1,0 +1,16 @@
+.content-wrapper
+    ng-switch( on="role")
+        div( ng-switch-when="admin")
+            ng-include( src="'/assets/html/layout/header/secondaryTop'")
+        .container(ng-switch-when="any" ng-show="subHeader")
+            section.content-header
+                h1
+                    |    Top Navigation
+                    small
+                        |   Example 2.0
+
+    ng-switch( on="role")
+        section.content(ng-switch-when="admin")
+            div( ng-transclude )
+        section.content(ng-switch-when="any")
+            .container(ng-transclude)

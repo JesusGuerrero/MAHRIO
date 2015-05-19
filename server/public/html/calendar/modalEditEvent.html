@@ -1,0 +1,26 @@
+
+<div id="{{modalId}}" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}" aria-hidden="true" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">  &times;</span></button>
+        <h4 class="modal-title">  Conversation w/ {{user && user.name ? user.name : user.email}}</h4>
+      </div>
+      <div class="modal-body">
+        <div ng-show="!messageSent" class="conversation-history">  TODO: Conversation History</div>
+        <div ng-show="messageSent" class="alert alert-success">  Message Sent!</div>
+      </div>
+      <div class="modal-footer">
+        <div ng-show="messageSent" class="col-xs-12">
+          <div type="button" data-dismiss="modal" class="button btn btn-default btn-block">  Close</div>
+        </div>
+        <div ng-show="!messageSent" class="col-xs-8">
+          <input type="text" ng-model="message" class="form-control"/>
+        </div>
+        <div ng-show="!messageSent" class="col-xs-4">
+          <div type="button" ng-click="sendMessage()" class="button btn btn-primary btn-block">  Save changes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

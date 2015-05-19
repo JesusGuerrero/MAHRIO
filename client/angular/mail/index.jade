@@ -1,0 +1,20 @@
+.row
+    .col-xs-12
+        .row
+            .col-md-3.col-sm-4
+                div( mailbox-side-menu modal-id="modalComposeMessage"
+                        properties="mailProperties" )
+            .col-md-9.col-sm-8
+                .box.box-primary
+                    div( mailbox-top-menu config="config")
+                    ng-switch( on="message")
+                        div( ng-switch-when="undefined")
+                            div( mailbox-inbox messages="messages"
+                                    properties="messagesProperties"
+                                    config="config")
+                        div( ng-switch-default )
+                            div( mailbox-message="message" properties="messagesProperties" config="config")
+
+
+        modal-window( modal-id="modalComposeMessage" actions='actions' )
+            modal-compose-message( actions='actions' )
