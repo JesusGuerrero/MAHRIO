@@ -1,4 +1,3 @@
-var p ={};
 angular.module('baseApp.directives')
   .directive('modalComposeMessage', ['$rootScope',
     function( ){
@@ -8,8 +7,6 @@ angular.module('baseApp.directives')
         templateUrl: '/assets/html/mail/modalComposeMessage',
         replace: true,
         link: function(scope) {
-          p.scope = scope;
-
           scope.$on('event:composeMessage', function(){
             scope.message = {
               to: '',

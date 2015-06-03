@@ -1,4 +1,3 @@
-var sex;
 angular.module('baseApp.directives')
   .directive('mailboxSideMenu', ['$rootScope',
     function( ){
@@ -12,8 +11,6 @@ angular.module('baseApp.directives')
           modalId: '@'
         },
         link: function(scope, elem, attrs) {
-          sex = { scope: scope, elem: elem, attrs: attrs };
-
           scope.composeMessage = function(){
             scope.$parent.$broadcast('event:composeMessage');
             $('#'+scope.modalId).modal().toggle();

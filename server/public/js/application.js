@@ -103713,7 +103713,7 @@ angular.module('baseApp.directives')
                 var originalEventObject = $(this).data('eventObject');
                 var copiedEventObject = $.extend({}, originalEventObject);
                 copiedEventObject.start = new Date( date._d );
-                copiedEventObject.end = new Date( new Date(date._d).getTime() + 7200000 ); // <- should be working
+                copiedEventObject.end = new Date( new Date(date._d).getTime() + 7200000 );
                 copiedEventObject.allDay = false;
 
                 Calendar.createEvent( copiedEventObject )
@@ -103725,10 +103725,6 @@ angular.module('baseApp.directives')
                   $(this).remove();
                 }
               },
-              eventReceive: function( event ) {
-                console.log('event received: ', event);
-                //initCalendar();
-              },
               dayClick: function(date, jsEvent, view) {
                 console.log('Day clicked');
                 console.log(date);
@@ -103736,7 +103732,6 @@ angular.module('baseApp.directives')
                 console.log(view);
               },
               eventClick: function(event){
-                console.log('Event Clicked', attrs.modalId, event);
                 Calendar.currentEvent = event;
                 $('#'+attrs.modalId).modal().show();
                 scope.$apply();
@@ -103752,8 +103747,6 @@ angular.module('baseApp.directives')
 
           scope.$on('event:removeSuccess', function( e, eventId ){
             calendar.fullCalendar("removeEvents",  eventId );
-            console.log( scope.events );
-            //calendar.fullCalendar('refetchEvents');
           });
         }
       };
@@ -103769,18 +103762,11 @@ angular.module('baseApp.directives')
         templateUrl: '/assets/html/calendar/modalEditEvent',
         replace: true,
         link: function(scope) {
-
-          scope.$watch( function() { return Calendar.currentEvent; }, function(newData, oldData){
-            //console.log('new data is here', newData, oldData );
+          scope.$watch( function() { return Calendar.currentEvent; }, function(newData){
             if( newData ) {
               scope.event = newData;
               scope.$parent.dataObject = scope.event;
             }
-          });
-
-          scope.$on('event:editEvent', function(e, event){
-            scope.event = event;
-            scope.$parent.dataObject = scope.event;
           });
         }
       };
@@ -103808,64 +103794,6 @@ angular.module('baseApp.services').factory('CalendarResource', [ '$resource', fu
 }]);
 angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', function( CalendarResource) {
   'use strict';
-  /*
-  var date = new Date();
-  var d = date.getDate(),
-    m = date.getMonth(),
-    y = date.getFullYear();
-  var baseEvents = [
-    {
-      title: 'All Day Event',
-      start: new Date(y, m, 1),
-      backgroundColor: '#f56954', //red
-      borderColor: '#f56954' //red
-    },
-    {
-      title: 'Long Event',
-      start: new Date(y, m, d - 5),
-      end: new Date(y, m, d - 2),
-      backgroundColor: '#f39c12', //yellow
-      borderColor: '#f39c12' //yellow
-    },
-    {
-      title: 'Meeting',
-      start: new Date(y, m, d, 10, 30),
-      allDay: false,
-      backgroundColor: '#0073b7', //Blue
-      borderColor: '#0073b7' //Blue
-    },
-    {
-      title: 'Sat Event',
-      start: new Date(y, m, 26),
-      end: new Date(y, m, 26),
-      backgroundColor: '#f39c12', //yellow
-      borderColor: '#f39c12' //yellow
-    },
-    {
-      title: 'Lunch',
-      start: new Date(y, m, d, 12, 0),
-      end: new Date(y, m, d, 14, 0),
-      allDay: false,
-      backgroundColor: '#00c0ef', //Info (aqua)
-      borderColor: '#00c0ef' //Info (aqua)
-    },
-    {
-      title: 'Birthday Party',
-      start: new Date(y, m, d + 1, 19, 0),
-      end: new Date(y, m, d + 1, 22, 30),
-      allDay: false,
-      backgroundColor: '#00a65a', //Success (green)
-      borderColor: '#00a65a' //Success (green)
-    },
-    {
-      title: 'Click for Google',
-      start: new Date(y, m, 28),
-      end: new Date(y, m, 29),
-      url: 'http://google.com/',
-      backgroundColor: '#3c8dbc', //Primary (light-blue)
-      borderColor: '#3c8dbc' //Primary (light-blue)
-    }
-  ];*/
   var eventSchema = {
     title: '',
     start: null,
@@ -103876,7 +103804,7 @@ angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', fun
     borderColor: '#3c8dbc'
   }, currentEvent = null;
   return {
-    getEvent: function( eventId ) {
+    getOneEvent: function( eventId ) {
       return CalendarResource.read( {action: eventId }).$promise;
     },
     getEvents: function(){
@@ -103893,7 +103821,6 @@ angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', fun
       return CalendarResource.remove( {action: eventId }).$promise;
     },
     currentEvent: currentEvent
-
   };
 }]);
 
