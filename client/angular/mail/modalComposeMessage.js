@@ -16,7 +16,7 @@ angular.module('baseApp.directives')
               subject: '',
               content: ''
             };
-            scope.$parent.message = scope.message;
+            scope.$parent.dataObject = scope.message;
             $('#wysihtml5-content').data('wysihtml5').editor.clear();
           });
 

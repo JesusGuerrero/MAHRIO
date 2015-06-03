@@ -17,19 +17,27 @@ angular.module('baseApp.directives')
           tmp.scope = scope;
           tmp.elem = elem;
           scope.modalId = attrs.modalId;
+          scope.type = attrs.type;
+          scope.title = attrs.title;
 
           scope.save = function(){
-            scope.actions.save( scope.message )
+            scope.actions.save( scope.dataObject )
               .then( function(){
                 $(elem).modal('hide');
               });
           };
           scope.send = function(){
-            scope.actions.send( scope.message )
+            scope.actions.send( scope.dataObject )
               .then( function(){
                 $(elem).modal('hide');
               });
           };
+          scope.discard = function( ){
+            scope.actions.discard( scope.dataObject )
+              .then( function(){
+                scope.$parent.$broadcast('event:removeSuccess', scope.dataObject._id );
+              });
+          }
         }
       };
     }
