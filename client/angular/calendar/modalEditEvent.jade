@@ -1,24 +1,7 @@
-.modal.fade(id="{{modalId}}" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}" aria-hidden="true")
-    .modal-dialog
-        .modal-content
-            .modal-header
-                button( type="button" class="close" data-dismiss="modal" aria-label="Close")
-                    span( aria-hidden="true")
-                        |   &times;
-
-                h4( class="modal-title")
-                    |   Conversation w/ {{user && user.name ? user.name : user.email}}
-            .modal-body
-                .conversation-history( ng-show="!messageSent")
-                    |   TODO: Conversation History
-                div( ng-show="messageSent" class="alert alert-success" )
-                    |   Message Sent!
-            .modal-footer
-                .col-xs-12( ng-show="messageSent" )
-                    .button( type="button" class="btn btn-default btn-block" data-dismiss="modal" )
-                        |   Close
-                .col-xs-8( ng-show="!messageSent" )
-                    input( type="text" ng-model="message" class='form-control' )
-                .col-xs-4( ng-show="!messageSent" )
-                    .button( type="button" class="btn btn-primary btn-block" ng-click="sendMessage()")
-                        |   Save changes
+div
+    p
+        |   Title: {{event.title}}
+    p
+        |   Event Start: {{event.start | date:'MM/dd/yyyy @ h:mma'}}
+    p
+        |   Event End: {{event.end | date:'MM/dd/yyyy @ h:mma'}}

@@ -4,49 +4,77 @@ angular.module('baseApp.directives')
       'use strict';
       return {
         restrict: 'A',
-        scope: {
-        },
+        scope: {},
         link: function(scope, elem, attrs ) {
-          $(elem).fullCalendar({
-            header: {
-              left: 'prev,next today',
-              center: 'title',
-              right: 'month,agendaWeek,agendaDay'
-            },
-            height: 600,
-            timezone: 'local',
-            defaultDate: new Date(),
-            defaultView: 'agendaWeek',
-            editable: true,
-            eventLimit: true, // allow "more" link when too many events
-            events: scope.$parent.events,
-            droppable: true, // this allows things to be dropped onto the calendar !!!
-            drop: function( date ){
-              Calendar.createEvent( {
-                title: $(this).html(),
-                start: new Date( date._d ),
-                end: new Date( new Date(date._d).getTime() + 7200000 ), //two-hour frame
-                backgroundColor: $(this).css('backgroundColor'),
-                borderColor: $(this).css('borderColor')
-              });
-              if ($('#drop-remove').is(':checked')) {
-                $(this).remove();
-              }
-            },
-            dayClick: function(date, jsEvent, view) {
-              console.log('Day clicked');
-              console.log(date);
-              console.log(jsEvent);
-              console.log(view);
-            },
-            eventClick: function(event){
-              console.log('Event Clicked', attrs.modalId);
-              $('#'+attrs.modalId).modal().show();
-              if (event.url) {
-                //window.open(event.url);
-                //return false;
-              }
-            }
+          var calendar;
+
+          Calendar.getEvents()
+            .then( function(response){
+              scope.events = response.events;
+              initCalendar();
+            });
+
+          function updateEvent( event ){
+            Calendar.updateEvent( {
+              _id: event._id,
+              start: event.start._d,
+              end: event.end._d
+            });
+          }
+
+          function initCalendar(){
+            calendar = $(elem).fullCalendar({
+              header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+              },
+              height: 600,
+              timezone: 'local',
+              defaultDate: new Date(),
+              defaultView: 'agendaWeek',
+              editable: true,
+              eventLimit: true, // allow "more" link when too many events
+              events: scope.events,
+              droppable: true, // this allows things to be dropped onto the calendar !!!
+              drop: function( date){
+                var originalEventObject = $(this).data('eventObject');
+                var copiedEventObject = $.extend({}, originalEventObject);
+                copiedEventObject.start = new Date( date._d );
+                copiedEventObject.end = new Date( new Date(date._d).getTime() + 7200000 );
+                copiedEventObject.allDay = false;
+
+                Calendar.createEvent( copiedEventObject )
+                  .then( function(res){
+                    copiedEventObject.id = res.event._id;
+                    $(elem).fullCalendar('renderEvent', copiedEventObject, true);
+                  });
+                if ($('#drop-remove').is(':checked')) {
+                  $(this).remove();
+                }
+              },
+              dayClick: function(date, jsEvent, view) {
+                console.log('Day clicked');
+                console.log(date);
+                console.log(jsEvent);
+                console.log(view);
+              },
+              eventClick: function(event){
+                Calendar.currentEvent = event;
+                $('#'+attrs.modalId).modal().show();
+                scope.$apply();
+                if (event.url) {
+                  //window.open(event.url);
+                  //return false;
+                }
+              },
+              eventDrop: updateEvent,
+              eventResize: updateEvent
+            });
+          }
+
+          scope.$on('event:removeSuccess', function( e, eventId ){
+            calendar.fullCalendar("removeEvents",  eventId );
           });
         }
       };

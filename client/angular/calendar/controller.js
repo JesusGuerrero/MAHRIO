@@ -2,8 +2,6 @@ angular.module('baseApp.controllers')
   .controller('CalendarController', ['$scope','Calendar', function($scope, Calendar){
     'use strict';
 
-    $scope.events = Calendar.getEvents();
-    console.log( $scope.events );
     function initEvents(ele) {
       ele.each(function() {
 
@@ -12,12 +10,11 @@ angular.module('baseApp.controllers')
         var eventObject = {
           title: $.trim($(this).text()),  // use the element's text as the event title
           stick: true,
-          color: $(this).css('background-color'),
-
+          color: $(this).css('background-color')
         };
 
         // store the Event Object in the DOM element so we can get to it later
-        $(this).data('event', eventObject);
+        $(this).data('eventObject', eventObject);
 
         // make the event draggable using jQuery UI
         $(this).draggable({
@@ -61,4 +58,13 @@ angular.module('baseApp.controllers')
       //Remove event from text input
       $('#new-event').val('');
     });
+
+    $scope.actions = {
+      save: function( dataObject ){
+        return Calendar.updateEvent( dataObject.id );
+      },
+      discard: function( dataObject ){
+        return Calendar.removeEvent( dataObject._id );
+      }
+    };
   }]);
