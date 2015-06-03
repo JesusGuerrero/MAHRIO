@@ -103746,13 +103746,12 @@ angular.module('baseApp.directives')
           }
 
           scope.$on('event:removeSuccess', function( e, eventId ){
-            calendar.fullCalendar("removeEvents",  eventId );
+            calendar.fullCalendar('removeEvents',  eventId );
           });
         }
       };
     }
   ]);
-var p ={};
 angular.module('baseApp.directives')
   .directive('modalEditEvent', ['Calendar',
     function( Calendar ){
@@ -104374,27 +104373,27 @@ angular.module('baseApp.directives')
         scope: {
           role: '='
         },
-        link: function(scope, elem, attrs) {
+        link: function(scope) {
           scope.logout = $rootScope.logout;
           scope.$watch( 'role', function(newRole){
             switch( newRole ){
               case 'any':
-                scope.dynamicTemplateUrl = "/assets/html/layout/header/primaryTop2";
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop2';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = "/assets/html/layout/header/primaryTop";
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop';
                 break;
               default:
             }
-          })
+          });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('pageLayout', ['$rootScope',
-    function( $rootScope ){
+  .directive('pageLayout', [
+    function(){
       'use strict';
       return {
         restrict: 'A',
@@ -104429,7 +104428,7 @@ angular.module('baseApp.directives')
                 break;
               default:
             }
-          })
+          });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };
@@ -104560,7 +104559,6 @@ angular.module('baseApp.controllers')
     }
   ]
 );
-var sex2;
 angular.module('baseApp.directives')
   .directive('mailboxInbox', ['$rootScope',
     function( ){
@@ -104574,8 +104572,6 @@ angular.module('baseApp.directives')
           config: '='
         },
         link: function(scope) {
-          sex2 = scope;
-
           scope.toggleStar = function ( index ){
             console.log(index);
           };
@@ -104601,7 +104597,6 @@ angular.module('baseApp.directives')
       };
     }
   ]);
-var sex;
 angular.module('baseApp.directives')
   .directive('mailboxSideMenu', ['$rootScope',
     function( ){
@@ -104614,9 +104609,7 @@ angular.module('baseApp.directives')
           properties: '=',
           modalId: '@'
         },
-        link: function(scope, elem, attrs) {
-          sex = { scope: scope, elem: elem, attrs: attrs };
-
+        link: function(scope) {
           scope.composeMessage = function(){
             scope.$parent.$broadcast('event:composeMessage');
             $('#'+scope.modalId).modal().toggle();
@@ -104641,7 +104634,6 @@ angular.module('baseApp.directives')
       };
     }
   ]);
-var p ={};
 angular.module('baseApp.directives')
   .directive('modalComposeMessage', ['$rootScope',
     function( ){
@@ -104651,8 +104643,6 @@ angular.module('baseApp.directives')
         templateUrl: '/assets/html/mail/modalComposeMessage',
         replace: true,
         link: function(scope) {
-          p.scope = scope;
-
           scope.$on('event:composeMessage', function(){
             scope.message = {
               to: '',
@@ -104869,7 +104859,7 @@ angular.module('baseApp.directives')
               .then( function(){
                 scope.$parent.$broadcast('event:removeSuccess', scope.dataObject._id );
               });
-          }
+          };
         }
       };
     }

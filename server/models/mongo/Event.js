@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-  schemaEvent, Event;
+  schemaEvent, CalendarEvent;
 
 schemaEvent = mongoose.Schema({
   title: {type: String, required: true},
@@ -14,8 +14,6 @@ schemaEvent = mongoose.Schema({
   _user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
-Event = mongoose.model( 'Event', schemaEvent);
+CalendarEvent = mongoose.model( 'CalendarEvent', schemaEvent);
 
-module.exports = {
-  event: Event
-};
+module.exports = CalendarEvent;

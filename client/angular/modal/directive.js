@@ -37,7 +37,7 @@ angular.module('baseApp.directives')
               .then( function(){
                 scope.$parent.$broadcast('event:removeSuccess', scope.dataObject._id );
               });
-          }
+          };
         }
       };
     }

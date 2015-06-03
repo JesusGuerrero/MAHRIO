@@ -1,4 +1,3 @@
-var p ={};
 angular.module('baseApp.directives')
   .directive('modalEditEvent', ['Calendar',
     function( Calendar ){

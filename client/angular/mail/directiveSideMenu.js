@@ -10,7 +10,7 @@ angular.module('baseApp.directives')
           properties: '=',
           modalId: '@'
         },
-        link: function(scope, elem, attrs) {
+        link: function(scope) {
           scope.composeMessage = function(){
             scope.$parent.$broadcast('event:composeMessage');
             $('#'+scope.modalId).modal().toggle();

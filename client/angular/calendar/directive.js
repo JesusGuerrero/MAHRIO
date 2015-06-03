@@ -74,7 +74,7 @@ angular.module('baseApp.directives')
           }
 
           scope.$on('event:removeSuccess', function( e, eventId ){
-            calendar.fullCalendar("removeEvents",  eventId );
+            calendar.fullCalendar('removeEvents',  eventId );
           });
         }
       };
