@@ -51,11 +51,17 @@ Install global modules
 
     $: sudo npm install supervisor grunt bower -g
 
-Install local application modules. Change into WebApp-HAM directory and ensure package.json is there. Then run command.
+Install local application modules. Change into MAHRIO directory and ensure package.json is there. Then run command.
 
     $: npm install
 
-You should now have a folder 'node_modules' next to the package.json, this are the modules required to run app.
+You should now have a folder 'node_modules' in same location as the package.json, these are the modules required to run the server/api.
+
+Install bower packaged libraries. Change into MAHRIO directory and ensure bower.json is there. Then run command.
+
+    $: bower install
+
+You should now have a folder 'bower_components' in sam elocation as the bower.json, these are the libraries required to run front-end/UI of the app.
 
 ### Run MongoDb
 In order to leverage the database, ensure that mongod is running before the WebApp. To run mongod with custom config
@@ -107,6 +113,9 @@ and also
 ## Notes - Things to consider
 
 Node.JS changes frequently, and it's suggested you load the PPA in order to grab the stable latest version.  Work is in progress on customizing a Vagrantfile for this purpose, with instructions forthcoming.
+
+## Troubleshooting
+have any questions or troubke with the setup? email rocha.jesus@hotmail.com
 
 ## References
 ### Hapi [http://hapijs.com]
