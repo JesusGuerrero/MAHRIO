@@ -8,47 +8,8 @@
 
 This open-source projects aims at building a seed project with shared code between web and mobile app. It includes a server instance connected to a database along with token-based and Oauth authentication. The Raspberry Pi mini computer is to be determined.
 
-##Instructions in Vagrant
- - Install Vagrant http://www.vagrantup.com
- - Install virtualbox http://www.virtualbox.org
- - Run the following command in the root directory of the project
- 
-`$vagrant up`
-
-You now have a running Ubuntu Box with the MongoDB, NodeJS, and all NPM packages installed.
-
-copy and rename `.env.dist` to `.env` in the same directory.  Modify the variables as needed.
-
-Notice: Alternatively you can continue reading to setup the application manually.
-
-## Versions
-### Production
-#### Linux-Box Specs
-    OS: CentOS release 5.11 (Final)
-    Architecture: 64-Bit (x86_64)
-    Kernel: Linux version 2.6.32-042stab104.1
-    CPU: 1.4 Ghz
-    Cache: 2 Mb
-    Memory: 1 Gb
-    Storage: 60 Gb
-#### Software Added
-    Node v0.10.32 [http://nodejs.org/dist/v0.10.32/]
-        - NPM v1.4.28
-    MongoDB v2.6.8 [https://fastdl.mongodb.org/src/mongodb-src-r2.6.8.zip]
-    Git v.1.7.0 [https://git-core.googlecode.com/files/git-1.7.9.tar.gz]
-### Development
-#### Jesus' MacBook Specs
-    OS: OSX 10.10.2
-    Architecture: 64-Bit
-    CPU: 2.7 Ghz
-    Cache: 4 Mb
-    Memory: 4Gb
-    Storage: 128 Gb
-#### Software Added
-    Node v.0.10.33
-    MongoDB v2.6.5
-    Git v1.9.3
 ## OSX Development - Software Installations
+These instructions are for quick setup. Instructions are for OSX but should work fine on Linux too. Windows not tested.
 ### Node
 Check version installed
 
@@ -84,7 +45,7 @@ Install git using installer
 ### Checkout and Environment Setup
 Clone git repository. On your operating system create a directory where this project will live and clone this repo.
 
-    $: git clone https://github.com/JesusGuerrero/WebApp-HAM.git
+    $: git clone https://github.com/JesusGuerrero/MAHRIO.git
 
 Install global modules
 
