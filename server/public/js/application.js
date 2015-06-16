@@ -103604,8 +103604,6 @@ angular.module('baseApp.controllers')
   .controller('CalendarController', ['$scope','Calendar', function($scope, Calendar){
     'use strict';
 
-    $scope.events = Calendar.getEvents();
-    console.log( $scope.events );
     function initEvents(ele) {
       ele.each(function() {
 
@@ -103614,12 +103612,11 @@ angular.module('baseApp.controllers')
         var eventObject = {
           title: $.trim($(this).text()),  // use the element's text as the event title
           stick: true,
-          color: $(this).css('background-color'),
-
+          color: $(this).css('background-color')
         };
 
         // store the Event Object in the DOM element so we can get to it later
-        $(this).data('event', eventObject);
+        $(this).data('eventObject', eventObject);
 
         // make the event draggable using jQuery UI
         $(this).draggable({
@@ -103663,6 +103660,15 @@ angular.module('baseApp.controllers')
       //Remove event from text input
       $('#new-event').val('');
     });
+
+    $scope.actions = {
+      save: function( dataObject ){
+        return Calendar.updateEvent( dataObject.id );
+      },
+      discard: function( dataObject ){
+        return Calendar.removeEvent( dataObject._id );
+      }
+    };
   }]);
 angular.module('baseApp.directives')
   .directive('calendar', ['Calendar',
@@ -103670,48 +103676,95 @@ angular.module('baseApp.directives')
       'use strict';
       return {
         restrict: 'A',
-        scope: {
-        },
+        scope: {},
         link: function(scope, elem, attrs ) {
-          $(elem).fullCalendar({
-            header: {
-              left: 'prev,next today',
-              center: 'title',
-              right: 'month,agendaWeek,agendaDay'
-            },
-            height: 600,
-            timezone: 'local',
-            defaultDate: new Date(),
-            defaultView: 'agendaWeek',
-            editable: true,
-            eventLimit: true, // allow "more" link when too many events
-            events: scope.$parent.events,
-            droppable: true, // this allows things to be dropped onto the calendar !!!
-            drop: function( date ){
-              Calendar.createEvent( {
-                title: $(this).html(),
-                start: new Date( date._d ),
-                end: new Date( new Date(date._d).getTime() + 7200000 ), //two-hour frame
-                backgroundColor: $(this).css('backgroundColor'),
-                borderColor: $(this).css('borderColor')
-              });
-              if ($('#drop-remove').is(':checked')) {
-                $(this).remove();
-              }
-            },
-            dayClick: function(date, jsEvent, view) {
-              console.log('Day clicked');
-              console.log(date);
-              console.log(jsEvent);
-              console.log(view);
-            },
-            eventClick: function(event){
-              console.log('Event Clicked', attrs.modalId);
-              $('#'+attrs.modalId).modal().show();
-              if (event.url) {
-                //window.open(event.url);
-                //return false;
-              }
+          var calendar;
+
+          Calendar.getEvents()
+            .then( function(response){
+              scope.events = response.events;
+              initCalendar();
+            });
+
+          function updateEvent( event ){
+            Calendar.updateEvent( {
+              _id: event._id,
+              start: event.start._d,
+              end: event.end._d
+            });
+          }
+
+          function initCalendar(){
+            calendar = $(elem).fullCalendar({
+              header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+              },
+              height: 600,
+              timezone: 'local',
+              defaultDate: new Date(),
+              defaultView: 'agendaWeek',
+              editable: true,
+              eventLimit: true, // allow "more" link when too many events
+              events: scope.events,
+              droppable: true, // this allows things to be dropped onto the calendar !!!
+              drop: function( date){
+                var originalEventObject = $(this).data('eventObject');
+                var copiedEventObject = $.extend({}, originalEventObject);
+                copiedEventObject.start = new Date( date._d );
+                copiedEventObject.end = new Date( new Date(date._d).getTime() + 7200000 );
+                copiedEventObject.allDay = false;
+
+                Calendar.createEvent( copiedEventObject )
+                  .then( function(res){
+                    copiedEventObject.id = res.event._id;
+                    $(elem).fullCalendar('renderEvent', copiedEventObject, true);
+                  });
+                if ($('#drop-remove').is(':checked')) {
+                  $(this).remove();
+                }
+              },
+              dayClick: function(date, jsEvent, view) {
+                console.log('Day clicked');
+                console.log(date);
+                console.log(jsEvent);
+                console.log(view);
+              },
+              eventClick: function(event){
+                Calendar.currentEvent = event;
+                $('#'+attrs.modalId).modal().show();
+                scope.$apply();
+                if (event.url) {
+                  //window.open(event.url);
+                  //return false;
+                }
+              },
+              eventDrop: updateEvent,
+              eventResize: updateEvent
+            });
+          }
+
+          scope.$on('event:removeSuccess', function( e, eventId ){
+            calendar.fullCalendar('removeEvents',  eventId );
+          });
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('modalEditEvent', ['Calendar',
+    function( Calendar ){
+      'use strict';
+      return {
+        restrict: 'E',
+        templateUrl: '/assets/html/calendar/modalEditEvent',
+        replace: true,
+        link: function(scope) {
+          scope.$watch( function() { return Calendar.currentEvent; }, function(newData){
+            if( newData ) {
+              scope.event = newData;
+              scope.$parent.dataObject = scope.event;
             }
           });
         }
@@ -103720,7 +103773,7 @@ angular.module('baseApp.directives')
   ]);
 angular.module('baseApp.services').factory('CalendarResource', [ '$resource', function($resource) {
   'use strict';
-  return $resource('/api/calendar/:action',
+  return $resource('/api/calendar/events/:action',
     { action: '@action' },
     {
       create: {
@@ -103740,81 +103793,33 @@ angular.module('baseApp.services').factory('CalendarResource', [ '$resource', fu
 }]);
 angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', function( CalendarResource) {
   'use strict';
-  var date = new Date();
-  var d = date.getDate(),
-    m = date.getMonth(),
-    y = date.getFullYear();
-  var baseEvents = [
-    {
-      title: 'All Day Event',
-      start: new Date(y, m, 1),
-      backgroundColor: '#f56954', //red
-      borderColor: '#f56954' //red
-    },
-    {
-      title: 'Long Event',
-      start: new Date(y, m, d - 5),
-      end: new Date(y, m, d - 2),
-      backgroundColor: '#f39c12', //yellow
-      borderColor: '#f39c12' //yellow
-    },
-    {
-      title: 'Meeting',
-      start: new Date(y, m, d, 10, 30),
-      allDay: false,
-      backgroundColor: '#0073b7', //Blue
-      borderColor: '#0073b7' //Blue
-    },
-    {
-      title: 'Sat Event',
-      start: new Date(y, m, 26),
-      end: new Date(y, m, 26),
-      backgroundColor: '#f39c12', //yellow
-      borderColor: '#f39c12' //yellow
-    },
-    {
-      title: 'Lunch',
-      start: new Date(y, m, d, 12, 0),
-      end: new Date(y, m, d, 14, 0),
-      allDay: false,
-      backgroundColor: '#00c0ef', //Info (aqua)
-      borderColor: '#00c0ef' //Info (aqua)
-    },
-    {
-      title: 'Birthday Party',
-      start: new Date(y, m, d + 1, 19, 0),
-      end: new Date(y, m, d + 1, 22, 30),
-      allDay: false,
-      backgroundColor: '#00a65a', //Success (green)
-      borderColor: '#00a65a' //Success (green)
-    },
-    {
-      title: 'Click for Google',
-      start: new Date(y, m, 28),
-      end: new Date(y, m, 29),
-      url: 'http://google.com/',
-      backgroundColor: '#3c8dbc', //Primary (light-blue)
-      borderColor: '#3c8dbc' //Primary (light-blue)
-    }
-  ];
   var eventSchema = {
     title: '',
     start: null,
-    backgroundColor: '#3c8dbc', //Primary (light-blue)
-    borderColor: '#3c8dbc' //Primary (light-blue)
-  };
+    end: null,
+    allDay: false,
+    url: '',
+    backgroundColor: '#3c8dbc',
+    borderColor: '#3c8dbc'
+  }, currentEvent = null;
   return {
-    createEvent: function( eventObject ){
-      var newEvent = $.extend( angular.copy(eventSchema), eventObject );
-      baseEvents.push( newEvent );
-      return baseEvents;
+    getOneEvent: function( eventId ) {
+      return CalendarResource.read( {action: eventId }).$promise;
     },
     getEvents: function(){
-      console.log( 'TODO: Calendar Resource '+CalendarResource);
-
-      return baseEvents;
-      //return CalendarResource.read( {action: 'all'}).$promise;
-    }
+      return CalendarResource.read( {action: 'all'}).$promise;
+    },
+    createEvent: function( eventObject ){
+      var newEvent = $.extend( angular.copy(eventSchema), eventObject );
+      return CalendarResource.create( {}, {event: newEvent}).$promise;
+    },
+    updateEvent: function( eventObject ) {
+      return CalendarResource.update( {action: eventObject._id}, {event: eventObject}).$promise;
+    },
+    removeEvent: function( eventId ) {
+      return CalendarResource.remove( {action: eventId }).$promise;
+    },
+    currentEvent: currentEvent
   };
 }]);
 
@@ -104368,27 +104373,27 @@ angular.module('baseApp.directives')
         scope: {
           role: '='
         },
-        link: function(scope, elem, attrs) {
+        link: function(scope) {
           scope.logout = $rootScope.logout;
           scope.$watch( 'role', function(newRole){
             switch( newRole ){
               case 'any':
-                scope.dynamicTemplateUrl = "/assets/html/layout/header/primaryTop2";
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop2';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = "/assets/html/layout/header/primaryTop";
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop';
                 break;
               default:
             }
-          })
+          });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('pageLayout', ['$rootScope',
-    function( $rootScope ){
+  .directive('pageLayout', [
+    function(){
       'use strict';
       return {
         restrict: 'A',
@@ -104423,7 +104428,7 @@ angular.module('baseApp.directives')
                 break;
               default:
             }
-          })
+          });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };
@@ -104554,7 +104559,6 @@ angular.module('baseApp.controllers')
     }
   ]
 );
-var sex2;
 angular.module('baseApp.directives')
   .directive('mailboxInbox', ['$rootScope',
     function( ){
@@ -104568,8 +104572,6 @@ angular.module('baseApp.directives')
           config: '='
         },
         link: function(scope) {
-          sex2 = scope;
-
           scope.toggleStar = function ( index ){
             console.log(index);
           };
@@ -104595,7 +104597,6 @@ angular.module('baseApp.directives')
       };
     }
   ]);
-var sex;
 angular.module('baseApp.directives')
   .directive('mailboxSideMenu', ['$rootScope',
     function( ){
@@ -104608,9 +104609,7 @@ angular.module('baseApp.directives')
           properties: '=',
           modalId: '@'
         },
-        link: function(scope, elem, attrs) {
-          sex = { scope: scope, elem: elem, attrs: attrs };
-
+        link: function(scope) {
           scope.composeMessage = function(){
             scope.$parent.$broadcast('event:composeMessage');
             $('#'+scope.modalId).modal().toggle();
@@ -104635,7 +104634,6 @@ angular.module('baseApp.directives')
       };
     }
   ]);
-var p ={};
 angular.module('baseApp.directives')
   .directive('modalComposeMessage', ['$rootScope',
     function( ){
@@ -104645,15 +104643,13 @@ angular.module('baseApp.directives')
         templateUrl: '/assets/html/mail/modalComposeMessage',
         replace: true,
         link: function(scope) {
-          p.scope = scope;
-
           scope.$on('event:composeMessage', function(){
             scope.message = {
               to: '',
               subject: '',
               content: ''
             };
-            scope.$parent.message = scope.message;
+            scope.$parent.dataObject = scope.message;
             $('#wysihtml5-content').data('wysihtml5').editor.clear();
           });
 
@@ -104843,17 +104839,25 @@ angular.module('baseApp.directives')
           tmp.scope = scope;
           tmp.elem = elem;
           scope.modalId = attrs.modalId;
+          scope.type = attrs.type;
+          scope.title = attrs.title;
 
           scope.save = function(){
-            scope.actions.save( scope.message )
+            scope.actions.save( scope.dataObject )
               .then( function(){
                 $(elem).modal('hide');
               });
           };
           scope.send = function(){
-            scope.actions.send( scope.message )
+            scope.actions.send( scope.dataObject )
               .then( function(){
                 $(elem).modal('hide');
+              });
+          };
+          scope.discard = function( ){
+            scope.actions.discard( scope.dataObject )
+              .then( function(){
+                scope.$parent.$broadcast('event:removeSuccess', scope.dataObject._id );
               });
           };
         }

@@ -23,7 +23,7 @@ angular.module('baseApp.directives')
                 break;
               default:
             }
-          })
+          });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };

@@ -1,4 +1,3 @@
-var sex2;
 angular.module('baseApp.directives')
   .directive('mailboxInbox', ['$rootScope',
     function( ){
@@ -12,8 +11,6 @@ angular.module('baseApp.directives')
           config: '='
         },
         link: function(scope) {
-          sex2 = scope;
-
           scope.toggleStar = function ( index ){
             console.log(index);
           };

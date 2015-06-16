@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('pageLayout', ['$rootScope',
-    function( $rootScope ){
+  .directive('pageLayout', [
+    function(){
       'use strict';
       return {
         restrict: 'A',

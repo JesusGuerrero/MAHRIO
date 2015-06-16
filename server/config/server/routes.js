@@ -27,7 +27,7 @@ module.exports = function (config, server) {
   require('../../controllers/authentication/api')(config, server);
 
   require('../../controllers/knowledge')(config, server);
-
+  require('../../controllers/calendar/api')(config, server);
   require('../../controllers/contact')(config, server);
 
   require('../../controllers/chat/api')(config, server);
@@ -61,14 +61,14 @@ module.exports = function (config, server) {
     handler: function(request, reply){
       switch( request.params.page ){
         case notDefined:
-          reply.view('_index', {
+          reply.view('_adminLTE', {
             page: null,
             navigation: ['Information Technology'],
             lang: server.lang
           });
           break;
         case 'questions':
-          reply.view('_index', {
+          reply.view('_adminLTE', {
             page: 'questions',
             navigation: ['Information Technology'],
             lang: server.lang
@@ -78,7 +78,7 @@ module.exports = function (config, server) {
           reply.view('_adminLTE');
           break;
         default:
-          reply.view('_index', {
+          reply.view('_adminLTE', {
             page: 'notFound',
             navigation: ['Information Technology'],
             lang: server.lang
