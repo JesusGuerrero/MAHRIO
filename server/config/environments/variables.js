@@ -26,7 +26,7 @@ module.exports = function( env ) {
 
     production: {
       datastoreURI: env.MONGOLAB_URI,
-      cmsURL: 'http://localhost/~whichdegree/cms-stage/?q='
+      cmsURL: 'http://com.computerenchiladas.com/~whichdegree/cms-stage/?q='
     }
   };
 
