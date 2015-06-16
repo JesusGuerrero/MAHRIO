@@ -69,6 +69,7 @@ module.exports = function (grunt) {
           'bower_components/angular/angular.js',
           'bower_components/angular-ui-router/release/angular-ui-router.js',
           'bower_components/angular-ui-bootstrap/src/modal/modal.js',
+          'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
           'bower_components/angular-resource/angular-resource.js',
           'bower_components/angular-route/angular-route.js',
           'bower_components/angular-cookies/angular-cookies.js',
@@ -87,7 +88,6 @@ module.exports = function (grunt) {
               'bower_components/jquery/dist/jquery.js',
               'bower_components/jquery.videoBG/jquery.videoBG.js',
               'bower_components/bootstrap/dist/js/bootstrap.js',
-              'bower_components/bootstrap-submenu/js/bootstrap-submenu.js',
               'bower_components/requirejs/require.js',
               'client/requirejs/setup.js'
           ],

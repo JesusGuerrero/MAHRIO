@@ -1,6 +1,5 @@
 div
-    .form-group
-        input.form-control(placeholder="To:" ng-model="message.to")
+    auto-complete(ng-model="message.to")
     .form-group
         input.form-control(placeholder="Subject:" ng-model="message.subject")
     div

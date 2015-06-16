@@ -26,13 +26,13 @@ module.exports = function (config, server) {
 
   require('../../controllers/authentication/api')(config, server);
 
-  require('../../controllers/knowledge')(config, server);
+/*  require('../../controllers/knowledge')(config, server);
   require('../../controllers/calendar/api')(config, server);
   require('../../controllers/contact')(config, server);
 
   require('../../controllers/chat/api')(config, server);
 
-  require('../../controllers/cms')(config, server);
+  require('../../controllers/cms')(config, server);*/
 
   server.route({
     method: 'GET',

@@ -18,6 +18,9 @@ function hashPwd (salt, pwd) {
 schema = mongoose.Schema({  
   username:      String,
   name:   String,
+
+  firstName: String,
+  lastName: String,
   
 /*  twitterToken:  String,
   twitterSecret: String,

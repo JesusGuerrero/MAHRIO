@@ -1,6 +1,6 @@
 var tmp = {};
 angular.module('baseApp.directives')
-  .directive('modalWindow', [
+  .directive('modalWindowView', [
     function(){
       'use strict';
       return {

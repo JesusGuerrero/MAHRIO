@@ -1,0 +1,7 @@
+.form-group
+    pre
+        |   Model: {{asyncSelected | json}}
+    input.form-control( type="text" ng-model="asyncSelected" placeholder="Locations loaded via $http"
+        typeahead="address for address in getLocation($viewValue)" typeahead-loading="loadingLocations"
+        template-url="/assets/html/directives/components/autocomplete/template.html")
+    i.glyphicon.glyphicon-refresh(ng-show="loadingLocations")

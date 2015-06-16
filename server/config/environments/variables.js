@@ -8,7 +8,7 @@ module.exports = function( env ) {
 
   var environments = {
     development: {
-      datastoreURI: 'mongodb://localhost/development',
+      datastoreURI: env.MONGODB_DATASTORE_URI,
       cmsURL: 'http://com.computerenchiladas.com/~whichdegree/cms-stage/?q=',
       port: 8042
     },
