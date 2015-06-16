@@ -19,9 +19,9 @@ module.exports = function (config, server) {
     return defer.promise;
   }
 
-  server.utils = {
+/*  server.utils = {
     getNav: getNavigation
-  };
+  };*/
   server.lang = config.lang.get();
 
   require('../../controllers/authentication/api')(config, server);
