@@ -1,7 +1,6 @@
 'use strict';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-process.env.NODE_PORT = process.env.NODE_PORT || '8042';
 process.env.NODE_URL = process.env.NODE_URL || '127.0.0.1';
 
 if (process.env.NODE_ENV === 'development') {

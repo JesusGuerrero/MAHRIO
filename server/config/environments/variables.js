@@ -26,8 +26,7 @@ module.exports = function( env ) {
 
     production: {
       datastoreURI: env.MONGOLAB_URI,
-      cmsURL: 'http://localhost/~whichdegree/cms-stage/?q=',
-      port: 8140
+      cmsURL: 'http://localhost/~whichdegree/cms-stage/?q='
     }
   };
 
@@ -43,6 +42,10 @@ module.exports = function( env ) {
   baseSetup.FB_CALLBACK_URL = env.FB_CALLBACK_URL;
 
   baseSetup.CMS_URL = env.CMS_URL;
+
+  if ( env === 'production' ) {
+    baseSetup.port = env.PORT || env.NODE_PORT || 8140;
+  }
 
   return baseSetup;
 };
