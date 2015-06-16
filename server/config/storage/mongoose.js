@@ -16,6 +16,7 @@ module.exports = function (config, server) {
     User.count({}, function(err,count){
       if( !count ) {
         server.needAdmin = true;
+        console.log('zero Users');
       }
     });
   });
