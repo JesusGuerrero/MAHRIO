@@ -1,5 +1,5 @@
 div
-    auto-complete(ng-model="message.to")
+    auto-complete(input-model="message.to" placeholder="To:" auto-complete-http="getAutoCompleteUserEmails")
     .form-group
         input.form-control(placeholder="Subject:" ng-model="message.subject")
     div

@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('modalComposeMessage', ['$rootScope',
-    function( ){
+  .directive('modalComposeMessage', ['$http',
+    function( $http ){
       'use strict';
       return {
         restrict: 'E',
@@ -20,6 +20,18 @@ angular.module('baseApp.directives')
           $('#modalComposeMessage').on('hidden.bs.modal', function () {
             console.log('i closed');
           });
+
+          scope.getAutoCompleteUserEmails = function(val) {
+            return $http.get('/api/autocomplete/users', {
+              params: {
+                q: val
+              }
+            }).then(function(response){
+              return response.data.users.map(function(user){
+                return user.email;
+              });
+            });
+          };
         }
       };
     }

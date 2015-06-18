@@ -1,6 +1,6 @@
 
 <div>
-  <auto-complete ng-model="message.to"></auto-complete>
+  <auto-complete input-model="message.to" placeholder="To:" auto-complete-http="getAutoCompleteUserEmails"></auto-complete>
   <div class="form-group">
     <input placeholder="Subject:" ng-model="message.subject" class="form-control"/>
   </div>

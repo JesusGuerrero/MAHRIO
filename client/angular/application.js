@@ -4,6 +4,7 @@
 
 angular.module('baseApp', [
   'ui.router',
+  'ui.bootstrap.typeahead',
   'ngResource',
   'btford.socket-io',
   'angular-loading-bar',

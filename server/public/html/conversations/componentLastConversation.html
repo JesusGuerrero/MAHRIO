@@ -20,7 +20,7 @@
   <div class="box-body">
     <div class="direct-chat-messages">
       <div ng-repeat="message in currentConversation.messages track by $index" ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'left' : 'right'" class="direct-chat-msg">
-        <div class="direct-chat-info clearfix"><span ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-left' : 'pull-right'" class="direct-chat-name">  {{currentConversation.members[message._user][0].email}}</span><span ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-right' : 'pull-left'" class="direct-chat-timestamp">  {{message.created | date : 'MM-dd h:mm a' }}</span></div><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user1-128x128.jpg" alt="message user image" class="direct-chat-img"/>
+        <div class="direct-chat-info clearfix"><span ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-left' : 'pull-right'" class="direct-chat-name">  {{currentConversation.members[message._user][0].email}}</span><span ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-right' : 'pull-left'" class="direct-chat-timestamp">  {{message.created | date : 'MM-dd h:mm a' }}</span></div><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user1-128x128.jpg" class="direct-chat-img"/>
         <div class="direct-chat-text">  {{message.content}}</div>
       </div>
     </div>
