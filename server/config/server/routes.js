@@ -1,38 +1,16 @@
 'use strict';
 
-var getData = require('request');
-
 module.exports = function (config, server) {
 
-  function getNavigation( ){
-    var defer = require('q').defer();
-    getData({
-      url: config.cmsURL + '/taxonomies',
-      json: true
-    }, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-        return defer.resolve( body.nodes );
-      }else{
-        return defer.reject( [] );
-      }
-    });
-    return defer.promise;
-  }
-
-/*  server.utils = {
-    getNav: getNavigation
-  };*/
   server.lang = config.lang.get();
 
   require('../../controllers/authentication/api')(config, server);
-
-/*  require('../../controllers/knowledge')(config, server);
+  require('../../controllers/autocomplete/api')(config, server);
   require('../../controllers/calendar/api')(config, server);
-  require('../../controllers/contact')(config, server);
-
   require('../../controllers/chat/api')(config, server);
-
-  require('../../controllers/cms')(config, server);*/
+  require('../../controllers/cms')(config, server);
+  require('../../controllers/contact')(config, server);
+  require('../../controllers/knowledge')(config, server);
 
   server.route({
     method: 'GET',
@@ -40,6 +18,16 @@ module.exports = function (config, server) {
     handler: {
       directory: {
         path: '../public',
+        defaultExtension: 'html'
+      }
+    }
+  });
+  server.route({
+    method: 'GET',
+    path: '/template/{param*}',
+    handler: {
+      directory: {
+        path: '../public/html/templates',
         defaultExtension: 'html'
       }
     }
