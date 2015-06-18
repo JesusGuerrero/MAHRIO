@@ -28,7 +28,7 @@ style
                         |   {{currentConversation.members[message._user][0].email}}
                     span.direct-chat-timestamp(ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-right' : 'pull-left'")
                         |   {{message.created | date : 'MM-dd h:mm a' }}
-                img.direct-chat-img( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user1-128x128.jpg" alt="message user image")
+                img.direct-chat-img( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user1-128x128.jpg")
                 .direct-chat-text
                     |   {{message.content}}
 
