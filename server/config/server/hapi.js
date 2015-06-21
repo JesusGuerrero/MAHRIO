@@ -36,7 +36,7 @@ module.exports = function (config, url) {
   };
 
   server.connection({
-    host: url, //192.168.1.112
+    host: url,
     port: config.port,
     routes: {
       files: {
