@@ -1,4 +1,3 @@
-var tmp = {};
 angular.module('baseApp.directives')
   .directive('modalWindowView', [
     function(){
@@ -14,8 +13,6 @@ angular.module('baseApp.directives')
           actions: '='
         },
         link: function(scope, elem, attrs){
-          tmp.scope = scope;
-          tmp.elem = elem;
           scope.modalId = attrs.modalId;
           scope.type = attrs.type;
           scope.title = attrs.title;
