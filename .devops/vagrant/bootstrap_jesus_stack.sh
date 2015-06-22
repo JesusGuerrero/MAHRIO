@@ -24,6 +24,13 @@ cd "$1"
 mongod --config mongoDB/config/mongod.conf
 echo "done"
 
+#check if the hosts file exists
+if grep -q "#bind_ip = 127.0.0.1" "/etc/mongod.conf"; then
+    echo "/etc/mongod.conf file already contains a commented out bind_ip entry"
+else
+    sed -i 's/bind_ip = 127.0.0.1/#bind_ip = 127.0.0.1/' /etc/mongod.conf
+fi
+
 #echo -n "Starting the Jesus Stack via Supervisor ... "
 #cd "$1"
 #supervisor server/index.js &
