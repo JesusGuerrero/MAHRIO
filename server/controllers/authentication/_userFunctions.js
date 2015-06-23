@@ -1,6 +1,8 @@
 'use strict';
 
-var User = require('mongoose').model('User'),
+var async = require('async'),
+    _ = require('underscore'),
+    User = require('mongoose').model('User'),
     Boom = require('boom');
 
 function register (request, reply, server) {
@@ -35,7 +37,7 @@ function login (request, reply) {
   User.login(request.payload.email, request.payload.password, function (err, user) {
     if (err) { return reply(Boom.badRequest(err)); }
 
-    reply({role: user.role})
+    reply({success: true})
       .header('Authorization', 'Bearer ' + user.authorizationToken)
       .header('Access-Control-Expose-Headers', 'authorization');
   });
@@ -96,31 +98,48 @@ function logout (request, reply) {
   }
 }
 
-function currentUser (request, reply, method) {
-  User.findOne({_id: request.auth.credentials.id}, function (err, user) {
-    if (err || !user) { return reply(Boom.unauthorized(err)); }
+function currentUser (request, reply, method, selectString) {
+  /*jshint maxcomplexity:10 */
+  User
+    .findOne({_id: request.auth.credentials.id})
+    .select( selectString )
+    .exec( function (err, user) {
+      if (err || !user) { return reply(Boom.badRequest(err)); }
 
-    switch( method ){
-      case 'GET':
-        return reply({role: user.role, email: user.email});
-      case 'PUT':
-      /*
-       forEach( request.payload, function(k, v ){
-        if( user.hasOwnProperty( k ) ){
-          user[ k ] = v;
-        }
-       }
-       user.save( function(err){
-        if (err) { return reply(Boom.badRequest(err)); }
+      switch( method ){
+        case 'GET':
+          delete user.salt;
+          delete user.password;
+          return reply( { user: user });
+        case 'PUT':
+          if ( request.payload.password || request.payload.email ) {
+            if( user.authenticate( request.payload.currentPassword ) ) {
+              if( request.payload.email ) {
+                user.email = request.payload.email;
+              } else {
+                user.updatePassword( request.payload.password || '' );
+              }
+            } else {
+              return reply( Boom.badRequest() );
+            }
+          } else {
+            async.forEach( Object.keys( request.payload ), function( key ){
+              if( !_.contains(['email', 'role', 'salt', 'password'], key ) ) {
+                user[ key ] = request.payload[ key ];
+              }
+            });
+          }
 
-        return reply({updated: true});
-       });
-       */
-        return reply('coming soon');
-      default:
-        return reply( Boom.badRequest() );
-    }
-  });
+          user.save( function(err){
+            if (err) { return reply(Boom.badRequest(err)); }
+
+            return reply({updated: true});
+          });
+          break;
+        default:
+          return reply( Boom.badRequest() );
+      }
+    });
 }
 
 function getUsers( request, reply ){

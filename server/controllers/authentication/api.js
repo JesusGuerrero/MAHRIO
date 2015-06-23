@@ -140,7 +140,7 @@ module.exports = function ( config, server ) {
         handler: function( request, reply ){
           switch( request.params.action ){
             case 'me':
-              return authUserMethods.currentUser( request, reply, 'GET' );
+              return authUserMethods.currentUser( request, reply, 'GET', 'firstName lastName email role' );
             case 'all':
               return authUserMethods.getUsers( request, reply );
             default:
@@ -148,7 +148,9 @@ module.exports = function ( config, server ) {
               return authUserMethods.getUser( idInActionParameter, reply );
           }
         },
-        auth: 'simple'
+        auth: {
+          strategy: 'simple'
+        }
       }
     },
     {
@@ -189,7 +191,7 @@ module.exports = function ( config, server ) {
         handler: function( request, reply ){
           switch( request.params.action ){
             case 'me':
-              return authUserMethods.currentUser( request, reply, 'PUT' );
+              return authUserMethods.currentUser( request, reply, 'PUT', 'firstName lastName email role salt password' );
             case 'other':
               return adminUserMethods.updateUser( request, reply );
           }
