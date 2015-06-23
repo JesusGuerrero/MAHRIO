@@ -72,6 +72,7 @@ module.exports = function (grunt) {
           'bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js',
           'bower_components/angular-ui-bootstrap/src/position/position.js',
           'bower_components/angular-ui-bootstrap/src/bindHtml/bindHtml.js',
+          'bower_components/angular-ui-bootstrap/src/tabs/tabs.js',
           'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
           'bower_components/angular-resource/angular-resource.js',
           'bower_components/angular-route/angular-route.js',

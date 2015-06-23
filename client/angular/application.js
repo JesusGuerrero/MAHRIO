@@ -5,6 +5,7 @@
 angular.module('baseApp', [
   'ui.router',
   'ui.bootstrap.typeahead',
+  'ui.bootstrap.tabs',
   'ngResource',
   'btford.socket-io',
   'angular-loading-bar',
@@ -120,6 +121,20 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       controller: 'CalendarController',
       templateUrl: '/assets/html/calendar/index'
     })
+    .state('profile', {
+      url: '/profile',
+      controller: 'ProfileController',
+      templateUrl: '/assets/html/profile/profile-landing'
+    })
+    .state('profile.info', {
+      url: '/info'
+    })
+    .state('profile.contact', {
+      url: '/contact'
+    })
+    .state('profile.security', {
+      url: '/security'
+    })
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
@@ -185,22 +200,25 @@ angular.module('baseApp.controllers', [])
       $rootScope.setRole( window.localStorage.Role || 'any' );
 
       $rootScope.setAuthorizationHeader = function(token){
-        $http.defaults.headers.common.Authorization = token;
-        window.localStorage.Authorization = token;
+        if( token ) {
+          $http.defaults.headers.common.Authorization = token;
+          window.localStorage.Authorization = token;
+        }
       };
-      $rootScope.setAuthorizationHeader( window.localStorage.Authorization || '');
+      $rootScope.setAuthorizationHeader( window.localStorage.Authorization);
 
-      var path = $location.path();
-      if( ['/login','/register','/recoverpassword'].indexOf( $location.path() ) === -1 && !/passwordreset/.test(path) && !/confirm/.test(path) ){
-        currentUser.isLoggedIn()
-          .then( function(user){
-            console.log( user );
-            currentUser.login( user, false );
-          } , function( ){
-            console.log('user not authenticated');
-            //$state.transitionTo('login');
-          });
-      }
+      $rootScope.getProfile = function(route){
+        if( angular.isDefined( $http.defaults.headers.common.Authorization ) ) {
+          currentUser.isLoggedIn()
+            .then( function(response){
+              if( response.user ) {
+                currentUser.login( response.user, route || false );
+              }
+            });
+        }
+      };
+      $rootScope.getProfile();
+
       $rootScope.isDefined = function( val ){
         return angular.isDefined( val );
       };

@@ -22,12 +22,17 @@ angular.module('baseApp.services')
       return User.logout();
     }
 
+    function update( user ) {
+      return User.update( user );
+    }
+
     return {
       get: function () {
         return currentUser;
       },
       login: login,
       isLoggedIn: isLoggedIn,
-      logout: logout
+      logout: logout,
+      update: update
     };
   }]);

@@ -1,0 +1,26 @@
+form(novalidate ng-submit="update()")
+    error-message-box( validation-errors="validationErrors" )
+    form-input-tag(
+        model="user.password"
+        type="password"
+        label="New Password"
+        required="true" icon="lock")
+    form-input-tag(
+        model="user.confirmPassword"
+        type="password"
+        label="Confirm Password"
+        required="true" icon="lock")
+
+    hr
+
+    p
+        |   To protect and confirm your identity please enter the following.
+
+    form-input-tag(
+        model="user.currentPassword"
+        type="password"
+        label="Account Password"
+        required="true" icon="lock")
+
+    button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+        | Update

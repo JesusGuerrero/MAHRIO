@@ -1,0 +1,14 @@
+form(novalidate ng-submit="update()")
+    form-input-tag(
+        model="user.firstName"
+        type="text"
+        label="First Name"
+        required="true")
+    form-input-tag(
+        model="user.lastName"
+        type="text"
+        label="Last Name"
+        required="true")
+
+    button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+        | Update

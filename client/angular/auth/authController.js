@@ -31,7 +31,7 @@ angular.module('baseApp.controllers')
           User.login( $scope.user )
             .then( function(res){
               $scope.setAuthorizationHeader( res.headers('Authorization') );
-              currentUser.login(res.user, true);
+              $scope.getProfile(true);
             }, function( err ){
               $scope.validationErrors = [err.data.message];
 
