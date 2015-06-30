@@ -63,11 +63,11 @@ module.exports = function (config, url) {
         console.error(err);
       }
       else {
-        server.start(function () {
+        /*server.start(function () {
           console.info('Server started at ' + server.info.uri);
           Socket = SocketIO.listen( server.listener );
           Socket.on('connection', SocketHandler);
-        });
+        });*/
       }
     }
   );

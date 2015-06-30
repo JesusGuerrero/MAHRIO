@@ -18,7 +18,7 @@ require('./config/storage/mongoose.js')(config, server);
 require('./config/server/routes.js')(config, server);
 
 // don't start server when testing
-if (!module.parent) {
+if (!module.parent && config.env !== 'production') {
   server.start(function () {
     console.log('Server running at:', server.info.uri);
   });
