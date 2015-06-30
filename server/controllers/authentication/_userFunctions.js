@@ -86,13 +86,15 @@ function passwordReset( request, reply ){
 }
 function logout (request, reply) {
   if (request.auth.isAuthenticated) {
-    var matchToken = {
-      authorizationToken: request.auth.credentials.token
-    };
-    User.findAndModify( matchToken, [], {$set: {authorizationToken: null}},
-      function () {
+    User.findOne( {authorizationToken: request.auth.credentials.token}, function(err, user) {
+      if( err ) { return reply( Boom.badRequest() ); }
+
+      user.authorizationToken = null;
+      user.save( function(err) {
+        if( err ) { return reply( Boom.badRequest()); }
         reply({logout: true});
       });
+    });
   }else{
     reply({logout: true});
   }
