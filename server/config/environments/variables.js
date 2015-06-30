@@ -33,6 +33,7 @@ module.exports = function( env ) {
   var baseSetup = environments[ env.NODE_ENV ];
   baseSetup.rootPath = rootPath;
   baseSetup.lang = language;
+  baseSetup.env = env;
   baseSetup.IN_CLIENT_ID = env.IN_CLIENT_ID;
   baseSetup.IN_CLIENT_SECRET = env.IN_CLIENT_SECRET;
   baseSetup.IN_CALLBACK_URL = env.IN_CALLBACK_URL;
@@ -43,7 +44,7 @@ module.exports = function( env ) {
 
   baseSetup.CMS_URL = env.CMS_URL;
 
-  if ( env === 'production' ) {
+  if ( baseSetup.env === 'production' ) {
     baseSetup.port = env.PORT || env.NODE_PORT || 8140;
   }
 

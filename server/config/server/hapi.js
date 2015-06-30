@@ -33,8 +33,7 @@ module.exports = function (config, url) {
     socket.on('event:ping', messageHandler );
   };
 
-  server.connection({
-    host: url, //192.168.1.112
+  var serverConfig = {
     port: config.port,
     routes: {
       files: {
@@ -47,7 +46,11 @@ module.exports = function (config, url) {
         additionalExposedHeaders: ['Authorization']
       }
     }
-  });
+  };
+  if( config.env !== 'production') {
+    serverConfig.host = url;
+  }
+  server.connection( serverConfig );
 
   server.sendEmail = require('../email/setup');
 
