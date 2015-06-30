@@ -7,14 +7,31 @@
       </div>
       <div class="col-md-9 col-sm-8">
         <div class="box box-primary">
-          <div mailbox-top-menu="mailbox-top-menu" config="config"></div>
-          <ng-switch on="message">
-            <div ng-switch-when="undefined">
+          <div mailbox-top-menu="mailbox-top-menu" messages="messages" config="config"></div>
+          <ng-switch on="viewFolder">
+            <div ng-switch-when="inbox">
               <div mailbox-inbox="mailbox-inbox" messages="messages" properties="messagesProperties" config="config"></div>
             </div>
-            <div ng-switch-default="ng-switch-default">
-              <div mailbox-message="message" properties="messagesProperties" config="config"></div>
+            <div ng-switch-when="starred">
+              <div mailbox-starred="mailbox-starred" messages="messages" properties="messagesProperties" config="config"></div>
             </div>
+            <div ng-switch-when="drafts">
+              <div mailbox-drafts="mailbox-drafts" messages="messages" properties="messagesProperties" config="config"></div>
+            </div>
+            <div ng-switch-when="sent">
+              <div mailbox-sent="mailbox-sent" messages="messages" properties="messagesProperties" config="config"></div>
+            </div>
+            <div ng-switch-when="archived">
+              <div mailbox-archived="mailbox-archived" messages="messages" properties="messagesProperties" config="config"></div>
+            </div>
+            <div ng-switch-when="view">
+              <div mailbox-message="mailbox-message" message="message" properties="messagesProperties" config="config"></div>
+            </div>
+            <div ng-switch-when="edit" class="modal-body">
+              <modal-compose-message message="message" actions="actions"></modal-compose-message>
+              <div style="clear:both"></div>
+            </div>
+            <div ng-switch-default="ng-switch-default">  EMPTY</div>
           </ng-switch>
         </div>
       </div>

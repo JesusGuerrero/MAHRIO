@@ -7,7 +7,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/mail/directiveMessage',
         scope: {
-          messages: '=',
+          message: '=',
           config: '='
         },
         link: function() {

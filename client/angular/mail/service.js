@@ -19,141 +19,50 @@ angular.module('baseApp.services')
       }
     );
   }])
-  .factory('Mail', [ 'MailResource', '$q', '_', function( MailResource, $q, _) {
+  .factory('Mail', [ 'MailResource', function( MailResource ) {
     'use strict';
-    function aPromiseAndDelayedResolve( resolveData, param ) {
-      var defer = $q.defer();
-      if( typeof resolveData === 'function' ){
-        setTimeout( function(){ var res = resolveData( param ); defer.resolve( res );}, 50);
-      } else {
-        setTimeout( function(){ defer.resolve( resolveData );}, 50);
-      }
-      return defer.promise;
-    }
-    var inboxMessages = [
-      {
-        read: 0,
-        starred: 0,
-        from: 'support@whichdegree.co',
-        subject: 'Message Subject is Placed Here',
-        time: new Date(),
-        content: 'Hello John, <br/><br/>Paragraph 1<br/><br/>Paragraph 2<br/><br/>Paragraph 3<br/><br/>Paragraph 4',
-        attachments: [
-          {
-            type: 'document',
-            filename: 'sep2014-report.pdf',
-            icon: 'pdf',
-            size: 1245
-          },
-          {
-            type: 'document',
-            filename: 'App Description.docx',
-            icon: 'word',
-            size: 1245
-          },
-          {
-            type: 'photo',
-            filename: 'photo1.png',
-            icon: 'https://almsaeedstudio.com/themes/AdminLTE/dist/img/photo1.png',
-            size: 2670000
-          }
-        ]
-      },
-      {
-        read: 1,
-        starred: 0,
-        from: 'John Doe',
-        subject: 'Urgent! Please Read',
-        content: 'Hello world!',
-        attachments: [],
-        time: new Date()
-      },
-      {
-        read: 0,
-        starred: 1,
-        from: 'Jesus Rocha',
-        subject: 'AdminLTE 2.0 Issue - Trying to find a solution to this problem...',
-        content: 'Hello world!',
-        attachments: [],
-        time: new Date()
-      },
-      {
-        read: 0,
-        starred: 1,
-        from: 'John Doe',
-        time: new Date(),
-        subject: 'Sucka! This Starred',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var draftMessages = [
-      {
-        to: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Yeah Sucka!',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var sentMessages = [
-      {
-        to: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Sucka! This Sent',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var archivedMessages = [
-      {
-        from: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Sucka! This Archived',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
+
     return {
       getAllInbox: function(){
-        return aPromiseAndDelayedResolve( inboxMessages );
-        //return MailResource.read( {action: 'inbox'}).$promise;
+        return MailResource.read( {action: 'inbox'} ).$promise;
       },
-      getMessage: function( i ) {
-        return aPromiseAndDelayedResolve( inboxMessages[i] );
+      getMessage: function( id ) {
+        return MailResource.read( {action: id} ).$promise;
       },
-      getAllDrafts: function(){
-        return aPromiseAndDelayedResolve( draftMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllDrafts: function() {
+        return MailResource.read( {action: 'drafts'} ).$promise;
       },
-      getAllSent: function(){
-        return aPromiseAndDelayedResolve( sentMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllSent: function() {
+        return MailResource.read( {action: 'sent'} ).$promise;
       },
-      getAllStarred: function(){
-        var starredMessages = _(inboxMessages)
-          .filter( function(msg){ return msg.starred; });
-        return aPromiseAndDelayedResolve( starredMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllStarred: function() {
+        return MailResource.read( {action: 'starred'} ).$promise;
       },
-      getAllArchived: function(){
-
-        return aPromiseAndDelayedResolve( archivedMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllArchived: function() {
+        return MailResource.read( {action: 'archived'} ).$promise;
       },
-      saveMessage: function(message){
-        return aPromiseAndDelayedResolve( function(message){
-          message.time = new Date();
-          draftMessages.push( message );
-          return  true;
-        }, message);
+      saveMessage: function(message) {
+        message.fromDraft = true;
+        return MailResource.create( {}, {mail: message} ).$promise;
       },
-      sendMessage: function(message){
-        return aPromiseAndDelayedResolve( function(message){
-          message.time = new Date();
-          sentMessages.push( message );
-          return  true;
-        }, message);
+      sendMessage: function(message) {
+        message.fromDraft = false;
+        return MailResource.create( {}, {mail: message} ).$promise;
+      },
+      setStarred: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'starred'}, mail).$promise;
+      },
+      setArchived: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'archived'}, mail).$promise;
+      },
+      setDeleted: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'delete'}, mail).$promise;
       }
     };
   }]);

@@ -104523,7 +104523,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/archived'
     })
     .state('mail.view', {
-      url: '/view'
+      url: '/view/:id/:action'
     });
 
   $urlRouterProvider.otherwise('/');
@@ -105308,6 +105308,39 @@ angular.module('baseApp.directives')
       };
     }
   ])
+  .directive('iCheck', ['$timeout', function($timeout) {
+    'use strict';
+    return {
+      require: 'ngModel',
+      link: function ($scope, element, $attrs, ngModel) {
+        return $timeout(function () {
+          var value;
+          value = $attrs.value;
+
+          $scope.$watch($attrs.ngModel, function () {
+            $(element).iCheck('update');
+          });
+
+          return $(element).iCheck({
+            checkboxClass: 'icheckbox_flat-blue',
+            radioClass: 'iradio_flat-aero'
+
+          }).on('ifChanged', function (event) {
+            if ($(element).attr('type') === 'checkbox' && $attrs.ngModel) {
+              $scope.$apply(function () {
+                return ngModel.$setViewValue(event.target.checked);
+              });
+            }
+            if ($(element).attr('type') === 'radio' && $attrs.ngModel) {
+              return $scope.$apply(function () {
+                return ngModel.$setViewValue(value);
+              });
+            }
+          });
+        });
+      }
+    };
+  }])
   .directive('iCheckAll', ['$rootScope',
     function(){
       'use strict';
@@ -105634,13 +105667,14 @@ angular.module('baseApp.directives')
       };
     }
   ]);
-// jshint maxstatements:40
+// jshint maxstatements:60
 angular.module('baseApp.controllers')
   .controller('MailboxController', ['$scope','$state', 'Mail','SubHeader',
     function($scope, $state, Mail, SubHeader){
       'use strict';
-
+      /*jshint maxcomplexity:10 */
       $scope.config = {};
+      $scope.viewFolder = null;
       function setupPagination() {
         $scope.config.pagination = {
           total: $scope.messages.length,
@@ -105667,11 +105701,13 @@ angular.module('baseApp.controllers')
       }
       $scope.mailProperties = {};
       $scope.messagesProperties = {};
+      $scope.messages = [];
       if( $state.includes('mail.drafts') ) {
+        $scope.viewFolder = 'drafts';
         $scope.config.title = 'Draft Messages';
         Mail.getAllDrafts()
           .then( function(draftMessages){
-            $scope.messages = draftMessages;
+            $scope.messages = draftMessages.messages;
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -105681,10 +105717,12 @@ angular.module('baseApp.controllers')
         setHeader( 'Drafts' );
         SubHeader.set.subTitle = 'Draft Messages';
       } else if( $state.includes('mail.sent') ) {
+        $scope.viewFolder = 'sent';
         $scope.config.title = 'Sent Messages';
         Mail.getAllSent()
           .then( function(sentMessages){
-            $scope.messages = sentMessages;
+            $scope.messages = sentMessages.messages;
+            console.log( $scope.messages );
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -105694,10 +105732,12 @@ angular.module('baseApp.controllers')
         setHeader( 'Sent' );
         SubHeader.set.subTitle = 'Sent Messages';
       } else if( $state.includes('mail.starred') ) {
+        $scope.viewFolder = 'starred';
         $scope.config.title = 'Starred Messages';
         Mail.getAllStarred()
           .then( function(starredMessages){
-            $scope.messages = starredMessages;
+            $scope.messages = starredMessages.messages;
+            console.log( $scope.messages );
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -105707,10 +105747,11 @@ angular.module('baseApp.controllers')
         setHeader( 'Starred' );
         SubHeader.set.subTitle = 'Starred Messages';
       } else if( $state.includes('mail.archived') ) {
+        $scope.viewFolder = 'archived';
         $scope.config.title = 'Archived Messages';
         Mail.getAllArchived()
           .then( function(archivedMessages){
-            $scope.messages = archivedMessages;
+            $scope.messages = archivedMessages.messages;
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -105720,10 +105761,11 @@ angular.module('baseApp.controllers')
         setHeader( 'Archived' );
         SubHeader.set.subTitle = 'Archived Messages';
       } else if( $state.includes('mail.view') ) {
+        $scope.viewFolder = $state.params.action || 'view';
         $scope.config.title = 'Read Mail';
-        Mail.getMessage(0)
+        Mail.getMessage($state.params.id)
           .then( function(message){
-            $scope.message = message;
+            $scope.message = message.messages[0];
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -105733,14 +105775,16 @@ angular.module('baseApp.controllers')
         setHeader( 'Read Mail' );
         SubHeader.set.subTitle = 'Archived Messages';
       } else if( $state.includes('mail') ) {
+        $scope.viewFolder = 'inbox';
         $scope.config.title = 'Inbox Messages';
         Mail.getAllInbox()
           .then( function(inboxMessages){
-            $scope.messages = inboxMessages;
+            $scope.messages = inboxMessages.messages;
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
             };
+            console.log( $scope.messages );
             setupPagination();
           });
         setHeader( 'Inbox' );
@@ -105749,36 +105793,193 @@ angular.module('baseApp.controllers')
 
       $scope.actions = {
         save: function( message ){
+          message.content = $('#wysihtml5-content').val();
           return Mail.saveMessage( message );
         },
         send: function( message ){
+          message.content = $('#wysihtml5-content').val();
           return Mail.sendMessage( message );
         }
 
       };
+      console.log( $scope.messages );
     }
   ]
 );
 angular.module('baseApp.directives')
-  .directive('mailboxInbox', ['$rootScope',
-    function( ){
+  .directive('mailboxInbox', [ 'Mail',
+    function( Mail ){
       'use strict';
       return {
         restrict: 'A',
         replace: true,
-        templateUrl: '/assets/html/mail/directiveMailMessages',
+        templateUrl: '/assets/html/mail/directiveMailMessagesInbox',
         scope: {
           messages: '=',
           config: '='
         },
         link: function(scope) {
           scope.toggleStar = function ( index ){
-            console.log(index);
+            scope.messages[index].toStarred = !scope.messages[index].toStarred;
+            Mail.setStarred( scope.messages[index], 'toStarred' )
+              .then( function(){
+                console.log('toStarred');
+              });
+          };
+          scope.moveArchived = function ( index ){
+            scope.messages[index].toArchived = true;
+            Mail.setArchived( scope.messages[index], 'toArchived' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+          scope.moveDeleted = function ( index ){
+            scope.messages[index].toDeleted = true;
+            Mail.setDeleted( scope.messages[index], 'toDeleted' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
           };
         }
       };
     }
-  ]);
+  ])
+  .directive('mailboxStarred', ['Mail', 'currentUser',
+    function( Mail, currentUser ){
+      'use strict';
+      return {
+        restrict: 'A',
+        replace: true,
+        templateUrl: '/assets/html/mail/directiveMailMessagesStarred',
+        scope: {
+          messages: '=',
+          config: '='
+        },
+        link: function(scope) {
+          scope.toggleStar = function ( index ){
+            var field;
+            if( scope.messages[index].fromUser._id === currentUser.get()._id ) {
+              field = 'fromStarred';
+              scope.messages[index].fromStarred = !scope.messages[index].fromStarred;
+            } else {
+              field = 'toStarred';
+              scope.messages[index].toStarred = !scope.messages[index].toStarred;
+            }
+            Mail.setStarred( scope.messages[index], field )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+        }
+      };
+    }
+  ])
+  .directive('mailboxDrafts', [ 'Mail',
+    function( Mail ){
+      'use strict';
+      return {
+        restrict: 'A',
+        replace: true,
+        templateUrl: '/assets/html/mail/directiveMailMessagesDrafts',
+        scope: {
+          messages: '=',
+          config: '='
+        },
+        link: function(scope) {
+          scope.moveDeleted = function ( index ){
+            scope.messages[index].fromDeleted = true;
+            Mail.setDeleted( scope.messages[index], 'fromDeleted' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+        }
+      };
+    }
+  ])
+  .directive('mailboxSent', ['Mail',
+    function( Mail ){
+      'use strict';
+      return {
+        restrict: 'A',
+        replace: true,
+        templateUrl: '/assets/html/mail/directiveMailMessagesSent',
+        scope: {
+          messages: '=',
+          config: '='
+        },
+        link: function(scope) {
+          scope.toggleStar = function ( index ){
+            scope.messages[index].fromStarred = !scope.messages[index].fromStarred;
+            Mail.setStarred( scope.messages[index], 'fromStarred' )
+              .then( function(){
+                //
+              });
+          };
+          scope.moveArchived = function ( index ){
+            scope.messages[index].fromArchived = true;
+            Mail.setArchived( scope.messages[index], 'fromArchived' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+          scope.moveDeleted = function ( index ){
+            scope.messages[index].fromDeleted = true;
+            Mail.setDeleted( scope.messages[index], 'fromDeleted' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+        }
+      };
+    }
+  ])
+  .directive('mailboxArchived', ['Mail','currentUser',
+  function( Mail, currentUser ){
+    'use strict';
+    return {
+      restrict: 'A',
+      replace: true,
+      templateUrl: '/assets/html/mail/directiveMailMessagesArchived',
+      scope: {
+        messages: '=',
+        config: '='
+      },
+      link: function(scope) {
+        scope.toggleStar = function ( index ){
+          var field;
+          if( scope.messages[index].fromUser._id === currentUser.get()._id ) {
+            field = 'fromStarred';
+            scope.messages[index].fromStarred = !scope.messages[index].fromStarred;
+          } else {
+            field = 'toStarred';
+            scope.messages[index].toStarred = !scope.messages[index].toStarred;
+          }
+          Mail.setStarred( scope.messages[index], field )
+            .then( function(){
+              console.log(field, ' complete!');
+            });
+        };
+        scope.unArchived = function ( index ){
+          var field;
+          if( scope.messages[index].fromUser._id === currentUser.get()._id ) {
+            field = 'fromArchived';
+            scope.messages[index][field] = false;
+          } else {
+            field = 'toArchived';
+            scope.messages[index][field] = false;
+          }
+          Mail.setArchived( scope.messages[index], field )
+            .then( function(){
+              scope.messages.splice( index, 1 );
+            });
+        };
+        scope.addToSelected = function(index) {
+          console.log( scope.messages[index] );
+        };
+      }
+    };
+  }]);
 angular.module('baseApp.directives')
   .directive('mailboxMessage', ['$rootScope',
     function( ){
@@ -105788,7 +105989,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/mail/directiveMessage',
         scope: {
-          messages: '=',
+          message: '=',
           config: '='
         },
         link: function() {
@@ -105819,7 +106020,7 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('mailboxTopMenu', ['$rootScope',
+  .directive('mailboxTopMenu', [
     function( ){
       'use strict';
       return {
@@ -105827,30 +106028,49 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/mail/directiveTopMenu',
         scope: {
-          config: '='
+          config: '=',
+          messages: '='
         },
-        link: function() {
+        link: function(scope) {
+          scope.removeMail = function() {
+            window.alert('remocing');
+            console.log( scope.messages );
+
+          };
         }
       };
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('modalComposeMessage', ['$http',
-    function( $http ){
+  .directive('modalComposeMessage', ['$http','_','currentUser',
+    function( $http, _, currentUser ){
       'use strict';
       return {
         restrict: 'E',
         templateUrl: '/assets/html/mail/modalComposeMessage',
         replace: true,
+        scope: {
+          message: '=',
+          actions: '='
+        },
         link: function(scope) {
           scope.$on('event:composeMessage', function(){
-            scope.message = {
-              to: '',
+            scope.mail = {
+              toUser: '',
               subject: '',
               content: ''
             };
-            scope.$parent.dataObject = scope.message;
+            scope.$parent.$parent.dataObject = scope.mail;
             $('#wysihtml5-content').data('wysihtml5').editor.clear();
+          });
+
+          scope.$watch( 'message', function(msg) {
+            if( msg ) {
+              scope.mail = msg;
+              scope.mail.toUser = msg.toUser.email;
+              scope.send = scope.actions.send;
+              scope.save = scope.actions.save;
+            }
           });
 
           $('#modalComposeMessage').on('hidden.bs.modal', function () {
@@ -105863,7 +106083,11 @@ angular.module('baseApp.directives')
                 q: val
               }
             }).then(function(response){
-              return response.data.users.map(function(user){
+              var filteredUserList =  _
+                .filter( response.data.users, function(user){
+                  return user.email !== currentUser.get().email;
+                });
+              return filteredUserList.map(function(user){
                 return user.email;
               });
             });
@@ -105893,141 +106117,50 @@ angular.module('baseApp.services')
       }
     );
   }])
-  .factory('Mail', [ 'MailResource', '$q', '_', function( MailResource, $q, _) {
+  .factory('Mail', [ 'MailResource', function( MailResource ) {
     'use strict';
-    function aPromiseAndDelayedResolve( resolveData, param ) {
-      var defer = $q.defer();
-      if( typeof resolveData === 'function' ){
-        setTimeout( function(){ var res = resolveData( param ); defer.resolve( res );}, 50);
-      } else {
-        setTimeout( function(){ defer.resolve( resolveData );}, 50);
-      }
-      return defer.promise;
-    }
-    var inboxMessages = [
-      {
-        read: 0,
-        starred: 0,
-        from: 'support@whichdegree.co',
-        subject: 'Message Subject is Placed Here',
-        time: new Date(),
-        content: 'Hello John, <br/><br/>Paragraph 1<br/><br/>Paragraph 2<br/><br/>Paragraph 3<br/><br/>Paragraph 4',
-        attachments: [
-          {
-            type: 'document',
-            filename: 'sep2014-report.pdf',
-            icon: 'pdf',
-            size: 1245
-          },
-          {
-            type: 'document',
-            filename: 'App Description.docx',
-            icon: 'word',
-            size: 1245
-          },
-          {
-            type: 'photo',
-            filename: 'photo1.png',
-            icon: 'https://almsaeedstudio.com/themes/AdminLTE/dist/img/photo1.png',
-            size: 2670000
-          }
-        ]
-      },
-      {
-        read: 1,
-        starred: 0,
-        from: 'John Doe',
-        subject: 'Urgent! Please Read',
-        content: 'Hello world!',
-        attachments: [],
-        time: new Date()
-      },
-      {
-        read: 0,
-        starred: 1,
-        from: 'Jesus Rocha',
-        subject: 'AdminLTE 2.0 Issue - Trying to find a solution to this problem...',
-        content: 'Hello world!',
-        attachments: [],
-        time: new Date()
-      },
-      {
-        read: 0,
-        starred: 1,
-        from: 'John Doe',
-        time: new Date(),
-        subject: 'Sucka! This Starred',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var draftMessages = [
-      {
-        to: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Yeah Sucka!',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var sentMessages = [
-      {
-        to: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Sucka! This Sent',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var archivedMessages = [
-      {
-        from: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Sucka! This Archived',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
+
     return {
       getAllInbox: function(){
-        return aPromiseAndDelayedResolve( inboxMessages );
-        //return MailResource.read( {action: 'inbox'}).$promise;
+        return MailResource.read( {action: 'inbox'} ).$promise;
       },
-      getMessage: function( i ) {
-        return aPromiseAndDelayedResolve( inboxMessages[i] );
+      getMessage: function( id ) {
+        return MailResource.read( {action: id} ).$promise;
       },
-      getAllDrafts: function(){
-        return aPromiseAndDelayedResolve( draftMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllDrafts: function() {
+        return MailResource.read( {action: 'drafts'} ).$promise;
       },
-      getAllSent: function(){
-        return aPromiseAndDelayedResolve( sentMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllSent: function() {
+        return MailResource.read( {action: 'sent'} ).$promise;
       },
-      getAllStarred: function(){
-        var starredMessages = _(inboxMessages)
-          .filter( function(msg){ return msg.starred; });
-        return aPromiseAndDelayedResolve( starredMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllStarred: function() {
+        return MailResource.read( {action: 'starred'} ).$promise;
       },
-      getAllArchived: function(){
-
-        return aPromiseAndDelayedResolve( archivedMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllArchived: function() {
+        return MailResource.read( {action: 'archived'} ).$promise;
       },
-      saveMessage: function(message){
-        return aPromiseAndDelayedResolve( function(message){
-          message.time = new Date();
-          draftMessages.push( message );
-          return  true;
-        }, message);
+      saveMessage: function(message) {
+        message.fromDraft = true;
+        return MailResource.create( {}, {mail: message} ).$promise;
       },
-      sendMessage: function(message){
-        return aPromiseAndDelayedResolve( function(message){
-          message.time = new Date();
-          sentMessages.push( message );
-          return  true;
-        }, message);
+      sendMessage: function(message) {
+        message.fromDraft = false;
+        return MailResource.create( {}, {mail: message} ).$promise;
+      },
+      setStarred: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'starred'}, mail).$promise;
+      },
+      setArchived: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'archived'}, mail).$promise;
+      },
+      setDeleted: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'delete'}, mail).$promise;
       }
     };
   }]);
@@ -106054,13 +106187,19 @@ angular.module('baseApp.directives')
           scope.save = function(){
             scope.actions.save( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.send = function(){
             scope.actions.send( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.discard = function( ){

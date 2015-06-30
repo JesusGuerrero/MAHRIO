@@ -20,13 +20,19 @@ angular.module('baseApp.directives')
           scope.save = function(){
             scope.actions.save( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.send = function(){
             scope.actions.send( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.discard = function( ){

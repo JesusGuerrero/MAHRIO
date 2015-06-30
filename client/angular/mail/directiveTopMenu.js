@@ -1,5 +1,5 @@
 angular.module('baseApp.directives')
-  .directive('mailboxTopMenu', ['$rootScope',
+  .directive('mailboxTopMenu', [
     function( ){
       'use strict';
       return {
@@ -7,9 +7,15 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/mail/directiveTopMenu',
         scope: {
-          config: '='
+          config: '=',
+          messages: '='
         },
-        link: function() {
+        link: function(scope) {
+          scope.removeMail = function() {
+            window.alert('remocing');
+            console.log( scope.messages );
+
+          };
         }
       };
     }

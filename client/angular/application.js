@@ -159,7 +159,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/archived'
     })
     .state('mail.view', {
-      url: '/view'
+      url: '/view/:id/:action'
     });
 
   $urlRouterProvider.otherwise('/');

@@ -1,9 +1,9 @@
 div
-    auto-complete(input-model="message.to" placeholder="To:" auto-complete-http="getAutoCompleteUserEmails")
+    auto-complete(input-model="mail.toUser" placeholder="To:" auto-complete-http="getAutoCompleteUserEmails")
     .form-group
-        input.form-control(placeholder="Subject:" ng-model="message.subject")
+        input.form-control(placeholder="Subject:" ng-model="mail.subject")
     div
-        textarea( id="wysihtml5-content" wysihtml5 placeholder="Enter text ..." ng-model="message.content"
+        textarea( id="wysihtml5-content" wysihtml5 placeholder="Enter text ..." ng-model="mail.content"
         style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;")
     .form-group
         .btn.btn-default.btn-file
@@ -12,3 +12,11 @@ div
             input( type="file" )
         p.help-block
             |   Max. 32MB
+    div( ng-show='message')
+        .pull-right
+            button.btn.btn-default( ng-click="save( message )" )
+                i.fa.fa-pencil
+                |   Save
+            button.btn.btn-primary( ng-click="send( message )" )
+                i.fa.fa-envelope
+                |   Send
