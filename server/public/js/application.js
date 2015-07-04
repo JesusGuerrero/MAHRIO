@@ -104549,10 +104549,8 @@ angular.module('baseApp.controllers', [])
         currentUser.logout()
           .then( function(){
             delete $http.defaults.headers.common.Authorization;
-            $rootScope.setRole( 'any' );
             delete window.localStorage.Role;
             delete window.localStorage.Authorization;
-            $state.transitionTo('root');
           });
       };
 
@@ -104738,8 +104736,8 @@ angular.module('baseApp.controllers')
 
 
 angular.module('baseApp.services')
-  .factory('currentUser', ['$state', '$location', '$rootScope', 'User',
-    function ($state, $location, $rootScope, User) {
+  .factory('currentUser', ['$state', '$location', '$rootScope', '$q', 'User',
+    function ($state, $location, $rootScope, $q, User) {
     'use strict';
 
     var currentUser;
@@ -104758,7 +104756,15 @@ angular.module('baseApp.services')
     }
 
     function logout(){
-      return User.logout();
+      var defer = $q.defer();
+      User.logout()
+        .then( function(){
+          currentUser = {role: 'any'};
+          $rootScope.setRole( 'any' );
+          $state.transitionTo('root');
+          defer.resolve();
+        });
+      return defer.promise;
     }
 
     function update( user ) {
@@ -104768,6 +104774,9 @@ angular.module('baseApp.services')
     return {
       get: function () {
         return currentUser;
+      },
+      set: function( currUser ) {
+        currentUser = currUser;
       },
       login: login,
       isLoggedIn: isLoggedIn,
@@ -105472,8 +105481,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('feedbackBox', [
-    function(){
+  .directive('feedbackBox', [ 'FeedbackService',
+    function( FeedbackService ){
       'use strict';
       return {
         restrict: 'E',
@@ -105482,6 +105491,19 @@ angular.module('baseApp.directives')
         scope: {
           validationErrors: '=errors',
           successMessage: '=success'
+        },
+        link: function(scope){
+          scope.$watch( FeedbackService.get, function(newMessage){
+            if( newMessage && newMessage.feedbackSuccess ) {
+              scope.successMessage = newMessage.feedbackSuccess;
+              delete scope.validationErrors;
+              FeedbackService.set({feedbackSuccess: null});
+            } else if (newMessage && newMessage.validationErrors ) {
+              scope.validationErrors = newMessage.validationErrors;
+              delete scope.successMessage;
+              FeedbackService.set({validationErrors: null});
+            }
+          });
         }
       };
     }
@@ -105496,9 +105518,9 @@ angular.module('baseApp.directives')
         },
         replace: true,
         template: '<div id="message-box-slot" ng-show="msg" style="border-radius: 0">'+
-        '<div id="message_success" class="message success">'+
-        '<i class="fa fa-check-square-o fa-2x" style="float: left; color:#68B25B; margin-top: 3px"></i>'+
-        '<h6>{{msg}}</h6>'+
+        '<div id="message_success" class="bg-success">'+
+        '<i class="fa fa-check-square-o fa-2x text-success"></i>'+
+        '<h6 class="text-success">{{msg}}</h6>'+
         '</div></div>'
       };
     }
@@ -105512,11 +105534,12 @@ angular.module('baseApp.directives')
           validationErrors: '=validationErrors'
         },
         replace: true, // Replace with the template below
-        template: '<div class="alert alert-danger text-center" role="alert" ng-show="validationErrors.length" style="margin-bottom: -20px; border-radius: 0">'+
-        '<i class="fa fa-exclamation-triangle"></i>'+
-        '<strong>We have a few errors</strong>'+
-        '<ul class="ng-hide"><li ng-repeat="error in validationErrors">{{error}}</li></ul>'+
-        '</div>'
+        template: '<div id="message-box-slot" ng-show="validationErrors.length">'+
+        '<div id="message_error" class="bg-danger">'+
+        '<i class="fa fa-exclamation-triangle fa-2x text-danger"></i>'+
+        '<h6 class="text-danger">We have a few errors</h6>'+
+        '<ul><li ng-repeat="error in validationErrors">{{error}}</li></ul>'+
+        '</div></div>'
       };
     }
   ]);
@@ -105597,8 +105620,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope',
-    function( $rootScope ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser',
+    function( $rootScope, currentUser ){
       'use strict';
       return {
         restrict: 'A',
@@ -105608,13 +105631,19 @@ angular.module('baseApp.directives')
         },
         link: function(scope) {
           scope.logout = $rootScope.logout;
-          scope.$watch( 'role', function(newRole){
-            switch( newRole ){
+          scope.current = currentUser.get();
+          scope.$watch( currentUser.get, function(newUser){
+            if( typeof newUser === 'undefined' ) {
+              newUser = {role: 'any'};
+            }
+            switch( newUser.role ){
               case 'any':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop2';
                 break;
               case 'admin':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop';
+                scope.user = newUser;
+                console.log( newUser );
                 break;
               default:
             }
@@ -106253,7 +106282,7 @@ angular.module('baseApp.directives')
       }
     };
   }])
-  .directive( 'profileInfo', ['currentUser', function( currentUser) {
+  .directive( 'profileInfo', ['currentUser', '_', 'FeedbackService',  function( currentUser, _, FeedbackService) {
     'use strict';
     return {
       restrict: 'E',
@@ -106267,17 +106296,18 @@ angular.module('baseApp.directives')
           lastName: user.lastName
         };
         scope.update = function() {
-          currentUser.update( scope.user )
-            .then( function() {
-              window.alert('updated!');
+          currentUser.update(_.extendOwn( {firstName: '', lastName: ''}, scope.user) )
+            .then( function(res) {
+              currentUser.set( _.extendOwn( currentUser.get(), res.user ) );
+              FeedbackService.set({feedbackSuccess: 'Profile Updated!'});
             }, function(){
-              window.alert('failed!');
+              FeedbackService.set({validationErrors: ['Error Updating']});
             });
         };
       }
     };
   }])
-  .directive( 'profileContact', ['currentUser', function( currentUser) {
+  .directive( 'profileContact', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService) {
     'use strict';
     return {
       restrict: 'E',
@@ -106302,15 +106332,16 @@ angular.module('baseApp.directives')
           currentUser.update( scope.user )
             .then( function() {
               _init();
-              window.alert('updated!');
+              FeedbackService.set({feedbackSuccess: 'Email Updated!'});
             }, function(){
-              window.alert('failed!');
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
             });
         };
       }
     };
   }])
-  .directive( 'profileSecurity', ['currentUser', function( currentUser ) {
+  .directive( 'profileSecurity', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService ) {
     'use strict';
     return {
       restrict: 'E',
@@ -106339,10 +106370,11 @@ angular.module('baseApp.directives')
 
           currentUser.update( scope.user )
             .then( function() {
-              window.alert('updated!');
               _init();
+              FeedbackService.set({feedbackSuccess: 'Password Updated!'});
             }, function(){
-              window.alert('failed!');
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
             });
         };
       }
@@ -106555,6 +106587,17 @@ angular.module('baseApp.services')
       getSessionToCMS: function(){
         return AdminResource.get( {action: 'cms', id: 'session'}).$promise;
       }
+    };
+  }]);
+angular.module('baseApp.services')
+  .factory('FeedbackService', [ function() {
+    'use strict';
+
+    var feedbackObject = {};
+
+    return {
+      get: function(){ return feedbackObject; },
+      set: function(val){ feedbackObject = val; }
     };
   }]);
 angular.module('baseApp.services')

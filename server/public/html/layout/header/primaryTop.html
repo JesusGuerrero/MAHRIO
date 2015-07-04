@@ -1,5 +1,5 @@
 
-<header class="main-header"><a href="#" class="logo"><span class="logo-mini">  CE</span><span class="logo-lg">  CompEngr</span></a>
+<header class="main-header"><a ui-sref="root" class="logo"><span class="logo-mini">  CE</span><span class="logo-lg">  CompEngr</span></a>
   <nav role="navigation" class="navbar navbar-static-top"><a href="#" data-toggle="offcanvas" role="button" class="sidebar-toggle"><span class="sr-only">  Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a>
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
@@ -43,10 +43,10 @@
             <li class="footer"><a href="#">  View all tasks</a></li>
           </ul>
         </li>
-        <li class="dropdown user user-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image" class="user-image"/><span class="hidden-xs">  Alexander</span></a>
+        <li class="dropdown user user-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image" class="user-image"/><span class="hidden-xs">  {{user.firstName}}</span></a>
           <ul class="dropdown-menu">
             <li class="user-header"><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image" class="img-circle"/>
-              <p>  Jesus Rocha<small>  Member since Nov. 2010</small></p>
+              <p>  {{user.firstName}} {{user.lastName}}<small>  Member since {{user.created | date: mediumDate}}</small></p>
             </li>
             <li class="user-body">
               <div class="col-xs-4 text-center"><a href="#">  Followers</a></div>

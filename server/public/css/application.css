@@ -18554,6 +18554,27 @@ table tr td div.icheckbox_flat-blue {
   color: #444444;
   border-color: #dddddd;
 }
+#message-box-slot #message_success,
+#message-box-slot #message_error {
+  padding: 5px 5px 0;
+  margin: 0 0 10px;
+}
+#message-box-slot #message_success i.fa,
+#message-box-slot #message_error i.fa {
+  float: left;
+  margin-top: 3px;
+}
+#message-box-slot #message_success h6,
+#message-box-slot #message_error h6 {
+  font-size: 12pt;
+  padding: 0px 0 0px 30px;
+}
+#message-box-slot #message_success {
+  border: 1px solid #3c763d;
+}
+#message-box-slot #message_error {
+  border: 1px solid #a94442;
+}
 .external-event {
   margin: 10px 0;
   padding: 3px 5px;

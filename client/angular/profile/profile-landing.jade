@@ -2,15 +2,15 @@
     .row
         .col-md-12.col-sm-12.well
             div( style="max-width: 800px; margin: 20px auto; border: 1px dashed #c0c0c0; padding: 10px;")
+                feedback-box(success="success" errors="validationErrors")
                 tabset( vertical="true" type="pills")
-                    tab( heading="Summary" ui-sref="profile" active="tab[0]" select="tabSelect(0)")
-                        .text-center
-                            profile-summary( state="state" )
-                    tab( heading="Info" ui-sref="profile.info" active="tab[1]" select="tabSelect(1)")
+                    tab( heading="Summary" ui-sref="profile" ui-sref-opts="{reload: true}" active="tab[0]" select="tabSelect(0)")
+                        profile-summary( state="state" )
+                    tab( heading="Info" ui-sref="profile.info" ui-sref-opts="{reload: true}" active="tab[1]" select="tabSelect(1)")
                         profile-info( state="state" )
-                    tab( heading="Contact" ui-sref="profile.contact" active="tab[2]" select="tabSelect(2)")
+                    tab( heading="Contact" ui-sref="profile.contact" ui-sref-opts="{reload: true}" active="tab[2]" select="tabSelect(2)")
                         profile-contact( state="state" )
-                    tab( heading="Security" ui-sref="profile.security" active="tab[3]" select="tabSelect(3)")
+                    tab( heading="Security" ui-sref="profile.security" ui-sref-opts="{reload: true}" active="tab[3]" select="tabSelect(3)")
                         profile-security( state="state" )
 
 

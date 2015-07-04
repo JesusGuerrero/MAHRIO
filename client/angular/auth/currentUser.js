@@ -1,6 +1,6 @@
 angular.module('baseApp.services')
-  .factory('currentUser', ['$state', '$location', '$rootScope', 'User',
-    function ($state, $location, $rootScope, User) {
+  .factory('currentUser', ['$state', '$location', '$rootScope', '$q', 'User',
+    function ($state, $location, $rootScope, $q, User) {
     'use strict';
 
     var currentUser;
@@ -19,7 +19,15 @@ angular.module('baseApp.services')
     }
 
     function logout(){
-      return User.logout();
+      var defer = $q.defer();
+      User.logout()
+        .then( function(){
+          currentUser = {role: 'any'};
+          $rootScope.setRole( 'any' );
+          $state.transitionTo('root');
+          defer.resolve();
+        });
+      return defer.promise;
     }
 
     function update( user ) {
@@ -29,6 +37,9 @@ angular.module('baseApp.services')
     return {
       get: function () {
         return currentUser;
+      },
+      set: function( currUser ) {
+        currentUser = currUser;
       },
       login: login,
       isLoggedIn: isLoggedIn,

@@ -185,10 +185,8 @@ angular.module('baseApp.controllers', [])
         currentUser.logout()
           .then( function(){
             delete $http.defaults.headers.common.Authorization;
-            $rootScope.setRole( 'any' );
             delete window.localStorage.Role;
             delete window.localStorage.Authorization;
-            $state.transitionTo('root');
           });
       };
 

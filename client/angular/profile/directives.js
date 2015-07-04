@@ -11,7 +11,7 @@ angular.module('baseApp.directives')
       }
     };
   }])
-  .directive( 'profileInfo', ['currentUser', function( currentUser) {
+  .directive( 'profileInfo', ['currentUser', '_', 'FeedbackService',  function( currentUser, _, FeedbackService) {
     'use strict';
     return {
       restrict: 'E',
@@ -25,17 +25,18 @@ angular.module('baseApp.directives')
           lastName: user.lastName
         };
         scope.update = function() {
-          currentUser.update( scope.user )
-            .then( function() {
-              window.alert('updated!');
+          currentUser.update(_.extendOwn( {firstName: '', lastName: ''}, scope.user) )
+            .then( function(res) {
+              currentUser.set( _.extendOwn( currentUser.get(), res.user ) );
+              FeedbackService.set({feedbackSuccess: 'Profile Updated!'});
             }, function(){
-              window.alert('failed!');
+              FeedbackService.set({validationErrors: ['Error Updating']});
             });
         };
       }
     };
   }])
-  .directive( 'profileContact', ['currentUser', function( currentUser) {
+  .directive( 'profileContact', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService) {
     'use strict';
     return {
       restrict: 'E',
@@ -60,15 +61,16 @@ angular.module('baseApp.directives')
           currentUser.update( scope.user )
             .then( function() {
               _init();
-              window.alert('updated!');
+              FeedbackService.set({feedbackSuccess: 'Email Updated!'});
             }, function(){
-              window.alert('failed!');
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
             });
         };
       }
     };
   }])
-  .directive( 'profileSecurity', ['currentUser', function( currentUser ) {
+  .directive( 'profileSecurity', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService ) {
     'use strict';
     return {
       restrict: 'E',
@@ -97,10 +99,11 @@ angular.module('baseApp.directives')
 
           currentUser.update( scope.user )
             .then( function() {
-              window.alert('updated!');
               _init();
+              FeedbackService.set({feedbackSuccess: 'Password Updated!'});
             }, function(){
-              window.alert('failed!');
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
             });
         };
       }

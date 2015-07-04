@@ -1,5 +1,5 @@
 header.main-header
-    a.logo( href="#")
+    a.logo( ui-sref="root")
         span.logo-mini
             |   CE
         span.logo-lg
@@ -81,14 +81,15 @@ header.main-header
                     a.dropdown-toggle( href="#" data-toggle="dropdown")
                         img.user-image( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
                         span.hidden-xs
-                            |   Alexander
+                            |   {{user.firstName}}
                     ul.dropdown-menu
                         li.user-header
                             img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
                             p
-                                |   Jesus Rocha
+                                |   {{user.firstName}} {{user.lastName}}
                                 small
-                                    |   Member since Nov. 2010
+                                    |   Member since {{user.created | date: mediumDate}}
+
 
                         li.user-body
                             .col-xs-4.text-center

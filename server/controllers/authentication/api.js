@@ -140,7 +140,7 @@ module.exports = function ( config, server ) {
         handler: function( request, reply ){
           switch( request.params.action ){
             case 'me':
-              return authUserMethods.currentUser( request, reply, 'GET', 'firstName lastName email role' );
+              return authUserMethods.currentUser( request, reply, 'GET', 'firstName lastName email role created' );
             case 'all':
               return authUserMethods.getUsers( request, reply );
             default:

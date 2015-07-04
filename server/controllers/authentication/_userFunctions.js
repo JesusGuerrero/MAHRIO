@@ -101,7 +101,7 @@ function logout (request, reply) {
 }
 
 function currentUser (request, reply, method, selectString) {
-  /*jshint maxcomplexity:10 */
+  /*jshint maxcomplexity:20 */
   User
     .findOne({_id: request.auth.credentials.id})
     .select( selectString )
@@ -124,18 +124,25 @@ function currentUser (request, reply, method, selectString) {
             } else {
               return reply( Boom.badRequest() );
             }
-          } else {
+          } else if( typeof request.payload.password === 'undefined' && typeof request.payload.email === 'undefined' ) {
             async.forEach( Object.keys( request.payload ), function( key ){
               if( !_.contains(['email', 'role', 'salt', 'password'], key ) ) {
                 user[ key ] = request.payload[ key ];
               }
             });
+          } else {
+            return reply( Boom.badRequest() );
           }
 
+          var returnedUser = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email
+          };
           user.save( function(err){
             if (err) { return reply(Boom.badRequest(err)); }
 
-            return reply({updated: true});
+            return reply({user: returnedUser});
           });
           break;
         default:

@@ -45,7 +45,8 @@ schema = mongoose.Schema({
   resetPasswordToken: {type: String},
   resetPasswordExpires: {type: Date },
   authorizationToken: {type: String},
-  memberships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }]
+  memberships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }],
+  created: { type: Date, default: Date.now }
 });
 
 schema.methods.authenticate = function(passwordToMatch) {
