@@ -103655,6 +103655,17 @@ angular.module('btford.socket-io', []).
     }];
   });
 
+/**
+* jquery.matchHeight-min.js master
+* http://brm.io/jquery-match-height/
+* License: MIT
+*/
+(function(c){var n=-1,f=-1,g=function(a){return parseFloat(a)||0},r=function(a){var b=null,d=[];c(a).each(function(){var a=c(this),k=a.offset().top-g(a.css("margin-top")),l=0<d.length?d[d.length-1]:null;null===l?d.push(a):1>=Math.floor(Math.abs(b-k))?d[d.length-1]=l.add(a):d.push(a);b=k});return d},p=function(a){var b={byRow:!0,property:"height",target:null,remove:!1};if("object"===typeof a)return c.extend(b,a);"boolean"===typeof a?b.byRow=a:"remove"===a&&(b.remove=!0);return b},b=c.fn.matchHeight=
+function(a){a=p(a);if(a.remove){var e=this;this.css(a.property,"");c.each(b._groups,function(a,b){b.elements=b.elements.not(e)});return this}if(1>=this.length&&!a.target)return this;b._groups.push({elements:this,options:a});b._apply(this,a);return this};b._groups=[];b._throttle=80;b._maintainScroll=!1;b._beforeUpdate=null;b._afterUpdate=null;b._apply=function(a,e){var d=p(e),h=c(a),k=[h],l=c(window).scrollTop(),f=c("html").outerHeight(!0),m=h.parents().filter(":hidden");m.each(function(){var a=c(this);
+a.data("style-cache",a.attr("style"))});m.css("display","block");d.byRow&&!d.target&&(h.each(function(){var a=c(this),b="inline-block"===a.css("display")?"inline-block":"block";a.data("style-cache",a.attr("style"));a.css({display:b,"padding-top":"0","padding-bottom":"0","margin-top":"0","margin-bottom":"0","border-top-width":"0","border-bottom-width":"0",height:"100px"})}),k=r(h),h.each(function(){var a=c(this);a.attr("style",a.data("style-cache")||"")}));c.each(k,function(a,b){var e=c(b),f=0;if(d.target)f=
+d.target.outerHeight(!1);else{if(d.byRow&&1>=e.length){e.css(d.property,"");return}e.each(function(){var a=c(this),b={display:"inline-block"===a.css("display")?"inline-block":"block"};b[d.property]="";a.css(b);a.outerHeight(!1)>f&&(f=a.outerHeight(!1));a.css("display","")})}e.each(function(){var a=c(this),b=0;d.target&&a.is(d.target)||("border-box"!==a.css("box-sizing")&&(b+=g(a.css("border-top-width"))+g(a.css("border-bottom-width")),b+=g(a.css("padding-top"))+g(a.css("padding-bottom"))),a.css(d.property,
+f-b))})});m.each(function(){var a=c(this);a.attr("style",a.data("style-cache")||null)});b._maintainScroll&&c(window).scrollTop(l/f*c("html").outerHeight(!0));return this};b._applyDataApi=function(){var a={};c("[data-match-height], [data-mh]").each(function(){var b=c(this),d=b.attr("data-mh")||b.attr("data-match-height");a[d]=d in a?a[d].add(b):b});c.each(a,function(){this.matchHeight(!0)})};var q=function(a){b._beforeUpdate&&b._beforeUpdate(a,b._groups);c.each(b._groups,function(){b._apply(this.elements,
+this.options)});b._afterUpdate&&b._afterUpdate(a,b._groups)};b._update=function(a,e){if(e&&"resize"===e.type){var d=c(window).width();if(d===n)return;n=d}a?-1===f&&(f=setTimeout(function(){q(e);f=-1},b._throttle)):q(e)};c(b._applyDataApi);c(window).bind("load",function(a){b._update(!1,a)});c(window).bind("resize orientationchange",function(a){b._update(!0,a)})})(jQuery);
 /*! AdminLTE app.js
  * ================
  * Main JS application file for AdminLTE v2. This file
@@ -104499,6 +104510,23 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('profile.security', {
       url: '/security'
     })
+    .state('tasks', {
+      url: '/tasks',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
+    })
+    .state('tasks.current',{
+      url: '/current'
+    })
+    .state('tasks.new',{
+      url: '/new'
+    })
+    .state('tasks.view', {
+      url: '/:id'
+    })
+    .state('tasks.edit',{
+      url: '/:id/edit'
+    })
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
@@ -104589,6 +104617,15 @@ angular.module('baseApp.controllers', [])
       $rootScope.user = 'anyUser';
 
       window.rootScope = $rootScope;
+
+      $rootScope.isSidebarCollapsed = window.localStorage.isSidebarCollapsed || false;
+      $rootScope.toggleSidebarCollapsed = function(){
+        if( window.localStorage.isSidebarCollapsed ) {
+          delete window.localStorage.isSidebarCollapsed;
+        } else {
+          window.localStorage.isSidebarCollapsed = true;
+        }
+      };
     }
   ]);
 
@@ -105014,7 +105051,7 @@ angular.module('baseApp.controllers')
       'use strict';
 
       var skip1 = false;
-      $scope.$watch( function(){ return SubHeader.get().breadcrumbs;}, function(n){
+      $scope.$watch( SubHeader.get, function(n){
 
         if( !skip1 ){
           skip1 = true;
@@ -105589,6 +105626,18 @@ angular.module('baseApp.directives')
       };
     }
   ]);
+angular.module('baseApp.directives')
+  .directive('repeatEnd', function(){
+    'use strict';
+    return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+        if (scope.$last) {
+          scope.$eval(attrs.repeatEnd);
+        }
+      }
+    };
+  });
 angular.module('baseApp.filters');
 angular.module('baseApp.controllers')
   .controller('KnowledgeController', ['$scope',
@@ -105647,6 +105696,9 @@ angular.module('baseApp.directives')
                 break;
               default:
             }
+            scope.toggleSidebar = function(){
+              $rootScope.toggleSidebarCollapsed();
+            };
           });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
@@ -105666,8 +105718,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('sideBar', ['$rootScope',
-    function($rootScope){
+  .directive('sideBar', ['$rootScope','$state',
+    function($rootScope, $state){
       'use strict';
       return {
         restrict: 'A',
@@ -105691,6 +105743,11 @@ angular.module('baseApp.directives')
               default:
             }
           });
+          scope.goTo = function( state, id ) {
+            if( $('#'+id).next().height() < 10 ) {
+              $state.go( state );
+            }
+          };
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };
@@ -106433,7 +106490,24 @@ angular.module('baseApp.services')
       get: function(){
         return subHeader;
       },
-      set: subHeader
+      set: subHeader,
+      setHeader: function setHeader( name ) {
+        subHeader.title = 'Task';
+        subHeader.breadcrumbs = [
+          {
+            url: 'adminDash',
+            value: 'Home'
+          },
+          {
+            url: 'task',
+            value: 'Task'
+          },
+          {
+            url: 'adminDash',
+            value: name
+          }
+        ];
+      }
     };
   }]);
 
@@ -106710,6 +106784,261 @@ angular.module('baseApp.services')
       }
     };
   }]);
+// jshint maxstatements:60
+angular.module('baseApp.controllers')
+  .controller('TaskController', ['$scope','$state', 'Task',
+    function($scope, $state, Task){
+      'use strict';
+      /*jshint maxcomplexity:10 */
+
+      $scope.tab = [false, false, false, false];
+      switch( $state.current.name ) {
+        case 'tasks.current':
+          $scope.tab[0] = true;
+          break;
+        case 'tasks':
+          $scope.tab[1] = true;
+          break;
+        case 'tasks.new':
+          $scope.tab[2] = true;
+          break;
+        case 'tasks.edit':
+          $scope.tab[3] = true;
+          $scope.id = $state.params.id;
+          break;
+        default:
+          $scope.tab[0] = true;
+          break;
+      }
+
+      $scope.actions = {
+        save: function( task ){
+          task.description = $('#wysihtml5-content').val();
+          return Task.save( task );
+        },
+        send: function( task ){
+          task.description = $('#wysihtml5-content').val();
+          return Task.create( task );
+        }
+      };
+    }
+  ]
+);
+angular.module('baseApp.directives')
+  .directive( 'tasksCurrent', [ 'Task','SubHeader', function( Task, SubHeader ) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directiveTasksCurrent',
+      scope: {
+        active: '='
+      },
+      link: function( scope ) {
+        scope.initDraggable = function(){
+          $('.current-tasks div.current-task').each( function(){
+            $(this).draggable({
+              zIndex: 1070,
+              revert: true, // will cause the event to go back to its
+              revertDuration: 0  //  original position after the drag
+            });
+          });
+        };
+
+        $('.drop-test').each( function(){
+          $( this ).droppable({
+            accept: '.current-task',
+            hoverClass: 'droppable-hover',
+            drop: function(event, ui) {
+              var dropped = ui.draggable;
+              var droppedOn = $(this);
+              var task = {};
+              var newParent = $(this).attr('id'), oldParent = dropped.parent().parent().attr('id');
+              if( newParent ) {
+                task[ newParent ] = true;
+              }
+              task[ oldParent ] = false;
+              if( newParent === oldParent ) {
+                return;
+              }
+              Task.update( dropped.attr('id'), task )
+                .then( function(){
+                  $(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
+                });
+            }
+          });
+        });
+        $('.box-title').matchHeight();
+        if( scope.active ) {
+          Task.getAll()
+            .then( function(response){
+              scope.tasks = response.tasks;
+            });
+          SubHeader.setHeader( 'Tasks' );
+          SubHeader.set.subTitle = 'Viewing Current';
+        }
+      }
+    };
+  }])
+  .directive('tasksBacklog', ['Task','SubHeader', function(Task, SubHeader) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directiveTasksBacklog',
+      scope: {
+        active: '='
+      },
+      link: function( scope ) {
+        if( scope.active ) {
+          SubHeader.setHeader( 'Tasks' );
+          SubHeader.set.subTitle = 'Viewing All Backlog';
+          Task.getAll()
+            .then( function(response){
+              scope.tasks = response.tasks;
+              if( scope.tasks.length ) {
+                scope.current = scope.tasks[0];
+              }
+            });
+        }
+        scope.loadTask = function(id){
+          scope.current = scope.tasks[id];
+        };
+        scope.assignToMe = function(id){
+          Task.assignToMe(id)
+            .then( function(){
+              window.alert('assigned');
+            });
+        };
+      }
+    };
+  }])
+  .directive('tasksNew', ['Task','SubHeader','$state',function( Task, SubHeader, $state ){
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directiveTasksNew',
+      scope: {
+        active: '=',
+        id: '=edit'
+      },
+      link: function(scope){
+        var currColor = '#f56954';
+        var colorChooser = $('.color-chooser-btn');
+        $('#color-chooser > li > a').click(function(e) {
+          e.preventDefault();
+          currColor = $(this).css('color');
+          colorChooser
+            .css({'background-color': currColor, 'border-color': currColor})
+            .html('Color: <span class="caret"></span>');
+          scope.task.color = currColor;
+        });
+
+
+        scope.task = {};
+        if( scope.id ) {
+          Task.getOne( scope.id )
+            .then( function(response){
+              scope.task = response.task;
+              $('.color-chooser-btn')
+                .css({'background-color': scope.task.color, 'border-color': scope.task.color})
+                .html('Color:  <span class="caret"></span>');
+              console.log( scope.task );
+              //$('#wysihtml5-content').val( scope.task.description );
+            });
+          if( scope.active ) {
+            SubHeader.setHeader( 'Tasks' );
+            SubHeader.set.subTitle = 'Edit Task';
+          }
+        } else {
+          if( scope.active ) {
+            SubHeader.setHeader( 'Tasks' );
+            SubHeader.set.subTitle = 'New Task';
+          }
+          scope.task = {
+            color: currColor
+          };
+        }
+        scope.save = function(){
+          scope.task.description = $('#wysihtml5-content').val();
+          Task.save( scope.task )
+            .then( function(){
+              $state.go('tasks',{}, { reload: true });
+            });
+
+        };
+      }
+    };
+  }])
+  .directive('tasksView', ['Task','SubHeader',function(Task, SubHeader){
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directive/TasksView',
+      scope: {
+        id: '=',
+        active: '='
+      },
+      link: function(scope){
+        Task.getOne( scope.id )
+          .then( function(response){
+            scope.task = response.task;
+          });
+        if( scope.active ) {
+          SubHeader.setHeader( 'Tasks' );
+          SubHeader.set.subTitle = 'Viewing Task';
+        }
+      }
+    };
+  }]);
+angular.module('baseApp.services')
+  .factory('TaskResource', [ '$resource', function($resource) {
+    'use strict';
+    return $resource('/api/tasks/:id',
+      { id: '@id' },
+      {
+        create: {
+          method: 'POST'
+        },
+        read: {
+          method: 'GET'
+        },
+        update: {
+          method: 'PUT'
+        },
+        remove: {
+          method: 'DELETE'
+        }
+      }
+    );
+  }])
+  .factory('Task', [ 'TaskResource', function( TaskResource ) {
+    'use strict';
+
+    return {
+      getAll: function(){
+        return TaskResource.read().$promise;
+      },
+      getOne: function( id ) {
+        return TaskResource.read( {id: id} ).$promise;
+      },
+      save: function( obj ) {
+        return TaskResource.create( {task: obj} ).$promise;
+      },
+      create: function( obj ) {
+        return TaskResource.create( {task: obj} ).$promise;
+      },
+      update: function( id, obj ) {
+        return TaskResource.update( {id: id}, {task: obj} ) .$promise;
+      },
+      assignToMe: function(id){
+        return TaskResource.update( {id: id} ).$promise;
+      }
+    };
+  }]);
+
 /* global confirm */
 /* global $ */
 

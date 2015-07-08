@@ -2,7 +2,7 @@ doctype
 html(lang="en", itemtype="http://schema.org/WebPage" itemscope ng-app="baseApp")
     include common/_adminLTE
 
-    body.skin-blue.sidebar-mini.fixed(ng-cloak ng-class="role==='admin' ? '':'layout-top-nav'")
+    body.skin-blue.sidebar-mini.fixed.t(ng-cloak ng-class="role==='admin' ? isSidebarCollapsed ? 'sidebar-collapse':'' :'layout-top-nav'")
 
         .wrapper
             div( header-navigation-top role="role" )

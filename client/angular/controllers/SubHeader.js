@@ -4,7 +4,7 @@ angular.module('baseApp.controllers')
       'use strict';
 
       var skip1 = false;
-      $scope.$watch( function(){ return SubHeader.get().breadcrumbs;}, function(n){
+      $scope.$watch( SubHeader.get, function(n){
 
         if( !skip1 ){
           skip1 = true;

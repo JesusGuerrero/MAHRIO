@@ -82,7 +82,8 @@ module.exports = function (grunt) {
           'bower_components/angular-touch/angular-touch.js',
           'bower_components/angular-loading-bar/build/loading-bar.js',
           'bower_components/angular-underscore/angular-underscore.min.js',
-          'bower_components/angular-socket-io/socket.js'
+          'bower_components/angular-socket-io/socket.js',
+          'bower_components/matchHeight/jquery.matchHeight-min.js'
         ],
         dest: 'server/public/js/angular.js'
       },

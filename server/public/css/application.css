@@ -18575,6 +18575,33 @@ table tr td div.icheckbox_flat-blue {
 #message-box-slot #message_error {
   border: 1px solid #a94442;
 }
+#task-tabs .tab-content {
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-top: none;
+  border-radius: 0 0px 10px 10px;
+  background: #fff;
+}
+#task-tabs .tab-content .column-padding-5 .col-md-3 {
+  padding: 0 5px;
+}
+#task-tabs .tab-content .column-padding-5 .col-md-6 {
+  padding: 0;
+}
+#task-tabs .tab-content .column-padding-5 .col-md-6:first-child {
+  padding: 0;
+}
+#task-tabs .tab-content .drop-test {
+  min-height: 400px;
+}
+#task-tabs .tab-content .current-task {
+  display: block;
+  cursor: move;
+}
+#task-tabs .tab-content .droppable-hover {
+  border: 10px dashed #666;
+  padding: 0;
+}
 .external-event {
   margin: 10px 0;
   padding: 3px 5px;

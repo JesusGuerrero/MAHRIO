@@ -26,6 +26,9 @@ angular.module('baseApp.directives')
                 break;
               default:
             }
+            scope.toggleSidebar = function(){
+              $rootScope.toggleSidebarCollapsed();
+            };
           });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'

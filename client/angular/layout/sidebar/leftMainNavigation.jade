@@ -34,6 +34,13 @@ aside.main-sidebar
                             i.fa.fa-circle-o
                                 |   Blank
             li
+                a( ui-sref="tasks.current" ui-sref-opts="{reload: true}")
+                    i.fa.fa-tasks
+                    span
+                        |   Tasks
+                    small.label.pull-right.bg-blue
+                        |   3
+            li
                 a( href="#/users")
                     i.fa.fa-users
                     span

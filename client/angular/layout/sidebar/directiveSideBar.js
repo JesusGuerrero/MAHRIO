@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('sideBar', ['$rootScope',
-    function($rootScope){
+  .directive('sideBar', ['$rootScope','$state',
+    function($rootScope, $state){
       'use strict';
       return {
         restrict: 'A',
@@ -24,6 +24,11 @@ angular.module('baseApp.directives')
               default:
             }
           });
+          scope.goTo = function( state, id ) {
+            if( $('#'+id).next().height() < 10 ) {
+              $state.go( state );
+            }
+          };
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };

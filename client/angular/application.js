@@ -135,6 +135,23 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('profile.security', {
       url: '/security'
     })
+    .state('tasks', {
+      url: '/tasks',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
+    })
+    .state('tasks.current',{
+      url: '/current'
+    })
+    .state('tasks.new',{
+      url: '/new'
+    })
+    .state('tasks.view', {
+      url: '/:id'
+    })
+    .state('tasks.edit',{
+      url: '/:id/edit'
+    })
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
@@ -225,6 +242,15 @@ angular.module('baseApp.controllers', [])
       $rootScope.user = 'anyUser';
 
       window.rootScope = $rootScope;
+
+      $rootScope.isSidebarCollapsed = window.localStorage.isSidebarCollapsed || false;
+      $rootScope.toggleSidebarCollapsed = function(){
+        if( window.localStorage.isSidebarCollapsed ) {
+          delete window.localStorage.isSidebarCollapsed;
+        } else {
+          window.localStorage.isSidebarCollapsed = true;
+        }
+      };
     }
   ]);
 
