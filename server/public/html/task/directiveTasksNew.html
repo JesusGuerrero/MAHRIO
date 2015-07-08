@@ -1,0 +1,46 @@
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label for="title">  Title:</label>
+          <input ng-model="task.title" id="title" class="form-control"/>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>  Label:</label>
+          <div style="width: 100%; margin-bottom: 10px;" class="btn-group">
+            <button type="button" data-toggle="dropdown" class="btn btn-block btn-danger btn-sm dropdown-toggle form-control color-chooser-btn">  Color<span class="caret"></span></button>
+            <ul id="color-chooser" class="dropdown-menu">
+              <li><a href="#" class="text-green"><i class="fa fa-square">  Green</i></a></li>
+              <li><a href="#" class="text-blue"><i class="fa fa-square">  Blue</i></a></li>
+              <li><a href="#" class="text-yellow"><i class="fa fa-square">  Yellow</i></a></li>
+              <li><a href="#" class="text-navy"><i class="fa fa-square">  Navy</i></a></li>
+              <li><a href="#" class="text-aqua"><i class="fa fa-square">  Aqua</i></a></li>
+              <li><a href="#" class="text-purple"><i class="fa fa-square">  Purple</i></a></li>
+              <li><a href="#" class="text-red"><i class="fa fa-square">  Red</i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <ng-switch on="task.description">
+        <div ng-switch-when="true">
+          <textarea id="wysihtml5-content" wysihtml5="wysihtml5" placeholder="Enter text ..." ng-model="task.description" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;"></textarea>
+        </div>
+        <div ng-switch-default="ng-switch-default">
+          <textarea id="wysihtml5-content" wysihtml5="wysihtml5" placeholder="Enter text ..." ng-model="task.description" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;"></textarea>
+        </div>
+      </ng-switch>
+    </div>
+    <div class="modal-footer">
+      <div class="pull-right">
+        <button ui-sref="tasks" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-times"></i>  Cancel</button>
+        <button ng-click="save()" class="btn btn-primary"><i class="fa fa-floppy-o"></i>  Save</button>
+      </div>
+    </div>
+  </div>
+</div>
