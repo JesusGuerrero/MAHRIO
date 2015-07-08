@@ -9,6 +9,7 @@ module.exports = function (config, server) {
   require('../../controllers/calendar/api')(config, server);
   require('../../controllers/chat/api')(config, server);
   require('../../controllers/mail/api')(config, server);
+  require('../../controllers/task/api')(config, server);
   require('../../controllers/cms')(config, server);
   require('../../controllers/contact')(config, server);
   require('../../controllers/knowledge')(config, server);
