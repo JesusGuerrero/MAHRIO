@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v2.1.3
+ * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2014-12-18T15:11Z
+ * Date: 2015-04-28T16:01Z
  */
 
 (function( global, factory ) {
@@ -67,7 +67,7 @@ var
 	// Use the correct document accordingly with window argument (sandbox)
 	document = window.document,
 
-	version = "2.1.3",
+	version = "2.1.4",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -531,7 +531,12 @@ jQuery.each("Boolean Number String Function Array Date RegExp Object Error".spli
 });
 
 function isArraylike( obj ) {
-	var length = obj.length,
+
+	// Support: iOS 8.2 (not reproducible in simulator)
+	// `in` check used to prevent JIT error (gh-2145)
+	// hasOwn isn't used here due to false negatives
+	// regarding Nodelist length in IE
+	var length = "length" in obj && obj.length,
 		type = jQuery.type( obj );
 
 	if ( type === "function" || jQuery.isWindow( obj ) ) {
@@ -40475,7 +40480,7 @@ var tooltip = $.widget( "ui.tooltip", {
 
 
 }));
-//     Underscore.js 1.8.2
+//     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
@@ -40532,7 +40537,7 @@ var tooltip = $.widget( "ui.tooltip", {
   }
 
   // Current version.
-  _.VERSION = '1.8.2';
+  _.VERSION = '1.8.3';
 
   // Internal function that returns an efficient (for current engines) version
   // of the passed-in callback, to be repeatedly applied in other Underscore
@@ -40599,12 +40604,20 @@ var tooltip = $.widget( "ui.tooltip", {
     return result;
   };
 
+  var property = function(key) {
+    return function(obj) {
+      return obj == null ? void 0 : obj[key];
+    };
+  };
+
   // Helper for collection methods to determine whether a collection
   // should be iterated as an array or as an object
   // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
+  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
   var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+  var getLength = property('length');
   var isArrayLike = function(collection) {
-    var length = collection && collection.length;
+    var length = getLength(collection);
     return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
   };
 
@@ -40729,11 +40742,12 @@ var tooltip = $.widget( "ui.tooltip", {
     return false;
   };
 
-  // Determine if the array or object contains a given value (using `===`).
+  // Determine if the array or object contains a given item (using `===`).
   // Aliased as `includes` and `include`.
-  _.contains = _.includes = _.include = function(obj, target, fromIndex) {
+  _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
     if (!isArrayLike(obj)) obj = _.values(obj);
-    return _.indexOf(obj, target, typeof fromIndex == 'number' && fromIndex) >= 0;
+    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    return _.indexOf(obj, item, fromIndex) >= 0;
   };
 
   // Invoke a method (with arguments) on every item in a collection.
@@ -40957,7 +40971,7 @@ var tooltip = $.widget( "ui.tooltip", {
   // Internal implementation of a recursive `flatten` function.
   var flatten = function(input, shallow, strict, startIndex) {
     var output = [], idx = 0;
-    for (var i = startIndex || 0, length = input && input.length; i < length; i++) {
+    for (var i = startIndex || 0, length = getLength(input); i < length; i++) {
       var value = input[i];
       if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
         //flatten current level of array or arguments object
@@ -40988,7 +41002,6 @@ var tooltip = $.widget( "ui.tooltip", {
   // been sorted, you have the option of using a faster algorithm.
   // Aliased as `unique`.
   _.uniq = _.unique = function(array, isSorted, iteratee, context) {
-    if (array == null) return [];
     if (!_.isBoolean(isSorted)) {
       context = iteratee;
       iteratee = isSorted;
@@ -40997,7 +41010,7 @@ var tooltip = $.widget( "ui.tooltip", {
     if (iteratee != null) iteratee = cb(iteratee, context);
     var result = [];
     var seen = [];
-    for (var i = 0, length = array.length; i < length; i++) {
+    for (var i = 0, length = getLength(array); i < length; i++) {
       var value = array[i],
           computed = iteratee ? iteratee(value, i, array) : value;
       if (isSorted) {
@@ -41024,10 +41037,9 @@ var tooltip = $.widget( "ui.tooltip", {
   // Produce an array that contains every item shared between all the
   // passed-in arrays.
   _.intersection = function(array) {
-    if (array == null) return [];
     var result = [];
     var argsLength = arguments.length;
-    for (var i = 0, length = array.length; i < length; i++) {
+    for (var i = 0, length = getLength(array); i < length; i++) {
       var item = array[i];
       if (_.contains(result, item)) continue;
       for (var j = 1; j < argsLength; j++) {
@@ -41056,7 +41068,7 @@ var tooltip = $.widget( "ui.tooltip", {
   // Complement of _.zip. Unzip accepts an array of arrays and groups
   // each array's elements on shared indices
   _.unzip = function(array) {
-    var length = array && _.max(array, 'length').length || 0;
+    var length = array && _.max(array, getLength).length || 0;
     var result = Array(length);
 
     for (var index = 0; index < length; index++) {
@@ -41070,7 +41082,7 @@ var tooltip = $.widget( "ui.tooltip", {
   // the corresponding values.
   _.object = function(list, values) {
     var result = {};
-    for (var i = 0, length = list && list.length; i < length; i++) {
+    for (var i = 0, length = getLength(list); i < length; i++) {
       if (values) {
         result[list[i]] = values[i];
       } else {
@@ -41080,42 +41092,11 @@ var tooltip = $.widget( "ui.tooltip", {
     return result;
   };
 
-  // Return the position of the first occurrence of an item in an array,
-  // or -1 if the item is not included in the array.
-  // If the array is large and already in sort order, pass `true`
-  // for **isSorted** to use binary search.
-  _.indexOf = function(array, item, isSorted) {
-    var i = 0, length = array && array.length;
-    if (typeof isSorted == 'number') {
-      i = isSorted < 0 ? Math.max(0, length + isSorted) : isSorted;
-    } else if (isSorted && length) {
-      i = _.sortedIndex(array, item);
-      return array[i] === item ? i : -1;
-    }
-    if (item !== item) {
-      return _.findIndex(slice.call(array, i), _.isNaN);
-    }
-    for (; i < length; i++) if (array[i] === item) return i;
-    return -1;
-  };
-
-  _.lastIndexOf = function(array, item, from) {
-    var idx = array ? array.length : 0;
-    if (typeof from == 'number') {
-      idx = from < 0 ? idx + from + 1 : Math.min(idx, from + 1);
-    }
-    if (item !== item) {
-      return _.findLastIndex(slice.call(array, 0, idx), _.isNaN);
-    }
-    while (--idx >= 0) if (array[idx] === item) return idx;
-    return -1;
-  };
-
   // Generator function to create the findIndex and findLastIndex functions
-  function createIndexFinder(dir) {
+  function createPredicateIndexFinder(dir) {
     return function(array, predicate, context) {
       predicate = cb(predicate, context);
-      var length = array != null && array.length;
+      var length = getLength(array);
       var index = dir > 0 ? 0 : length - 1;
       for (; index >= 0 && index < length; index += dir) {
         if (predicate(array[index], index, array)) return index;
@@ -41125,16 +41106,15 @@ var tooltip = $.widget( "ui.tooltip", {
   }
 
   // Returns the first index on an array-like that passes a predicate test
-  _.findIndex = createIndexFinder(1);
-
-  _.findLastIndex = createIndexFinder(-1);
+  _.findIndex = createPredicateIndexFinder(1);
+  _.findLastIndex = createPredicateIndexFinder(-1);
 
   // Use a comparator function to figure out the smallest index at which
   // an object should be inserted so as to maintain order. Uses binary search.
   _.sortedIndex = function(array, obj, iteratee, context) {
     iteratee = cb(iteratee, context, 1);
     var value = iteratee(obj);
-    var low = 0, high = array.length;
+    var low = 0, high = getLength(array);
     while (low < high) {
       var mid = Math.floor((low + high) / 2);
       if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
@@ -41142,11 +41122,43 @@ var tooltip = $.widget( "ui.tooltip", {
     return low;
   };
 
+  // Generator function to create the indexOf and lastIndexOf functions
+  function createIndexFinder(dir, predicateFind, sortedIndex) {
+    return function(array, item, idx) {
+      var i = 0, length = getLength(array);
+      if (typeof idx == 'number') {
+        if (dir > 0) {
+            i = idx >= 0 ? idx : Math.max(idx + length, i);
+        } else {
+            length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+        }
+      } else if (sortedIndex && idx && length) {
+        idx = sortedIndex(array, item);
+        return array[idx] === item ? idx : -1;
+      }
+      if (item !== item) {
+        idx = predicateFind(slice.call(array, i, length), _.isNaN);
+        return idx >= 0 ? idx + i : -1;
+      }
+      for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
+        if (array[idx] === item) return idx;
+      }
+      return -1;
+    };
+  }
+
+  // Return the position of the first occurrence of an item in an array,
+  // or -1 if the item is not included in the array.
+  // If the array is large and already in sort order, pass `true`
+  // for **isSorted** to use binary search.
+  _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
+  _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
+
   // Generate an integer Array containing an arithmetic progression. A port of
   // the native Python `range()` function. See
   // [the Python documentation](http://docs.python.org/library/functions.html#range).
   _.range = function(start, stop, step) {
-    if (arguments.length <= 1) {
+    if (stop == null) {
       stop = start || 0;
       start = 0;
     }
@@ -41525,6 +41537,15 @@ var tooltip = $.widget( "ui.tooltip", {
   // Fill in a given object with default properties.
   _.defaults = createAssigner(_.allKeys, true);
 
+  // Creates an object that inherits from the given prototype object.
+  // If additional properties are provided then they will be added to the
+  // created object.
+  _.create = function(prototype, props) {
+    var result = baseCreate(prototype);
+    if (props) _.extendOwn(result, props);
+    return result;
+  };
+
   // Create a (shallow-cloned) duplicate of an object.
   _.clone = function(obj) {
     if (!_.isObject(obj)) return obj;
@@ -41602,7 +41623,7 @@ var tooltip = $.widget( "ui.tooltip", {
     }
     // Assume equality for cyclic structures. The algorithm for detecting cyclic
     // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
-    
+
     // Initializing stack of traversed objects.
     // It's done here since we only need them for objects and arrays comparison.
     aStack = aStack || [];
@@ -41753,11 +41774,7 @@ var tooltip = $.widget( "ui.tooltip", {
 
   _.noop = function(){};
 
-  _.property = function(key) {
-    return function(obj) {
-      return obj == null ? void 0 : obj[key];
-    };
-  };
+  _.property = property;
 
   // Generates a function for a given object that returns a given property.
   _.propertyOf = function(obj) {
@@ -41766,7 +41783,7 @@ var tooltip = $.widget( "ui.tooltip", {
     };
   };
 
-  // Returns a predicate for checking whether an object has a given set of 
+  // Returns a predicate for checking whether an object has a given set of
   // `key:value` pairs.
   _.matcher = _.matches = function(attrs) {
     attrs = _.extendOwn({}, attrs);
@@ -41993,7 +42010,7 @@ var tooltip = $.widget( "ui.tooltip", {
   // Provide unwrapping proxy for some methods used in engine operations
   // such as arithmetic and JSON stringification.
   _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
-  
+
   _.prototype.toString = function() {
     return '' + this._wrapped;
   };
@@ -49014,7 +49031,7 @@ function toArray(list, index) {
 });
 
 //! moment.js
-//! version : 2.10.2
+//! version : 2.10.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -49037,28 +49054,12 @@ function toArray(list, index) {
         hookCallback = callback;
     }
 
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false
-        };
-    }
-
     function isArray(input) {
         return Object.prototype.toString.call(input) === '[object Array]';
     }
 
     function isDate(input) {
-        return Object.prototype.toString.call(input) === '[object Date]' || input instanceof Date;
+        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
     }
 
     function map(arr, fn) {
@@ -49095,21 +49096,45 @@ function toArray(list, index) {
         return createLocalOrUTC(input, format, locale, strict, true).utc();
     }
 
+    function defaultParsingFlags() {
+        // We need to deep clone this object.
+        return {
+            empty           : false,
+            unusedTokens    : [],
+            unusedInput     : [],
+            overflow        : -2,
+            charsLeftOver   : 0,
+            nullInput       : false,
+            invalidMonth    : null,
+            invalidFormat   : false,
+            userInvalidated : false,
+            iso             : false
+        };
+    }
+
+    function getParsingFlags(m) {
+        if (m._pf == null) {
+            m._pf = defaultParsingFlags();
+        }
+        return m._pf;
+    }
+
     function valid__isValid(m) {
         if (m._isValid == null) {
+            var flags = getParsingFlags(m);
             m._isValid = !isNaN(m._d.getTime()) &&
-                m._pf.overflow < 0 &&
-                !m._pf.empty &&
-                !m._pf.invalidMonth &&
-                !m._pf.nullInput &&
-                !m._pf.invalidFormat &&
-                !m._pf.userInvalidated;
+                flags.overflow < 0 &&
+                !flags.empty &&
+                !flags.invalidMonth &&
+                !flags.nullInput &&
+                !flags.invalidFormat &&
+                !flags.userInvalidated;
 
             if (m._strict) {
                 m._isValid = m._isValid &&
-                    m._pf.charsLeftOver === 0 &&
-                    m._pf.unusedTokens.length === 0 &&
-                    m._pf.bigHour === undefined;
+                    flags.charsLeftOver === 0 &&
+                    flags.unusedTokens.length === 0 &&
+                    flags.bigHour === undefined;
             }
         }
         return m._isValid;
@@ -49118,10 +49143,10 @@ function toArray(list, index) {
     function valid__createInvalid (flags) {
         var m = create_utc__createUTC(NaN);
         if (flags != null) {
-            extend(m._pf, flags);
+            extend(getParsingFlags(m), flags);
         }
         else {
-            m._pf.userInvalidated = true;
+            getParsingFlags(m).userInvalidated = true;
         }
 
         return m;
@@ -49157,7 +49182,7 @@ function toArray(list, index) {
             to._offset = from._offset;
         }
         if (typeof from._pf !== 'undefined') {
-            to._pf = from._pf;
+            to._pf = getParsingFlags(from);
         }
         if (typeof from._locale !== 'undefined') {
             to._locale = from._locale;
@@ -49192,7 +49217,7 @@ function toArray(list, index) {
     }
 
     function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && hasOwnProp(obj, '_isAMomentObject'));
+        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
     }
 
     function toInt(argumentForCoercion) {
@@ -49630,7 +49655,7 @@ function toArray(list, index) {
         if (month != null) {
             array[MONTH] = month;
         } else {
-            config._pf.invalidMonth = input;
+            getParsingFlags(config).invalidMonth = input;
         }
     });
 
@@ -49714,7 +49739,7 @@ function toArray(list, index) {
         var overflow;
         var a = m._a;
 
-        if (a && m._pf.overflow === -2) {
+        if (a && getParsingFlags(m).overflow === -2) {
             overflow =
                 a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
                 a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
@@ -49724,11 +49749,11 @@ function toArray(list, index) {
                 a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
                 -1;
 
-            if (m._pf._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
                 overflow = DATE;
             }
 
-            m._pf.overflow = overflow;
+            getParsingFlags(m).overflow = overflow;
         }
 
         return m;
@@ -49741,10 +49766,12 @@ function toArray(list, index) {
     }
 
     function deprecate(msg, fn) {
-        var firstTime = true;
+        var firstTime = true,
+            msgWithStack = msg + '\n' + (new Error()).stack;
+
         return extend(function () {
             if (firstTime) {
-                warn(msg);
+                warn(msgWithStack);
                 firstTime = false;
             }
             return fn.apply(this, arguments);
@@ -49789,7 +49816,7 @@ function toArray(list, index) {
             match = from_string__isoRegex.exec(string);
 
         if (match) {
-            config._pf.iso = true;
+            getParsingFlags(config).iso = true;
             for (i = 0, l = isoDates.length; i < l; i++) {
                 if (isoDates[i][1].exec(string)) {
                     // match[5] should be 'T' or undefined
@@ -50069,7 +50096,7 @@ function toArray(list, index) {
             yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
 
             if (config._dayOfYear > daysInYear(yearToUse)) {
-                config._pf._overflowDayOfYear = true;
+                getParsingFlags(config)._overflowDayOfYear = true;
             }
 
             date = createUTCDate(yearToUse, 0, config._dayOfYear);
@@ -50165,7 +50192,7 @@ function toArray(list, index) {
         }
 
         config._a = [];
-        config._pf.empty = true;
+        getParsingFlags(config).empty = true;
 
         // This array is used to make a Date, either with `new Date` or `Date.UTC`
         var string = '' + config._i,
@@ -50181,7 +50208,7 @@ function toArray(list, index) {
             if (parsedInput) {
                 skipped = string.substr(0, string.indexOf(parsedInput));
                 if (skipped.length > 0) {
-                    config._pf.unusedInput.push(skipped);
+                    getParsingFlags(config).unusedInput.push(skipped);
                 }
                 string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
                 totalParsedInputLength += parsedInput.length;
@@ -50189,27 +50216,29 @@ function toArray(list, index) {
             // don't parse if it's not a known token
             if (formatTokenFunctions[token]) {
                 if (parsedInput) {
-                    config._pf.empty = false;
+                    getParsingFlags(config).empty = false;
                 }
                 else {
-                    config._pf.unusedTokens.push(token);
+                    getParsingFlags(config).unusedTokens.push(token);
                 }
                 addTimeToArrayFromToken(token, parsedInput, config);
             }
             else if (config._strict && !parsedInput) {
-                config._pf.unusedTokens.push(token);
+                getParsingFlags(config).unusedTokens.push(token);
             }
         }
 
         // add remaining unparsed input length to the string
-        config._pf.charsLeftOver = stringLength - totalParsedInputLength;
+        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
         if (string.length > 0) {
-            config._pf.unusedInput.push(string);
+            getParsingFlags(config).unusedInput.push(string);
         }
 
         // clear _12h flag if hour is <= 12
-        if (config._pf.bigHour === true && config._a[HOUR] <= 12) {
-            config._pf.bigHour = undefined;
+        if (getParsingFlags(config).bigHour === true &&
+                config._a[HOUR] <= 12 &&
+                config._a[HOUR] > 0) {
+            getParsingFlags(config).bigHour = undefined;
         }
         // handle meridiem
         config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
@@ -50253,7 +50282,7 @@ function toArray(list, index) {
             currentScore;
 
         if (config._f.length === 0) {
-            config._pf.invalidFormat = true;
+            getParsingFlags(config).invalidFormat = true;
             config._d = new Date(NaN);
             return;
         }
@@ -50264,7 +50293,6 @@ function toArray(list, index) {
             if (config._useUTC != null) {
                 tempConfig._useUTC = config._useUTC;
             }
-            tempConfig._pf = defaultParsingFlags();
             tempConfig._f = config._f[i];
             configFromStringAndFormat(tempConfig);
 
@@ -50273,12 +50301,12 @@ function toArray(list, index) {
             }
 
             // if there is any input that was not parsed add a penalty for that format
-            currentScore += tempConfig._pf.charsLeftOver;
+            currentScore += getParsingFlags(tempConfig).charsLeftOver;
 
             //or tokens
-            currentScore += tempConfig._pf.unusedTokens.length * 10;
+            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
 
-            tempConfig._pf.score = currentScore;
+            getParsingFlags(tempConfig).score = currentScore;
 
             if (scoreToBeat == null || currentScore < scoreToBeat) {
                 scoreToBeat = currentScore;
@@ -50321,6 +50349,8 @@ function toArray(list, index) {
             configFromStringAndArray(config);
         } else if (format) {
             configFromStringAndFormat(config);
+        } else if (isDate(input)) {
+            config._d = input;
         } else {
             configFromInput(config);
         }
@@ -50373,7 +50403,6 @@ function toArray(list, index) {
         c._i = input;
         c._f = format;
         c._strict = strict;
-        c._pf = defaultParsingFlags();
 
         return createFromConfig(c);
     }
@@ -50947,11 +50976,25 @@ function toArray(list, index) {
     }
 
     function from (time, withoutSuffix) {
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
         return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
     }
 
     function fromNow (withoutSuffix) {
         return this.from(local__createLocal(), withoutSuffix);
+    }
+
+    function to (time, withoutSuffix) {
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
+        return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+    }
+
+    function toNow (withoutSuffix) {
+        return this.to(local__createLocal(), withoutSuffix);
     }
 
     function locale (key) {
@@ -51056,11 +51099,11 @@ function toArray(list, index) {
     }
 
     function parsingFlags () {
-        return extend({}, this._pf);
+        return extend({}, getParsingFlags(this));
     }
 
     function invalidAt () {
-        return this._pf.overflow;
+        return getParsingFlags(this).overflow;
     }
 
     addFormatToken(0, ['gg', 2], 0, function () {
@@ -51211,7 +51254,7 @@ function toArray(list, index) {
         if (weekday != null) {
             week.d = weekday;
         } else {
-            config._pf.invalidWeekday = input;
+            getParsingFlags(config).invalidWeekday = input;
         }
     });
 
@@ -51336,7 +51379,7 @@ function toArray(list, index) {
     });
     addParseToken(['h', 'hh'], function (input, array, config) {
         array[HOUR] = toInt(input);
-        config._pf.bigHour = true;
+        getParsingFlags(config).bigHour = true;
     });
 
     // LOCALES
@@ -51453,6 +51496,8 @@ function toArray(list, index) {
     momentPrototype__proto.format       = format;
     momentPrototype__proto.from         = from;
     momentPrototype__proto.fromNow      = fromNow;
+    momentPrototype__proto.to           = to;
+    momentPrototype__proto.toNow        = toNow;
     momentPrototype__proto.get          = getSet;
     momentPrototype__proto.invalidAt    = invalidAt;
     momentPrototype__proto.isAfter      = isAfter;
@@ -51641,7 +51686,7 @@ function toArray(list, index) {
         }
         // Lenient ordinal parsing accepts just a number in addition to
         // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + /\d{1,2}/.source);
+        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
     }
 
     var prototype__proto = Locale.prototype;
@@ -51858,13 +51903,13 @@ function toArray(list, index) {
             // handle milliseconds separately because of floating point math errors (issue #1867)
             days = this._days + Math.round(yearsToDays(this._months / 12));
             switch (units) {
-                case 'week'   : return days / 7            + milliseconds / 6048e5;
-                case 'day'    : return days                + milliseconds / 864e5;
-                case 'hour'   : return days * 24           + milliseconds / 36e5;
-                case 'minute' : return days * 24 * 60      + milliseconds / 6e4;
-                case 'second' : return days * 24 * 60 * 60 + milliseconds / 1000;
+                case 'week'   : return days / 7     + milliseconds / 6048e5;
+                case 'day'    : return days         + milliseconds / 864e5;
+                case 'hour'   : return days * 24    + milliseconds / 36e5;
+                case 'minute' : return days * 1440  + milliseconds / 6e4;
+                case 'second' : return days * 86400 + milliseconds / 1000;
                 // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 24 * 60 * 60 * 1000) + milliseconds;
+                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
                 default: throw new Error('Unknown unit ' + units);
             }
         }
@@ -52065,7 +52110,7 @@ function toArray(list, index) {
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.10.2';
+    utils_hooks__hooks.version = '2.10.3';
 
     setHookCallback(local__createLocal);
 
@@ -52097,7 +52142,7 @@ function toArray(list, index) {
 
 }));
 /*!
- * FullCalendar v2.3.1
+ * FullCalendar v2.3.2
  * Docs & License: http://fullcalendar.io/
  * (c) 2015 Adam Shaw
  */
@@ -52116,7 +52161,7 @@ function toArray(list, index) {
 
 ;;
 
-var fc = $.fullCalendar = { version: "2.3.1" };
+var fc = $.fullCalendar = { version: "2.3.2" };
 var fcViews = fc.views = {};
 
 
@@ -52143,7 +52188,7 @@ $.fn.fullCalendar = function(options) {
 		}
 		// a new calendar initialization
 		else if (!calendar) { // don't initialize twice
-			calendar = new fc.CalendarBase(element, options);
+			calendar = new Calendar(element, options);
 			element.data('fullCalendar', calendar);
 			calendar.render();
 		}
@@ -52161,41 +52206,9 @@ var complexOptions = [ // names of options that are objects whose properties sho
 ];
 
 
-// Recursively combines all passed-in option-hash arguments into a new single option-hash.
-// Given option-hashes are ordered from lowest to highest priority.
-function mergeOptions() {
-	var chain = Array.prototype.slice.call(arguments); // convert to a real array
-	var complexVals = {}; // hash for each complex option's combined values
-	var i, name;
-	var combinedVal;
-	var j;
-	var val;
-
-	// for each complex option, loop through each option-hash and accumulate the combined values
-	for (i = 0; i < complexOptions.length; i++) {
-		name = complexOptions[i];
-		combinedVal = null; // an object holding the merge of all the values
-
-		for (j = 0; j < chain.length; j++) {
-			val = chain[j][name];
-
-			if ($.isPlainObject(val)) {
-				combinedVal = $.extend(combinedVal || {}, val); // merge new properties
-			}
-			else if (val != null) { // a non-null non-undefined atomic option
-				combinedVal = null; // signal to use the atomic value
-			}
-		}
-
-		// if not null, the final value was a combination of other objects. record it
-		if (combinedVal !== null) {
-			complexVals[name] = combinedVal;
-		}
-	}
-
-	chain.unshift({}); // $.extend will mutate this with the result
-	chain.push(complexVals); // computed complex values are applied last
-	return $.extend.apply($, chain); // combine
+// Merges an array of option objects into a single object
+function mergeOptions(optionObjs) {
+	return mergeProps(optionObjs, complexOptions);
 }
 
 
@@ -52258,6 +52271,7 @@ fc.isInt = isInt;
 fc.htmlEscape = htmlEscape;
 fc.cssToStr = cssToStr;
 fc.proxy = proxy;
+fc.capitaliseFirstLetter = capitaliseFirstLetter;
 
 
 /* FullCalendar-specific DOM Utilities
@@ -52733,6 +52747,55 @@ function isTimeString(str) {
 ----------------------------------------------------------------------------------------------------------------------*/
 
 var hasOwnPropMethod = {}.hasOwnProperty;
+
+
+// Merges an array of objects into a single object.
+// The second argument allows for an array of property names who's object values will be merged together.
+function mergeProps(propObjs, complexProps) {
+	var dest = {};
+	var i, name;
+	var complexObjs;
+	var j, val;
+	var props;
+
+	if (complexProps) {
+		for (i = 0; i < complexProps.length; i++) {
+			name = complexProps[i];
+			complexObjs = [];
+
+			// collect the trailing object values, stopping when a non-object is discovered
+			for (j = propObjs.length - 1; j >= 0; j--) {
+				val = propObjs[j][name];
+
+				if (typeof val === 'object') {
+					complexObjs.unshift(val);
+				}
+				else if (val !== undefined) {
+					dest[name] = val; // if there were no objects, this value will be used
+					break;
+				}
+			}
+
+			// if the trailing values were objects, use the merged value
+			if (complexObjs.length) {
+				dest[name] = mergeProps(complexObjs);
+			}
+		}
+	}
+
+	// copy values into the destination, going from last to first
+	for (i = propObjs.length - 1; i >= 0; i--) {
+		props = propObjs[i];
+
+		for (name in props) {
+			if (!(name in dest)) { // if already assigned by previous props or complex props, don't reassign
+				dest[name] = props[name];
+			}
+		}
+	}
+
+	return dest;
+}
 
 
 // Create an object that has the given prototype. Just like Object.create
@@ -53668,7 +53731,7 @@ Class.extend = function(members) {
 // adds new member variables/methods to the class's prototype.
 // can be called with another class, or a plain object hash containing new members.
 Class.mixin = function(members) {
-	copyOwnProps(members.prototype || members, this.prototype);
+	copyOwnProps(members.prototype || members, this.prototype); // TODO: copyNativeMethods?
 };
 ;;
 
@@ -53760,7 +53823,7 @@ var Popover = Class.extend({
 
 
 	// Hides and unregisters any handlers
-	destroy: function() {
+	removeElement: function() {
 		this.hide();
 
 		if (this.el) {
@@ -53872,6 +53935,7 @@ var GridCoordMap = Class.extend({
 
 	// Queries the grid for the coordinates of all the cells
 	build: function() {
+		this.grid.build();
 		this.rowCoords = this.grid.computeRowCoords();
 		this.colCoords = this.grid.computeColCoords();
 		this.computeBounds();
@@ -53880,6 +53944,7 @@ var GridCoordMap = Class.extend({
 
 	// Clears the coordinates data to free up memory
 	clear: function() {
+		this.grid.clear();
 		this.rowCoords = null;
 		this.colCoords = null;
 	},
@@ -54647,7 +54712,7 @@ var MouseFollower = Class.extend({
 
 		function complete() {
 			this.isAnimating = false;
-			_this.destroyEl();
+			_this.removeElement();
 
 			this.top0 = this.left0 = null; // reset state for future updatePosition calls
 
@@ -54705,7 +54770,7 @@ var MouseFollower = Class.extend({
 
 
 	// Removes the tracking element if it has already been created
-	destroyEl: function() {
+	removeElement: function() {
 		if (this.el) {
 			this.el.remove();
 			this.el = null;
@@ -54885,8 +54950,6 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 	rowCnt: 0, // number of rows
 	colCnt: 0, // number of cols
-	rowData: null, // array of objects, holding misc data for each row
-	colData: null, // array of objects, holding misc data for each column
 
 	el: null, // the containing element
 	coordMap: null, // a GridCoordMap that converts pixel values to datetimes
@@ -54952,18 +55015,27 @@ var Grid = fc.Grid = RowRenderer.extend({
 	------------------------------------------------------------------------------------------------------------------*/
 
 
-	// Tells the grid about what period of time to display. Grid will subsequently compute dates for cell system.
+	// Tells the grid about what period of time to display.
+	// Any date-related cell system internal data should be generated.
 	setRange: function(range) {
-		var view = this.view;
-		var displayEventTime;
-		var displayEventEnd;
-
 		this.start = range.start.clone();
 		this.end = range.end.clone();
 
-		this.rowData = [];
-		this.colData = [];
-		this.updateCells();
+		this.rangeUpdated();
+		this.processRangeOptions();
+	},
+
+
+	// Called when internal variables that rely on the range should be updated
+	rangeUpdated: function() {
+	},
+
+
+	// Updates values that rely on options and also relate to range
+	processRangeOptions: function() {
+		var view = this.view;
+		var displayEventTime;
+		var displayEventEnd;
 
 		// Populate option-derived settings. Look for override first, then compute if necessary.
 		this.colHeadFormat = view.opt('columnFormat') || this.computeColHeadFormat();
@@ -54988,9 +55060,15 @@ var Grid = fc.Grid = RowRenderer.extend({
 	},
 
 
-	// Responsible for setting rowCnt/colCnt and any other row/col data
-	updateCells: function() {
-		// subclasses must implement
+	// Called before the grid's coordinates will need to be queried for cells.
+	// Any non-date-related cell system internal data should be built.
+	build: function() {
+	},
+
+
+	// Called after the grid's coordinates are done being relied upon.
+	// Any non-date-related cell system internal data should be cleared.
+	clear: function() {
 	},
 
 
@@ -55062,13 +55140,13 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 	// Retrieves misc data about the given row
 	getRowData: function(row) {
-		return this.rowData[row] || {};
+		return {};
 	},
 
 
 	// Retrieves misc data baout the given column
 	getColData: function(col) {
-		return this.colData[col] || {};
+		return {};
 	},
 
 
@@ -55165,7 +55243,7 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 
 	// Removes the grid's container element from the DOM. Undoes any other DOM-related attachments.
-	// DOES NOT remove any content before hand (doens't clear events or call destroyDates), unlike View
+	// DOES NOT remove any content beforehand (doesn't clear events or call unrenderDates), unlike View
 	removeElement: function() {
 		this.unbindGlobalHandlers();
 
@@ -55189,7 +55267,7 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 
 	// Unrenders the grid's date-related content
-	destroyDates: function() {
+	unrenderDates: function() {
 		// subclasses should implement
 	},
 
@@ -55244,12 +55322,12 @@ var Grid = fc.Grid = RowRenderer.extend({
 			cellOut: function(cell) {
 				dayClickCell = null;
 				selectionRange = null;
-				_this.destroySelection();
+				_this.unrenderSelection();
 				enableCursor();
 			},
 			listenStop: function(ev) {
 				if (dayClickCell) {
-					view.trigger('dayClick', _this.getCellDayEl(dayClickCell), dayClickCell.start, ev);
+					view.triggerDayClick(dayClickCell, _this.getCellDayEl(dayClickCell), ev);
 				}
 				if (selectionRange) {
 					// the selection will already have been rendered. just report it
@@ -55306,7 +55384,7 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 
 	// Unrenders a mock event
-	destroyHelper: function() {
+	unrenderHelper: function() {
 		// subclasses must implement
 	},
 
@@ -55317,13 +55395,13 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 	// Renders a visual indication of a selection. Will highlight by default but can be overridden by subclasses.
 	renderSelection: function(range) {
-		this.renderHighlight(range);
+		this.renderHighlight(this.selectionRangeToSegs(range));
 	},
 
 
 	// Unrenders any visual indications of a selection. Will unrender a highlight by default.
-	destroySelection: function() {
-		this.destroyHighlight();
+	unrenderSelection: function() {
+		this.unrenderHighlight();
 	},
 
 
@@ -55354,19 +55432,24 @@ var Grid = fc.Grid = RowRenderer.extend({
 	},
 
 
+	selectionRangeToSegs: function(range) {
+		return this.rangeToSegs(range);
+	},
+
+
 	/* Highlight
 	------------------------------------------------------------------------------------------------------------------*/
 
 
-	// Renders an emphasis on the given date range. `start` is inclusive. `end` is exclusive.
-	renderHighlight: function(range) {
-		this.renderFill('highlight', this.rangeToSegs(range));
+	// Renders an emphasis on the given date range. Given an array of segments.
+	renderHighlight: function(segs) {
+		this.renderFill('highlight', segs);
 	},
 
 
 	// Unrenders the emphasis on a date range
-	destroyHighlight: function() {
-		this.destroyFill('highlight');
+	unrenderHighlight: function() {
+		this.unrenderFill('highlight');
 	},
 
 
@@ -55381,7 +55464,7 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 
 	// Renders a set of rectangles over the given segments of time.
-	// Returns a subset of segs, the segs that were actually rendered.
+	// MUST RETURN a subset of segs, the segs that were actually rendered.
 	// Responsible for populating this.elsByFill. TODO: better API for expressing this requirement
 	renderFill: function(type, segs) {
 		// subclasses must implement
@@ -55389,7 +55472,7 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 
 	// Unrenders a specific type of fill that is currently rendered on the grid
-	destroyFill: function(type) {
+	unrenderFill: function(type) {
 		var el = this.elsByFill[type];
 
 		if (el) {
@@ -55582,11 +55665,11 @@ Grid.mixin({
 
 
 	// Unrenders all events currently rendered on the grid
-	destroyEvents: function() {
+	unrenderEvents: function() {
 		this.triggerSegMouseout(); // trigger an eventMouseout if user's mouse is over an event
 
-		this.destroyFgSegs();
-		this.destroyBgSegs();
+		this.unrenderFgSegs();
+		this.unrenderBgSegs();
 
 		this.segs = null;
 	},
@@ -55609,7 +55692,7 @@ Grid.mixin({
 
 
 	// Unrenders all currently rendered foreground segments
-	destroyFgSegs: function() {
+	unrenderFgSegs: function() {
 		// subclasses must implement
 	},
 
@@ -55666,8 +55749,8 @@ Grid.mixin({
 
 
 	// Unrenders all the currently rendered background event segments
-	destroyBgSegs: function() {
-		this.destroyFill('bgEvent');
+	unrenderBgSegs: function() {
+		this.unrenderFill('bgEvent');
 	},
 
 
@@ -55847,7 +55930,7 @@ Grid.mixin({
 				}
 			},
 			cellOut: function() { // called before mouse moves to a different cell OR moved out of all cells
-				view.destroyDrag(); // unrender whatever was done in renderDrag
+				view.unrenderDrag(); // unrender whatever was done in renderDrag
 				mouseFollower.show(); // show in case we are moving out of all cells
 				dropLocation = null;
 			},
@@ -55857,7 +55940,7 @@ Grid.mixin({
 			dragStop: function(ev) {
 				// do revert animation if hasn't changed. calls a callback when finished (whether animation or not)
 				mouseFollower.stop(!dropLocation, function() {
-					view.destroyDrag();
+					view.unrenderDrag();
 					view.showEvent(event);
 					_this.segDragStop(seg, ev);
 
@@ -56001,11 +56084,11 @@ Grid.mixin({
 			},
 			cellOut: function() {
 				dropLocation = null; // signal unsuccessful
-				_this.destroyDrag();
+				_this.unrenderDrag();
 				enableCursor();
 			},
 			dragStop: function() {
-				_this.destroyDrag();
+				_this.unrenderDrag();
 				enableCursor();
 
 				if (dropLocation) { // element was dropped on a valid date/time cell
@@ -56062,7 +56145,7 @@ Grid.mixin({
 
 
 	// Unrenders a visual indication of an event or external element being dragged
-	destroyDrag: function() {
+	unrenderDrag: function() {
 		// subclasses must implement
 	},
 
@@ -56117,7 +56200,7 @@ Grid.mixin({
 				resizeLocation = null;
 			},
 			cellDone: function() { // resets the rendering to show the original event
-				_this.destroyEventResize();
+				_this.unrenderEventResize();
 				view.showEvent(event);
 				enableCursor();
 			},
@@ -56216,7 +56299,7 @@ Grid.mixin({
 
 
 	// Unrenders a visual indication of an event being resized.
-	destroyEventResize: function() {
+	unrenderEventResize: function() {
 		// subclasses must implement
 	},
 
@@ -56432,6 +56515,8 @@ Grid.mixin({
 		var segs;
 		var i, seg;
 
+		eventRange = this.view.calendar.ensureVisibleEventRange(eventRange);
+
 		if (rangeToSegsFunc) {
 			segs = rangeToSegsFunc(eventRange);
 		}
@@ -56611,8 +56696,8 @@ var DayGrid = Grid.extend({
 	},
 
 
-	destroyDates: function() {
-		this.destroySegPopover();
+	unrenderDates: function() {
+		this.removeSegPopover();
 	},
 
 
@@ -56696,8 +56781,7 @@ var DayGrid = Grid.extend({
 	------------------------------------------------------------------------------------------------------------------*/
 
 
-	// Initializes row/col information
-	updateCells: function() {
+	rangeUpdated: function() {
 		var cellDates;
 		var firstDay;
 		var rowCnt;
@@ -56880,9 +56964,7 @@ var DayGrid = Grid.extend({
 	renderDrag: function(dropLocation, seg) {
 
 		// always render a highlight underneath
-		this.renderHighlight(
-			this.view.calendar.ensureVisibleEventRange(dropLocation) // needs to be a proper range
-		);
+		this.renderHighlight(this.eventRangeToSegs(dropLocation));
 
 		// if a segment from the same calendar but another component is being dragged, render a helper event
 		if (seg && !seg.el.closest(this.el).length) {
@@ -56896,9 +56978,9 @@ var DayGrid = Grid.extend({
 
 
 	// Unrenders any visual indication of a hovering event
-	destroyDrag: function() {
-		this.destroyHighlight();
-		this.destroyHelper();
+	unrenderDrag: function() {
+		this.unrenderHighlight();
+		this.unrenderHelper();
 	},
 
 
@@ -56908,15 +56990,15 @@ var DayGrid = Grid.extend({
 
 	// Renders a visual indication of an event being resized
 	renderEventResize: function(range, seg) {
-		this.renderHighlight(range);
+		this.renderHighlight(this.eventRangeToSegs(range));
 		this.renderRangeHelper(range, seg);
 	},
 
 
 	// Unrenders a visual indication of an event being resized
-	destroyEventResize: function() {
-		this.destroyHighlight();
-		this.destroyHelper();
+	unrenderEventResize: function() {
+		this.unrenderHighlight();
+		this.unrenderHelper();
 	},
 
 
@@ -56960,7 +57042,7 @@ var DayGrid = Grid.extend({
 
 
 	// Unrenders any visual indication of a mock helper event
-	destroyHelper: function() {
+	unrenderHelper: function() {
 		if (this.helperEls) {
 			this.helperEls.remove();
 			this.helperEls = null;
@@ -57044,9 +57126,9 @@ DayGrid.mixin({
 
 
 	// Unrenders all events currently rendered on the grid
-	destroyEvents: function() {
-		this.destroySegPopover(); // removes the "more.." events popover
-		Grid.prototype.destroyEvents.apply(this, arguments); // calls the super-method
+	unrenderEvents: function() {
+		this.removeSegPopover(); // removes the "more.." events popover
+		Grid.prototype.unrenderEvents.apply(this, arguments); // calls the super-method
 	},
 
 
@@ -57091,7 +57173,7 @@ DayGrid.mixin({
 
 
 	// Unrenders all currently rendered foreground event segments
-	destroyFgSegs: function() {
+	unrenderFgSegs: function() {
 		var rowStructs = this.rowStructs || [];
 		var rowStruct;
 
@@ -57363,9 +57445,9 @@ DayGrid.mixin({
 	popoverSegs: null, // an array of segment objects that the segPopover holds. null when not visible
 
 
-	destroySegPopover: function() {
+	removeSegPopover: function() {
 		if (this.segPopover) {
-			this.segPopover.hide(); // will trigger destruction of `segPopover` and `popoverSegs`
+			this.segPopover.hide(); // in handler, will call segPopover's removeElement
 		}
 	},
 
@@ -57600,8 +57682,8 @@ DayGrid.mixin({
 			autoHide: true, // when the user clicks elsewhere, hide the popover
 			viewportConstrain: view.opt('popoverViewportConstrain'),
 			hide: function() {
-				// destroy everything when the popover is hidden
-				_this.segPopover.destroy();
+				// kill everything when the popover is hidden
+				_this.segPopover.removeElement();
 				_this.segPopover = null;
 				_this.popoverSegs = null;
 			}
@@ -57731,10 +57813,9 @@ var TimeGrid = Grid.extend({
 
 	slotDuration: null, // duration of a "slot", a distinct time segment on given day, visualized by lines
 	snapDuration: null, // granularity of time for dragging and selecting
-
 	minTime: null, // Duration object that denotes the first visible time of any given day
 	maxTime: null, // Duration object that denotes the exclusive visible end time of any given day
-
+	colDates: null, // whole-day dates for each column. left to right
 	axisFormat: null, // formatting string for times running along vertical axis
 
 	dayEls: null, // cells elements in the day-row background
@@ -57882,36 +57963,37 @@ var TimeGrid = Grid.extend({
 	------------------------------------------------------------------------------------------------------------------*/
 
 
-	// Initializes row/col information
-	updateCells: function() {
+	rangeUpdated: function() {
 		var view = this.view;
-		var colData = [];
+		var colDates = [];
 		var date;
 
 		date = this.start.clone();
 		while (date.isBefore(this.end)) {
-			colData.push({
-				day: date.clone()
-			});
+			colDates.push(date.clone());
 			date.add(1, 'day');
 			date = view.skipHiddenDays(date);
 		}
 
 		if (this.isRTL) {
-			colData.reverse();
+			colDates.reverse();
 		}
 
-		this.colData = colData;
-		this.colCnt = colData.length;
+		this.colDates = colDates;
+		this.colCnt = colDates.length;
 		this.rowCnt = Math.ceil((this.maxTime - this.minTime) / this.snapDuration); // # of vertical snaps
 	},
 
 
 	// Given a cell object, generates its start date. Returns a reference-free copy.
 	computeCellDate: function(cell) {
+		var date = this.colDates[cell.col];
 		var time = this.computeSnapTime(cell.row);
 
-		return this.view.calendar.rezoneDate(cell.day).time(time);
+		date = this.view.calendar.rezoneDate(date); // give it a 00:00 time
+		date.time(time);
+
+		return date;
 	},
 
 
@@ -57947,7 +58029,7 @@ var TimeGrid = Grid.extend({
 		};
 
 		for (col = 0; col < colCnt; col++) {
-			colDate = this.colData[col].day; // will be ambig time/timezone
+			colDate = this.colDates[col]; // will be ambig time/timezone
 			colRange = {
 				start: colDate.clone().time(this.minTime),
 				end: colDate.clone().time(this.maxTime)
@@ -58069,17 +58151,15 @@ var TimeGrid = Grid.extend({
 		}
 		else {
 			// otherwise, just render a highlight
-			this.renderHighlight(
-				this.view.calendar.ensureVisibleEventRange(dropLocation) // needs to be a proper range
-			);
+			this.renderHighlight(this.eventRangeToSegs(dropLocation));
 		}
 	},
 
 
 	// Unrenders any visual indication of an event being dragged
-	destroyDrag: function() {
-		this.destroyHelper();
-		this.destroyHighlight();
+	unrenderDrag: function() {
+		this.unrenderHelper();
+		this.unrenderHighlight();
 	},
 
 
@@ -58094,8 +58174,8 @@ var TimeGrid = Grid.extend({
 
 
 	// Unrenders any visual indication of an event being resized
-	destroyEventResize: function() {
-		this.destroyHelper();
+	unrenderEventResize: function() {
+		this.unrenderHelper();
 	},
 
 
@@ -58134,7 +58214,7 @@ var TimeGrid = Grid.extend({
 
 
 	// Unrenders any mock helper event
-	destroyHelper: function() {
+	unrenderHelper: function() {
 		if (this.helperEl) {
 			this.helperEl.remove();
 			this.helperEl = null;
@@ -58152,15 +58232,15 @@ var TimeGrid = Grid.extend({
 			this.renderRangeHelper(range);
 		}
 		else {
-			this.renderHighlight(range);
+			this.renderHighlight(this.selectionRangeToSegs(range));
 		}
 	},
 
 
 	// Unrenders any visual indication of a selection
-	destroySelection: function() {
-		this.destroyHelper();
-		this.destroyHighlight();
+	unrenderSelection: function() {
+		this.unrenderHelper();
+		this.unrenderHighlight();
 	},
 
 
@@ -58199,7 +58279,7 @@ var TimeGrid = Grid.extend({
 
 				if (colSegs.length) {
 					containerEl = $('<div class="fc-' + className + '-container"/>').appendTo(tdEl);
-					dayDate = this.colData[col].day;
+					dayDate = this.colDates[col];
 
 					for (i = 0; i < colSegs.length; i++) {
 						seg = colSegs[i];
@@ -58248,7 +58328,7 @@ TimeGrid.mixin({
 
 
 	// Unrenders all currently rendered foreground event segments
-	destroyFgSegs: function(segs) {
+	unrenderFgSegs: function(segs) {
 		if (this.eventSkeletonEl) {
 			this.eventSkeletonEl.remove();
 			this.eventSkeletonEl = null;
@@ -58655,7 +58735,7 @@ var View = fc.View = Class.extend({
 	coordMap: null, // a CoordMap object for converting pixel regions to dates
 	el: null, // the view's containing element. set by Calendar
 
-	isDisplayed: false,
+	displaying: null, // a promise representing the state of rendering. null if no render requested
 	isSkeletonRendered: false,
 	isEventsRendered: false,
 
@@ -58670,6 +58750,7 @@ var View = fc.View = Class.extend({
 	intervalDuration: null,
 	intervalUnit: null, // name of largest unit being displayed, like "month" or "week"
 
+	isRTL: false,
 	isSelected: false, // boolean whether a range of time is user-selected or not
 
 	// subclasses can optionally use a scroll container
@@ -58699,6 +58780,7 @@ var View = fc.View = Class.extend({
 		this.nextDayThreshold = moment.duration(this.opt('nextDayThreshold'));
 		this.initThemingProps();
 		this.initHiddenDays();
+		this.isRTL = this.opt('isRTL');
 
 		this.documentMousedownProxy = proxy(this, 'documentMousedown');
 
@@ -58888,7 +58970,7 @@ var View = fc.View = Class.extend({
 
 		// clean up the skeleton
 		if (this.isSkeletonRendered) {
-			this.destroySkeleton();
+			this.unrenderSkeleton();
 			this.isSkeletonRendered = false;
 		}
 
@@ -58897,62 +58979,83 @@ var View = fc.View = Class.extend({
 		this.el.remove();
 
 		// NOTE: don't null-out this.el in case the View was destroyed within an API callback.
-		// We don't null-out the View's other jQuery element references upon destroy, so why should we kill this.el?
+		// We don't null-out the View's other jQuery element references upon destroy,
+		//  so we shouldn't kill this.el either.
 	},
 
 
 	// Does everything necessary to display the view centered around the given date.
 	// Does every type of rendering EXCEPT rendering events.
+	// Is asychronous and returns a promise.
 	display: function(date) {
+		var _this = this;
 		var scrollState = null;
 
-		if (this.isDisplayed) {
+		if (this.displaying) {
 			scrollState = this.queryScroll();
 		}
 
-		this.clear(); // clear the old content
-		this.setDate(date);
-		this.render();
-		this.updateSize();
-		this.renderBusinessHours(); // might need coordinates, so should go after updateSize()
-		this.isDisplayed = true;
-
-		scrollState = this.computeInitialScroll(scrollState);
-		this.forceScroll(scrollState);
-
-		this.triggerRender();
+		return this.clear().then(function() { // clear the content first (async)
+			return (
+				_this.displaying =
+					$.when(_this.displayView(date)) // displayView might return a promise
+						.then(function() {
+							_this.forceScroll(_this.computeInitialScroll(scrollState));
+							_this.triggerRender();
+						})
+			);
+		});
 	},
 
 
 	// Does everything necessary to clear the content of the view.
 	// Clears dates and events. Does not clear the skeleton.
-	clear: function() { // clears the view of *content* but not the skeleton
-		if (this.isDisplayed) {
-			this.unselect();
-			this.clearEvents();
-			this.triggerDestroy();
-			this.destroyBusinessHours();
-			this.destroy();
-			this.isDisplayed = false;
+	// Is asychronous and returns a promise.
+	clear: function() {
+		var _this = this;
+		var displaying = this.displaying;
+
+		if (displaying) { // previously displayed, or in the process of being displayed?
+			return displaying.then(function() { // wait for the display to finish
+				_this.displaying = null;
+				_this.clearEvents();
+				return _this.clearView(); // might return a promise. chain it
+			});
+		}
+		else {
+			return $.when(); // an immediately-resolved promise
 		}
 	},
 
 
-	// Renders the view's date-related content, rendering the view's non-content skeleton if necessary
-	render: function() {
+	// Displays the view's non-event content, such as date-related content or anything required by events.
+	// Renders the view's non-content skeleton if necessary.
+	// Can be asynchronous and return a promise.
+	displayView: function(date) {
 		if (!this.isSkeletonRendered) {
 			this.renderSkeleton();
 			this.isSkeletonRendered = true;
 		}
+		this.setDate(date);
+		if (this.render) {
+			this.render(); // TODO: deprecate
+		}
 		this.renderDates();
+		this.updateSize();
+		this.renderBusinessHours(); // might need coordinates, so should go after updateSize()
 	},
 
 
-	// Unrenders the view's date-related content.
-	// Call this instead of destroyDates directly in case the View subclass wants to use a render/destroy pattern
-	// where both the skeleton and the content always get rendered/unrendered together.
-	destroy: function() {
-		this.destroyDates();
+	// Unrenders the view content that was rendered in displayView.
+	// Can be asynchronous and return a promise.
+	clearView: function() {
+		this.unselect();
+		this.triggerUnrender();
+		this.unrenderBusinessHours();
+		this.unrenderDates();
+		if (this.destroy) {
+			this.destroy(); // TODO: deprecate
+		}
 	},
 
 
@@ -58963,7 +59066,7 @@ var View = fc.View = Class.extend({
 
 
 	// Unrenders the basic structure of the view
-	destroySkeleton: function() {
+	unrenderSkeleton: function() {
 		// subclasses should implement
 	},
 
@@ -58976,7 +59079,7 @@ var View = fc.View = Class.extend({
 
 
 	// Unrenders the view's date-related content
-	destroyDates: function() {
+	unrenderDates: function() {
 		// subclasses should override
 	},
 
@@ -58988,7 +59091,7 @@ var View = fc.View = Class.extend({
 
 
 	// Unrenders previously-rendered business-hours
-	destroyBusinessHours: function() {
+	unrenderBusinessHours: function() {
 		// subclasses should implement
 	},
 
@@ -59000,7 +59103,7 @@ var View = fc.View = Class.extend({
 
 
 	// Signals that the view's content is about to be unrendered
-	triggerDestroy: function() {
+	triggerUnrender: function() {
 		this.trigger('viewDestroy', this, this, this.el);
 	},
 
@@ -59039,8 +59142,8 @@ var View = fc.View = Class.extend({
 			scrollState = this.queryScroll();
 		}
 
-		this.updateHeight();
-		this.updateWidth();
+		this.updateHeight(isResize);
+		this.updateWidth(isResize);
 
 		if (isResize) {
 			this.setScroll(scrollState);
@@ -59049,13 +59152,13 @@ var View = fc.View = Class.extend({
 
 
 	// Refreshes the horizontal dimensions of the calendar
-	updateWidth: function() {
+	updateWidth: function(isResize) {
 		// subclasses should implement
 	},
 
 
 	// Refreshes the vertical dimensions of the calendar
-	updateHeight: function() {
+	updateHeight: function(isResize) {
 		var calendar = this.calendar; // we poll the calendar for height information
 
 		this.setHeight(
@@ -59150,8 +59253,11 @@ var View = fc.View = Class.extend({
 	// Does everything necessary to clear the view's currently-rendered events
 	clearEvents: function() {
 		if (this.isEventsRendered) {
-			this.triggerEventDestroy();
-			this.destroyEvents();
+			this.triggerEventUnrender();
+			if (this.destroyEvents) {
+				this.destroyEvents(); // TODO: deprecate
+			}
+			this.unrenderEvents();
 			this.isEventsRendered = false;
 		}
 	},
@@ -59164,7 +59270,7 @@ var View = fc.View = Class.extend({
 
 
 	// Removes event elements from the view.
-	destroyEvents: function() {
+	unrenderEvents: function() {
 		// subclasses should implement
 	},
 
@@ -59179,7 +59285,7 @@ var View = fc.View = Class.extend({
 
 
 	// Signals that all event elements are about to be removed
-	triggerEventDestroy: function() {
+	triggerEventUnrender: function() {
 		this.renderedEventSegEach(function(seg) {
 			this.trigger('eventDestroy', seg.event, seg.event, seg.el);
 		});
@@ -59328,7 +59434,7 @@ var View = fc.View = Class.extend({
 
 
 	// Unrenders a visual indication of an event or external-element being dragged.
-	destroyDrag: function() {
+	unrenderDrag: function() {
 		// subclasses must implement
 	},
 
@@ -59406,6 +59512,12 @@ var View = fc.View = Class.extend({
 	// Called when a new selection is made. Updates internal state and triggers handlers.
 	reportSelection: function(range, ev) {
 		this.isSelected = true;
+		this.triggerSelect(range, ev);
+	},
+
+
+	// Triggers handlers to 'select'
+	triggerSelect: function(range, ev) {
 		this.trigger('select', null, range.start, range.end, ev);
 	},
 
@@ -59415,14 +59527,17 @@ var View = fc.View = Class.extend({
 	unselect: function(ev) {
 		if (this.isSelected) {
 			this.isSelected = false;
-			this.destroySelection();
+			if (this.destroySelection) {
+				this.destroySelection(); // TODO: deprecate
+			}
+			this.unrenderSelection();
 			this.trigger('unselect', null, ev);
 		}
 	},
 
 
 	// Unrenders a visual indication of selection
-	destroySelection: function() {
+	unrenderSelection: function() {
 		// subclasses should implement
 	},
 
@@ -59440,6 +59555,16 @@ var View = fc.View = Class.extend({
 				this.unselect(ev);
 			}
 		}
+	},
+
+
+	/* Day Click
+	------------------------------------------------------------------------------------------------------------------*/
+
+
+	// Triggers handlers to 'dayClick'
+	triggerDayClick: function(cell, dayEl, ev) {
+		this.trigger('dayClick', dayEl, cell.start, ev);
 	},
 
 
@@ -59541,7 +59666,7 @@ var View = fc.View = Class.extend({
 
 ;;
 
-var Calendar = fc.Calendar = fc.CalendarBase = Class.extend({
+var Calendar = fc.Calendar = Class.extend({
 
 	dirDefaults: null, // option defaults related to LTR or RTL
 	langDefaults: null, // option defaults related to current locale
@@ -59550,11 +59675,17 @@ var Calendar = fc.Calendar = fc.CalendarBase = Class.extend({
 	viewSpecCache: null, // cache of view definitions
 	view: null, // current View object
 	header: null,
+	loadingLevel: 0, // number of simultaneous loading tasks
 
 
 	// a lot of this class' OOP logic is scoped within this constructor function,
 	// but in the future, write individual methods on the prototype.
 	constructor: Calendar_constructor,
+
+
+	// Subclasses can override this for initialization logic after the constructor has been called
+	initialize: function() {
+	},
 
 
 	// Initializes `this.options` and other important options-related objects
@@ -59583,12 +59714,12 @@ var Calendar = fc.Calendar = fc.CalendarBase = Class.extend({
 		this.dirDefaults = dirDefaults;
 		this.langDefaults = langDefaults;
 		this.overrides = overrides;
-		this.options = mergeOptions( // merge defaults and overrides. lowest to highest precedence
+		this.options = mergeOptions([ // merge defaults and overrides. lowest to highest precedence
 			Calendar.defaults, // global defaults
 			dirDefaults,
 			langDefaults,
 			overrides
-		);
+		]);
 		populateInstanceComputableOptions(this.options);
 
 		this.viewSpecCache = {}; // somewhat unrelated
@@ -59633,43 +59764,48 @@ var Calendar = fc.Calendar = fc.CalendarBase = Class.extend({
 	// Builds an object with information on how to create a given view
 	buildViewSpec: function(requestedViewType) {
 		var viewOverrides = this.overrides.views || {};
+		var specChain = []; // for the view. lowest to highest priority
 		var defaultsChain = []; // for the view. lowest to highest priority
 		var overridesChain = []; // for the view. lowest to highest priority
 		var viewType = requestedViewType;
-		var viewClass;
-		var defaults; // for the view
+		var spec; // for the view
 		var overrides; // for the view
 		var duration;
 		var unit;
-		var spec;
 
 		// iterate from the specific view definition to a more general one until we hit an actual View class
-		while (viewType && !viewClass) {
-			defaults = fcViews[viewType] || {};
-			overrides = viewOverrides[viewType] || {};
-			duration = duration || overrides.duration || defaults.duration;
-			viewType = overrides.type || defaults.type; // for next iteration
+		while (viewType) {
+			spec = fcViews[viewType];
+			overrides = viewOverrides[viewType];
+			viewType = null; // clear. might repopulate for another iteration
 
-			if (typeof defaults === 'function') { // a class
-				viewClass = defaults;
-				defaultsChain.unshift(viewClass.defaults || {});
+			if (typeof spec === 'function') { // TODO: deprecate
+				spec = { 'class': spec };
 			}
-			else { // an options object
-				defaultsChain.unshift(defaults);
+
+			if (spec) {
+				specChain.unshift(spec);
+				defaultsChain.unshift(spec.defaults || {});
+				duration = duration || spec.duration;
+				viewType = viewType || spec.type;
 			}
-			overridesChain.unshift(overrides);
+
+			if (overrides) {
+				overridesChain.unshift(overrides); // view-specific option hashes have options at zero-level
+				duration = duration || overrides.duration;
+				viewType = viewType || overrides.type;
+			}
 		}
 
-		if (viewClass) {
-			spec = { 'class': viewClass, type: requestedViewType };
+		spec = mergeProps(specChain);
+		spec.type = requestedViewType;
+		if (!spec['class']) {
+			return false;
+		}
 
-			if (duration) {
-				duration = moment.duration(duration);
-				if (!duration.valueOf()) { // invalid?
-					duration = null;
-				}
-			}
-			if (duration) {
+		if (duration) {
+			duration = moment.duration(duration);
+			if (duration.valueOf()) { // valid?
 				spec.duration = duration;
 				unit = computeIntervalUnit(duration);
 
@@ -59680,29 +59816,28 @@ var Calendar = fc.Calendar = fc.CalendarBase = Class.extend({
 					overridesChain.unshift(viewOverrides[unit] || {});
 				}
 			}
-
-			// collapse into single objects
-			spec.defaults = mergeOptions.apply(null, defaultsChain);
-			spec.overrides = mergeOptions.apply(null, overridesChain);
-
-			this.buildViewSpecOptions(spec);
-			this.buildViewSpecButtonText(spec, requestedViewType);
-
-			return spec;
 		}
+
+		spec.defaults = mergeOptions(defaultsChain);
+		spec.overrides = mergeOptions(overridesChain);
+
+		this.buildViewSpecOptions(spec);
+		this.buildViewSpecButtonText(spec, requestedViewType);
+
+		return spec;
 	},
 
 
 	// Builds and assigns a view spec's options object from its already-assigned defaults and overrides
 	buildViewSpecOptions: function(spec) {
-		spec.options = mergeOptions( // lowest to highest priority
+		spec.options = mergeOptions([ // lowest to highest priority
 			Calendar.defaults, // global defaults
 			spec.defaults, // view's defaults (from ViewSubclass.defaults)
 			this.dirDefaults,
 			this.langDefaults, // locale and dir take precedence over view's defaults!
 			this.overrides, // calendar's overrides (options given to constructor)
 			spec.overrides // view's overrides (view-specific options)
-		);
+		]);
 		populateInstanceComputableOptions(spec.options);
 	},
 
@@ -59745,6 +59880,40 @@ var Calendar = fc.Calendar = fc.CalendarBase = Class.extend({
 	// Returns a boolean about whether the view is okay to instantiate at some point
 	isValidViewType: function(viewType) {
 		return Boolean(this.getViewSpec(viewType));
+	},
+
+
+	// Should be called when any type of async data fetching begins
+	pushLoading: function() {
+		if (!(this.loadingLevel++)) {
+			this.trigger('loading', null, true, this.view);
+		}
+	},
+
+
+	// Should be called when any type of async data fetching completes
+	popLoading: function() {
+		if (!(--this.loadingLevel)) {
+			this.trigger('loading', null, false, this.view);
+		}
+	},
+
+
+	// Given arguments to the select method in the API, returns a range
+	buildSelectRange: function(start, end) {
+
+		start = this.moment(start);
+		if (end) {
+			end = this.moment(end);
+		}
+		else if (start.hasTime()) {
+			end = start.clone().add(this.defaultTimedEventDuration);
+		}
+		else {
+			end = start.clone().add(this.defaultAllDayEventDuration);
+		}
+
+		return { start: start, end: end };
 	}
 
 });
@@ -60028,7 +60197,7 @@ function Calendar_constructor(element, overrides) {
 			// It is still the "current" view, just not rendered.
 		}
 
-		header.destroy();
+		header.removeElement();
 		content.remove();
 		element.removeClass('fc fc-ltr fc-rtl fc-unthemed ui-widget');
 
@@ -60053,7 +60222,7 @@ function Calendar_constructor(element, overrides) {
 	function renderView(viewType) {
 		ignoreWindowResize++;
 
-		// if viewType is changing, destroy the old view
+		// if viewType is changing, remove the old view's rendering
 		if (currentView && viewType && currentView.type !== viewType) {
 			header.deactivateButton(currentView.type);
 			freezeContentHeight(); // prevent a scroll jump when view element is removed
@@ -60080,14 +60249,14 @@ function Calendar_constructor(element, overrides) {
 
 			// render or rerender the view
 			if (
-				!currentView.isDisplayed ||
+				!currentView.displaying ||
 				!date.isWithin(currentView.intervalStart, currentView.intervalEnd) // implicit date window change
 			) {
 				if (elementVisible()) {
 
 					freezeContentHeight();
 					currentView.display(date);
-					unfreezeContentHeight();
+					unfreezeContentHeight(); // immediately unfreeze regardless of whether display is async
 
 					// need to do this after View::render, so dates are calculated
 					updateHeaderTitle();
@@ -60255,19 +60424,9 @@ function Calendar_constructor(element, overrides) {
 	
 
 	function select(start, end) {
-
-		start = t.moment(start);
-		if (end) {
-			end = t.moment(end);
-		}
-		else if (start.hasTime()) {
-			end = start.clone().add(t.defaultTimedEventDuration);
-		}
-		else {
-			end = start.clone().add(t.defaultAllDayEventDuration);
-		}
-
-		currentView.select({ start: start, end: end }); // accepts a range
+		currentView.select(
+			t.buildSelectRange.apply(t, arguments)
+		);
 	}
 	
 
@@ -60402,6 +60561,7 @@ function Calendar_constructor(element, overrides) {
 		}
 	}
 
+	t.initialize();
 }
 
 ;;
@@ -60431,6 +60591,8 @@ Calendar.defaults = {
 	weekNumberCalculation: 'local',
 	
 	//editable: false,
+
+	scrollTime: '06:00:00',
 	
 	// event ajax
 	lazyFetching: true,
@@ -60573,7 +60735,7 @@ fc.lang = function(langCode, newFcOptions) {
 
 	// provided new options for this language? merge them in
 	if (newFcOptions) {
-		fcOptions = langOptionHash[langCode] = mergeOptions(fcOptions, newFcOptions);
+		fcOptions = langOptionHash[langCode] = mergeOptions([ fcOptions, newFcOptions ]);
 	}
 
 	// compute language options that weren't defined.
@@ -60729,7 +60891,7 @@ function Header(calendar, options) {
 	
 	// exports
 	t.render = render;
-	t.destroy = destroy;
+	t.removeElement = removeElement;
 	t.updateTitle = updateTitle;
 	t.activateButton = activateButton;
 	t.deactivateButton = deactivateButton;
@@ -60760,8 +60922,9 @@ function Header(calendar, options) {
 	}
 	
 	
-	function destroy() {
+	function removeElement() {
 		el.remove();
+		el = $();
 	}
 	
 	
@@ -60982,8 +61145,6 @@ function EventManager(options) { // assumed to be a calendar
 	
 	
 	// imports
-	var trigger = t.trigger;
-	var getView = t.getView;
 	var reportEvents = t.reportEvents;
 	
 	
@@ -60993,7 +61154,6 @@ function EventManager(options) { // assumed to be a calendar
 	var rangeStart, rangeEnd;
 	var currentFetchID = 0;
 	var pendingSourceCnt = 0;
-	var loadingLevel = 0;
 	var cache = []; // holds events that have already been expanded
 
 
@@ -61100,7 +61260,7 @@ function EventManager(options) { // assumed to be a calendar
 		var events = source.events;
 		if (events) {
 			if ($.isFunction(events)) {
-				pushLoading();
+				t.pushLoading();
 				events.call(
 					t, // this, the Calendar object
 					rangeStart.clone(),
@@ -61108,7 +61268,7 @@ function EventManager(options) { // assumed to be a calendar
 					options.timezone,
 					function(events) {
 						callback(events);
-						popLoading();
+						t.popLoading();
 					}
 				);
 			}
@@ -61154,7 +61314,7 @@ function EventManager(options) { // assumed to be a calendar
 					data[timezoneParam] = options.timezone;
 				}
 
-				pushLoading();
+				t.pushLoading();
 				$.ajax($.extend({}, ajaxDefaults, source, {
 					data: data,
 					success: function(events) {
@@ -61171,7 +61331,7 @@ function EventManager(options) { // assumed to be a calendar
 					},
 					complete: function() {
 						applyAll(complete, this, arguments);
-						popLoading();
+						t.popLoading();
 					}
 				}));
 			}else{
@@ -61382,25 +61542,6 @@ function EventManager(options) { // assumed to be a calendar
 			});
 		}
 		return cache; // else, return all
-	}
-	
-	
-	
-	/* Loading State
-	-----------------------------------------------------------------------------*/
-	
-	
-	function pushLoading() {
-		if (!(loadingLevel++)) {
-			trigger('loading', null, true, getView());
-		}
-	}
-	
-	
-	function popLoading() {
-		if (!(--loadingLevel)) {
-			trigger('loading', null, false, getView());
-		}
 	}
 	
 	
@@ -62089,7 +62230,7 @@ function backupEventDates(event) {
 // It is a manager for a DayGrid subcomponent, which does most of the heavy lifting.
 // It is responsible for managing width/height.
 
-var BasicView = fcViews.basic = View.extend({
+var BasicView = View.extend({
 
 	dayGrid: null, // the main subcomponent that does most of the heavy lifting
 
@@ -62137,7 +62278,7 @@ var BasicView = fcViews.basic = View.extend({
 
 
 	// Renders the view into `this.el`, which should already be assigned
-	render: function() {
+	renderDates: function() {
 
 		this.dayNumbersVisible = this.dayGrid.rowCnt > 1; // TODO: make grid responsible
 		this.weekNumbersVisible = this.opt('weekNumbers');
@@ -62157,8 +62298,8 @@ var BasicView = fcViews.basic = View.extend({
 
 	// Unrenders the content of the view. Since we haven't separated skeleton rendering from date rendering,
 	// always completely kill the dayGrid's rendering.
-	destroy: function() {
-		this.dayGrid.destroyDates();
+	unrenderDates: function() {
+		this.dayGrid.unrenderDates();
 		this.dayGrid.removeElement();
 	},
 
@@ -62301,7 +62442,7 @@ var BasicView = fcViews.basic = View.extend({
 		unsetScroller(this.scrollerEl);
 		uncompensateScroll(this.headRowEl);
 
-		this.dayGrid.destroySegPopover(); // kill the "more" popover if displayed
+		this.dayGrid.removeSegPopover(); // kill the "more" popover if displayed
 
 		// is the event limit a constant level number?
 		if (eventLimit && typeof eventLimit === 'number') {
@@ -62357,8 +62498,8 @@ var BasicView = fcViews.basic = View.extend({
 
 
 	// Unrenders all event elements and clears internal segment data
-	destroyEvents: function() {
-		this.dayGrid.destroyEvents();
+	unrenderEvents: function() {
+		this.dayGrid.unrenderEvents();
 
 		// we DON'T need to call updateHeight() because:
 		// A) a renderEvents() call always happens after this, which will eventually call updateHeight()
@@ -62376,8 +62517,8 @@ var BasicView = fcViews.basic = View.extend({
 	},
 
 
-	destroyDrag: function() {
-		this.dayGrid.destroyDrag();
+	unrenderDrag: function() {
+		this.dayGrid.unrenderDrag();
 	},
 
 
@@ -62392,8 +62533,8 @@ var BasicView = fcViews.basic = View.extend({
 
 
 	// Unrenders a visual indications of a selection
-	destroySelection: function() {
-		this.dayGrid.destroySelection();
+	unrenderSelection: function() {
+		this.dayGrid.unrenderSelection();
 	}
 
 });
@@ -62403,7 +62544,7 @@ var BasicView = fcViews.basic = View.extend({
 /* A month view with day cells running in rows (one-per-week) and columns
 ----------------------------------------------------------------------------------------------------------------------*/
 
-var MonthView = fcViews.month = BasicView.extend({
+var MonthView = BasicView.extend({
 
 	// Produces information about what range to display
 	computeRange: function(date) {
@@ -62445,28 +62586,28 @@ var MonthView = fcViews.month = BasicView.extend({
 
 });
 
-MonthView.duration = { months: 1 }; // important for prev/next
-
-MonthView.defaults = {
-	fixedWeekCount: true
-};
 ;;
 
-/* A week view with simple day cells running horizontally
-----------------------------------------------------------------------------------------------------------------------*/
+fcViews.basic = {
+	'class': BasicView
+};
+
+fcViews.basicDay = {
+	type: 'basic',
+	duration: { days: 1 }
+};
 
 fcViews.basicWeek = {
 	type: 'basic',
 	duration: { weeks: 1 }
 };
-;;
 
-/* A view with a single simple day cell
-----------------------------------------------------------------------------------------------------------------------*/
-
-fcViews.basicDay = {
-	type: 'basic',
-	duration: { days: 1 }
+fcViews.month = {
+	'class': MonthView,
+	duration: { months: 1 }, // important for prev/next
+	defaults: {
+		fixedWeekCount: true
+	}
 };
 ;;
 
@@ -62475,19 +62616,7 @@ fcViews.basicDay = {
 // Is a manager for the TimeGrid subcomponent and possibly the DayGrid subcomponent (if allDaySlot is on).
 // Responsible for managing width/height.
 
-var AGENDA_DEFAULTS = {
-	allDaySlot: true,
-	allDayText: 'all-day',
-	scrollTime: '06:00:00',
-	slotDuration: '00:30:00',
-	minTime: '00:00:00',
-	maxTime: '24:00:00',
-	slotEventOverlap: true // a bad name. confused with overlap/constraint system
-};
-
-var AGENDA_ALL_DAY_EVENT_LIMIT = 5;
-
-var AgendaView = fcViews.agenda = View.extend({
+var AgendaView = View.extend({
 
 	timeGrid: null, // the main time-grid subcomponent of this view
 	dayGrid: null, // the "all-day" subcomponent. if all-day is turned off, this will be null
@@ -62535,7 +62664,7 @@ var AgendaView = fcViews.agenda = View.extend({
 
 
 	// Renders the view into `this.el`, which has already been assigned
-	render: function() {
+	renderDates: function() {
 
 		this.el.addClass('fc-agenda-view').html(this.renderHtml());
 
@@ -62564,12 +62693,12 @@ var AgendaView = fcViews.agenda = View.extend({
 
 	// Unrenders the content of the view. Since we haven't separated skeleton rendering from date rendering,
 	// always completely kill each grid's rendering.
-	destroy: function() {
-		this.timeGrid.destroyDates();
+	unrenderDates: function() {
+		this.timeGrid.unrenderDates();
 		this.timeGrid.removeElement();
 
 		if (this.dayGrid) {
-			this.dayGrid.destroyDates();
+			this.dayGrid.unrenderDates();
 			this.dayGrid.removeElement();
 		}
 	},
@@ -62708,7 +62837,7 @@ var AgendaView = fcViews.agenda = View.extend({
 
 		// limit number of events in the all-day area
 		if (this.dayGrid) {
-			this.dayGrid.destroySegPopover(); // kill the "more" popover if displayed
+			this.dayGrid.removeSegPopover(); // kill the "more" popover if displayed
 
 			eventLimit = this.opt('eventLimit');
 			if (eventLimit && typeof eventLimit !== 'number') {
@@ -62799,12 +62928,12 @@ var AgendaView = fcViews.agenda = View.extend({
 
 
 	// Unrenders all event elements and clears internal segment data
-	destroyEvents: function() {
+	unrenderEvents: function() {
 
-		// destroy the events in the subcomponents
-		this.timeGrid.destroyEvents();
+		// unrender the events in the subcomponents
+		this.timeGrid.unrenderEvents();
 		if (this.dayGrid) {
-			this.dayGrid.destroyEvents();
+			this.dayGrid.unrenderEvents();
 		}
 
 		// we DON'T need to call updateHeight() because:
@@ -62828,10 +62957,10 @@ var AgendaView = fcViews.agenda = View.extend({
 	},
 
 
-	destroyDrag: function() {
-		this.timeGrid.destroyDrag();
+	unrenderDrag: function() {
+		this.timeGrid.unrenderDrag();
 		if (this.dayGrid) {
-			this.dayGrid.destroyDrag();
+			this.dayGrid.unrenderDrag();
 		}
 	},
 
@@ -62852,21 +62981,35 @@ var AgendaView = fcViews.agenda = View.extend({
 
 
 	// Unrenders a visual indications of a selection
-	destroySelection: function() {
-		this.timeGrid.destroySelection();
+	unrenderSelection: function() {
+		this.timeGrid.unrenderSelection();
 		if (this.dayGrid) {
-			this.dayGrid.destroySelection();
+			this.dayGrid.unrenderSelection();
 		}
 	}
 
 });
 
-AgendaView.defaults = AGENDA_DEFAULTS;
-
 ;;
 
-/* A week view with an all-day cell area at the top, and a time grid below
-----------------------------------------------------------------------------------------------------------------------*/
+var AGENDA_ALL_DAY_EVENT_LIMIT = 5;
+
+fcViews.agenda = {
+	'class': AgendaView,
+	defaults: {
+		allDaySlot: true,
+		allDayText: 'all-day',
+		slotDuration: '00:30:00',
+		minTime: '00:00:00',
+		maxTime: '24:00:00',
+		slotEventOverlap: true // a bad name. confused with overlap/constraint system
+	}
+};
+
+fcViews.agendaDay = {
+	type: 'agenda',
+	duration: { days: 1 }
+};
 
 fcViews.agendaWeek = {
 	type: 'agenda',
@@ -62874,19 +63017,10 @@ fcViews.agendaWeek = {
 };
 ;;
 
-/* A day view with an all-day cell area at the top, and a time grid below
-----------------------------------------------------------------------------------------------------------------------*/
-
-fcViews.agendaDay = {
-	type: 'agenda',
-	duration: { days: 1 }
-};
-;;
-
 return fc; // export for Node/CommonJS
 });
 /*!
- * Bootstrap v3.3.2 (http://getbootstrap.com)
+ * Bootstrap v3.3.4 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
@@ -62904,7 +63038,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: transition.js v3.3.2
+ * Bootstrap: transition.js v3.3.4
  * http://getbootstrap.com/javascript/#transitions
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -62964,7 +63098,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: alert.js v3.3.2
+ * Bootstrap: alert.js v3.3.4
  * http://getbootstrap.com/javascript/#alerts
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -62983,7 +63117,7 @@ if (typeof jQuery === 'undefined') {
     $(el).on('click', dismiss, this.close)
   }
 
-  Alert.VERSION = '3.3.2'
+  Alert.VERSION = '3.3.4'
 
   Alert.TRANSITION_DURATION = 150
 
@@ -63059,7 +63193,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: button.js v3.3.2
+ * Bootstrap: button.js v3.3.4
  * http://getbootstrap.com/javascript/#buttons
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -63079,7 +63213,7 @@ if (typeof jQuery === 'undefined') {
     this.isLoading = false
   }
 
-  Button.VERSION  = '3.3.2'
+  Button.VERSION  = '3.3.4'
 
   Button.DEFAULTS = {
     loadingText: 'loading...'
@@ -63176,7 +63310,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: carousel.js v3.3.2
+ * Bootstrap: carousel.js v3.3.4
  * http://getbootstrap.com/javascript/#carousel
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -63194,10 +63328,10 @@ if (typeof jQuery === 'undefined') {
     this.$element    = $(element)
     this.$indicators = this.$element.find('.carousel-indicators')
     this.options     = options
-    this.paused      =
-    this.sliding     =
-    this.interval    =
-    this.$active     =
+    this.paused      = null
+    this.sliding     = null
+    this.interval    = null
+    this.$active     = null
     this.$items      = null
 
     this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
@@ -63207,7 +63341,7 @@ if (typeof jQuery === 'undefined') {
       .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
   }
 
-  Carousel.VERSION  = '3.3.2'
+  Carousel.VERSION  = '3.3.4'
 
   Carousel.TRANSITION_DURATION = 600
 
@@ -63414,7 +63548,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: collapse.js v3.3.2
+ * Bootstrap: collapse.js v3.3.4
  * http://getbootstrap.com/javascript/#collapse
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -63431,7 +63565,8 @@ if (typeof jQuery === 'undefined') {
   var Collapse = function (element, options) {
     this.$element      = $(element)
     this.options       = $.extend({}, Collapse.DEFAULTS, options)
-    this.$trigger      = $(this.options.trigger).filter('[href="#' + element.id + '"], [data-target="#' + element.id + '"]')
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
     this.transitioning = null
 
     if (this.options.parent) {
@@ -63443,13 +63578,12 @@ if (typeof jQuery === 'undefined') {
     if (this.options.toggle) this.toggle()
   }
 
-  Collapse.VERSION  = '3.3.2'
+  Collapse.VERSION  = '3.3.4'
 
   Collapse.TRANSITION_DURATION = 350
 
   Collapse.DEFAULTS = {
-    toggle: true,
-    trigger: '[data-toggle="collapse"]'
+    toggle: true
   }
 
   Collapse.prototype.dimension = function () {
@@ -63587,7 +63721,7 @@ if (typeof jQuery === 'undefined') {
       var data    = $this.data('bs.collapse')
       var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
-      if (!data && options.toggle && option == 'show') options.toggle = false
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
       if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -63618,7 +63752,7 @@ if (typeof jQuery === 'undefined') {
 
     var $target = getTargetFromTrigger($this)
     var data    = $target.data('bs.collapse')
-    var option  = data ? 'toggle' : $.extend({}, $this.data(), { trigger: this })
+    var option  = data ? 'toggle' : $this.data()
 
     Plugin.call($target, option)
   })
@@ -63626,7 +63760,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: dropdown.js v3.3.2
+ * Bootstrap: dropdown.js v3.3.4
  * http://getbootstrap.com/javascript/#dropdowns
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -63646,7 +63780,7 @@ if (typeof jQuery === 'undefined') {
     $(element).on('click.bs.dropdown', this.toggle)
   }
 
-  Dropdown.VERSION = '3.3.2'
+  Dropdown.VERSION = '3.3.4'
 
   Dropdown.prototype.toggle = function (e) {
     var $this = $(this)
@@ -63699,7 +63833,7 @@ if (typeof jQuery === 'undefined') {
       return $this.trigger('click')
     }
 
-    var desc = ' li:not(.divider):visible a'
+    var desc = ' li:not(.disabled):visible a'
     var $items = $parent.find('[role="menu"]' + desc + ', [role="listbox"]' + desc)
 
     if (!$items.length) return
@@ -63788,7 +63922,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: modal.js v3.3.2
+ * Bootstrap: modal.js v3.3.4
  * http://getbootstrap.com/javascript/#modals
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -63803,12 +63937,15 @@ if (typeof jQuery === 'undefined') {
   // ======================
 
   var Modal = function (element, options) {
-    this.options        = options
-    this.$body          = $(document.body)
-    this.$element       = $(element)
-    this.$backdrop      =
-    this.isShown        = null
-    this.scrollbarWidth = 0
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
 
     if (this.options.remote) {
       this.$element
@@ -63819,7 +63956,7 @@ if (typeof jQuery === 'undefined') {
     }
   }
 
-  Modal.VERSION  = '3.3.2'
+  Modal.VERSION  = '3.3.4'
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -63853,6 +63990,12 @@ if (typeof jQuery === 'undefined') {
 
     this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
 
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
     this.backdrop(function () {
       var transition = $.support.transition && that.$element.hasClass('fade')
 
@@ -63864,7 +64007,6 @@ if (typeof jQuery === 'undefined') {
         .show()
         .scrollTop(0)
 
-      if (that.options.backdrop) that.adjustBackdrop()
       that.adjustDialog()
 
       if (transition) {
@@ -63880,7 +64022,7 @@ if (typeof jQuery === 'undefined') {
       var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
 
       transition ?
-        that.$element.find('.modal-dialog') // wait for modal to slide in
+        that.$dialog // wait for modal to slide in
           .one('bsTransitionEnd', function () {
             that.$element.trigger('focus').trigger(e)
           })
@@ -63909,6 +64051,9 @@ if (typeof jQuery === 'undefined') {
       .removeClass('in')
       .attr('aria-hidden', true)
       .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
 
     $.support.transition && this.$element.hasClass('fade') ?
       this.$element
@@ -63969,13 +64114,18 @@ if (typeof jQuery === 'undefined') {
       var doAnimate = $.support.transition && animate
 
       this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-        .prependTo(this.$element)
-        .on('click.dismiss.bs.modal', $.proxy(function (e) {
-          if (e.target !== e.currentTarget) return
-          this.options.backdrop == 'static'
-            ? this.$element[0].focus.call(this.$element[0])
-            : this.hide.call(this)
-        }, this))
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
 
       if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
 
@@ -64010,14 +64160,7 @@ if (typeof jQuery === 'undefined') {
   // these following methods are used to handle overflowing modals
 
   Modal.prototype.handleUpdate = function () {
-    if (this.options.backdrop) this.adjustBackdrop()
     this.adjustDialog()
-  }
-
-  Modal.prototype.adjustBackdrop = function () {
-    this.$backdrop
-      .css('height', 0)
-      .css('height', this.$element[0].scrollHeight)
   }
 
   Modal.prototype.adjustDialog = function () {
@@ -64037,17 +64180,23 @@ if (typeof jQuery === 'undefined') {
   }
 
   Modal.prototype.checkScrollbar = function () {
-    this.bodyIsOverflowing = document.body.scrollHeight > document.documentElement.clientHeight
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
     this.scrollbarWidth = this.measureScrollbar()
   }
 
   Modal.prototype.setScrollbar = function () {
     var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
     if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
   }
 
   Modal.prototype.resetScrollbar = function () {
-    this.$body.css('padding-right', '')
+    this.$body.css('padding-right', this.originalBodyPad)
   }
 
   Modal.prototype.measureScrollbar = function () { // thx walsh
@@ -64113,7 +64262,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tooltip.js v3.3.2
+ * Bootstrap: tooltip.js v3.3.4
  * http://getbootstrap.com/javascript/#tooltip
  * Inspired by the original jQuery.tipsy by Jason Frame
  * ========================================================================
@@ -64129,17 +64278,17 @@ if (typeof jQuery === 'undefined') {
   // ===============================
 
   var Tooltip = function (element, options) {
-    this.type       =
-    this.options    =
-    this.enabled    =
-    this.timeout    =
-    this.hoverState =
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
     this.$element   = null
 
     this.init('tooltip', element, options)
   }
 
-  Tooltip.VERSION  = '3.3.2'
+  Tooltip.VERSION  = '3.3.4'
 
   Tooltip.TRANSITION_DURATION = 150
 
@@ -64165,6 +64314,10 @@ if (typeof jQuery === 'undefined') {
     this.$element  = $(element)
     this.options   = this.getOptions(options)
     this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport)
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
 
     var triggers = this.options.trigger.split(' ')
 
@@ -64386,10 +64539,10 @@ if (typeof jQuery === 'undefined') {
     this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
   }
 
-  Tooltip.prototype.replaceArrow = function (delta, dimension, isHorizontal) {
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
     this.arrow()
-      .css(isHorizontal ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
-      .css(isHorizontal ? 'top' : 'left', '')
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
   }
 
   Tooltip.prototype.setContent = function () {
@@ -64402,7 +64555,7 @@ if (typeof jQuery === 'undefined') {
 
   Tooltip.prototype.hide = function (callback) {
     var that = this
-    var $tip = this.tip()
+    var $tip = $(this.$tip)
     var e    = $.Event('hide.bs.' + this.type)
 
     function complete() {
@@ -64419,7 +64572,7 @@ if (typeof jQuery === 'undefined') {
 
     $tip.removeClass('in')
 
-    $.support.transition && this.$tip.hasClass('fade') ?
+    $.support.transition && $tip.hasClass('fade') ?
       $tip
         .one('bsTransitionEnd', complete)
         .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
@@ -64563,7 +64716,7 @@ if (typeof jQuery === 'undefined') {
       var data    = $this.data('bs.tooltip')
       var options = typeof option == 'object' && option
 
-      if (!data && option == 'destroy') return
+      if (!data && /destroy|hide/.test(option)) return
       if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -64586,7 +64739,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: popover.js v3.3.2
+ * Bootstrap: popover.js v3.3.4
  * http://getbootstrap.com/javascript/#popovers
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -64606,7 +64759,7 @@ if (typeof jQuery === 'undefined') {
 
   if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
 
-  Popover.VERSION  = '3.3.2'
+  Popover.VERSION  = '3.3.4'
 
   Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
     placement: 'right',
@@ -64662,11 +64815,6 @@ if (typeof jQuery === 'undefined') {
     return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
   }
 
-  Popover.prototype.tip = function () {
-    if (!this.$tip) this.$tip = $(this.options.template)
-    return this.$tip
-  }
-
 
   // POPOVER PLUGIN DEFINITION
   // =========================
@@ -64677,7 +64825,7 @@ if (typeof jQuery === 'undefined') {
       var data    = $this.data('bs.popover')
       var options = typeof option == 'object' && option
 
-      if (!data && option == 'destroy') return
+      if (!data && /destroy|hide/.test(option)) return
       if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -64700,7 +64848,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: scrollspy.js v3.3.2
+ * Bootstrap: scrollspy.js v3.3.4
  * http://getbootstrap.com/javascript/#scrollspy
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -64715,10 +64863,8 @@ if (typeof jQuery === 'undefined') {
   // ==========================
 
   function ScrollSpy(element, options) {
-    var process  = $.proxy(this.process, this)
-
-    this.$body          = $('body')
-    this.$scrollElement = $(element).is('body') ? $(window) : $(element)
+    this.$body          = $(document.body)
+    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
     this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
     this.selector       = (this.options.target || '') + ' .nav li > a'
     this.offsets        = []
@@ -64726,12 +64872,12 @@ if (typeof jQuery === 'undefined') {
     this.activeTarget   = null
     this.scrollHeight   = 0
 
-    this.$scrollElement.on('scroll.bs.scrollspy', process)
+    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
     this.refresh()
     this.process()
   }
 
-  ScrollSpy.VERSION  = '3.3.2'
+  ScrollSpy.VERSION  = '3.3.4'
 
   ScrollSpy.DEFAULTS = {
     offset: 10
@@ -64742,19 +64888,18 @@ if (typeof jQuery === 'undefined') {
   }
 
   ScrollSpy.prototype.refresh = function () {
-    var offsetMethod = 'offset'
-    var offsetBase   = 0
+    var that          = this
+    var offsetMethod  = 'offset'
+    var offsetBase    = 0
+
+    this.offsets      = []
+    this.targets      = []
+    this.scrollHeight = this.getScrollHeight()
 
     if (!$.isWindow(this.$scrollElement[0])) {
       offsetMethod = 'position'
       offsetBase   = this.$scrollElement.scrollTop()
     }
-
-    this.offsets = []
-    this.targets = []
-    this.scrollHeight = this.getScrollHeight()
-
-    var self     = this
 
     this.$body
       .find(this.selector)
@@ -64770,8 +64915,8 @@ if (typeof jQuery === 'undefined') {
       })
       .sort(function (a, b) { return a[0] - b[0] })
       .each(function () {
-        self.offsets.push(this[0])
-        self.targets.push(this[1])
+        that.offsets.push(this[0])
+        that.targets.push(this[1])
       })
   }
 
@@ -64800,7 +64945,7 @@ if (typeof jQuery === 'undefined') {
     for (i = offsets.length; i--;) {
       activeTarget != targets[i]
         && scrollTop >= offsets[i]
-        && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
+        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
         && this.activate(targets[i])
     }
   }
@@ -64811,8 +64956,8 @@ if (typeof jQuery === 'undefined') {
     this.clear()
 
     var selector = this.selector +
-        '[data-target="' + target + '"],' +
-        this.selector + '[href="' + target + '"]'
+      '[data-target="' + target + '"],' +
+      this.selector + '[href="' + target + '"]'
 
     var active = $(selector)
       .parents('li')
@@ -64876,7 +65021,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tab.js v3.3.2
+ * Bootstrap: tab.js v3.3.4
  * http://getbootstrap.com/javascript/#tabs
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -64894,7 +65039,7 @@ if (typeof jQuery === 'undefined') {
     this.element = $(element)
   }
 
-  Tab.VERSION = '3.3.2'
+  Tab.VERSION = '3.3.4'
 
   Tab.TRANSITION_DURATION = 150
 
@@ -64965,7 +65110,7 @@ if (typeof jQuery === 'undefined') {
         element.removeClass('fade')
       }
 
-      if (element.parent('.dropdown-menu')) {
+      if (element.parent('.dropdown-menu').length) {
         element
           .closest('li.dropdown')
             .addClass('active')
@@ -65030,7 +65175,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: affix.js v3.3.2
+ * Bootstrap: affix.js v3.3.4
  * http://getbootstrap.com/javascript/#affix
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -65052,14 +65197,14 @@ if (typeof jQuery === 'undefined') {
       .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
 
     this.$element     = $(element)
-    this.affixed      =
-    this.unpin        =
+    this.affixed      = null
+    this.unpin        = null
     this.pinnedOffset = null
 
     this.checkPosition()
   }
 
-  Affix.VERSION  = '3.3.2'
+  Affix.VERSION  = '3.3.4'
 
   Affix.RESET    = 'affix affix-top affix-bottom'
 
@@ -65109,7 +65254,7 @@ if (typeof jQuery === 'undefined') {
     var offset       = this.options.offset
     var offsetTop    = offset.top
     var offsetBottom = offset.bottom
-    var scrollHeight = $('body').height()
+    var scrollHeight = $(document.body).height()
 
     if (typeof offset != 'object')         offsetBottom = offsetTop = offset
     if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
@@ -65196,18 +65341,18 @@ if (typeof jQuery === 'undefined') {
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 1.3.3
+ * Version: 1.3.6
  *
  */
-(function(e){e.fn.extend({slimScroll:function(g){var a=e.extend({width:"auto",height:"250px",size:"7px",color:"#000",position:"right",distance:"1px",start:"top",opacity:.4,alwaysVisible:!1,disableFadeOut:!1,railVisible:!1,railColor:"#333",railOpacity:.2,railDraggable:!0,railClass:"slimScrollRail",barClass:"slimScrollBar",wrapperClass:"slimScrollDiv",allowPageScroll:!1,wheelStep:20,touchScrollStep:200,borderRadius:"7px",railBorderRadius:"7px"},g);this.each(function(){function u(d){if(r){d=d||window.event;
+(function(e){e.fn.extend({slimScroll:function(g){var a=e.extend({width:"auto",height:"250px",size:"7px",color:"#000",position:"right",distance:"1px",start:"top",opacity:.4,alwaysVisible:!1,disableFadeOut:!1,railVisible:!1,railColor:"#333",railOpacity:.2,railDraggable:!0,railClass:"slimScrollRail",barClass:"slimScrollBar",wrapperClass:"slimScrollDiv",allowPageScroll:!1,wheelStep:20,touchScrollStep:200,borderRadius:"7px",railBorderRadius:"7px"},g);this.each(function(){function v(d){if(r){d=d||window.event;
 var c=0;d.wheelDelta&&(c=-d.wheelDelta/120);d.detail&&(c=d.detail/3);e(d.target||d.srcTarget||d.srcElement).closest("."+a.wrapperClass).is(b.parent())&&m(c,!0);d.preventDefault&&!k&&d.preventDefault();k||(d.returnValue=!1)}}function m(d,e,g){k=!1;var f=d,h=b.outerHeight()-c.outerHeight();e&&(f=parseInt(c.css("top"))+d*parseInt(a.wheelStep)/100*c.outerHeight(),f=Math.min(Math.max(f,0),h),f=0<d?Math.ceil(f):Math.floor(f),c.css({top:f+"px"}));l=parseInt(c.css("top"))/(b.outerHeight()-c.outerHeight());
-f=l*(b[0].scrollHeight-b.outerHeight());g&&(f=d,d=f/b[0].scrollHeight*b.outerHeight(),d=Math.min(Math.max(d,0),h),c.css({top:d+"px"}));b.scrollTop(f);b.trigger("slimscrolling",~~f);v();p()}function C(){window.addEventListener?(this.addEventListener("DOMMouseScroll",u,!1),this.addEventListener("mousewheel",u,!1)):document.attachEvent("onmousewheel",u)}function w(){s=Math.max(b.outerHeight()/b[0].scrollHeight*b.outerHeight(),30);c.css({height:s+"px"});var a=s==b.outerHeight()?"none":"block";c.css({display:a})}
-function v(){w();clearTimeout(A);l==~~l?(k=a.allowPageScroll,B!=l&&b.trigger("slimscroll",0==~~l?"top":"bottom")):k=!1;B=l;s>=b.outerHeight()?k=!0:(c.stop(!0,!0).fadeIn("fast"),a.railVisible&&h.stop(!0,!0).fadeIn("fast"))}function p(){a.alwaysVisible||(A=setTimeout(function(){a.disableFadeOut&&r||x||y||(c.fadeOut("slow"),h.fadeOut("slow"))},1E3))}var r,x,y,A,z,s,l,B,k=!1,b=e(this);if(b.parent().hasClass(a.wrapperClass)){var n=b.scrollTop(),c=b.parent().find("."+a.barClass),h=b.parent().find("."+a.railClass);
-w();if(e.isPlainObject(g)){if("height"in g&&"auto"==g.height){b.parent().css("height","auto");b.css("height","auto");var q=b.parent().parent().height();b.parent().css("height",q);b.css("height",q)}if("scrollTo"in g)n=parseInt(a.scrollTo);else if("scrollBy"in g)n+=parseInt(a.scrollBy);else if("destroy"in g){c.remove();h.remove();b.unwrap();return}m(n,!1,!0)}}else if(!(e.isPlainObject(g)&&"destroy"in g)){a.height="auto"==a.height?b.parent().height():a.height;n=e("<div></div>").addClass(a.wrapperClass).css({position:"relative",
-overflow:"hidden",width:a.width,height:a.height});b.css({overflow:"hidden",width:a.width,height:a.height});var h=e("<div></div>").addClass(a.railClass).css({width:a.size,height:"100%",position:"absolute",top:0,display:a.alwaysVisible&&a.railVisible?"block":"none","border-radius":a.railBorderRadius,background:a.railColor,opacity:a.railOpacity,zIndex:90}),c=e("<div></div>").addClass(a.barClass).css({background:a.color,width:a.size,position:"absolute",top:0,opacity:a.opacity,display:a.alwaysVisible?
-"block":"none","border-radius":a.borderRadius,BorderRadius:a.borderRadius,MozBorderRadius:a.borderRadius,WebkitBorderRadius:a.borderRadius,zIndex:99}),q="right"==a.position?{right:a.distance}:{left:a.distance};h.css(q);c.css(q);b.wrap(n);b.parent().append(c);b.parent().append(h);a.railDraggable&&c.bind("mousedown",function(a){var b=e(document);y=!0;t=parseFloat(c.css("top"));pageY=a.pageY;b.bind("mousemove.slimscroll",function(a){currTop=t+a.pageY-pageY;c.css("top",currTop);m(0,c.position().top,!1)});
-b.bind("mouseup.slimscroll",function(a){y=!1;p();b.unbind(".slimscroll")});return!1}).bind("selectstart.slimscroll",function(a){a.stopPropagation();a.preventDefault();return!1});h.hover(function(){v()},function(){p()});c.hover(function(){x=!0},function(){x=!1});b.hover(function(){r=!0;v();p()},function(){r=!1;p()});b.bind("touchstart",function(a,b){a.originalEvent.touches.length&&(z=a.originalEvent.touches[0].pageY)});b.bind("touchmove",function(b){k||b.originalEvent.preventDefault();b.originalEvent.touches.length&&
-(m((z-b.originalEvent.touches[0].pageY)/a.touchScrollStep,!0),z=b.originalEvent.touches[0].pageY)});w();"bottom"===a.start?(c.css({top:b.outerHeight()-c.outerHeight()}),m(0,!0)):"top"!==a.start&&(m(e(a.start).position().top,null,!0),a.alwaysVisible||c.hide());C()}});return this}});e.fn.extend({slimscroll:e.fn.slimScroll})})(jQuery);
+f=l*(b[0].scrollHeight-b.outerHeight());g&&(f=d,d=f/b[0].scrollHeight*b.outerHeight(),d=Math.min(Math.max(d,0),h),c.css({top:d+"px"}));b.scrollTop(f);b.trigger("slimscrolling",~~f);w();p()}function x(){u=Math.max(b.outerHeight()/b[0].scrollHeight*b.outerHeight(),30);c.css({height:u+"px"});var a=u==b.outerHeight()?"none":"block";c.css({display:a})}function w(){x();clearTimeout(B);l==~~l?(k=a.allowPageScroll,C!=l&&b.trigger("slimscroll",0==~~l?"top":"bottom")):k=!1;C=l;u>=b.outerHeight()?k=!0:(c.stop(!0,
+!0).fadeIn("fast"),a.railVisible&&h.stop(!0,!0).fadeIn("fast"))}function p(){a.alwaysVisible||(B=setTimeout(function(){a.disableFadeOut&&r||y||z||(c.fadeOut("slow"),h.fadeOut("slow"))},1E3))}var r,y,z,B,A,u,l,C,k=!1,b=e(this);if(b.parent().hasClass(a.wrapperClass)){var n=b.scrollTop(),c=b.closest("."+a.barClass),h=b.closest("."+a.railClass);x();if(e.isPlainObject(g)){if("height"in g&&"auto"==g.height){b.parent().css("height","auto");b.css("height","auto");var q=b.parent().parent().height();b.parent().css("height",
+q);b.css("height",q)}if("scrollTo"in g)n=parseInt(a.scrollTo);else if("scrollBy"in g)n+=parseInt(a.scrollBy);else if("destroy"in g){c.remove();h.remove();b.unwrap();return}m(n,!1,!0)}}else if(!(e.isPlainObject(g)&&"destroy"in g)){a.height="auto"==a.height?b.parent().height():a.height;n=e("<div></div>").addClass(a.wrapperClass).css({position:"relative",overflow:"hidden",width:a.width,height:a.height});b.css({overflow:"hidden",width:a.width,height:a.height});var h=e("<div></div>").addClass(a.railClass).css({width:a.size,
+height:"100%",position:"absolute",top:0,display:a.alwaysVisible&&a.railVisible?"block":"none","border-radius":a.railBorderRadius,background:a.railColor,opacity:a.railOpacity,zIndex:90}),c=e("<div></div>").addClass(a.barClass).css({background:a.color,width:a.size,position:"absolute",top:0,opacity:a.opacity,display:a.alwaysVisible?"block":"none","border-radius":a.borderRadius,BorderRadius:a.borderRadius,MozBorderRadius:a.borderRadius,WebkitBorderRadius:a.borderRadius,zIndex:99}),q="right"==a.position?
+{right:a.distance}:{left:a.distance};h.css(q);c.css(q);b.wrap(n);b.parent().append(c);b.parent().append(h);a.railDraggable&&c.bind("mousedown",function(a){var b=e(document);z=!0;t=parseFloat(c.css("top"));pageY=a.pageY;b.bind("mousemove.slimscroll",function(a){currTop=t+a.pageY-pageY;c.css("top",currTop);m(0,c.position().top,!1)});b.bind("mouseup.slimscroll",function(a){z=!1;p();b.unbind(".slimscroll")});return!1}).bind("selectstart.slimscroll",function(a){a.stopPropagation();a.preventDefault();return!1});
+h.hover(function(){w()},function(){p()});c.hover(function(){y=!0},function(){y=!1});b.hover(function(){r=!0;w();p()},function(){r=!1;p()});b.bind("touchstart",function(a,b){a.originalEvent.touches.length&&(A=a.originalEvent.touches[0].pageY)});b.bind("touchmove",function(b){k||b.originalEvent.preventDefault();b.originalEvent.touches.length&&(m((A-b.originalEvent.touches[0].pageY)/a.touchScrollStep,!0),A=b.originalEvent.touches[0].pageY)});x();"bottom"===a.start?(c.css({top:b.outerHeight()-c.outerHeight()}),
+m(0,!0)):"top"!==a.start&&(m(e(a.start).position().top,null,!0),a.alwaysVisible||c.hide());window.addEventListener?(this.addEventListener("DOMMouseScroll",v,!1),this.addEventListener("mousewheel",v,!1)):document.attachEvent("onmousewheel",v)}});return this}});e.fn.extend({slimscroll:e.fn.slimScroll})})(jQuery);
 ;(function () {
 	'use strict';
 
@@ -92064,7 +92209,7 @@ var styleDirective = valueFn({
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
 /**
  * State-based routing for AngularJS
- * @version v0.2.13
+ * @version v0.2.15
  * @link http://angular-ui.github.com/
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -92132,7 +92277,7 @@ function objectKeys(object) {
   }
   var result = [];
 
-  angular.forEach(object, function(val, key) {
+  forEach(object, function(val, key) {
     result.push(key);
   });
   return result;
@@ -92744,7 +92889,7 @@ var $$UMFP; // reference to $UrlMatcherFactoryProvider
  * of search parameters. Multiple search parameter names are separated by '&'. Search parameters
  * do not influence whether or not a URL is matched, but their values are passed through into
  * the matched parameters returned by {@link ui.router.util.type:UrlMatcher#methods_exec exec}.
- * 
+ *
  * Path parameter placeholders can be specified using simple colon/catch-all syntax or curly brace
  * syntax, which optionally allows a regular expression for the parameter to be specified:
  *
@@ -92755,13 +92900,13 @@ var $$UMFP; // reference to $UrlMatcherFactoryProvider
  *   regexp itself contain curly braces, they must be in matched pairs or escaped with a backslash.
  *
  * Parameter names may contain only word characters (latin letters, digits, and underscore) and
- * must be unique within the pattern (across both path and search parameters). For colon 
+ * must be unique within the pattern (across both path and search parameters). For colon
  * placeholders or curly placeholders without an explicit regexp, a path parameter matches any
  * number of characters other than '/'. For catch-all placeholders the path parameter matches
  * any number of characters.
- * 
+ *
  * Examples:
- * 
+ *
  * * `'/hello/'` - Matches only if the path is exactly '/hello/'. There is no special treatment for
  *   trailing slashes, and patterns have to match the entire path, not just a prefix.
  * * `'/user/:id'` - Matches '/user/bob' or '/user/1234!!!' or even '/user/' but not '/user' or
@@ -92794,7 +92939,7 @@ var $$UMFP; // reference to $UrlMatcherFactoryProvider
  *
  * @property {string} sourceSearch  The search portion of the source property
  *
- * @property {string} regex  The constructed regex that will be used to match against the url when 
+ * @property {string} regex  The constructed regex that will be used to match against the url when
  *   it is time to determine which url will match.
  *
  * @returns {Object}  New `UrlMatcher` object
@@ -92832,13 +92977,13 @@ function UrlMatcher(pattern, config, parentMatcher) {
     return params[id];
   }
 
-  function quoteRegExp(string, pattern, squash) {
+  function quoteRegExp(string, pattern, squash, optional) {
     var surroundPattern = ['',''], result = string.replace(/[\\\[\]\^$*+?.()|{}]/g, "\\$&");
     if (!pattern) return result;
     switch(squash) {
-      case false: surroundPattern = ['(', ')'];   break;
+      case false: surroundPattern = ['(', ')' + (optional ? "?" : "")]; break;
       case true:  surroundPattern = ['?(', ')?']; break;
-      default:    surroundPattern = ['(' + squash + "|", ')?'];  break;
+      default:    surroundPattern = ['(' + squash + "|", ')?']; break;
     }
     return result + surroundPattern[0] + pattern + surroundPattern[1];
   }
@@ -92853,7 +92998,7 @@ function UrlMatcher(pattern, config, parentMatcher) {
     cfg         = config.params[id];
     segment     = pattern.substring(last, m.index);
     regexp      = isSearch ? m[4] : m[4] || (m[1] == '*' ? '.*' : null);
-    type        = $$UMFP.type(regexp || "string") || inherit($$UMFP.type("string"), { pattern: new RegExp(regexp) });
+    type        = $$UMFP.type(regexp || "string") || inherit($$UMFP.type("string"), { pattern: new RegExp(regexp, config.caseInsensitive ? 'i' : undefined) });
     return {
       id: id, regexp: regexp, segment: segment, type: type, cfg: cfg
     };
@@ -92865,7 +93010,7 @@ function UrlMatcher(pattern, config, parentMatcher) {
     if (p.segment.indexOf('?') >= 0) break; // we're into the search part
 
     param = addParameter(p.id, p.type, p.cfg, "path");
-    compiled += quoteRegExp(p.segment, param.type.pattern.source, param.squash);
+    compiled += quoteRegExp(p.segment, param.type.pattern.source, param.squash, param.isOptional);
     segments.push(p.segment);
     last = placeholder.lastIndex;
   }
@@ -92976,7 +93121,7 @@ UrlMatcher.prototype.exec = function (path, searchParams) {
 
   function decodePathArray(string) {
     function reverseString(str) { return str.split("").reverse().join(""); }
-    function unquoteDashes(str) { return str.replace(/\\-/, "-"); }
+    function unquoteDashes(str) { return str.replace(/\\-/g, "-"); }
 
     var split = reverseString(string).split(/-(?!\\)/);
     var allReversed = map(split, reverseString);
@@ -93009,7 +93154,7 @@ UrlMatcher.prototype.exec = function (path, searchParams) {
  *
  * @description
  * Returns the names of all path and search parameters of this pattern in an unspecified order.
- * 
+ *
  * @returns {Array.<string>}  An array of parameter names. Must be treated as read-only. If the
  *    pattern has no parameters, an empty array is returned.
  */
@@ -93214,6 +93359,11 @@ Type.prototype.pattern = /.*/;
 
 Type.prototype.toString = function() { return "{Type:" + this.name + "}"; };
 
+/** Given an encoded string, or a decoded object, returns a decoded object */
+Type.prototype.$normalize = function(val) {
+  return this.is(val) ? val : this.decode(val);
+};
+
 /*
  * Wraps an existing custom Type as an array of Type, depending on 'mode'.
  * e.g.:
@@ -93227,7 +93377,6 @@ Type.prototype.toString = function() { return "{Type:" + this.name + "}"; };
 Type.prototype.$asArray = function(mode, isSearch) {
   if (!mode) return this;
   if (mode === "auto" && !isSearch) throw new Error("'auto' array mode is for query parameters only");
-  return new ArrayType(this, mode);
 
   function ArrayType(type, mode) {
     function bindTo(type, callbackName) {
@@ -93276,8 +93425,12 @@ Type.prototype.$asArray = function(mode, isSearch) {
     this.is     = arrayHandler(bindTo(type, 'is'), true);
     this.equals = arrayEqualsHandler(bindTo(type, 'equals'));
     this.pattern = type.pattern;
+    this.$normalize = arrayHandler(bindTo(type, '$normalize'));
+    this.name = type.name;
     this.$arrayMode = mode;
   }
+
+  return new ArrayType(this, mode);
 };
 
 
@@ -93297,15 +93450,14 @@ function $UrlMatcherFactory() {
 
   function valToString(val) { return val != null ? val.toString().replace(/\//g, "%2F") : val; }
   function valFromString(val) { return val != null ? val.toString().replace(/%2F/g, "/") : val; }
-//  TODO: in 1.0, make string .is() return false if value is undefined by default.
-//  function regexpMatches(val) { /*jshint validthis:true */ return isDefined(val) && this.pattern.test(val); }
-  function regexpMatches(val) { /*jshint validthis:true */ return this.pattern.test(val); }
 
   var $types = {}, enqueue = true, typeQueue = [], injector, defaultTypes = {
     string: {
       encode: valToString,
       decode: valFromString,
-      is: regexpMatches,
+      // TODO: in 1.0, make string .is() return false if value is undefined/null by default.
+      // In 0.2.x, string params are optional by default for backwards compat
+      is: function(val) { return val == null || !isDefined(val) || typeof val === "string"; },
       pattern: /[^/]*/
     },
     int: {
@@ -93349,7 +93501,6 @@ function $UrlMatcherFactory() {
     any: { // does not encode/decode
       encode: angular.identity,
       decode: angular.identity,
-      is: angular.identity,
       equals: angular.equals,
       pattern: /.*/
     }
@@ -93679,7 +93830,10 @@ function $UrlMatcherFactory() {
      */
     function $$getDefaultValue() {
       if (!injector) throw new Error("Injectable functions cannot be called at configuration time");
-      return injector.invoke(config.$$fn);
+      var defaultValue = injector.invoke(config.$$fn);
+      if (defaultValue !== null && defaultValue !== undefined && !self.type.is(defaultValue))
+        throw new Error("Default value (" + defaultValue + ") for parameter '" + self.id + "' is not an instance of Type (" + self.type.name + ")");
+      return defaultValue;
     }
 
     /**
@@ -93693,7 +93847,7 @@ function $UrlMatcherFactory() {
         return replacement.length ? replacement[0] : value;
       }
       value = $replace(value);
-      return isDefined(value) ? self.type.decode(value) : $$getDefaultValue();
+      return !isDefined(value) ? $$getDefaultValue() : self.type.$normalize(value);
     }
 
     function toString() { return "{Param:" + id + " " + type + " squash: '" + squash + "' optional: " + isOptional + "}"; }
@@ -93749,15 +93903,20 @@ function $UrlMatcherFactory() {
       return equal;
     },
     $$validates: function $$validate(paramValues) {
-      var result = true, isOptional, val, param, self = this;
-
-      forEach(this.$$keys(), function(key) {
-        param = self[key];
-        val = paramValues[key];
-        isOptional = !val && param.isOptional;
-        result = result && (isOptional || !!param.type.is(val));
-      });
-      return result;
+      var keys = this.$$keys(), i, param, rawVal, normalized, encoded;
+      for (i = 0; i < keys.length; i++) {
+        param = this[keys[i]];
+        rawVal = paramValues[keys[i]];
+        if ((rawVal === undefined || rawVal === null) && param.isOptional)
+          break; // There was no parameter value, but the param is optional
+        normalized = param.type.$normalize(rawVal);
+        if (!param.type.is(normalized))
+          return false; // The value was not of the correct Type, and could not be decoded to the correct Type
+        encoded = param.type.encode(normalized);
+        if (angular.isString(encoded) && !param.type.pattern.exec(encoded))
+          return false; // The value was of the correct type, but when encoded, did not match the Type's regexp
+      }
+      return true;
     },
     $$parent: undefined
   };
@@ -94050,7 +94209,8 @@ function $UrlRouterProvider(   $locationProvider,   $urlMatcherFactory) {
       if (evt && evt.defaultPrevented) return;
       var ignoreUpdate = lastPushedUrl && $location.url() === lastPushedUrl;
       lastPushedUrl = undefined;
-      if (ignoreUpdate) return true;
+      // TODO: Re-implement this in 1.0 for https://github.com/angular-ui/ui-router/issues/1573
+      //if (ignoreUpdate) return true;
 
       function check(rule) {
         var handled = rule($injector, $location);
@@ -94122,7 +94282,14 @@ function $UrlRouterProvider(   $locationProvider,   $urlMatcherFactory) {
       },
 
       push: function(urlMatcher, params, options) {
-        $location.url(urlMatcher.format(params || {}));
+         var url = urlMatcher.format(params || {});
+
+        // Handle the special hash param, if needed
+        if (url !== null && params && params['#']) {
+            url += '#' + params['#'];
+        }
+
+        $location.url(url);
         lastPushedUrl = options && options.$$avoidResync ? $location.url() : undefined;
         if (options && options.replace) $location.replace();
       },
@@ -94166,6 +94333,12 @@ function $UrlRouterProvider(   $locationProvider,   $urlMatcherFactory) {
         if (!isHtml5 && url !== null) {
           url = "#" + $locationProvider.hashPrefix() + url;
         }
+
+        // Handle special hash param, if needed
+        if (url !== null && params && params['#']) {
+          url += '#' + params['#'];
+        }
+
         url = appendBasePath(url, isHtml5, options.absolute);
 
         if (!options.absolute || !url) {
@@ -94400,6 +94573,13 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
     var globSegments = glob.split('.'),
         segments = $state.$current.name.split('.');
 
+    //match single stars
+    for (var i = 0, l = globSegments.length; i < l; i++) {
+      if (globSegments[i] === '*') {
+        segments[i] = '*';
+      }
+    }
+
     //match greedy starts
     if (globSegments[0] === '**') {
        segments = segments.slice(indexOf(segments, globSegments[1]));
@@ -94413,13 +94593,6 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
 
     if (globSegments.length != segments.length) {
       return false;
-    }
-
-    //match single stars
-    for (var i = 0, l = globSegments.length; i < l; i++) {
-      if (globSegments[i] === '*') {
-        segments[i] = '*';
-      }
     }
 
     return segments.join('') === globSegments.join('');
@@ -94630,6 +94803,13 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
    *   published to scope under the controllerAs name.
    * <pre>controllerAs: "myCtrl"</pre>
    *
+   * @param {string|object=} stateConfig.parent
+   * <a id='parent'></a>
+   * Optionally specifies the parent state of this state.
+   *
+   * <pre>parent: 'parentState'</pre>
+   * <pre>parent: parentState // JS variable</pre>
+   *
    * @param {object=} stateConfig.resolve
    * <a id='resolve'></a>
    *
@@ -94661,6 +94841,9 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
    *   transitioned to, the `$stateParams` service will be populated with any 
    *   parameters that were passed.
    *
+   *   (See {@link ui.router.util.type:UrlMatcher UrlMatcher} `UrlMatcher`} for
+   *   more details on acceptable patterns )
+   *
    * examples:
    * <pre>url: "/home"
    * url: "/users/:userid"
@@ -94668,8 +94851,9 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
    * url: "/books/{categoryid:int}"
    * url: "/books/{publishername:string}/{categoryid:int}"
    * url: "/messages?before&after"
-   * url: "/messages?{before:date}&{after:date}"</pre>
+   * url: "/messages?{before:date}&{after:date}"
    * url: "/messages/:mailboxid?{before:date}&{after:date}"
+   * </pre>
    *
    * @param {object=} stateConfig.views
    * <a id='views'></a>
@@ -94973,8 +95157,8 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
      * @methodOf ui.router.state.$state
      *
      * @description
-     * A method that force reloads the current state. All resolves are re-resolved, events are not re-fired, 
-     * and controllers reinstantiated (bug with controllers reinstantiating right now, fixing soon).
+     * A method that force reloads the current state. All resolves are re-resolved,
+     * controllers reinstantiated, and events re-fired.
      *
      * @example
      * <pre>
@@ -94994,11 +95178,33 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
      * });
      * </pre>
      *
+     * @param {string=|object=} state - A state name or a state object, which is the root of the resolves to be re-resolved.
+     * @example
+     * <pre>
+     * //assuming app application consists of 3 states: 'contacts', 'contacts.detail', 'contacts.detail.item' 
+     * //and current state is 'contacts.detail.item'
+     * var app angular.module('app', ['ui.router']);
+     *
+     * app.controller('ctrl', function ($scope, $state) {
+     *   $scope.reload = function(){
+     *     //will reload 'contact.detail' and 'contact.detail.item' states
+     *     $state.reload('contact.detail');
+     *   }
+     * });
+     * </pre>
+     *
+     * `reload()` is just an alias for:
+     * <pre>
+     * $state.transitionTo($state.current, $stateParams, { 
+     *   reload: true, inherit: false, notify: true
+     * });
+     * </pre>
+
      * @returns {promise} A promise representing the state of the new transition. See
      * {@link ui.router.state.$state#methods_go $state.go}.
      */
-    $state.reload = function reload() {
-      return $state.transitionTo($state.current, $stateParams, { reload: true, inherit: false, notify: true });
+    $state.reload = function reload(state) {
+      return $state.transitionTo($state.current, $stateParams, { reload: state || true, inherit: false, notify: true});
     };
 
     /**
@@ -95102,9 +95308,11 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
      * - **`relative`** - {object=}, When transitioning with relative path (e.g '^'), 
      *    defines which state to be relative from.
      * - **`notify`** - {boolean=true}, If `true` will broadcast $stateChangeStart and $stateChangeSuccess events.
-     * - **`reload`** (v0.2.5) - {boolean=false}, If `true` will force transition even if the state or params 
+     * - **`reload`** (v0.2.5) - {boolean=false|string=|object=}, If `true` will force transition even if the state or params 
      *    have not changed, aka a reload of the same state. It differs from reloadOnSearch because you'd
      *    use this when you want to force a reload when *everything* is the same, including search params.
+     *    if String, then will reload the state with the name given in reload, and any children.
+     *    if Object, then a stateObj is expected, will reload the state found in stateObj, and any children.
      *
      * @returns {promise} A promise representing the state of the new transition. See
      * {@link ui.router.state.$state#methods_go $state.go}.
@@ -95117,6 +95325,9 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
 
       var from = $state.$current, fromParams = $state.params, fromPath = from.path;
       var evt, toState = findState(to, options.relative);
+
+      // Store the hash param for later (since it will be stripped out by various methods)
+      var hash = toParams['#'];
 
       if (!isDefined(toState)) {
         var redirect = { to: to, toParams: toParams, options: options };
@@ -95156,6 +95367,21 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
           keep++;
           state = toPath[keep];
         }
+      } else if (isString(options.reload) || isObject(options.reload)) {
+        if (isObject(options.reload) && !options.reload.name) {
+          throw new Error('Invalid reload state object');
+        }
+        
+        var reloadState = options.reload === true ? fromPath[0] : findState(options.reload);
+        if (options.reload && !reloadState) {
+          throw new Error("No such reload state '" + (isString(options.reload) ? options.reload : options.reload.name) + "'");
+        }
+
+        while (state && state === fromPath[keep] && state !== reloadState) {
+          locals = toLocals[keep] = state.locals;
+          keep++;
+          state = toPath[keep];
+        }
       }
 
       // If we're going to the same state and all locals are kept, we've got nothing to do.
@@ -95163,8 +95389,16 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
       // TODO: We may not want to bump 'transition' if we're called from a location change
       // that we've initiated ourselves, because we might accidentally abort a legitimate
       // transition initiated from code?
-      if (shouldTriggerReload(to, from, locals, options)) {
-        if (to.self.reloadOnSearch !== false) $urlRouter.update();
+      if (shouldSkipReload(to, toParams, from, fromParams, locals, options)) {
+        if (hash) toParams['#'] = hash;
+        $state.params = toParams;
+        copy($state.params, $stateParams);
+        if (options.location && to.navigable && to.navigable.url) {
+          $urlRouter.push(to.navigable.url, toParams, {
+            $$avoidResync: true, replace: options.location === 'replace'
+          });
+          $urlRouter.update(true);
+        }
         $state.transition = null;
         return $q.when($state.current);
       }
@@ -95202,6 +95436,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
          * </pre>
          */
         if ($rootScope.$broadcast('$stateChangeStart', to.self, toParams, from.self, fromParams).defaultPrevented) {
+          $rootScope.$broadcast('$stateChangeCancel', to.self, toParams, from.self, fromParams);
           $urlRouter.update();
           return TransitionPrevented;
         }
@@ -95247,6 +95482,9 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
             $injector.invoke(entering.self.onEnter, entering.self, entering.locals.globals);
           }
         }
+
+        // Re-add the saved hash before we start returning things
+        if (hash) toParams['#'] = hash;
 
         // Run it again, to catch any transitions in callbacks
         if ($state.transition !== transition) return TransitionSuperseded;
@@ -95473,7 +95711,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
       if (!nav || nav.url === undefined || nav.url === null) {
         return null;
       }
-      return $urlRouter.href(nav.url, filterByKeys(state.params.$$keys(), params || {}), {
+      return $urlRouter.href(nav.url, filterByKeys(state.params.$$keys().concat('#'), params || {}), {
         absolute: options.absolute
       });
     };
@@ -95515,30 +95753,38 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
       })];
       if (inherited) promises.push(inherited);
 
-      // Resolve template and dependencies for all views.
-      forEach(state.views, function (view, name) {
-        var injectables = (view.resolve && view.resolve !== state.resolve ? view.resolve : {});
-        injectables.$template = [ function () {
-          return $view.load(name, { view: view, locals: locals, params: $stateParams, notify: options.notify }) || '';
-        }];
+      function resolveViews() {
+        var viewsPromises = [];
 
-        promises.push($resolve.resolve(injectables, locals, dst.resolve, state).then(function (result) {
-          // References to the controller (only instantiated at link time)
-          if (isFunction(view.controllerProvider) || isArray(view.controllerProvider)) {
-            var injectLocals = angular.extend({}, injectables, locals);
-            result.$$controller = $injector.invoke(view.controllerProvider, null, injectLocals);
-          } else {
-            result.$$controller = view.controller;
-          }
-          // Provide access to the state itself for internal use
-          result.$$state = state;
-          result.$$controllerAs = view.controllerAs;
-          dst[name] = result;
-        }));
-      });
+        // Resolve template and dependencies for all views.
+        forEach(state.views, function (view, name) {
+          var injectables = (view.resolve && view.resolve !== state.resolve ? view.resolve : {});
+          injectables.$template = [ function () {
+            return $view.load(name, { view: view, locals: dst.globals, params: $stateParams, notify: options.notify }) || '';
+          }];
+
+          viewsPromises.push($resolve.resolve(injectables, dst.globals, dst.resolve, state).then(function (result) {
+            // References to the controller (only instantiated at link time)
+            if (isFunction(view.controllerProvider) || isArray(view.controllerProvider)) {
+              var injectLocals = angular.extend({}, injectables, dst.globals);
+              result.$$controller = $injector.invoke(view.controllerProvider, null, injectLocals);
+            } else {
+              result.$$controller = view.controller;
+            }
+            // Provide access to the state itself for internal use
+            result.$$state = state;
+            result.$$controllerAs = view.controllerAs;
+            dst[name] = result;
+          }));
+        });
+
+        return $q.all(viewsPromises).then(function(){
+          return dst.globals;
+        });
+      }
 
       // Wait for all the promises and then return the activation object
-      return $q.all(promises).then(function (values) {
+      return $q.all(promises).then(resolveViews).then(function (values) {
         return dst;
       });
     }
@@ -95546,8 +95792,27 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
     return $state;
   }
 
-  function shouldTriggerReload(to, from, locals, options) {
-    if (to === from && ((locals === from.locals && !options.reload) || (to.self.reloadOnSearch === false))) {
+  function shouldSkipReload(to, toParams, from, fromParams, locals, options) {
+    // Return true if there are no differences in non-search (path/object) params, false if there are differences
+    function nonSearchParamsEqual(fromAndToState, fromParams, toParams) {
+      // Identify whether all the parameters that differ between `fromParams` and `toParams` were search params.
+      function notSearchParam(key) {
+        return fromAndToState.params[key].location != "search";
+      }
+      var nonQueryParamKeys = fromAndToState.params.$$keys().filter(notSearchParam);
+      var nonQueryParams = pick.apply({}, [fromAndToState.params].concat(nonQueryParamKeys));
+      var nonQueryParamSet = new $$UMFP.ParamSet(nonQueryParams);
+      return nonQueryParamSet.$$equals(fromParams, toParams);
+    }
+
+    // If reload was not explicitly requested
+    // and we're transitioning to the same state we're already in
+    // and    the locals didn't change
+    //     or they changed in a way that doesn't merit reloading
+    //        (reloadOnParams:false, or reloadOnSearch.false and only search params changed)
+    // Then return true.
+    if (!options.reload && to === from &&
+      (locals === from.locals || (to.self.reloadOnSearch === false && nonSearchParamsEqual(from, fromParams, toParams)))) {
       return true;
     }
   }
@@ -95673,7 +95938,7 @@ function $ViewScrollProvider() {
     }
 
     return function ($element) {
-      $timeout(function () {
+      return $timeout(function () {
         $element[0].scrollIntoView();
       }, 0, false);
     };
@@ -95958,6 +96223,7 @@ function $ViewDirectiveFill (  $compile,   $controller,   $state,   $interpolate
 
         if (locals.$$controller) {
           locals.$scope = scope;
+          locals.$element = $element;
           var controller = $controller(locals.$$controller, locals);
           if (locals.$$controllerAs) {
             scope[locals.$$controllerAs] = controller;
@@ -96065,7 +96331,7 @@ function stateContext(el) {
  */
 $StateRefDirective.$inject = ['$state', '$timeout'];
 function $StateRefDirective($state, $timeout) {
-  var allowedOptions = ['location', 'inherit', 'reload'];
+  var allowedOptions = ['location', 'inherit', 'reload', 'absolute'];
 
   return {
     restrict: 'A',
@@ -96073,9 +96339,12 @@ function $StateRefDirective($state, $timeout) {
     link: function(scope, element, attrs, uiSrefActive) {
       var ref = parseStateRef(attrs.uiSref, $state.current.name);
       var params = null, url = null, base = stateContext(element) || $state.$current;
-      var newHref = null, isAnchor = element.prop("tagName") === "A";
+      // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
+      var hrefKind = Object.prototype.toString.call(element.prop('href')) === '[object SVGAnimatedString]' ?
+                 'xlink:href' : 'href';
+      var newHref = null, isAnchor = element.prop("tagName").toUpperCase() === "A";
       var isForm = element[0].nodeName === "FORM";
-      var attr = isForm ? "action" : "href", nav = true;
+      var attr = isForm ? "action" : hrefKind, nav = true;
 
       var options = { relative: base, inherit: true };
       var optionsOverride = scope.$eval(attrs.uiSrefOpts) || {};
@@ -96094,7 +96363,7 @@ function $StateRefDirective($state, $timeout) {
 
         var activeDirective = uiSrefActive[1] || uiSrefActive[0];
         if (activeDirective) {
-          activeDirective.$$setStateInfo(ref.state, params);
+          activeDirective.$$addStateInfo(ref.state, params);
         }
         if (newHref === null) {
           nav = false;
@@ -96213,7 +96482,7 @@ function $StateRefActiveDirective($state, $stateParams, $interpolate) {
   return  {
     restrict: "A",
     controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
-      var state, params, activeClass;
+      var states = [], activeClass;
 
       // There probably isn't much point in $observing this
       // uiSrefActive and uiSrefActiveEq share the same directive object with some
@@ -96221,9 +96490,14 @@ function $StateRefActiveDirective($state, $stateParams, $interpolate) {
       activeClass = $interpolate($attrs.uiSrefActiveEq || $attrs.uiSrefActive || '', false)($scope);
 
       // Allow uiSref to communicate with uiSrefActive[Equals]
-      this.$$setStateInfo = function (newState, newParams) {
-        state = $state.get(newState, stateContext($element));
-        params = newParams;
+      this.$$addStateInfo = function (newState, newParams) {
+        var state = $state.get(newState, stateContext($element));
+
+        states.push({
+          state: state || { name: newState },
+          params: newParams
+        });
+
         update();
       };
 
@@ -96231,18 +96505,27 @@ function $StateRefActiveDirective($state, $stateParams, $interpolate) {
 
       // Update route state
       function update() {
-        if (isMatch()) {
+        if (anyMatch()) {
           $element.addClass(activeClass);
         } else {
           $element.removeClass(activeClass);
         }
       }
 
-      function isMatch() {
+      function anyMatch() {
+        for (var i = 0; i < states.length; i++) {
+          if (isMatch(states[i].state, states[i].params)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function isMatch(state, params) {
         if (typeof $attrs.uiSrefActiveEq !== 'undefined') {
-          return state && $state.is(state.name, params);
+          return $state.is(state.name, params);
         } else {
-          return state && $state.includes(state.name, params);
+          return $state.includes(state.name, params);
         }
       }
     }]
@@ -96769,6 +97052,875 @@ angular.module('ui.bootstrap.modal', [])
 
     return $modalProvider;
   });
+
+angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap.bindHtml'])
+
+/**
+ * A helper service that can parse typeahead's syntax (string provided by users)
+ * Extracted to a separate service for ease of unit testing
+ */
+  .factory('typeaheadParser', ['$parse', function ($parse) {
+
+  //                      00000111000000000000022200000000000000003333333333333330000000000044000
+  var TYPEAHEAD_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w\d]*))\s+in\s+([\s\S]+?)$/;
+
+  return {
+    parse:function (input) {
+
+      var match = input.match(TYPEAHEAD_REGEXP);
+      if (!match) {
+        throw new Error(
+          'Expected typeahead specification in form of "_modelValue_ (as _label_)? for _item_ in _collection_"' +
+            ' but got "' + input + '".');
+      }
+
+      return {
+        itemName:match[3],
+        source:$parse(match[4]),
+        viewMapper:$parse(match[2] || match[1]),
+        modelMapper:$parse(match[1])
+      };
+    }
+  };
+}])
+
+  .directive('typeahead', ['$compile', '$parse', '$q', '$timeout', '$document', '$position', 'typeaheadParser',
+    function ($compile, $parse, $q, $timeout, $document, $position, typeaheadParser) {
+
+  var HOT_KEYS = [9, 13, 27, 38, 40];
+
+  return {
+    require:'ngModel',
+    link:function (originalScope, element, attrs, modelCtrl) {
+
+      //SUPPORTED ATTRIBUTES (OPTIONS)
+
+      //minimal no of characters that needs to be entered before typeahead kicks-in
+      var minSearch = originalScope.$eval(attrs.typeaheadMinLength) || 1;
+
+      //minimal wait time after last character typed before typeahead kicks-in
+      var waitTime = originalScope.$eval(attrs.typeaheadWaitMs) || 0;
+
+      //should it restrict model values to the ones selected from the popup only?
+      var isEditable = originalScope.$eval(attrs.typeaheadEditable) !== false;
+
+      //binding to a variable that indicates if matches are being retrieved asynchronously
+      var isLoadingSetter = $parse(attrs.typeaheadLoading).assign || angular.noop;
+
+      //a callback executed when a match is selected
+      var onSelectCallback = $parse(attrs.typeaheadOnSelect);
+
+      var inputFormatter = attrs.typeaheadInputFormatter ? $parse(attrs.typeaheadInputFormatter) : undefined;
+
+      var appendToBody =  attrs.typeaheadAppendToBody ? originalScope.$eval(attrs.typeaheadAppendToBody) : false;
+
+      var focusFirst = originalScope.$eval(attrs.typeaheadFocusFirst) !== false;
+
+      //INTERNAL VARIABLES
+
+      //model setter executed upon match selection
+      var $setModelValue = $parse(attrs.ngModel).assign;
+
+      //expressions used by typeahead
+      var parserResult = typeaheadParser.parse(attrs.typeahead);
+
+      var hasFocus;
+
+      //create a child scope for the typeahead directive so we are not polluting original scope
+      //with typeahead-specific data (matches, query etc.)
+      var scope = originalScope.$new();
+      originalScope.$on('$destroy', function(){
+        scope.$destroy();
+      });
+
+      // WAI-ARIA
+      var popupId = 'typeahead-' + scope.$id + '-' + Math.floor(Math.random() * 10000);
+      element.attr({
+        'aria-autocomplete': 'list',
+        'aria-expanded': false,
+        'aria-owns': popupId
+      });
+
+      //pop-up element used to display matches
+      var popUpEl = angular.element('<div typeahead-popup></div>');
+      popUpEl.attr({
+        id: popupId,
+        matches: 'matches',
+        active: 'activeIdx',
+        select: 'select(activeIdx)',
+        query: 'query',
+        position: 'position'
+      });
+      //custom item template
+      if (angular.isDefined(attrs.typeaheadTemplateUrl)) {
+        popUpEl.attr('template-url', attrs.typeaheadTemplateUrl);
+      }
+
+      var resetMatches = function() {
+        scope.matches = [];
+        scope.activeIdx = -1;
+        element.attr('aria-expanded', false);
+      };
+
+      var getMatchId = function(index) {
+        return popupId + '-option-' + index;
+      };
+
+      // Indicate that the specified match is the active (pre-selected) item in the list owned by this typeahead.
+      // This attribute is added or removed automatically when the `activeIdx` changes.
+      scope.$watch('activeIdx', function(index) {
+        if (index < 0) {
+          element.removeAttr('aria-activedescendant');
+        } else {
+          element.attr('aria-activedescendant', getMatchId(index));
+        }
+      });
+
+      var getMatchesAsync = function(inputValue) {
+
+        var locals = {$viewValue: inputValue};
+        isLoadingSetter(originalScope, true);
+        $q.when(parserResult.source(originalScope, locals)).then(function(matches) {
+
+          //it might happen that several async queries were in progress if a user were typing fast
+          //but we are interested only in responses that correspond to the current view value
+          var onCurrentRequest = (inputValue === modelCtrl.$viewValue);
+          if (onCurrentRequest && hasFocus) {
+            if (matches && matches.length > 0) {
+
+              scope.activeIdx = focusFirst ? 0 : -1;
+              scope.matches.length = 0;
+
+              //transform labels
+              for(var i=0; i<matches.length; i++) {
+                locals[parserResult.itemName] = matches[i];
+                scope.matches.push({
+                  id: getMatchId(i),
+                  label: parserResult.viewMapper(scope, locals),
+                  model: matches[i]
+                });
+              }
+
+              scope.query = inputValue;
+              //position pop-up with matches - we need to re-calculate its position each time we are opening a window
+              //with matches as a pop-up might be absolute-positioned and position of an input might have changed on a page
+              //due to other elements being rendered
+              scope.position = appendToBody ? $position.offset(element) : $position.position(element);
+              scope.position.top = scope.position.top + element.prop('offsetHeight');
+
+              element.attr('aria-expanded', true);
+            } else {
+              resetMatches();
+            }
+          }
+          if (onCurrentRequest) {
+            isLoadingSetter(originalScope, false);
+          }
+        }, function(){
+          resetMatches();
+          isLoadingSetter(originalScope, false);
+        });
+      };
+
+      resetMatches();
+
+      //we need to propagate user's query so we can higlight matches
+      scope.query = undefined;
+
+      //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later
+      var timeoutPromise;
+
+      var scheduleSearchWithTimeout = function(inputValue) {
+        timeoutPromise = $timeout(function () {
+          getMatchesAsync(inputValue);
+        }, waitTime);
+      };
+
+      var cancelPreviousTimeout = function() {
+        if (timeoutPromise) {
+          $timeout.cancel(timeoutPromise);
+        }
+      };
+
+      //plug into $parsers pipeline to open a typeahead on view changes initiated from DOM
+      //$parsers kick-in on all the changes coming from the view as well as manually triggered by $setViewValue
+      modelCtrl.$parsers.unshift(function (inputValue) {
+
+        hasFocus = true;
+
+        if (inputValue && inputValue.length >= minSearch) {
+          if (waitTime > 0) {
+            cancelPreviousTimeout();
+            scheduleSearchWithTimeout(inputValue);
+          } else {
+            getMatchesAsync(inputValue);
+          }
+        } else {
+          isLoadingSetter(originalScope, false);
+          cancelPreviousTimeout();
+          resetMatches();
+        }
+
+        if (isEditable) {
+          return inputValue;
+        } else {
+          if (!inputValue) {
+            // Reset in case user had typed something previously.
+            modelCtrl.$setValidity('editable', true);
+            return inputValue;
+          } else {
+            modelCtrl.$setValidity('editable', false);
+            return undefined;
+          }
+        }
+      });
+
+      modelCtrl.$formatters.push(function (modelValue) {
+
+        var candidateViewValue, emptyViewValue;
+        var locals = {};
+
+        // The validity may be set to false via $parsers (see above) if
+        // the model is restricted to selected values. If the model
+        // is set manually it is considered to be valid.
+        if (!isEditable) {
+          modelCtrl.$setValidity('editable', true);
+        }
+
+        if (inputFormatter) {
+
+          locals.$model = modelValue;
+          return inputFormatter(originalScope, locals);
+
+        } else {
+
+          //it might happen that we don't have enough info to properly render input value
+          //we need to check for this situation and simply return model value if we can't apply custom formatting
+          locals[parserResult.itemName] = modelValue;
+          candidateViewValue = parserResult.viewMapper(originalScope, locals);
+          locals[parserResult.itemName] = undefined;
+          emptyViewValue = parserResult.viewMapper(originalScope, locals);
+
+          return candidateViewValue!== emptyViewValue ? candidateViewValue : modelValue;
+        }
+      });
+
+      scope.select = function (activeIdx) {
+        //called from within the $digest() cycle
+        var locals = {};
+        var model, item;
+
+        locals[parserResult.itemName] = item = scope.matches[activeIdx].model;
+        model = parserResult.modelMapper(originalScope, locals);
+        $setModelValue(originalScope, model);
+        modelCtrl.$setValidity('editable', true);
+        modelCtrl.$setValidity('parse', true);
+
+        onSelectCallback(originalScope, {
+          $item: item,
+          $model: model,
+          $label: parserResult.viewMapper(originalScope, locals)
+        });
+
+        resetMatches();
+
+        //return focus to the input element if a match was selected via a mouse click event
+        // use timeout to avoid $rootScope:inprog error
+        $timeout(function() { element[0].focus(); }, 0, false);
+      };
+
+      //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27)
+      element.bind('keydown', function (evt) {
+
+        //typeahead is open and an "interesting" key was pressed
+        if (scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
+          return;
+        }
+
+        // if there's nothing selected (i.e. focusFirst) and enter is hit, don't do anything
+        if (scope.activeIdx == -1 && (evt.which === 13 || evt.which === 9)) {
+          return;
+        }
+
+        evt.preventDefault();
+
+        if (evt.which === 40) {
+          scope.activeIdx = (scope.activeIdx + 1) % scope.matches.length;
+          scope.$digest();
+
+        } else if (evt.which === 38) {
+          scope.activeIdx = (scope.activeIdx > 0 ? scope.activeIdx : scope.matches.length) - 1;
+          scope.$digest();
+
+        } else if (evt.which === 13 || evt.which === 9) {
+          scope.$apply(function () {
+            scope.select(scope.activeIdx);
+          });
+
+        } else if (evt.which === 27) {
+          evt.stopPropagation();
+
+          resetMatches();
+          scope.$digest();
+        }
+      });
+
+      element.bind('blur', function (evt) {
+        hasFocus = false;
+      });
+
+      // Keep reference to click handler to unbind it.
+      var dismissClickHandler = function (evt) {
+        if (element[0] !== evt.target) {
+          resetMatches();
+          scope.$digest();
+        }
+      };
+
+      $document.bind('click', dismissClickHandler);
+
+      originalScope.$on('$destroy', function(){
+        $document.unbind('click', dismissClickHandler);
+        if (appendToBody) {
+          $popup.remove();
+        }
+        // Prevent jQuery cache memory leak
+        popUpEl.remove();
+      });
+
+      var $popup = $compile(popUpEl)(scope);
+
+      if (appendToBody) {
+        $document.find('body').append($popup);
+      } else {
+        element.after($popup);
+      }
+    }
+  };
+
+}])
+
+  .directive('typeaheadPopup', function () {
+    return {
+      restrict:'EA',
+      scope:{
+        matches:'=',
+        query:'=',
+        active:'=',
+        position:'=',
+        select:'&'
+      },
+      replace:true,
+      templateUrl:'template/typeahead/typeahead-popup.html',
+      link:function (scope, element, attrs) {
+
+        scope.templateUrl = attrs.templateUrl;
+
+        scope.isOpen = function () {
+          return scope.matches.length > 0;
+        };
+
+        scope.isActive = function (matchIdx) {
+          return scope.active == matchIdx;
+        };
+
+        scope.selectActive = function (matchIdx) {
+          scope.active = matchIdx;
+        };
+
+        scope.selectMatch = function (activeIdx) {
+          scope.select({activeIdx:activeIdx});
+        };
+      }
+    };
+  })
+
+  .directive('typeaheadMatch', ['$templateRequest', '$compile', '$parse', function ($templateRequest, $compile, $parse) {
+    return {
+      restrict:'EA',
+      scope:{
+        index:'=',
+        match:'=',
+        query:'='
+      },
+      link:function (scope, element, attrs) {
+        var tplUrl = $parse(attrs.templateUrl)(scope.$parent) || 'template/typeahead/typeahead-match.html';
+        $templateRequest(tplUrl).then(function(tplContent) {
+          $compile(tplContent.trim())(scope, function(clonedElement){
+            element.replaceWith(clonedElement);
+          });
+        });
+      }
+    };
+  }])
+
+  .filter('typeaheadHighlight', function() {
+
+    function escapeRegexp(queryToEscape) {
+      return queryToEscape.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
+    }
+
+    return function(matchItem, query) {
+      return query ? ('' + matchItem).replace(new RegExp(escapeRegexp(query), 'gi'), '<strong>$&</strong>') : matchItem;
+    };
+  });
+
+angular.module('ui.bootstrap.position', [])
+
+/**
+ * A set of utility methods that can be use to retrieve position of DOM elements.
+ * It is meant to be used where we need to absolute-position DOM elements in
+ * relation to other, existing elements (this is the case for tooltips, popovers,
+ * typeahead suggestions etc.).
+ */
+  .factory('$position', ['$document', '$window', function ($document, $window) {
+
+    function getStyle(el, cssprop) {
+      if (el.currentStyle) { //IE
+        return el.currentStyle[cssprop];
+      } else if ($window.getComputedStyle) {
+        return $window.getComputedStyle(el)[cssprop];
+      }
+      // finally try and get inline style
+      return el.style[cssprop];
+    }
+
+    /**
+     * Checks if a given element is statically positioned
+     * @param element - raw DOM element
+     */
+    function isStaticPositioned(element) {
+      return (getStyle(element, 'position') || 'static' ) === 'static';
+    }
+
+    /**
+     * returns the closest, non-statically positioned parentOffset of a given element
+     * @param element
+     */
+    var parentOffsetEl = function (element) {
+      var docDomEl = $document[0];
+      var offsetParent = element.offsetParent || docDomEl;
+      while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
+        offsetParent = offsetParent.offsetParent;
+      }
+      return offsetParent || docDomEl;
+    };
+
+    return {
+      /**
+       * Provides read-only equivalent of jQuery's position function:
+       * http://api.jquery.com/position/
+       */
+      position: function (element) {
+        var elBCR = this.offset(element);
+        var offsetParentBCR = { top: 0, left: 0 };
+        var offsetParentEl = parentOffsetEl(element[0]);
+        if (offsetParentEl != $document[0]) {
+          offsetParentBCR = this.offset(angular.element(offsetParentEl));
+          offsetParentBCR.top += offsetParentEl.clientTop - offsetParentEl.scrollTop;
+          offsetParentBCR.left += offsetParentEl.clientLeft - offsetParentEl.scrollLeft;
+        }
+
+        var boundingClientRect = element[0].getBoundingClientRect();
+        return {
+          width: boundingClientRect.width || element.prop('offsetWidth'),
+          height: boundingClientRect.height || element.prop('offsetHeight'),
+          top: elBCR.top - offsetParentBCR.top,
+          left: elBCR.left - offsetParentBCR.left
+        };
+      },
+
+      /**
+       * Provides read-only equivalent of jQuery's offset function:
+       * http://api.jquery.com/offset/
+       */
+      offset: function (element) {
+        var boundingClientRect = element[0].getBoundingClientRect();
+        return {
+          width: boundingClientRect.width || element.prop('offsetWidth'),
+          height: boundingClientRect.height || element.prop('offsetHeight'),
+          top: boundingClientRect.top + ($window.pageYOffset || $document[0].documentElement.scrollTop),
+          left: boundingClientRect.left + ($window.pageXOffset || $document[0].documentElement.scrollLeft)
+        };
+      },
+
+      /**
+       * Provides coordinates for the targetEl in relation to hostEl
+       */
+      positionElements: function (hostEl, targetEl, positionStr, appendToBody) {
+
+        var positionStrParts = positionStr.split('-');
+        var pos0 = positionStrParts[0], pos1 = positionStrParts[1] || 'center';
+
+        var hostElPos,
+          targetElWidth,
+          targetElHeight,
+          targetElPos;
+
+        hostElPos = appendToBody ? this.offset(hostEl) : this.position(hostEl);
+
+        targetElWidth = targetEl.prop('offsetWidth');
+        targetElHeight = targetEl.prop('offsetHeight');
+
+        var shiftWidth = {
+          center: function () {
+            return hostElPos.left + hostElPos.width / 2 - targetElWidth / 2;
+          },
+          left: function () {
+            return hostElPos.left;
+          },
+          right: function () {
+            return hostElPos.left + hostElPos.width;
+          }
+        };
+
+        var shiftHeight = {
+          center: function () {
+            return hostElPos.top + hostElPos.height / 2 - targetElHeight / 2;
+          },
+          top: function () {
+            return hostElPos.top;
+          },
+          bottom: function () {
+            return hostElPos.top + hostElPos.height;
+          }
+        };
+
+        switch (pos0) {
+          case 'right':
+            targetElPos = {
+              top: shiftHeight[pos1](),
+              left: shiftWidth[pos0]()
+            };
+            break;
+          case 'left':
+            targetElPos = {
+              top: shiftHeight[pos1](),
+              left: hostElPos.left - targetElWidth
+            };
+            break;
+          case 'bottom':
+            targetElPos = {
+              top: shiftHeight[pos0](),
+              left: shiftWidth[pos1]()
+            };
+            break;
+          default:
+            targetElPos = {
+              top: hostElPos.top - targetElHeight,
+              left: shiftWidth[pos1]()
+            };
+            break;
+        }
+
+        return targetElPos;
+      }
+    };
+  }]);
+
+angular.module('ui.bootstrap.bindHtml', [])
+
+  .directive('bindHtmlUnsafe', function () {
+    return function (scope, element, attr) {
+      element.addClass('ng-binding').data('$binding', attr.bindHtmlUnsafe);
+      scope.$watch(attr.bindHtmlUnsafe, function bindHtmlUnsafeWatchAction(value) {
+        element.html(value || '');
+      });
+    };
+  });
+
+/**
+ * @ngdoc overview
+ * @name ui.bootstrap.tabs
+ *
+ * @description
+ * AngularJS version of the tabs directive.
+ */
+
+angular.module('ui.bootstrap.tabs', [])
+
+.controller('TabsetController', ['$scope', function TabsetCtrl($scope) {
+  var ctrl = this,
+      tabs = ctrl.tabs = $scope.tabs = [];
+
+  ctrl.select = function(selectedTab) {
+    angular.forEach(tabs, function(tab) {
+      if (tab.active && tab !== selectedTab) {
+        tab.active = false;
+        tab.onDeselect();
+      }
+    });
+    selectedTab.active = true;
+    selectedTab.onSelect();
+  };
+
+  ctrl.addTab = function addTab(tab) {
+    tabs.push(tab);
+    // we can't run the select function on the first tab
+    // since that would select it twice
+    if (tabs.length === 1 && tab.active !== false) {
+      tab.active = true;
+    } else if (tab.active) {
+      ctrl.select(tab);
+    }
+    else {
+      tab.active = false;
+    }
+  };
+
+  ctrl.removeTab = function removeTab(tab) {
+    var index = tabs.indexOf(tab);
+    //Select a new tab if the tab to be removed is selected and not destroyed
+    if (tab.active && tabs.length > 1 && !destroyed) {
+      //If this is the last tab, select the previous tab. else, the next tab.
+      var newActiveIndex = index == tabs.length - 1 ? index - 1 : index + 1;
+      ctrl.select(tabs[newActiveIndex]);
+    }
+    tabs.splice(index, 1);
+  };
+
+  var destroyed;
+  $scope.$on('$destroy', function() {
+    destroyed = true;
+  });
+}])
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabset
+ * @restrict EA
+ *
+ * @description
+ * Tabset is the outer container for the tabs directive
+ *
+ * @param {boolean=} vertical Whether or not to use vertical styling for the tabs.
+ * @param {boolean=} justified Whether or not to use justified styling for the tabs.
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+    <tabset>
+      <tab heading="Tab 1"><b>First</b> Content!</tab>
+      <tab heading="Tab 2"><i>Second</i> Content!</tab>
+    </tabset>
+    <hr />
+    <tabset vertical="true">
+      <tab heading="Vertical Tab 1"><b>First</b> Vertical Content!</tab>
+      <tab heading="Vertical Tab 2"><i>Second</i> Vertical Content!</tab>
+    </tabset>
+    <tabset justified="true">
+      <tab heading="Justified Tab 1"><b>First</b> Justified Content!</tab>
+      <tab heading="Justified Tab 2"><i>Second</i> Justified Content!</tab>
+    </tabset>
+  </file>
+</example>
+ */
+.directive('tabset', function() {
+  return {
+    restrict: 'EA',
+    transclude: true,
+    replace: true,
+    scope: {
+      type: '@'
+    },
+    controller: 'TabsetController',
+    templateUrl: 'template/tabs/tabset.html',
+    link: function(scope, element, attrs) {
+      scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
+      scope.justified = angular.isDefined(attrs.justified) ? scope.$parent.$eval(attrs.justified) : false;
+    }
+  };
+})
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tab
+ * @restrict EA
+ *
+ * @param {string=} heading The visible heading, or title, of the tab. Set HTML headings with {@link ui.bootstrap.tabs.directive:tabHeading tabHeading}.
+ * @param {string=} select An expression to evaluate when the tab is selected.
+ * @param {boolean=} active A binding, telling whether or not this tab is selected.
+ * @param {boolean=} disabled A binding, telling whether or not this tab is disabled.
+ *
+ * @description
+ * Creates a tab with a heading and content. Must be placed within a {@link ui.bootstrap.tabs.directive:tabset tabset}.
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+    <div ng-controller="TabsDemoCtrl">
+      <button class="btn btn-small" ng-click="items[0].active = true">
+        Select item 1, using active binding
+      </button>
+      <button class="btn btn-small" ng-click="items[1].disabled = !items[1].disabled">
+        Enable/disable item 2, using disabled binding
+      </button>
+      <br />
+      <tabset>
+        <tab heading="Tab 1">First Tab</tab>
+        <tab select="alertMe()">
+          <tab-heading><i class="icon-bell"></i> Alert me!</tab-heading>
+          Second Tab, with alert callback and html heading!
+        </tab>
+        <tab ng-repeat="item in items"
+          heading="{{item.title}}"
+          disabled="item.disabled"
+          active="item.active">
+          {{item.content}}
+        </tab>
+      </tabset>
+    </div>
+  </file>
+  <file name="script.js">
+    function TabsDemoCtrl($scope) {
+      $scope.items = [
+        { title:"Dynamic Title 1", content:"Dynamic Item 0" },
+        { title:"Dynamic Title 2", content:"Dynamic Item 1", disabled: true }
+      ];
+
+      $scope.alertMe = function() {
+        setTimeout(function() {
+          alert("You've selected the alert tab!");
+        });
+      };
+    };
+  </file>
+</example>
+ */
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabHeading
+ * @restrict EA
+ *
+ * @description
+ * Creates an HTML heading for a {@link ui.bootstrap.tabs.directive:tab tab}. Must be placed as a child of a tab element.
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+    <tabset>
+      <tab>
+        <tab-heading><b>HTML</b> in my titles?!</tab-heading>
+        And some content, too!
+      </tab>
+      <tab>
+        <tab-heading><i class="icon-heart"></i> Icon heading?!?</tab-heading>
+        That's right.
+      </tab>
+    </tabset>
+  </file>
+</example>
+ */
+.directive('tab', ['$parse', '$log', function($parse, $log) {
+  return {
+    require: '^tabset',
+    restrict: 'EA',
+    replace: true,
+    templateUrl: 'template/tabs/tab.html',
+    transclude: true,
+    scope: {
+      active: '=?',
+      heading: '@',
+      onSelect: '&select', //This callback is called in contentHeadingTransclude
+                          //once it inserts the tab's content into the dom
+      onDeselect: '&deselect'
+    },
+    controller: function() {
+      //Empty controller so other directives can require being 'under' a tab
+    },
+    compile: function(elm, attrs, transclude) {
+      return function postLink(scope, elm, attrs, tabsetCtrl) {
+        scope.$watch('active', function(active) {
+          if (active) {
+            tabsetCtrl.select(scope);
+          }
+        });
+
+        scope.disabled = false;
+        if ( attrs.disable ) {
+          scope.$parent.$watch($parse(attrs.disable), function(value) {
+            scope.disabled = !! value;
+          });
+        }
+
+        // Deprecation support of "disabled" parameter
+        // fix(tab): IE9 disabled attr renders grey text on enabled tab #2677
+        // This code is duplicated from the lines above to make it easy to remove once
+        // the feature has been completely deprecated
+        if ( attrs.disabled ) {
+          $log.warn('Use of "disabled" attribute has been deprecated, please use "disable"');
+          scope.$parent.$watch($parse(attrs.disabled), function(value) {
+            scope.disabled = !! value;
+          });
+        }
+
+        scope.select = function() {
+          if ( !scope.disabled ) {
+            scope.active = true;
+          }
+        };
+
+        tabsetCtrl.addTab(scope);
+        scope.$on('$destroy', function() {
+          tabsetCtrl.removeTab(scope);
+        });
+
+        //We need to transclude later, once the content container is ready.
+        //when this link happens, we're inside a tab heading.
+        scope.$transcludeFn = transclude;
+      };
+    }
+  };
+}])
+
+.directive('tabHeadingTransclude', [function() {
+  return {
+    restrict: 'A',
+    require: '^tab',
+    link: function(scope, elm, attrs, tabCtrl) {
+      scope.$watch('headingElement', function updateHeadingElement(heading) {
+        if (heading) {
+          elm.html('');
+          elm.append(heading);
+        }
+      });
+    }
+  };
+}])
+
+.directive('tabContentTransclude', function() {
+  return {
+    restrict: 'A',
+    require: '^tabset',
+    link: function(scope, elm, attrs) {
+      var tab = scope.$eval(attrs.tabContentTransclude);
+
+      //Now our tab is ready to be transcluded: both the tab heading area
+      //and the tab content area are loaded.  Transclude 'em both.
+      tab.$transcludeFn(tab.$parent, function(contents) {
+        angular.forEach(contents, function(node) {
+          if (isTabHeading(node)) {
+            //Let tabHeadingTransclude know.
+            tab.headingElement = node;
+          } else {
+            elm.append(node);
+          }
+        });
+      });
+    }
+  };
+  function isTabHeading(node) {
+    return node.tagName &&  (
+      node.hasAttribute('tab-heading') ||
+      node.hasAttribute('data-tab-heading') ||
+      node.tagName.toLowerCase() === 'tab-heading' ||
+      node.tagName.toLowerCase() === 'data-tab-heading'
+    );
+  }
+})
+
+;
 
 /**
  * @license AngularJS v1.3.6
@@ -102503,6 +103655,17 @@ angular.module('btford.socket-io', []).
     }];
   });
 
+/**
+* jquery.matchHeight-min.js master
+* http://brm.io/jquery-match-height/
+* License: MIT
+*/
+(function(c){var n=-1,f=-1,g=function(a){return parseFloat(a)||0},r=function(a){var b=null,d=[];c(a).each(function(){var a=c(this),k=a.offset().top-g(a.css("margin-top")),l=0<d.length?d[d.length-1]:null;null===l?d.push(a):1>=Math.floor(Math.abs(b-k))?d[d.length-1]=l.add(a):d.push(a);b=k});return d},p=function(a){var b={byRow:!0,property:"height",target:null,remove:!1};if("object"===typeof a)return c.extend(b,a);"boolean"===typeof a?b.byRow=a:"remove"===a&&(b.remove=!0);return b},b=c.fn.matchHeight=
+function(a){a=p(a);if(a.remove){var e=this;this.css(a.property,"");c.each(b._groups,function(a,b){b.elements=b.elements.not(e)});return this}if(1>=this.length&&!a.target)return this;b._groups.push({elements:this,options:a});b._apply(this,a);return this};b._groups=[];b._throttle=80;b._maintainScroll=!1;b._beforeUpdate=null;b._afterUpdate=null;b._apply=function(a,e){var d=p(e),h=c(a),k=[h],l=c(window).scrollTop(),f=c("html").outerHeight(!0),m=h.parents().filter(":hidden");m.each(function(){var a=c(this);
+a.data("style-cache",a.attr("style"))});m.css("display","block");d.byRow&&!d.target&&(h.each(function(){var a=c(this),b="inline-block"===a.css("display")?"inline-block":"block";a.data("style-cache",a.attr("style"));a.css({display:b,"padding-top":"0","padding-bottom":"0","margin-top":"0","margin-bottom":"0","border-top-width":"0","border-bottom-width":"0",height:"100px"})}),k=r(h),h.each(function(){var a=c(this);a.attr("style",a.data("style-cache")||"")}));c.each(k,function(a,b){var e=c(b),f=0;if(d.target)f=
+d.target.outerHeight(!1);else{if(d.byRow&&1>=e.length){e.css(d.property,"");return}e.each(function(){var a=c(this),b={display:"inline-block"===a.css("display")?"inline-block":"block"};b[d.property]="";a.css(b);a.outerHeight(!1)>f&&(f=a.outerHeight(!1));a.css("display","")})}e.each(function(){var a=c(this),b=0;d.target&&a.is(d.target)||("border-box"!==a.css("box-sizing")&&(b+=g(a.css("border-top-width"))+g(a.css("border-bottom-width")),b+=g(a.css("padding-top"))+g(a.css("padding-bottom"))),a.css(d.property,
+f-b))})});m.each(function(){var a=c(this);a.attr("style",a.data("style-cache")||null)});b._maintainScroll&&c(window).scrollTop(l/f*c("html").outerHeight(!0));return this};b._applyDataApi=function(){var a={};c("[data-match-height], [data-mh]").each(function(){var b=c(this),d=b.attr("data-mh")||b.attr("data-match-height");a[d]=d in a?a[d].add(b):b});c.each(a,function(){this.matchHeight(!0)})};var q=function(a){b._beforeUpdate&&b._beforeUpdate(a,b._groups);c.each(b._groups,function(){b._apply(this.elements,
+this.options)});b._afterUpdate&&b._afterUpdate(a,b._groups)};b._update=function(a,e){if(e&&"resize"===e.type){var d=c(window).width();if(d===n)return;n=d}a?-1===f&&(f=setTimeout(function(){q(e);f=-1},b._throttle)):q(e)};c(b._applyDataApi);c(window).bind("load",function(a){b._update(!1,a)});c(window).bind("resize orientationchange",function(a){b._update(!0,a)})})(jQuery);
 /*! AdminLTE app.js
  * ================
  * Main JS application file for AdminLTE v2. This file
@@ -103216,6 +104379,8 @@ function _init() {
 
 angular.module('baseApp', [
   'ui.router',
+  'ui.bootstrap.typeahead',
+  'ui.bootstrap.tabs',
   'ngResource',
   'btford.socket-io',
   'angular-loading-bar',
@@ -103331,6 +104496,37 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       controller: 'CalendarController',
       templateUrl: '/assets/html/calendar/index'
     })
+    .state('profile', {
+      url: '/profile',
+      controller: 'ProfileController',
+      templateUrl: '/assets/html/profile/profile-landing'
+    })
+    .state('profile.info', {
+      url: '/info'
+    })
+    .state('profile.contact', {
+      url: '/contact'
+    })
+    .state('profile.security', {
+      url: '/security'
+    })
+    .state('tasks', {
+      url: '/tasks',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
+    })
+    .state('tasks.current',{
+      url: '/current'
+    })
+    .state('tasks.new',{
+      url: '/new'
+    })
+    .state('tasks.view', {
+      url: '/:id'
+    })
+    .state('tasks.edit',{
+      url: '/:id/edit'
+    })
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
@@ -103355,7 +104551,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/archived'
     })
     .state('mail.view', {
-      url: '/view'
+      url: '/view/:id/:action'
     });
 
   $urlRouterProvider.otherwise('/');
@@ -103381,10 +104577,8 @@ angular.module('baseApp.controllers', [])
         currentUser.logout()
           .then( function(){
             delete $http.defaults.headers.common.Authorization;
-            $rootScope.setRole( 'any' );
             delete window.localStorage.Role;
             delete window.localStorage.Authorization;
-            $state.transitionTo('root');
           });
       };
 
@@ -103396,22 +104590,25 @@ angular.module('baseApp.controllers', [])
       $rootScope.setRole( window.localStorage.Role || 'any' );
 
       $rootScope.setAuthorizationHeader = function(token){
-        $http.defaults.headers.common.Authorization = token;
-        window.localStorage.Authorization = token;
+        if( token ) {
+          $http.defaults.headers.common.Authorization = token;
+          window.localStorage.Authorization = token;
+        }
       };
-      $rootScope.setAuthorizationHeader( window.localStorage.Authorization || '');
+      $rootScope.setAuthorizationHeader( window.localStorage.Authorization);
 
-      var path = $location.path();
-      if( ['/login','/register','/recoverpassword'].indexOf( $location.path() ) === -1 && !/passwordreset/.test(path) && !/confirm/.test(path) ){
-        currentUser.isLoggedIn()
-          .then( function(user){
-            console.log( user );
-            currentUser.login( user, false );
-          } , function( ){
-            console.log('user not authenticated');
-            //$state.transitionTo('login');
-          });
-      }
+      $rootScope.getProfile = function(route){
+        if( angular.isDefined( $http.defaults.headers.common.Authorization ) ) {
+          currentUser.isLoggedIn()
+            .then( function(response){
+              if( response.user ) {
+                currentUser.login( response.user, route || false );
+              }
+            });
+        }
+      };
+      $rootScope.getProfile();
+
       $rootScope.isDefined = function( val ){
         return angular.isDefined( val );
       };
@@ -103420,6 +104617,15 @@ angular.module('baseApp.controllers', [])
       $rootScope.user = 'anyUser';
 
       window.rootScope = $rootScope;
+
+      $rootScope.isSidebarCollapsed = window.localStorage.isSidebarCollapsed || false;
+      $rootScope.toggleSidebarCollapsed = function(){
+        if( window.localStorage.isSidebarCollapsed ) {
+          delete window.localStorage.isSidebarCollapsed;
+        } else {
+          window.localStorage.isSidebarCollapsed = true;
+        }
+      };
     }
   ]);
 
@@ -103494,7 +104700,7 @@ angular.module('baseApp.controllers')
           User.login( $scope.user )
             .then( function(res){
               $scope.setAuthorizationHeader( res.headers('Authorization') );
-              currentUser.login(res.user, true);
+              $scope.getProfile(true);
             }, function( err ){
               $scope.validationErrors = [err.data.message];
 
@@ -103567,8 +104773,8 @@ angular.module('baseApp.controllers')
 
 
 angular.module('baseApp.services')
-  .factory('currentUser', ['$state', '$location', '$rootScope', 'User',
-    function ($state, $location, $rootScope, User) {
+  .factory('currentUser', ['$state', '$location', '$rootScope', '$q', 'User',
+    function ($state, $location, $rootScope, $q, User) {
     'use strict';
 
     var currentUser;
@@ -103587,16 +104793,32 @@ angular.module('baseApp.services')
     }
 
     function logout(){
-      return User.logout();
+      var defer = $q.defer();
+      User.logout()
+        .then( function(){
+          currentUser = {role: 'any'};
+          $rootScope.setRole( 'any' );
+          $state.transitionTo('root');
+          defer.resolve();
+        });
+      return defer.promise;
+    }
+
+    function update( user ) {
+      return User.update( user );
     }
 
     return {
       get: function () {
         return currentUser;
       },
+      set: function( currUser ) {
+        currentUser = currUser;
+      },
       login: login,
       isLoggedIn: isLoggedIn,
-      logout: logout
+      logout: logout,
+      update: update
     };
   }]);
 
@@ -103829,7 +105051,7 @@ angular.module('baseApp.controllers')
       'use strict';
 
       var skip1 = false;
-      $scope.$watch( function(){ return SubHeader.get().breadcrumbs;}, function(n){
+      $scope.$watch( SubHeader.get, function(n){
 
         if( !skip1 ){
           skip1 = true;
@@ -104074,6 +105296,30 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
+  .directive('autoComplete', [ function(){
+    'use strict';
+    return {
+      restrict: 'E',
+      templateUrl: '/assets/html/directives/components/autocomplete/auto-complete-input.html',
+      scope: {
+        inputModel: '=',
+        placeholder: '@',
+        autoCompleteHttp: '='
+      }
+    };
+  }]);
+angular.module('baseApp.services').factory('Autocomplete',
+  [ '$resource', function($resource) {
+    'use strict';
+    var $api = $resource('/api/autocomplete/:action', { action: '@action' });
+
+    return {
+      get: function( query ) {
+        return $api.get( {action: query}).$promise;
+      }
+    };
+}]);
+angular.module('baseApp.directives')
   .directive('boxWidget', ['$rootScope',
     function(){
       'use strict';
@@ -104108,6 +105354,39 @@ angular.module('baseApp.directives')
       };
     }
   ])
+  .directive('iCheck', ['$timeout', function($timeout) {
+    'use strict';
+    return {
+      require: 'ngModel',
+      link: function ($scope, element, $attrs, ngModel) {
+        return $timeout(function () {
+          var value;
+          value = $attrs.value;
+
+          $scope.$watch($attrs.ngModel, function () {
+            $(element).iCheck('update');
+          });
+
+          return $(element).iCheck({
+            checkboxClass: 'icheckbox_flat-blue',
+            radioClass: 'iradio_flat-aero'
+
+          }).on('ifChanged', function (event) {
+            if ($(element).attr('type') === 'checkbox' && $attrs.ngModel) {
+              $scope.$apply(function () {
+                return ngModel.$setViewValue(event.target.checked);
+              });
+            }
+            if ($(element).attr('type') === 'radio' && $attrs.ngModel) {
+              return $scope.$apply(function () {
+                return ngModel.$setViewValue(value);
+              });
+            }
+          });
+        });
+      }
+    };
+  }])
   .directive('iCheckAll', ['$rootScope',
     function(){
       'use strict';
@@ -104151,7 +105430,7 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('pagination', ['$rootScope',
+  .directive('paginate', ['$rootScope',
     function(){
       'use strict';
       return {
@@ -104239,8 +105518,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('feedbackBox', [
-    function(){
+  .directive('feedbackBox', [ 'FeedbackService',
+    function( FeedbackService ){
       'use strict';
       return {
         restrict: 'E',
@@ -104249,6 +105528,19 @@ angular.module('baseApp.directives')
         scope: {
           validationErrors: '=errors',
           successMessage: '=success'
+        },
+        link: function(scope){
+          scope.$watch( FeedbackService.get, function(newMessage){
+            if( newMessage && newMessage.feedbackSuccess ) {
+              scope.successMessage = newMessage.feedbackSuccess;
+              delete scope.validationErrors;
+              FeedbackService.set({feedbackSuccess: null});
+            } else if (newMessage && newMessage.validationErrors ) {
+              scope.validationErrors = newMessage.validationErrors;
+              delete scope.successMessage;
+              FeedbackService.set({validationErrors: null});
+            }
+          });
         }
       };
     }
@@ -104263,9 +105555,9 @@ angular.module('baseApp.directives')
         },
         replace: true,
         template: '<div id="message-box-slot" ng-show="msg" style="border-radius: 0">'+
-        '<div id="message_success" class="message success">'+
-        '<i class="fa fa-check-square-o fa-2x" style="float: left; color:#68B25B; margin-top: 3px"></i>'+
-        '<h6>{{msg}}</h6>'+
+        '<div id="message_success" class="bg-success">'+
+        '<i class="fa fa-check-square-o fa-2x text-success"></i>'+
+        '<h6 class="text-success">{{msg}}</h6>'+
         '</div></div>'
       };
     }
@@ -104279,11 +105571,12 @@ angular.module('baseApp.directives')
           validationErrors: '=validationErrors'
         },
         replace: true, // Replace with the template below
-        template: '<div class="alert alert-danger text-center" role="alert" ng-show="validationErrors.length" style="margin-bottom: -20px; border-radius: 0">'+
-        '<i class="fa fa-exclamation-triangle"></i>'+
-        '<strong>We have a few errors</strong>'+
-        '<ul class="ng-hide"><li ng-repeat="error in validationErrors">{{error}}</li></ul>'+
-        '</div>'
+        template: '<div id="message-box-slot" ng-show="validationErrors.length">'+
+        '<div id="message_error" class="bg-danger">'+
+        '<i class="fa fa-exclamation-triangle fa-2x text-danger"></i>'+
+        '<h6 class="text-danger">We have a few errors</h6>'+
+        '<ul><li ng-repeat="error in validationErrors">{{error}}</li></ul>'+
+        '</div></div>'
       };
     }
   ]);
@@ -104333,6 +105626,18 @@ angular.module('baseApp.directives')
       };
     }
   ]);
+angular.module('baseApp.directives')
+  .directive('repeatEnd', function(){
+    'use strict';
+    return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+        if (scope.$last) {
+          scope.$eval(attrs.repeatEnd);
+        }
+      }
+    };
+  });
 angular.module('baseApp.filters');
 angular.module('baseApp.controllers')
   .controller('KnowledgeController', ['$scope',
@@ -104364,8 +105669,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope',
-    function( $rootScope ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser',
+    function( $rootScope, currentUser ){
       'use strict';
       return {
         restrict: 'A',
@@ -104375,16 +105680,25 @@ angular.module('baseApp.directives')
         },
         link: function(scope) {
           scope.logout = $rootScope.logout;
-          scope.$watch( 'role', function(newRole){
-            switch( newRole ){
+          scope.current = currentUser.get();
+          scope.$watch( currentUser.get, function(newUser){
+            if( typeof newUser === 'undefined' ) {
+              newUser = {role: 'any'};
+            }
+            switch( newUser.role ){
               case 'any':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop2';
                 break;
               case 'admin':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop';
+                scope.user = newUser;
+                console.log( newUser );
                 break;
               default:
             }
+            scope.toggleSidebar = function(){
+              $rootScope.toggleSidebarCollapsed();
+            };
           });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
@@ -104404,8 +105718,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('sideBar', ['$rootScope',
-    function($rootScope){
+  .directive('sideBar', ['$rootScope','$state',
+    function($rootScope, $state){
       'use strict';
       return {
         restrict: 'A',
@@ -104429,18 +105743,24 @@ angular.module('baseApp.directives')
               default:
             }
           });
+          scope.goTo = function( state, id ) {
+            if( $('#'+id).next().height() < 10 ) {
+              $state.go( state );
+            }
+          };
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };
     }
   ]);
-// jshint maxstatements:40
+// jshint maxstatements:60
 angular.module('baseApp.controllers')
   .controller('MailboxController', ['$scope','$state', 'Mail','SubHeader',
     function($scope, $state, Mail, SubHeader){
       'use strict';
-
+      /*jshint maxcomplexity:10 */
       $scope.config = {};
+      $scope.viewFolder = null;
       function setupPagination() {
         $scope.config.pagination = {
           total: $scope.messages.length,
@@ -104467,11 +105787,13 @@ angular.module('baseApp.controllers')
       }
       $scope.mailProperties = {};
       $scope.messagesProperties = {};
+      $scope.messages = [];
       if( $state.includes('mail.drafts') ) {
+        $scope.viewFolder = 'drafts';
         $scope.config.title = 'Draft Messages';
         Mail.getAllDrafts()
           .then( function(draftMessages){
-            $scope.messages = draftMessages;
+            $scope.messages = draftMessages.messages;
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -104481,10 +105803,12 @@ angular.module('baseApp.controllers')
         setHeader( 'Drafts' );
         SubHeader.set.subTitle = 'Draft Messages';
       } else if( $state.includes('mail.sent') ) {
+        $scope.viewFolder = 'sent';
         $scope.config.title = 'Sent Messages';
         Mail.getAllSent()
           .then( function(sentMessages){
-            $scope.messages = sentMessages;
+            $scope.messages = sentMessages.messages;
+            console.log( $scope.messages );
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -104494,10 +105818,12 @@ angular.module('baseApp.controllers')
         setHeader( 'Sent' );
         SubHeader.set.subTitle = 'Sent Messages';
       } else if( $state.includes('mail.starred') ) {
+        $scope.viewFolder = 'starred';
         $scope.config.title = 'Starred Messages';
         Mail.getAllStarred()
           .then( function(starredMessages){
-            $scope.messages = starredMessages;
+            $scope.messages = starredMessages.messages;
+            console.log( $scope.messages );
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -104507,10 +105833,11 @@ angular.module('baseApp.controllers')
         setHeader( 'Starred' );
         SubHeader.set.subTitle = 'Starred Messages';
       } else if( $state.includes('mail.archived') ) {
+        $scope.viewFolder = 'archived';
         $scope.config.title = 'Archived Messages';
         Mail.getAllArchived()
           .then( function(archivedMessages){
-            $scope.messages = archivedMessages;
+            $scope.messages = archivedMessages.messages;
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -104520,10 +105847,11 @@ angular.module('baseApp.controllers')
         setHeader( 'Archived' );
         SubHeader.set.subTitle = 'Archived Messages';
       } else if( $state.includes('mail.view') ) {
+        $scope.viewFolder = $state.params.action || 'view';
         $scope.config.title = 'Read Mail';
-        Mail.getMessage(0)
+        Mail.getMessage($state.params.id)
           .then( function(message){
-            $scope.message = message;
+            $scope.message = message.messages[0];
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -104533,14 +105861,16 @@ angular.module('baseApp.controllers')
         setHeader( 'Read Mail' );
         SubHeader.set.subTitle = 'Archived Messages';
       } else if( $state.includes('mail') ) {
+        $scope.viewFolder = 'inbox';
         $scope.config.title = 'Inbox Messages';
         Mail.getAllInbox()
           .then( function(inboxMessages){
-            $scope.messages = inboxMessages;
+            $scope.messages = inboxMessages.messages;
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
             };
+            console.log( $scope.messages );
             setupPagination();
           });
         setHeader( 'Inbox' );
@@ -104549,36 +105879,193 @@ angular.module('baseApp.controllers')
 
       $scope.actions = {
         save: function( message ){
+          message.content = $('#wysihtml5-content').val();
           return Mail.saveMessage( message );
         },
         send: function( message ){
+          message.content = $('#wysihtml5-content').val();
           return Mail.sendMessage( message );
         }
 
       };
+      console.log( $scope.messages );
     }
   ]
 );
 angular.module('baseApp.directives')
-  .directive('mailboxInbox', ['$rootScope',
-    function( ){
+  .directive('mailboxInbox', [ 'Mail',
+    function( Mail ){
       'use strict';
       return {
         restrict: 'A',
         replace: true,
-        templateUrl: '/assets/html/mail/directiveMailMessages',
+        templateUrl: '/assets/html/mail/directiveMailMessagesInbox',
         scope: {
           messages: '=',
           config: '='
         },
         link: function(scope) {
           scope.toggleStar = function ( index ){
-            console.log(index);
+            scope.messages[index].toStarred = !scope.messages[index].toStarred;
+            Mail.setStarred( scope.messages[index], 'toStarred' )
+              .then( function(){
+                console.log('toStarred');
+              });
+          };
+          scope.moveArchived = function ( index ){
+            scope.messages[index].toArchived = true;
+            Mail.setArchived( scope.messages[index], 'toArchived' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+          scope.moveDeleted = function ( index ){
+            scope.messages[index].toDeleted = true;
+            Mail.setDeleted( scope.messages[index], 'toDeleted' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
           };
         }
       };
     }
-  ]);
+  ])
+  .directive('mailboxStarred', ['Mail', 'currentUser',
+    function( Mail, currentUser ){
+      'use strict';
+      return {
+        restrict: 'A',
+        replace: true,
+        templateUrl: '/assets/html/mail/directiveMailMessagesStarred',
+        scope: {
+          messages: '=',
+          config: '='
+        },
+        link: function(scope) {
+          scope.toggleStar = function ( index ){
+            var field;
+            if( scope.messages[index].fromUser._id === currentUser.get()._id ) {
+              field = 'fromStarred';
+              scope.messages[index].fromStarred = !scope.messages[index].fromStarred;
+            } else {
+              field = 'toStarred';
+              scope.messages[index].toStarred = !scope.messages[index].toStarred;
+            }
+            Mail.setStarred( scope.messages[index], field )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+        }
+      };
+    }
+  ])
+  .directive('mailboxDrafts', [ 'Mail',
+    function( Mail ){
+      'use strict';
+      return {
+        restrict: 'A',
+        replace: true,
+        templateUrl: '/assets/html/mail/directiveMailMessagesDrafts',
+        scope: {
+          messages: '=',
+          config: '='
+        },
+        link: function(scope) {
+          scope.moveDeleted = function ( index ){
+            scope.messages[index].fromDeleted = true;
+            Mail.setDeleted( scope.messages[index], 'fromDeleted' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+        }
+      };
+    }
+  ])
+  .directive('mailboxSent', ['Mail',
+    function( Mail ){
+      'use strict';
+      return {
+        restrict: 'A',
+        replace: true,
+        templateUrl: '/assets/html/mail/directiveMailMessagesSent',
+        scope: {
+          messages: '=',
+          config: '='
+        },
+        link: function(scope) {
+          scope.toggleStar = function ( index ){
+            scope.messages[index].fromStarred = !scope.messages[index].fromStarred;
+            Mail.setStarred( scope.messages[index], 'fromStarred' )
+              .then( function(){
+                //
+              });
+          };
+          scope.moveArchived = function ( index ){
+            scope.messages[index].fromArchived = true;
+            Mail.setArchived( scope.messages[index], 'fromArchived' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+          scope.moveDeleted = function ( index ){
+            scope.messages[index].fromDeleted = true;
+            Mail.setDeleted( scope.messages[index], 'fromDeleted' )
+              .then( function(){
+                scope.messages.splice( index, 1 );
+              });
+          };
+        }
+      };
+    }
+  ])
+  .directive('mailboxArchived', ['Mail','currentUser',
+  function( Mail, currentUser ){
+    'use strict';
+    return {
+      restrict: 'A',
+      replace: true,
+      templateUrl: '/assets/html/mail/directiveMailMessagesArchived',
+      scope: {
+        messages: '=',
+        config: '='
+      },
+      link: function(scope) {
+        scope.toggleStar = function ( index ){
+          var field;
+          if( scope.messages[index].fromUser._id === currentUser.get()._id ) {
+            field = 'fromStarred';
+            scope.messages[index].fromStarred = !scope.messages[index].fromStarred;
+          } else {
+            field = 'toStarred';
+            scope.messages[index].toStarred = !scope.messages[index].toStarred;
+          }
+          Mail.setStarred( scope.messages[index], field )
+            .then( function(){
+              console.log(field, ' complete!');
+            });
+        };
+        scope.unArchived = function ( index ){
+          var field;
+          if( scope.messages[index].fromUser._id === currentUser.get()._id ) {
+            field = 'fromArchived';
+            scope.messages[index][field] = false;
+          } else {
+            field = 'toArchived';
+            scope.messages[index][field] = false;
+          }
+          Mail.setArchived( scope.messages[index], field )
+            .then( function(){
+              scope.messages.splice( index, 1 );
+            });
+        };
+        scope.addToSelected = function(index) {
+          console.log( scope.messages[index] );
+        };
+      }
+    };
+  }]);
 angular.module('baseApp.directives')
   .directive('mailboxMessage', ['$rootScope',
     function( ){
@@ -104588,7 +106075,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/mail/directiveMessage',
         scope: {
-          messages: '=',
+          message: '=',
           config: '='
         },
         link: function() {
@@ -104619,7 +106106,7 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('mailboxTopMenu', ['$rootScope',
+  .directive('mailboxTopMenu', [
     function( ){
       'use strict';
       return {
@@ -104627,35 +106114,70 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/mail/directiveTopMenu',
         scope: {
-          config: '='
+          config: '=',
+          messages: '='
         },
-        link: function() {
+        link: function(scope) {
+          scope.removeMail = function() {
+            window.alert('remocing');
+            console.log( scope.messages );
+
+          };
         }
       };
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('modalComposeMessage', ['$rootScope',
-    function( ){
+  .directive('modalComposeMessage', ['$http','_','currentUser',
+    function( $http, _, currentUser ){
       'use strict';
       return {
         restrict: 'E',
         templateUrl: '/assets/html/mail/modalComposeMessage',
         replace: true,
+        scope: {
+          message: '=',
+          actions: '='
+        },
         link: function(scope) {
           scope.$on('event:composeMessage', function(){
-            scope.message = {
-              to: '',
+            scope.mail = {
+              toUser: '',
               subject: '',
               content: ''
             };
-            scope.$parent.dataObject = scope.message;
+            scope.$parent.$parent.dataObject = scope.mail;
             $('#wysihtml5-content').data('wysihtml5').editor.clear();
+          });
+
+          scope.$watch( 'message', function(msg) {
+            if( msg ) {
+              scope.mail = msg;
+              scope.mail.toUser = msg.toUser.email;
+              scope.send = scope.actions.send;
+              scope.save = scope.actions.save;
+            }
           });
 
           $('#modalComposeMessage').on('hidden.bs.modal', function () {
             console.log('i closed');
           });
+
+          scope.getAutoCompleteUserEmails = function(val) {
+            return $http.get('/api/autocomplete/users', {
+              params: {
+                q: val
+              }
+            }).then(function(response){
+              var filteredUserList =  _
+                .filter( response.data.users, function(user){
+                  return user.email !== currentUser.get().email;
+                });
+              return filteredUserList.map(function(user){
+                return user.email;
+              });
+            });
+          };
         }
       };
     }
@@ -104681,148 +106203,56 @@ angular.module('baseApp.services')
       }
     );
   }])
-  .factory('Mail', [ 'MailResource', '$q', '_', function( MailResource, $q, _) {
+  .factory('Mail', [ 'MailResource', function( MailResource ) {
     'use strict';
-    function aPromiseAndDelayedResolve( resolveData, param ) {
-      var defer = $q.defer();
-      if( typeof resolveData === 'function' ){
-        setTimeout( function(){ var res = resolveData( param ); defer.resolve( res );}, 50);
-      } else {
-        setTimeout( function(){ defer.resolve( resolveData );}, 50);
-      }
-      return defer.promise;
-    }
-    var inboxMessages = [
-      {
-        read: 0,
-        starred: 0,
-        from: 'support@whichdegree.co',
-        subject: 'Message Subject is Placed Here',
-        time: new Date(),
-        content: 'Hello John, <br/><br/>Paragraph 1<br/><br/>Paragraph 2<br/><br/>Paragraph 3<br/><br/>Paragraph 4',
-        attachments: [
-          {
-            type: 'document',
-            filename: 'sep2014-report.pdf',
-            icon: 'pdf',
-            size: 1245
-          },
-          {
-            type: 'document',
-            filename: 'App Description.docx',
-            icon: 'word',
-            size: 1245
-          },
-          {
-            type: 'photo',
-            filename: 'photo1.png',
-            icon: 'https://almsaeedstudio.com/themes/AdminLTE/dist/img/photo1.png',
-            size: 2670000
-          }
-        ]
-      },
-      {
-        read: 1,
-        starred: 0,
-        from: 'John Doe',
-        subject: 'Urgent! Please Read',
-        content: 'Hello world!',
-        attachments: [],
-        time: new Date()
-      },
-      {
-        read: 0,
-        starred: 1,
-        from: 'Jesus Rocha',
-        subject: 'AdminLTE 2.0 Issue - Trying to find a solution to this problem...',
-        content: 'Hello world!',
-        attachments: [],
-        time: new Date()
-      },
-      {
-        read: 0,
-        starred: 1,
-        from: 'John Doe',
-        time: new Date(),
-        subject: 'Sucka! This Starred',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var draftMessages = [
-      {
-        to: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Yeah Sucka!',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var sentMessages = [
-      {
-        to: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Sucka! This Sent',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
-    var archivedMessages = [
-      {
-        from: 'rjezuz@gmail.com',
-        time: new Date(),
-        subject: 'Sucka! This Archived',
-        content: 'This is it so far',
-        attachments: []
-      }
-    ];
+
     return {
       getAllInbox: function(){
-        return aPromiseAndDelayedResolve( inboxMessages );
-        //return MailResource.read( {action: 'inbox'}).$promise;
+        return MailResource.read( {action: 'inbox'} ).$promise;
       },
-      getMessage: function( i ) {
-        return aPromiseAndDelayedResolve( inboxMessages[i] );
+      getMessage: function( id ) {
+        return MailResource.read( {action: id} ).$promise;
       },
-      getAllDrafts: function(){
-        return aPromiseAndDelayedResolve( draftMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllDrafts: function() {
+        return MailResource.read( {action: 'drafts'} ).$promise;
       },
-      getAllSent: function(){
-        return aPromiseAndDelayedResolve( sentMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllSent: function() {
+        return MailResource.read( {action: 'sent'} ).$promise;
       },
-      getAllStarred: function(){
-        var starredMessages = _(inboxMessages)
-          .filter( function(msg){ return msg.starred; });
-        return aPromiseAndDelayedResolve( starredMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllStarred: function() {
+        return MailResource.read( {action: 'starred'} ).$promise;
       },
-      getAllArchived: function(){
-
-        return aPromiseAndDelayedResolve( archivedMessages );
-        //return MailResource.read( {action: 'drafts'}).$promise;
+      getAllArchived: function() {
+        return MailResource.read( {action: 'archived'} ).$promise;
       },
-      saveMessage: function(message){
-        return aPromiseAndDelayedResolve( function(message){
-          message.time = new Date();
-          draftMessages.push( message );
-          return  true;
-        }, message);
+      saveMessage: function(message) {
+        message.fromDraft = true;
+        return MailResource.create( {}, {mail: message} ).$promise;
       },
-      sendMessage: function(message){
-        return aPromiseAndDelayedResolve( function(message){
-          message.time = new Date();
-          sentMessages.push( message );
-          return  true;
-        }, message);
+      sendMessage: function(message) {
+        message.fromDraft = false;
+        return MailResource.create( {}, {mail: message} ).$promise;
+      },
+      setStarred: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'starred'}, mail).$promise;
+      },
+      setArchived: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'archived'}, mail).$promise;
+      },
+      setDeleted: function( message, field ) {
+        var mail = { mail: {id: message._id}};
+        mail.mail[field] = message[field];
+        return MailResource.update( {action: 'delete'}, mail).$promise;
       }
     };
   }]);
 
-var tmp = {};
 angular.module('baseApp.directives')
-  .directive('modalWindow', [
+  .directive('modalWindowView', [
     function(){
       'use strict';
       return {
@@ -104836,8 +106266,6 @@ angular.module('baseApp.directives')
           actions: '='
         },
         link: function(scope, elem, attrs){
-          tmp.scope = scope;
-          tmp.elem = elem;
           scope.modalId = attrs.modalId;
           scope.type = attrs.type;
           scope.title = attrs.title;
@@ -104845,13 +106273,19 @@ angular.module('baseApp.directives')
           scope.save = function(){
             scope.actions.save( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.send = function(){
             scope.actions.send( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.discard = function( ){
@@ -104864,6 +106298,145 @@ angular.module('baseApp.directives')
       };
     }
   ]);
+angular.module('baseApp.controllers')
+  .controller('ProfileController', ['$scope', '$state', function( $scope, $state ) {
+    'use strict';
+
+    $scope.activeState = $state.current.name;
+    $scope.tab = [false, false, false, false];
+    switch( $state.current.name ) {
+      case 'profile':
+        $scope.tab[0] = true;
+        break;
+      case 'profile.info':
+        $scope.tab[1] = true;
+        break;
+      case 'profile.contact':
+        $scope.tab[2] = true;
+        break;
+      case 'profile.security':
+        $scope.tab[3] = true;
+        break;
+      default:
+        $scope.tab[0] = true;
+        break;
+    }
+
+    $scope.tabSelect = function(val){
+      $scope.state = val;
+    };
+  }]);
+angular.module('baseApp.directives')
+  .directive( 'profileSummary', ['currentUser', function( currentUser) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/profile/directive-summary',
+      link: function(scope) {
+        scope.current = currentUser.get();
+        console.log( scope.current );
+      }
+    };
+  }])
+  .directive( 'profileInfo', ['currentUser', '_', 'FeedbackService',  function( currentUser, _, FeedbackService) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/profile/directive-info',
+      scope: {},
+      link: function(scope) {
+        var user = currentUser.get();
+        scope.user = {
+          firstName: user.firstName,
+          lastName: user.lastName
+        };
+        scope.update = function() {
+          currentUser.update(_.extendOwn( {firstName: '', lastName: ''}, scope.user) )
+            .then( function(res) {
+              currentUser.set( _.extendOwn( currentUser.get(), res.user ) );
+              FeedbackService.set({feedbackSuccess: 'Profile Updated!'});
+            }, function(){
+              FeedbackService.set({validationErrors: ['Error Updating']});
+            });
+        };
+      }
+    };
+  }])
+  .directive( 'profileContact', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/profile/directive-contact',
+      scope: {
+        state: '='
+      },
+      link: function(scope) {
+        function _init() {
+          scope.user = {
+            email: '',
+            currentPassword: ''
+          };
+        }
+
+        scope.$watch( 'state', function(){
+          _init();
+        });
+
+        scope.update = function() {
+          currentUser.update( scope.user )
+            .then( function() {
+              _init();
+              FeedbackService.set({feedbackSuccess: 'Email Updated!'});
+            }, function(){
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
+            });
+        };
+      }
+    };
+  }])
+  .directive( 'profileSecurity', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService ) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/profile/directive-security',
+      scope: {
+        state: '='
+      },
+      link: function(scope) {
+        function _init() {
+          scope.user = {
+            currentPassword: '',
+            password: '',
+            confirmPassword: ''
+          };
+        }
+
+        scope.$watch( 'state', function(){
+          _init();
+        });
+
+        scope.update = function(){
+          if( scope.user.password !== scope.user.confirmPassword ) {
+            scope.validationErrors = ['Passwords do not match.'];
+          }
+
+          currentUser.update( scope.user )
+            .then( function() {
+              _init();
+              FeedbackService.set({feedbackSuccess: 'Password Updated!'});
+            }, function(){
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
+            });
+        };
+      }
+    };
+  }]);
 /* global confirm */
 
 angular.module('baseApp.controllers')
@@ -104917,7 +106490,24 @@ angular.module('baseApp.services')
       get: function(){
         return subHeader;
       },
-      set: subHeader
+      set: subHeader,
+      setHeader: function setHeader( name ) {
+        subHeader.title = 'Task';
+        subHeader.breadcrumbs = [
+          {
+            url: 'adminDash',
+            value: 'Home'
+          },
+          {
+            url: 'task',
+            value: 'Task'
+          },
+          {
+            url: 'adminDash',
+            value: name
+          }
+        ];
+      }
     };
   }]);
 
@@ -105018,7 +106608,11 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     },
     makeAdmin: function(email){
       return UserResource.put( {action: 'other'}, {email: email, role: 'admin'}).$promise;
+    },
+    update: function( user ) {
+      return UserResource.put( {action: 'me'}, user).$promise;
     }
+
   };
 }]);
 
@@ -105067,6 +106661,17 @@ angular.module('baseApp.services')
       getSessionToCMS: function(){
         return AdminResource.get( {action: 'cms', id: 'session'}).$promise;
       }
+    };
+  }]);
+angular.module('baseApp.services')
+  .factory('FeedbackService', [ function() {
+    'use strict';
+
+    var feedbackObject = {};
+
+    return {
+      get: function(){ return feedbackObject; },
+      set: function(val){ feedbackObject = val; }
     };
   }]);
 angular.module('baseApp.services')
@@ -105179,6 +106784,261 @@ angular.module('baseApp.services')
       }
     };
   }]);
+// jshint maxstatements:60
+angular.module('baseApp.controllers')
+  .controller('TaskController', ['$scope','$state', 'Task',
+    function($scope, $state, Task){
+      'use strict';
+      /*jshint maxcomplexity:10 */
+
+      $scope.tab = [false, false, false, false];
+      switch( $state.current.name ) {
+        case 'tasks.current':
+          $scope.tab[0] = true;
+          break;
+        case 'tasks':
+          $scope.tab[1] = true;
+          break;
+        case 'tasks.new':
+          $scope.tab[2] = true;
+          break;
+        case 'tasks.edit':
+          $scope.tab[3] = true;
+          $scope.id = $state.params.id;
+          break;
+        default:
+          $scope.tab[0] = true;
+          break;
+      }
+
+      $scope.actions = {
+        save: function( task ){
+          task.description = $('#wysihtml5-content').val();
+          return Task.save( task );
+        },
+        send: function( task ){
+          task.description = $('#wysihtml5-content').val();
+          return Task.create( task );
+        }
+      };
+    }
+  ]
+);
+angular.module('baseApp.directives')
+  .directive( 'tasksCurrent', [ 'Task','SubHeader', function( Task, SubHeader ) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directiveTasksCurrent',
+      scope: {
+        active: '='
+      },
+      link: function( scope ) {
+        scope.initDraggable = function(){
+          $('.current-tasks div.current-task').each( function(){
+            $(this).draggable({
+              zIndex: 1070,
+              revert: true, // will cause the event to go back to its
+              revertDuration: 0  //  original position after the drag
+            });
+          });
+        };
+
+        $('.drop-test').each( function(){
+          $( this ).droppable({
+            accept: '.current-task',
+            hoverClass: 'droppable-hover',
+            drop: function(event, ui) {
+              var dropped = ui.draggable;
+              var droppedOn = $(this);
+              var task = {};
+              var newParent = $(this).attr('id'), oldParent = dropped.parent().parent().attr('id');
+              if( newParent ) {
+                task[ newParent ] = true;
+              }
+              task[ oldParent ] = false;
+              if( newParent === oldParent ) {
+                return;
+              }
+              Task.update( dropped.attr('id'), task )
+                .then( function(){
+                  $(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
+                });
+            }
+          });
+        });
+        $('.box-title').matchHeight();
+        if( scope.active ) {
+          Task.getAll()
+            .then( function(response){
+              scope.tasks = response.tasks;
+            });
+          SubHeader.setHeader( 'Tasks' );
+          SubHeader.set.subTitle = 'Viewing Current';
+        }
+      }
+    };
+  }])
+  .directive('tasksBacklog', ['Task','SubHeader', function(Task, SubHeader) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directiveTasksBacklog',
+      scope: {
+        active: '='
+      },
+      link: function( scope ) {
+        if( scope.active ) {
+          SubHeader.setHeader( 'Tasks' );
+          SubHeader.set.subTitle = 'Viewing All Backlog';
+          Task.getAll()
+            .then( function(response){
+              scope.tasks = response.tasks;
+              if( scope.tasks.length ) {
+                scope.current = scope.tasks[0];
+              }
+            });
+        }
+        scope.loadTask = function(id){
+          scope.current = scope.tasks[id];
+        };
+        scope.assignToMe = function(id){
+          Task.assignToMe(id)
+            .then( function(){
+              window.alert('assigned');
+            });
+        };
+      }
+    };
+  }])
+  .directive('tasksNew', ['Task','SubHeader','$state',function( Task, SubHeader, $state ){
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directiveTasksNew',
+      scope: {
+        active: '=',
+        id: '=edit'
+      },
+      link: function(scope){
+        var currColor = '#f56954';
+        var colorChooser = $('.color-chooser-btn');
+        $('#color-chooser > li > a').click(function(e) {
+          e.preventDefault();
+          currColor = $(this).css('color');
+          colorChooser
+            .css({'background-color': currColor, 'border-color': currColor})
+            .html('Color: <span class="caret"></span>');
+          scope.task.color = currColor;
+        });
+
+
+        scope.task = {};
+        if( scope.id ) {
+          Task.getOne( scope.id )
+            .then( function(response){
+              scope.task = response.task;
+              $('.color-chooser-btn')
+                .css({'background-color': scope.task.color, 'border-color': scope.task.color})
+                .html('Color:  <span class="caret"></span>');
+              console.log( scope.task );
+              //$('#wysihtml5-content').val( scope.task.description );
+            });
+          if( scope.active ) {
+            SubHeader.setHeader( 'Tasks' );
+            SubHeader.set.subTitle = 'Edit Task';
+          }
+        } else {
+          if( scope.active ) {
+            SubHeader.setHeader( 'Tasks' );
+            SubHeader.set.subTitle = 'New Task';
+          }
+          scope.task = {
+            color: currColor
+          };
+        }
+        scope.save = function(){
+          scope.task.description = $('#wysihtml5-content').val();
+          Task.save( scope.task )
+            .then( function(){
+              $state.go('tasks',{}, { reload: true });
+            });
+
+        };
+      }
+    };
+  }])
+  .directive('tasksView', ['Task','SubHeader',function(Task, SubHeader){
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/directive/TasksView',
+      scope: {
+        id: '=',
+        active: '='
+      },
+      link: function(scope){
+        Task.getOne( scope.id )
+          .then( function(response){
+            scope.task = response.task;
+          });
+        if( scope.active ) {
+          SubHeader.setHeader( 'Tasks' );
+          SubHeader.set.subTitle = 'Viewing Task';
+        }
+      }
+    };
+  }]);
+angular.module('baseApp.services')
+  .factory('TaskResource', [ '$resource', function($resource) {
+    'use strict';
+    return $resource('/api/tasks/:id',
+      { id: '@id' },
+      {
+        create: {
+          method: 'POST'
+        },
+        read: {
+          method: 'GET'
+        },
+        update: {
+          method: 'PUT'
+        },
+        remove: {
+          method: 'DELETE'
+        }
+      }
+    );
+  }])
+  .factory('Task', [ 'TaskResource', function( TaskResource ) {
+    'use strict';
+
+    return {
+      getAll: function(){
+        return TaskResource.read().$promise;
+      },
+      getOne: function( id ) {
+        return TaskResource.read( {id: id} ).$promise;
+      },
+      save: function( obj ) {
+        return TaskResource.create( {task: obj} ).$promise;
+      },
+      create: function( obj ) {
+        return TaskResource.create( {task: obj} ).$promise;
+      },
+      update: function( id, obj ) {
+        return TaskResource.update( {id: id}, {task: obj} ) .$promise;
+      },
+      assignToMe: function(id){
+        return TaskResource.update( {id: id} ).$promise;
+      }
+    };
+  }]);
+
 /* global confirm */
 /* global $ */
 

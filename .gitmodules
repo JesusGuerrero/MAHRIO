@@ -1,3 +1,0 @@
-[submodule ".devops"]
-	path = .devops
-	url = https://github.com/WhichDegree/.devops.git

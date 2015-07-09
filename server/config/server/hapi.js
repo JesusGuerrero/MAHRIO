@@ -7,8 +7,6 @@ var Hapi = require('hapi'),
 
 var server = new Hapi.Server();
 
-
-
 module.exports = function (config, url) {
   var logError = function (err) { if (err) { console.error(err); }};
 
@@ -35,8 +33,7 @@ module.exports = function (config, url) {
     socket.on('event:ping', messageHandler );
   };
 
-  server.connection({
-    host: url,
+  var serverConfig = {
     port: config.port,
     routes: {
       files: {
@@ -49,7 +46,11 @@ module.exports = function (config, url) {
         additionalExposedHeaders: ['Authorization']
       }
     }
-  });
+  };
+  if( config.env !== 'production') {
+    serverConfig.host = url;
+  }
+  server.connection( serverConfig );
 
   server.sendEmail = require('../email/setup');
 

@@ -1,0 +1,27 @@
+.box-body.no-padding
+    .table-responsive
+        div.text-center.modal-body( ng-show="!messages.length")
+            |   Nothing here.
+        table.table.table-mailbox( ng-show="messages.length")
+            tr(ng-repeat="message in messages track by $index"
+                    ng-class="message.toRead != undefined && !message.toRead ? 'bg-warning' : ''")
+                td.mailbox-check
+                    input( type="checkbox" ng-model="message.checked" ng-change="addToSelected($index)" i-check)
+                td.mailbox-star
+                    a( href="javascript:void(0);" ng-click="moveArchived($index)")
+                        i.fa.fa-folder-o.text-green
+                    |   &nbsp;&nbsp;
+                    a( href="javascript:void(0);" ng-click="toggleStar($index)")
+                        i.fa.text-yellow(ng-class="message.toStarred ? 'fa-star' : 'fa-star-o'")
+                td.mailbox-name
+                    |   {{message.fromUser.firstName}}, {{message.toUser.firstName}}
+                td.mailbox-subject
+                    a( ui-sref="mail.view({id: message._id})" ui-sref-opts="{reload: true}")
+                        | {{message.subject}}
+                td.mailbox-attachment
+                    |   &nbsp;
+                td.mailbox-date
+                    |   {{message.created | date: mediumDate}}
+
+    .box-footer.clearfixN
+        paginate( right config="config.pagination" )

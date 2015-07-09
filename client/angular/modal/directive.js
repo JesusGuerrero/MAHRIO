@@ -1,6 +1,5 @@
-var tmp = {};
 angular.module('baseApp.directives')
-  .directive('modalWindow', [
+  .directive('modalWindowView', [
     function(){
       'use strict';
       return {
@@ -14,8 +13,6 @@ angular.module('baseApp.directives')
           actions: '='
         },
         link: function(scope, elem, attrs){
-          tmp.scope = scope;
-          tmp.elem = elem;
           scope.modalId = attrs.modalId;
           scope.type = attrs.type;
           scope.title = attrs.title;
@@ -23,13 +20,19 @@ angular.module('baseApp.directives')
           scope.save = function(){
             scope.actions.save( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.send = function(){
             scope.actions.send( scope.dataObject )
               .then( function(){
+                //window.alert('success');
                 $(elem).modal('hide');
+              }, function(){
+                window.alert('failed');
               });
           };
           scope.discard = function( ){

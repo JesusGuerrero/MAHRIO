@@ -95,6 +95,10 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     },
     makeAdmin: function(email){
       return UserResource.put( {action: 'other'}, {email: email, role: 'admin'}).$promise;
+    },
+    update: function( user ) {
+      return UserResource.put( {action: 'me'}, user).$promise;
     }
+
   };
 }]);

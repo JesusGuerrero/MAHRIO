@@ -20,6 +20,23 @@ angular.module('baseApp.services')
       get: function(){
         return subHeader;
       },
-      set: subHeader
+      set: subHeader,
+      setHeader: function setHeader( name ) {
+        subHeader.title = 'Task';
+        subHeader.breadcrumbs = [
+          {
+            url: 'adminDash',
+            value: 'Home'
+          },
+          {
+            url: 'task',
+            value: 'Task'
+          },
+          {
+            url: 'adminDash',
+            value: name
+          }
+        ];
+      }
     };
   }]);

@@ -1,0 +1,31 @@
+#task-tabs {
+  .tab-content {
+    padding: 10px;
+    border: 1px solid #dddddd;
+    border-top: none;
+    border-radius: 0 0px 10px 10px;
+    background: #fff;
+    .column-padding-5 {
+      .col-md-3 {
+        padding: 0 5px;
+      }
+      .col-md-6 {
+        padding: 0;
+        &:first-child {
+          padding: 0;
+        }
+      }
+    }
+    .drop-test {
+      min-height: 400px;
+    }
+    .current-task {
+      display: block;
+      cursor: move;
+    }
+    .droppable-hover {
+      border: 10px dashed #666;
+      padding: 0;
+    }
+  }
+}

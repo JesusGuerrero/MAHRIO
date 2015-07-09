@@ -1,5 +1,5 @@
 angular.module('baseApp.directives')
-  .directive('pagination', ['$rootScope',
+  .directive('paginate', ['$rootScope',
     function(){
       'use strict';
       return {

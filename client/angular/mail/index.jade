@@ -6,15 +6,27 @@
                         properties="mailProperties" )
             .col-md-9.col-sm-8
                 .box.box-primary
-                    div( mailbox-top-menu config="config")
-                    ng-switch( on="message")
-                        div( ng-switch-when="undefined")
-                            div( mailbox-inbox messages="messages"
-                                    properties="messagesProperties"
-                                    config="config")
+                    div( mailbox-top-menu messages="messages" config="config")
+                    ng-switch( on="viewFolder")
+                        div( ng-switch-when="inbox")
+                            div( mailbox-inbox messages="messages" properties="messagesProperties" config="config")
+                        div( ng-switch-when="starred")
+                            div( mailbox-starred messages="messages" properties="messagesProperties" config="config")
+                        div( ng-switch-when="drafts")
+                            div( mailbox-drafts messages="messages" properties="messagesProperties" config="config")
+                        div( ng-switch-when="sent")
+                            div( mailbox-sent messages="messages" properties="messagesProperties" config="config")
+                        div( ng-switch-when="archived")
+                            div( mailbox-archived messages="messages" properties="messagesProperties" config="config")
+                        div( ng-switch-when="view")
+                            div( mailbox-message message="message" properties="messagesProperties" config="config")
+                        div.modal-body( ng-switch-when="edit")
+                            modal-compose-message( message="message" actions='actions' )
+
+                            div( style='clear:both')
                         div( ng-switch-default )
-                            div( mailbox-message="message" properties="messagesProperties" config="config")
+                            |   EMPTY
 
 
-        modal-window( modal-id="modalComposeMessage" actions='actions' title="Compose New Message" type="message")
+        modal-window-view( modal-id="modalComposeMessage" actions='actions' title="Compose New Message" type="message")
             modal-compose-message( actions='actions' )

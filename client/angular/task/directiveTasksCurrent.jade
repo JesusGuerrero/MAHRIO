@@ -1,0 +1,99 @@
+.row
+    .col-md-12
+        .column-padding-5
+            .col-md-6
+                .col-md-3
+                    .box.box-primary
+                        .box-header.with-border.text-center
+                            h4.box-title
+                                |   To Do
+                        .box-body.drop-test
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isStarted: false, isBlocked: false, isReviewed: false, isTested: false, isApproved: false, isValidated: false, isDone: false}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}
+                .col-md-3
+                    .box.box-info
+                        .box-header.text-center
+                            h4.box-title
+                                |   In
+                                br
+                                |   Progress
+                        .box-body.drop-test.bg-info(id="isStarted")
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isStarted: true}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}
+                .col-md-3
+                    .box.box-danger
+                        .box-header.text-center
+                            h4.box-title
+                                |   Blocked
+                        .box-body.drop-test.bg-danger(id="isBlocked")
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isBlocked: true}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}
+                .col-md-3
+                    .box.box-warning
+                        .box-header.text-center
+                            h4.box-title
+                                |   Reviewed
+                        .box-body.drop-test.bg-warning(id="isReviewed")
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isReviewed: true}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}
+            .col-md-6
+                .col-md-3
+                    .box.box-warning
+                        .box-header.text-center
+                            h4.box-title
+                                |   Tested
+                        .box-body.drop-test.bg-warning(id="isTested")
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isTested: true}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}
+                .col-md-3
+                    .box.box-warning
+                        .box-header.text-center
+                            h4.box-title
+                                |   PO
+                                br
+                                |   Approved
+                        .box-body.drop-test.bg-warning(id="isApproved")
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isApproved: true}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}
+                .col-md-3
+                    .box.box-warning
+                        .box-header.text-center
+                            h4.box-title
+                                |   QA
+                                br
+                                |   Verified
+                        .box-body.drop-test.bg-warning(id="isValidated")
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isValidated: true}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}
+                .col-md-3
+                    .box.box-success
+                        .box-header.text-center
+                            h4.box-title
+                                |   Done
+                        .box-body.drop-test.bg-success(id="isDone")
+                            .current-tasks( class="current-tasks")
+                                .current-task(ng-repeat="task in tasks | filter: {isDone: true}" repeat-end="initDraggable()" style="padding:0;"
+                                    id="{{::task._id}}")
+                                    div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                        |   {{::task.title}}

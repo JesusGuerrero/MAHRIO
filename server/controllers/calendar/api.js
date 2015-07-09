@@ -6,6 +6,15 @@ module.exports = function(config, server) {
   [
     {
       method: ['GET'],
+      path: '/calendar',
+      config: {
+        handler: function( request, reply ) {
+          reply.view('pages/_calendar');
+        }
+      }
+    },
+    {
+      method: ['GET'],
       path: '/api/calendar/events/{action?}',
       config: {
         handler: function(request, reply){

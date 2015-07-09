@@ -1,0 +1,21 @@
+
+<div class="box-body no-padding">
+  <div class="table-responsive">
+    <div ng-show="!messages.length" class="text-center modal-body">  Nothing here.</div>
+    <table ng-show="messages.length" class="table table-mailbox">
+      <tr ng-repeat="message in messages track by $index" ng-class="message.read != undefined &amp;&amp; !message.read ? 'bg-warning' : ''">
+        <td class="mailbox-check">
+          <input type="checkbox" ng-model="message.checked" ng-change="addToSelected($index)" i-check="i-check"/>
+        </td>
+        <td class="mailbox-star"><a href="javascript:void(0);" ng-click="moveDeleted($index)"><i ng-class="!message.fromDeleted ? 'fa-trash-o' : ''" class="fa text-red"></i></a>  &nbsp;&nbsp;<a href="javascript:void(0);" ng-click="moveArchived($index)"><i ng-class="message.fromArchived ? 'fa-folder' : 'fa-folder-o'" class="fa text-green"></i></a>  &nbsp;&nbsp;<a href="javascript:void(0)" ng-click="toggleStar($index)"><i ng-class="message.fromStarred ? 'fa-star' : 'fa-star-o'" class="fa text-yellow"></i></a></td>
+        <td class="mailbox-name">  {{message.fromUser.firstName}}, {{message.toUser.firstName}}</td>
+        <td class="mailbox-subject"><a ui-sref="mail.view({id: message._id})" ui-sref-opts="{reload: true}">{{message.subject}}</a></td>
+        <td class="mailbox-attachment">  &nbsp;</td>
+        <td class="mailbox-date">  {{message.created | date: mediumDate}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="box-footer clearfixN">
+    <paginate right="right" config="config.pagination"></paginate>
+  </div>
+</div>

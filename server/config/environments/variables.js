@@ -4,11 +4,11 @@ var Path = require('path'),
     rootPath = Path.normalize(__dirname + '/../../'),
     language = require('./../languages');
 
-module.exports = function( currentEnvironment ) {
+module.exports = function( env ) {
 
   var environments = {
     development: {
-      datastoreURI: 'mongodb://localhost/development',
+      datastoreURI: env.MONGODB_DATASTORE_URI,
       cmsURL: 'http://com.computerenchiladas.com/~whichdegree/cms-stage/?q=',
       port: 8042
     },
@@ -25,24 +25,28 @@ module.exports = function( currentEnvironment ) {
     },
 
     production: {
-      datastoreURI: 'mongodb://localhost/production',
-      cmsURL: 'http://localhost/~whichdegree/cms-stage/?q=',
-      port: 8140
+      datastoreURI: env.MONGOLAB_URI,
+      cmsURL: 'http://com.computerenchiladas.com/~whichdegree/cms-stage/?q='
     }
   };
 
-  var baseSetup = environments[ currentEnvironment.NODE_ENV ];
+  var baseSetup = environments[ env.NODE_ENV ];
   baseSetup.rootPath = rootPath;
   baseSetup.lang = language;
-  baseSetup.IN_CLIENT_ID = currentEnvironment.IN_CLIENT_ID;
-  baseSetup.IN_CLIENT_SECRET = currentEnvironment.IN_CLIENT_SECRET;
-  baseSetup.IN_CALLBACK_URL = currentEnvironment.IN_CALLBACK_URL;
+  baseSetup.env = env.NODE_ENV;
+  baseSetup.IN_CLIENT_ID = env.IN_CLIENT_ID;
+  baseSetup.IN_CLIENT_SECRET = env.IN_CLIENT_SECRET;
+  baseSetup.IN_CALLBACK_URL = env.IN_CALLBACK_URL;
 
-  baseSetup.FB_CLIENT_ID = currentEnvironment.FB_CLIENT_ID;
-  baseSetup.FB_CLIENT_SECRET = currentEnvironment.FB_CLIENT_SECRET;
-  baseSetup.FB_CALLBACK_URL = currentEnvironment.FB_CALLBACK_URL;
+  baseSetup.FB_CLIENT_ID = env.FB_CLIENT_ID;
+  baseSetup.FB_CLIENT_SECRET = env.FB_CLIENT_SECRET;
+  baseSetup.FB_CALLBACK_URL = env.FB_CALLBACK_URL;
 
-  baseSetup.CMS_URL = currentEnvironment.CMS_URL;
+  baseSetup.CMS_URL = env.CMS_URL;
+
+  if ( baseSetup.env === 'production' ) {
+    baseSetup.port = env.PORT || env.NODE_PORT || 8140;
+  }
 
   return baseSetup;
 };

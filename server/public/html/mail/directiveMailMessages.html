@@ -1,14 +1,14 @@
 
 <div class="box-body no-padding">
   <div class="table-responsive">
-    <table class="table table-mailbox">
-      <tr ng-repeat="message in messages track by $index" ng-class="message.read != undefined &amp;&amp; !message.read ? 'bg-warning' : ''" i-check-box="i-check-box">
+    <table ng-show="messages" class="table table-mailbox">
+      <tr ng-repeat="message in messages track by $index" ng-class="message.read != undefined &amp;&amp; !message.read ? 'bg-warning' : ''">
         <td class="mailbox-check">
-          <input type="checkbox"/>
+          <input type="checkbox" ng-model="message.checked" ng-change="addToSelected($index)" i-check="i-check"/>
         </td>
         <td ng-show="message.starred !== undefined" class="mailbox-star"><a href="javascript:void();" ng-click="toggleStar($index)"><i ng-class="message.starred ? 'fa-star' : 'fa-star-o'" class="fa text-yellow"></i></a></td>
-        <td ng-show="message.from" class="mailbox-name"><a popover="popover">{{message.from}}</a></td>
-        <td ng-show="message.to" class="mailbox-name"><a popover="popover">{{message.to}}</a></td>
+        <td ng-show="message.fromUser.email" class="mailbox-name"><a popover="popover">{{message.from}}</a></td>
+        <td ng-show="message.toUser.email" class="mailbox-name"><a popover="popover">{{message.to}}</a></td>
         <td class="mailbox-subject"><a ui-sref="mail.view" ui-sref-opts="{reload: true}">{{message.subject}}</a></td>
         <td class="mailbox-attachment">  &nbsp;</td>
         <td class="mailbox-date">  {{message.time | date: mediumDate}}</td>
@@ -16,6 +16,6 @@
     </table>
   </div>
   <div class="box-footer clearfixN">
-    <pagination right="right" config="config.pagination"></pagination>
+    <paginate right="right" config="config.pagination"></paginate>
   </div>
 </div>

@@ -15,9 +15,12 @@ function hashPwd (salt, pwd) {
   return hmac.update(pwd).digest('hex');
 }
 
-schema = mongoose.Schema({  
+schema = mongoose.Schema({
   username:      String,
   name:   String,
+
+  firstName: String,
+  lastName: String,
   
 /*  twitterToken:  String,
   twitterSecret: String,
@@ -42,11 +45,17 @@ schema = mongoose.Schema({
   resetPasswordToken: {type: String},
   resetPasswordExpires: {type: Date },
   authorizationToken: {type: String},
-  memberships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }]
+  memberships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }],
+  created: { type: Date, default: Date.now }
 });
 
 schema.methods.authenticate = function(passwordToMatch) {
   return hashPwd(this.salt, passwordToMatch) === this.password;
+};
+
+schema.methods.updatePassword = function(newPassword) {
+  this.salt = createSalt();
+  this.password = hashPwd(this.salt, newPassword || '');
 };
 
 schema.statics.recoverPassword = function( email, cb ){
@@ -98,7 +107,7 @@ schema.statics.login = function(email, passwordToMatch, cb) {
   User.findOne({email: email}, function (err, user) {
     if (err) { return cb(err); }
     if (!user) { return cb('user does not exist'); }
-    if (!user.authenticate(passwordToMatch)) { 
+    if (!user.authenticate(passwordToMatch)) {
       return cb('wrong password');
     }
     user.authorizationToken = crypto.randomBytes(20).toString('hex');

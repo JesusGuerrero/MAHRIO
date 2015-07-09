@@ -1,0 +1,9 @@
+
+<form novalidate="novalidate" ng-submit="update()">
+  <form-input-tag model="user.password" type="password" label="New Password" required="true" icon="lock"></form-input-tag>
+  <form-input-tag model="user.confirmPassword" type="password" label="Confirm Password" required="true" icon="lock"></form-input-tag>
+  <hr/>
+  <p>  To protect and confirm your identity please enter the following.</p>
+  <form-input-tag model="user.currentPassword" type="password" label="Account Password" required="true" icon="lock"></form-input-tag>
+  <button type="submit" class="btn btn-block btn-primary btn-lg">Update</button>
+</form>

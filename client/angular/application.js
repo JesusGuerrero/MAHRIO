@@ -4,6 +4,8 @@
 
 angular.module('baseApp', [
   'ui.router',
+  'ui.bootstrap.typeahead',
+  'ui.bootstrap.tabs',
   'ngResource',
   'btford.socket-io',
   'angular-loading-bar',
@@ -119,6 +121,37 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       controller: 'CalendarController',
       templateUrl: '/assets/html/calendar/index'
     })
+    .state('profile', {
+      url: '/profile',
+      controller: 'ProfileController',
+      templateUrl: '/assets/html/profile/profile-landing'
+    })
+    .state('profile.info', {
+      url: '/info'
+    })
+    .state('profile.contact', {
+      url: '/contact'
+    })
+    .state('profile.security', {
+      url: '/security'
+    })
+    .state('tasks', {
+      url: '/tasks',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
+    })
+    .state('tasks.current',{
+      url: '/current'
+    })
+    .state('tasks.new',{
+      url: '/new'
+    })
+    .state('tasks.view', {
+      url: '/:id'
+    })
+    .state('tasks.edit',{
+      url: '/:id/edit'
+    })
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
@@ -143,7 +176,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/archived'
     })
     .state('mail.view', {
-      url: '/view'
+      url: '/view/:id/:action'
     });
 
   $urlRouterProvider.otherwise('/');
@@ -169,10 +202,8 @@ angular.module('baseApp.controllers', [])
         currentUser.logout()
           .then( function(){
             delete $http.defaults.headers.common.Authorization;
-            $rootScope.setRole( 'any' );
             delete window.localStorage.Role;
             delete window.localStorage.Authorization;
-            $state.transitionTo('root');
           });
       };
 
@@ -184,22 +215,25 @@ angular.module('baseApp.controllers', [])
       $rootScope.setRole( window.localStorage.Role || 'any' );
 
       $rootScope.setAuthorizationHeader = function(token){
-        $http.defaults.headers.common.Authorization = token;
-        window.localStorage.Authorization = token;
+        if( token ) {
+          $http.defaults.headers.common.Authorization = token;
+          window.localStorage.Authorization = token;
+        }
       };
-      $rootScope.setAuthorizationHeader( window.localStorage.Authorization || '');
+      $rootScope.setAuthorizationHeader( window.localStorage.Authorization);
 
-      var path = $location.path();
-      if( ['/login','/register','/recoverpassword'].indexOf( $location.path() ) === -1 && !/passwordreset/.test(path) && !/confirm/.test(path) ){
-        currentUser.isLoggedIn()
-          .then( function(user){
-            console.log( user );
-            currentUser.login( user, false );
-          } , function( ){
-            console.log('user not authenticated');
-            //$state.transitionTo('login');
-          });
-      }
+      $rootScope.getProfile = function(route){
+        if( angular.isDefined( $http.defaults.headers.common.Authorization ) ) {
+          currentUser.isLoggedIn()
+            .then( function(response){
+              if( response.user ) {
+                currentUser.login( response.user, route || false );
+              }
+            });
+        }
+      };
+      $rootScope.getProfile();
+
       $rootScope.isDefined = function( val ){
         return angular.isDefined( val );
       };
@@ -208,6 +242,15 @@ angular.module('baseApp.controllers', [])
       $rootScope.user = 'anyUser';
 
       window.rootScope = $rootScope;
+
+      $rootScope.isSidebarCollapsed = window.localStorage.isSidebarCollapsed || false;
+      $rootScope.toggleSidebarCollapsed = function(){
+        if( window.localStorage.isSidebarCollapsed ) {
+          delete window.localStorage.isSidebarCollapsed;
+        } else {
+          window.localStorage.isSidebarCollapsed = true;
+        }
+      };
     }
   ]);
 

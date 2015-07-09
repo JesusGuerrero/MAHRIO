@@ -22,7 +22,7 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
         script( src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
     <![endif]-->
 
-    body.skin-blue.sidebar-mini.fixed
+    body.skin-blue.sidebar-mini.fixed(ng-class="isSidebarCollapsed ? 'sidebar-collapse':''")
         .wrapper
             header.main-header
                 a.logo( href="#")

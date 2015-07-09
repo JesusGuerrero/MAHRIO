@@ -1,11 +1,11 @@
 header.main-header
-    a.logo( href="#")
+    a.logo( ui-sref="root")
         span.logo-mini
             |   CE
         span.logo-lg
             |   CompEngr
     nav.navbar.navbar-static-top( role="navigation")
-        a.sidebar-toggle( href="#" data-toggle="offcanvas" role="button")
+        a.sidebar-toggle( ng-click="toggleSidebar()" href="#" data-toggle="offcanvas" role="button")
             span.sr-only
                 |   Toggle navigation
             span.icon-bar
@@ -81,14 +81,15 @@ header.main-header
                     a.dropdown-toggle( href="#" data-toggle="dropdown")
                         img.user-image( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
                         span.hidden-xs
-                            |   Alexander
+                            |   {{user.firstName}}
                     ul.dropdown-menu
                         li.user-header
                             img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
                             p
-                                |   Jesus Rocha
+                                |   {{user.firstName}} {{user.lastName}}
                                 small
-                                    |   Member since Nov. 2010
+                                    |   Member since {{user.created | date: mediumDate}}
+
 
                         li.user-body
                             .col-xs-4.text-center
@@ -102,7 +103,7 @@ header.main-header
                                     |   Sales
                         li.user-footer
                             .pull-left
-                                a.btn.btn-default.btn-flat( href="#")
+                                a.btn.btn-default.btn-flat( ui-sref="profile")
                                     |   Profile
                             .pull-right
                                 a.btn.btn-default.btn-flat( href="javascript: void(0)" ng-click="logout()" )

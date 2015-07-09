@@ -1,0 +1,25 @@
+form(novalidate ng-submit="update()")
+    form-input-tag(
+        model="user.email"
+        type="text"
+        label="New Email"
+        required="true" icon="envelope")
+    form-input-tag(
+        model="user.confirmEmail"
+        type="text"
+        label="Confirm Email"
+        required="true" icon="envelope")
+
+    hr
+
+    p
+        |   To protect and confirm your identity please enter the following.
+
+    form-input-tag(
+        model="user.currentPassword"
+        type="password"
+        label="Account Password"
+        required="true" icon="lock")
+
+    button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+        | Update
