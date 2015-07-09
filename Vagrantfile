@@ -4,10 +4,10 @@ Vagrant.configure("2") do |config|
 
   # provisioning necessary software for Vagrant deployment
   config.vm.provision :shell, :path => ".devops/vagrant/bootstrap.sh", :args => "/vagrant"
-  config.vm.provision :shell, :path => ".devops/vagrant/bootstrap_mongodb.sh", :args => "/vagrant"
-  config.vm.provision :shell, :path => ".devops/vagrant/bootstrap_node.sh", :args => "/vagrant"
-  config.vm.provision :shell, :path => ".devops/vagrant/bootstrap_npm_utils.sh", :args => "/vagrant"
-  config.vm.provision :shell, :path => ".devops/vagrant/bootstrap_jesus_stack.sh", :args => "/vagrant"
+  config.vm.provision :shell, :path => ".devops/vagrant/mongodb/bootstrap_mongodb.sh", :args => "/vagrant"
+  config.vm.provision :shell, :path => ".devops/vagrant/javascript/NodeJS/bootstrap_node.sh", :args => "/vagrant"
+  config.vm.provision :shell, :path => ".devops/vagrant/javascript/NodeJS/bootstrap_npm_utils.sh", :args => "/vagrant"
+  config.vm.provision :shell, :path => ".devops/vagrant/javascript/NodeJS/bootstrap_jesus_stack.sh", :args => "/vagrant"
 
   config.vm.network :private_network, ip: "192.168.56.112"
   config.vm.network "forwarded_port", guest: 27017, host: 27017
