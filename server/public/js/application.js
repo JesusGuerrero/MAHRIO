@@ -104672,11 +104672,6 @@ angular.module('baseApp.controllers')
     function ($scope, $stateParams, User, currentUser, validate) {
       'use strict';
 
-      $scope.linkedIn = $stateParams.linkedIn ? true : false;
-      $scope.goToLinkedIn = function(){
-        window.location.href = '/api/oauth/linkedin/login';
-      };
-
       if( $stateParams.token && !$stateParams.user ){
         User.hasValidToken( {token: $stateParams.token} )
           .then( function(){

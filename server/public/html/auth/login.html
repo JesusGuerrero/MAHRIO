@@ -11,20 +11,19 @@
             <form-input-tag model="user.password" type="password" label="{{locale['form'].label['shared'].password}}" required="true" icon="lock"></form-input-tag>
             <div ng-show="vm.error" class="form-group ng-hide">
               <div class="red bold margin">{{error}}</div>
-            </div>
-            <div class="row">
               <!--
               .col-md-6.col-xs-6.form-group
                 label
                   input( type="checkbox" ng-model="rememberMe" )
                   |  {{locale['form'].page['signin'].rememberMe}}
               -->
-              <div class="col-xs-12 text-right form-group col-xs-offset-0"><a ui-sref="recoverpassword" class="text-muted">{{locale['form'].page['signin'].forgotPassword}}</a></div>
             </div>
-            <button type="submit" class="btn btn-block btn-primary btn-lg">{{locale['form'].button['login']}}</button>
-            <div ng-show="linkedIn" class="row">
-              <div class="col-xs-12 text-center"><img src="/assets/img/linkedin-Active.png" ng-click="goToLinkedIn()" style="width: auto; margin: 20px auto 0; cursor: pointer"/></div>
-            </div><br/><br/>
+            <div class="col-xs-12 text-right form-group col-xs-offset-0"><a ui-sref="recoverpassword" class="text-muted">{{locale['form'].page['signin'].forgotPassword}}</a></div>
+            <div class="col-xs-12 text-center form-group">
+              <button type="submit" class="btn btn-block btn-primary btn-lg">{{locale['form'].button['login']}}</button>
+            </div>
+            <div class="col-xs-6 col-xs-offset-3 text-center form-group"><a href="/api/oauth/linkedin/login" style="background: #1883BB" class="btn btn-block btn-primary btn-lg"><i class="fa fa-linkedin-square"></i>  LinkedIn</a></div>
+            <div class="col-xs-6 col-xs-offset-3 text-center form-group"><a href="/api/oauth/facebook/login" style="background: #3D5A98" class="btn btn-block btn-primary btn-lg"><i class="fa fa-facebook-square"></i>  facebook</a></div>
           </form>
         </div>
         <!--
