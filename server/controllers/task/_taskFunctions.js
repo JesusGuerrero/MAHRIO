@@ -8,7 +8,7 @@ var _ = require('underscore'),
 function updateTask( request, reply ) {
   if( request.params.id ) {
     Task
-      .findOne( {createdBy: request.auth.credentials.id, _id: request.params.id })
+      .findOne( { _id: request.params.id })
       .exec( function(err, task){
         if( err ) { return Boom.badRequest(); }
 
@@ -45,7 +45,7 @@ function createTask( request, reply ) {
 function getTask( request, reply ) {
   if( request.params.id ) {
     Task
-      .findOne( {createdBy: request.auth.credentials.id, _id: request.params.id })
+      .findOne( { _id: request.params.id })
       .exec( function(err, task){
         if( err ) { return reply( Boom.badRequest() ); }
 
@@ -53,7 +53,7 @@ function getTask( request, reply ) {
       });
   } else {
     Task
-      .find( {createdBy: request.auth.credentials.id })
+      .find( )
       .exec( function(err, tasks){
         if( err ) { return reply( Boom.badRequest() ); }
 
