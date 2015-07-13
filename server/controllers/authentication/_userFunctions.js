@@ -26,13 +26,7 @@ function register (request, reply, server) {
 
     var confirmAccountLink = 'http://whichdegree.co/app#/confirm/';
     confirmAccountLink += user.resetPasswordToken+'?user=true';
-    server.mailer( {to: user.email, subject: 'Activate Account', html: confirmAccountLink}, function(error, response) {
-      if ( error ) {
-        console.log(error);
-      } else {
-        console.log('Message sent: ' + response.message);
-      }
-    });
+    server.mailer( {to: user.email, subject: 'Activate Account', html: confirmAccountLink});
     console.log( confirmAccountLink );
     reply(user)
       .header('Authorization', 'Bearer ' + user.authorizationToken)
@@ -77,13 +71,7 @@ function recoverPassword( request, reply, server ){
     if( user && user.token ){
       var link = 'http://whichdegree.co/app#/passwordreset/'+user.token;
       console.log( link );
-      server.mailer( {to: request.payload.email, subject: 'Password Reset', html: link}, function(error, response) {
-        if ( error ) {
-          console.log(error);
-        } else {
-          console.log('Message sent: ' + response.message);
-        }
-      });
+      server.mailer( {to: request.payload.email, subject: 'Password Reset', html: link});
     }
     reply({reset: true});
   });

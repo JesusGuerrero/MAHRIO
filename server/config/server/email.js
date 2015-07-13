@@ -1,25 +1,26 @@
 'use strict';
 
-var nodemailer = require('nodemailer');
+//var nodemailer = require('nodemailer');
+var Mailgun = require('mailgun-js');
+var from_who = 'doNotReply@whichdegree.co';
 
-var smtpTransport = nodemailer.createTransport('SMTP',{
-  service: 'Mailgun',
-  port: process.env.MAILGUN_SMTP_PORT,
-  /*jshint camelcase: false */
-  auth: {
-    user: process.env.MAILGUN_SMTP_LOGIN,
-    pass: process.env.MAILGUN_SMTP_PASSWORD,
-    api_key: process.env.MAILGUN_API_KEY,
-    domain: process.env.MAILGUN_SMTP_SERVER
-  }
-});
+module.exports = function( mailObj ) {
+  var mailgun = new Mailgun({apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 
-module.exports = function( mailObj, callback ) {
-  smtpTransport.sendMail({
-    from: mailObj.from,
+  var data = {
+    from: from_who,
     to: mailObj.to,
-    subject: mailObj.subject,
-    text: mailObj.text,
+    subject: mailObj.text,
     html: mailObj.html
-  }, callback);
+  };
+
+  //Invokes the method to send emails given the above data with the helper library
+  mailgun.messages().send(data, function (err, body) {
+    //If there is an error, render the error page
+    if (err) {
+      console.log("got an error: ", err);
+    } else {
+      console.log(body);
+    }
+  });
 };
