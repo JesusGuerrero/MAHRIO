@@ -52,7 +52,7 @@ module.exports = function (config, url) {
   }
   server.connection( serverConfig );
 
-  server.sendEmail = require('../email/setup');
+  server.mailer = require('./email');
 
   server.register({
       register: require('good'),

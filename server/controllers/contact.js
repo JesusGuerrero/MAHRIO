@@ -52,13 +52,13 @@ module.exports = function(config, _server){
         handler: function( request, reply ){
           switch( request.params.option ){
             case 'newsletter':
-              server.sendEmail( null, 'Newsletter: '+request.payload.name + '<'+request.payload.email+'>',
-                request.payload.domain, 'newsletter' );
+              /*server.sendEmail( null, 'Newsletter: '+request.payload.name + '<'+request.payload.email+'>',
+                request.payload.domain, 'newsletter' );*/
               addNewsletterEntry( request, reply );
               break;
             case 'question':
-              server.sendEmail( null, 'Question: '+request.payload.name + '<'+request.payload.email+'>',
-                request.payload.question, 'question' );
+              /*server.sendEmail( null, 'Question: '+request.payload.name + '<'+request.payload.email+'>',
+                request.payload.question, 'question' );*/
               addQuestionEntry( request, reply );
               break;
             default:

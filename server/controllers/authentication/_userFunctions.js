@@ -26,7 +26,13 @@ function register (request, reply, server) {
 
     var confirmAccountLink = 'http://whichdegree.co/app#/confirm/';
     confirmAccountLink += user.resetPasswordToken+'?user=true';
-    server.sendEmail( user.email, 'Activate Account', confirmAccountLink );
+    server.mailer( {to: user.email, subject: 'Activate Account', html: confirmAccountLink}, function(error, response) {
+      if ( error ) {
+        console.log(error);
+      } else {
+        console.log('Message sent: ' + response.message);
+      }
+    });
     console.log( confirmAccountLink );
     reply(user)
       .header('Authorization', 'Bearer ' + user.authorizationToken)
@@ -71,7 +77,13 @@ function recoverPassword( request, reply, server ){
     if( user && user.token ){
       var link = 'http://whichdegree.co/app#/passwordreset/'+user.token;
       console.log( link );
-      server.sendEmail( request.payload.email, 'Password Reset', link);
+      server.mailer( {to: request.payload.email, subject: 'Password Reset', html: link}, function(error, response) {
+        if ( error ) {
+          console.log(error);
+        } else {
+          console.log('Message sent: ' + response.message);
+        }
+      });
     }
     reply({reset: true});
   });
@@ -82,7 +94,7 @@ function passwordReset( request, reply ){
     function(err, user){
       if( err ){ return reply(Boom.badRequest(err)); }
 
-      reply({role: user.role})
+      reply({role: user.role, email: user.email, firstName: user.firstName, lastName: user.lastName})
         .header('Authorization', 'Bearer ' + user.authorizationToken)
         .header('Access-Control-Expose-Headers', 'authorization');
     });
