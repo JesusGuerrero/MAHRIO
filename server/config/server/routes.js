@@ -6,6 +6,7 @@ module.exports = function (config, server) {
 
   require('../../controllers/authentication/api')(config, server);
   require('../../controllers/autocomplete/api')(config, server);
+  require('../../controllers/board/api')( config, server );
   require('../../controllers/calendar/api')(config, server);
   require('../../controllers/chat/api')(config, server);
   require('../../controllers/mail/api')(config, server);
