@@ -17,12 +17,15 @@ angular.module('baseApp.directives')
             }
             switch( newUser.role ){
               case 'any':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop2';
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop';
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/admin';
                 scope.user = newUser;
-                console.log( newUser );
+                break;
+              case 'authorized':
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
+                scope.user = newUser;
                 break;
               default:
             }

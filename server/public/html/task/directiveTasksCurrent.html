@@ -2,117 +2,29 @@
 <div class="row">
   <div class="col-md-12">
     <div class="column-padding-5">
-      <div class="col-md-6">
-        <div class="col-md-3">
-          <div class="box box-primary">
-            <div class="box-header with-border text-center">
-              <h4 class="box-title">  To Do</h4>
-            </div>
-            <div class="box-body drop-test">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isStarted: false, isBlocked: false, isReviewed: false, isTested: false, isApproved: false, isValidated: false, isDone: false}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
-              </div>
-            </div>
+      <div class="col-md-2">
+        <div class="box box-primary">
+          <div class="box-header with-border text-center">
+            <h4 class="box-title">  {{board.startColumn}}</h4>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="box box-info">
-            <div class="box-header text-center">
-              <h4 class="box-title">  In<br/>  Progress</h4>
-            </div>
-            <div id="isStarted" class="box-body drop-test bg-info">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isStarted: true}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="box box-danger">
-            <div class="box-header text-center">
-              <h4 class="box-title">  Blocked</h4>
-            </div>
-            <div id="isBlocked" class="box-body drop-test bg-danger">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isBlocked: true}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="box box-warning">
-            <div class="box-header text-center">
-              <h4 class="box-title">  Reviewed</h4>
-            </div>
-            <div id="isReviewed" class="box-body drop-test bg-warning">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isReviewed: true}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
+          <div class="box-body drop-test">
+            <div class="current-tasks current-tasks">
+              <div ng-repeat="task in board.tasks | filter: { start: true, _column: null}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
+                <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="col-md-3">
-          <div class="box box-warning">
-            <div class="box-header text-center">
-              <h4 class="box-title">  Tested</h4>
-            </div>
-            <div id="isTested" class="box-body drop-test bg-warning">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isTested: true}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
-              </div>
-            </div>
+      <div ng-repeat="column in board.columns" repeat-end="initDroppable()" class="col-md-2">
+        <div class="box box-primary">
+          <div class="box-header with-border text-center">
+            <h4 class="box-title">  {{column.name}}</h4>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="box box-warning">
-            <div class="box-header text-center">
-              <h4 class="box-title">  PO<br/>  Approved</h4>
-            </div>
-            <div id="isApproved" class="box-body drop-test bg-warning">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isApproved: true}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="box box-warning">
-            <div class="box-header text-center">
-              <h4 class="box-title">  QA<br/>  Verified</h4>
-            </div>
-            <div id="isValidated" class="box-body drop-test bg-warning">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isValidated: true}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="box box-success">
-            <div class="box-header text-center">
-              <h4 class="box-title">  Done</h4>
-            </div>
-            <div id="isDone" class="box-body drop-test bg-success">
-              <div class="current-tasks current-tasks">
-                <div ng-repeat="task in tasks | filter: {isDone: true}" repeat-end="initDraggable()" style="padding:0;" id="{{::task._id}}" class="current-task">
-                  <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
-                </div>
+          <div id="{{::column._id}}" class="box-body drop-test">
+            <div class="current-tasks current-tasks">
+              <div ng-repeat="task in board.tasks | filter: {_column: column._id}" style="padding:0;" repeat-end="initDraggable()" id="{{::task._id}}" class="current-task">
+                <div style="background: {{::task.color}}; color: white; padding: 5px;">  {{::task.title}}</div>
               </div>
             </div>
           </div>

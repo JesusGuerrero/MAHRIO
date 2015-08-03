@@ -1,0 +1,42 @@
+.row
+    .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+        .panel.panel-default
+            error-message-box( validation-errors="validationErrors" )
+            .panel-body
+                h3.text-center
+                    | Add Board
+                form(novalidate ng-submit="board._id ? update() : add()")
+                    form-input-tag(
+                        model="board.name"
+                        label="Name"
+                        required="true")
+                    .form-group(ng-show="board.members.length")
+                        label
+                            | Members
+                        div
+                            span.bg-blue( ng-repeat="member in board.members track by $index" style="padding: 5px; margin-right: 5px;")
+                                |   {{member.email}}
+                                i.fa.fa-close(style="padding: 0 5px; cursor: pointer" ng-click="removeMember($index)")
+                    auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getUsers"
+                        selected="selected")
+                    .form-group(ng-show="board.columns.length")
+                        label
+                            | Columns
+                        div
+                            span.bg-aqua( ng-repeat="column in board.columns track by $index" style="padding: 5px; margin-right: 5px;")
+                                |   {{column.name}}
+                                i.fa.fa-close(style="padding: 0 5px; cursor: pointer" ng-click="removeColumn($index)")
+                    .form-group
+                        .input-group
+                            input( type="text" ng-model="tempColumn" class="form-control" placeholder="Columns (e.g InProgress, Testing, Done)")
+                            span.btn.btn-primary.input-group-addon(style="background: #3C8DDD; color: #fff" ng-click="addColumn(tempColumn); tempColumn = '';")
+                                i( class="fa fa-plus" style="width: 30px")
+
+                    hr
+                    .text-center.form-group
+                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+                            | {{board._id ? 'Save' : 'Create'}}
+
+                .col-xs-8.col-xs-offset-2.text-center.form-group
+                    a.btn.btn-block.btn-default( ui-sref="boards.list" ui-sref-opts="{reload: true}")
+                        | Cancel

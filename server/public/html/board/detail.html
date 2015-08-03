@@ -1,0 +1,8 @@
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="boards.list" ui-sref-opts="{reload: true}" class="btn btn-default">
+      <h4><i class="fa fa-chevron-left"></i>  Back</h4></a></div>
+  <div class="col-xs-12">  Board Name: {{board.name}}</div>
+  <div class="col-xs-12">  Board Members:<span ng-repeat="member in board.members track by $index">  {{member.email}}</span></div>
+  <div class="col-xs-12">  Board Columns:<span ng-repeat="column in board.columns track by $index">  {{column.name}}</span></div>
+</div>

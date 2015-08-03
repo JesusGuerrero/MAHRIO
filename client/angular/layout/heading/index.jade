@@ -1,10 +1,10 @@
-section.content-header( ng-controller="SubHeaderController")
+section.content-header
     h1
-        |   {{subHeader.title}}
+        |   {{heading.title}}
         small
-            |   {{subHeader.subTitle}}
+            |   {{heading.subTitle}}
     ol.breadcrumb
-        li(ng-repeat="breadcrumb in subHeader.breadcrumbs track by $index"
+        li(ng-repeat="breadcrumb in heading.breadcrumbs track by $index"
             ng-class="{'active':$last}")
             a( ui-sref="{{breadcrumb.url}}" ng-show="!$last"
                 ui-sref-opts="{reload: true}")
@@ -12,3 +12,4 @@ section.content-header( ng-controller="SubHeaderController")
                 |   {{breadcrumb.value}}
             span(ng-show="$last")
                 |   {{breadcrumb.value}}
+    hr( style="border: 2px solid #dddddd; margin: 15px 0 0;" class="hidden-xs")

@@ -1,0 +1,47 @@
+.row
+    .col-xs-12.col-sm-4.col-md-3.col-lg-3
+        strong
+            i.fa.fa-server
+            |Name
+    .col-xs-12.col-sm-4.col-md-3.col-lg-3
+        strong
+            i.fa.fa-server
+            |Members
+    .col-xs-12.col-sm-4.col-md-3.col-lg-3
+        strong
+            i.fa.fa-server
+            |Columns
+    .col-xs-12.col-sm-4.col-md-3.col-lg-3
+        strong
+            i.fa.fa-server
+            |Actions
+.row
+    .list-group
+        .list-group-item( ng-repeat="board in boards track by $index" ui-sref="boards.detail({id: board._id})" ui-sref-opts="{reload: true}" style="cursor:pointer")
+            .col-xs-12.col-sm-4.col-md-3.col-lg-3
+                strong
+                    i.fa.fa-server
+                    |{{board.name}}
+            .col-xs-12.col-sm-4.col-md-3.col-lg-3
+                span(ng-repeat="member in board.members track by $index")
+                    |{{member.email}}
+                    br
+            .col-xs-12.col-sm-4.col-md-3.col-lg-3
+                span(ng-repeat="column in board.columns track by $index")
+                    |{{column.name}}
+                    br
+            .col-xs-12.col-sm-4.col-md-3.col-lg-3(ng-show="board._owner === currentUser._id")
+                a.btn.btn-default.btn-block( ui-sref="boards.edit({board: board._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()")
+                    |EDIT
+                a.btn.btn-danger.btn-block( ng-click="remove( board._id )")
+                    |DELETE
+
+            .clearfix
+
+
+
+.row(style="margin-top: 50px;")
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2
+        a.btn.btn-primary(ui-sref="boards.new" ui-sref-opts="{reload: true}")
+            i.fa.fa-plus
+            |   Add Board

@@ -11,6 +11,7 @@ angular.module('baseApp', [
   'angular-loading-bar',
   'baseApp.services',
   'baseApp.directives',
+  'baseApp.filters',
   'baseApp.controllers',
   'angular-underscore'
 ])
@@ -135,23 +136,63 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('profile.security', {
       url: '/security'
     })
-    .state('tasks', {
-      url: '/tasks',
+    .state('boards', {
+      abstract: true,
+      url: '/boards',
+      controller: 'BoardController',
+      template: '<ui-view/>'
+    })
+    .state('boards.new', {
+      url: '/new',
+      templateUrl: '/assets/html/board/form'
+    })
+    .state('boards.list', {
+      url: '/all',
+      controller: 'BoardController',
+      templateUrl: '/assets/html/board/list'
+    })
+    .state('boards.edit', {
+      url: '/:board/edit',
+      templateUrl: '/assets/html/board/form'
+    })
+    .state('boards.detail', {
+      url: '/:id',
       controller: 'TaskController',
       templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.current',{
-      url: '/current'
+    .state('boards.detail.backlog', {
+      url: '/backlog',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.new',{
-      url: '/new'
+    .state('boards.detail.backlog.new', {
+      url: '/new',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.view', {
-      url: '/:id'
+    .state('boards.detail.backlog.edit', {
+      url: '/:task/edit',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.edit',{
-      url: '/:id/edit'
-    })
+
+    //.state('tasks', {
+    //  url: '/tasks',
+    //  controller: 'TaskController',
+    //  templateUrl: '/assets/html/task/index'
+    //})
+    //.state('tasks.current',{
+    //  url: '/current'
+    //})
+    //.state('tasks.new',{
+    //  url: '/new'
+    //})
+    //.state('tasks.view', {
+    //  url: '/:id'
+    //})
+    //.state('tasks.edit',{
+    //  url: '/:id/edit'
+    //})
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',

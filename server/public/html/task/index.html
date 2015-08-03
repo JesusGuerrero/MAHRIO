@@ -1,16 +1,17 @@
 
 <div class="container-fluid">
   <tabset id="task-tabs">
-    <tab heading="Tasks" ui-sref="tasks.current" ui-sref-opts="{reload: true}" active="tab[0]" select="tabSelect(0)">
-      <tasks-current active="tab[0]"></tasks-current>
+    <tab heading="&lt; Boards" ui-sref="boards.list" ui-sref-opts="{reload: true}"></tab>
+    <tab heading="Tasks" ui-sref="boards.detail" ui-sref-opts="{reload: true}" active="tab[0]" select="tabSelect(0)">
+      <tasks-current active="tab[0]" board="board"></tasks-current>
     </tab>
-    <tab heading="Backlog" ui-sref="tasks" ui-sref-opts="{reload: true}" active="tab[1]" select="tabSelect(1)">
-      <tasks-backlog active="tab[1]"></tasks-backlog>
+    <tab heading="Backlog" ui-sref="boards.detail.backlog" ui-sref-opts="{reload: true}" active="tab[1]" select="tabSelect(1)">
+      <tasks-backlog active="tab[1]" id="board.id"></tasks-backlog>
     </tab>
-    <tab heading="Create Task" ui-sref="tasks.new" ui-sref-opts="{reload: true}" active="tab[2]" select="tabSelect(2)">
+    <tab heading="Create Task" ui-sref="boards.detail.backlog.new" ui-sref-opts="{reload: true}" active="tab[2]" select="tabSelect(2)">
       <ng-switch on="tab[2]">
         <div ng-switch-when="true">
-          <tasks-new active="tab[2]"></tasks-new>
+          <tasks-new active="tab[2]" id="board.id"></tasks-new>
         </div>
         <div ng-switch-default="ng-switch-default">  EMPTY</div>
       </ng-switch>

@@ -7,7 +7,13 @@ angular.module('baseApp.directives')
       scope: {
         inputModel: '=',
         placeholder: '@',
-        autoCompleteHttp: '='
+        autoCompleteHttp: '=',
+        selected: '=' || function(){}
+      },
+      link: function(scope){
+        scope.$on('clearInput', function(){
+          delete scope.inputModel;
+        });
       }
     };
   }]);

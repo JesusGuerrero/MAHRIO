@@ -1,12 +1,13 @@
 angular.module('baseApp.directives')
-  .directive( 'tasksCurrent', [ 'Task','SubHeader', function( Task, SubHeader ) {
+  .directive( 'tasksCurrent', [ 'Task', function( Task ) {
     'use strict';
     return {
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/task/directiveTasksCurrent',
       scope: {
-        active: '='
+        active: '=',
+        board: '='
       },
       link: function( scope ) {
         scope.initDraggable = function(){
@@ -18,58 +19,49 @@ angular.module('baseApp.directives')
             });
           });
         };
+        scope.initDroppable = function(){
+          $('.drop-test').each( function(){
+            $( this ).droppable({
+              accept: '.current-task',
+              hoverClass: 'droppable-hover',
+              drop: function(event, ui) {
+                var dropped = ui.draggable;
+                var droppedOn = $(this);
+                if( dropped.parent().attr('id') === droppedOn.attr('id') ) {
+                  return;
+                }
+                Task.update( dropped.attr('id'), { _column: droppedOn.attr('id') || null } )
+                  .then( function(){
 
-        $('.drop-test').each( function(){
-          $( this ).droppable({
-            accept: '.current-task',
-            hoverClass: 'droppable-hover',
-            drop: function(event, ui) {
-              var dropped = ui.draggable;
-              var droppedOn = $(this);
-              var task = {};
-              var newParent = $(this).attr('id'), oldParent = dropped.parent().parent().attr('id');
-              if( newParent ) {
-                task[ newParent ] = true;
+                  });
+                $(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
               }
-              task[ oldParent ] = false;
-              if( newParent === oldParent ) {
-                return;
-              }
-              Task.update( dropped.attr('id'), task )
-                .then( function(){
-                  $(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
-                });
-            }
+            });
           });
-        });
+        };
+
         $('.box-title').matchHeight();
         if( scope.active ) {
-          Task.getAll()
-            .then( function(response){
-              scope.tasks = response.tasks;
-            });
-          SubHeader.setHeader( 'Tasks' );
-          SubHeader.set.subTitle = 'Viewing Current';
+
         }
       }
     };
   }])
-  .directive('tasksBacklog', ['Task','SubHeader', function(Task, SubHeader) {
+  .directive('tasksBacklog', ['Task','$stateParams', '_',  function(Task, $stateParams, _) {
     'use strict';
     return {
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/task/directiveTasksBacklog',
       scope: {
-        active: '='
+        active: '=',
+        id: '='
       },
       link: function( scope ) {
         if( scope.active ) {
-          SubHeader.setHeader( 'Tasks' );
-          SubHeader.set.subTitle = 'Viewing All Backlog';
-          Task.getAll()
+          Task.getAll( $stateParams.id )
             .then( function(response){
-              scope.tasks = response.tasks;
+              scope.tasks = _.filter( response.tasks, function(task) { return !task.start; });
               if( scope.tasks.length ) {
                 scope.current = scope.tasks[0];
               }
@@ -84,10 +76,17 @@ angular.module('baseApp.directives')
               window.alert('assigned');
             });
         };
+        scope.startTask = function( id ) {
+          Task.start( id )
+            .then( function() {
+              scope.tasks = _.filter( scope.tasks, function(task){ return task._id !== id; });
+              if( scope.tasks.length ) { scope.current = scope.tasks[id]; }
+            });
+        };
       }
     };
   }])
-  .directive('tasksNew', ['Task','SubHeader','$state',function( Task, SubHeader, $state ){
+  .directive('tasksNew', ['Task','$state','$stateParams', function( Task, $state, $stateParams ){
     'use strict';
     return {
       restrict: 'E',
@@ -119,33 +118,27 @@ angular.module('baseApp.directives')
                 .css({'background-color': scope.task.color, 'border-color': scope.task.color})
                 .html('Color:  <span class="caret"></span>');
               console.log( scope.task );
-              //$('#wysihtml5-content').val( scope.task.description );
             });
-          if( scope.active ) {
-            SubHeader.setHeader( 'Tasks' );
-            SubHeader.set.subTitle = 'Edit Task';
-          }
         } else {
-          if( scope.active ) {
-            SubHeader.setHeader( 'Tasks' );
-            SubHeader.set.subTitle = 'New Task';
-          }
           scope.task = {
             color: currColor
           };
         }
         scope.save = function(){
           scope.task.description = $('#wysihtml5-content').val();
+          if( !scope.task._board ) {
+            scope.task._board = $stateParams.id;
+          }
           Task.save( scope.task )
             .then( function(){
-              $state.go('tasks',{}, { reload: true });
+              $state.go('boards.detail.backlog',{}, { reload: true });
             });
 
         };
       }
     };
   }])
-  .directive('tasksView', ['Task','SubHeader',function(Task, SubHeader){
+  .directive('tasksView', ['Task',function(Task){
     'use strict';
     return {
       restrict: 'E',
@@ -161,8 +154,7 @@ angular.module('baseApp.directives')
             scope.task = response.task;
           });
         if( scope.active ) {
-          SubHeader.setHeader( 'Tasks' );
-          SubHeader.set.subTitle = 'Viewing Task';
+
         }
       }
     };

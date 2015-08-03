@@ -104386,6 +104386,7 @@ angular.module('baseApp', [
   'angular-loading-bar',
   'baseApp.services',
   'baseApp.directives',
+  'baseApp.filters',
   'baseApp.controllers',
   'angular-underscore'
 ])
@@ -104510,23 +104511,63 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('profile.security', {
       url: '/security'
     })
-    .state('tasks', {
-      url: '/tasks',
+    .state('boards', {
+      abstract: true,
+      url: '/boards',
+      controller: 'BoardController',
+      template: '<ui-view/>'
+    })
+    .state('boards.new', {
+      url: '/new',
+      templateUrl: '/assets/html/board/form'
+    })
+    .state('boards.list', {
+      url: '/all',
+      controller: 'BoardController',
+      templateUrl: '/assets/html/board/list'
+    })
+    .state('boards.edit', {
+      url: '/:board/edit',
+      templateUrl: '/assets/html/board/form'
+    })
+    .state('boards.detail', {
+      url: '/:id',
       controller: 'TaskController',
       templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.current',{
-      url: '/current'
+    .state('boards.detail.backlog', {
+      url: '/backlog',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.new',{
-      url: '/new'
+    .state('boards.detail.backlog.new', {
+      url: '/new',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.view', {
-      url: '/:id'
+    .state('boards.detail.backlog.edit', {
+      url: '/:task/edit',
+      controller: 'TaskController',
+      templateUrl: '/assets/html/task/index'
     })
-    .state('tasks.edit',{
-      url: '/:id/edit'
-    })
+
+    //.state('tasks', {
+    //  url: '/tasks',
+    //  controller: 'TaskController',
+    //  templateUrl: '/assets/html/task/index'
+    //})
+    //.state('tasks.current',{
+    //  url: '/current'
+    //})
+    //.state('tasks.new',{
+    //  url: '/new'
+    //})
+    //.state('tasks.view', {
+    //  url: '/:id'
+    //})
+    //.state('tasks.edit',{
+    //  url: '/:id/edit'
+    //})
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
@@ -104818,6 +104859,145 @@ angular.module('baseApp.services')
   }]);
 
 angular.module('baseApp.controllers')
+  .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_',
+    function($scope, $state, $http, currentUser, Board, _){
+      'use strict';
+      console.log('reload board controllers');
+
+      $scope.boards = [];
+      var formSetup = function(){
+        var usersCache = [];
+        $scope.selected = function($item) {
+          var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+            selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+
+          $scope.board.members.push({
+            name: selection.firstName + ' ' + selection.lastName,
+            email: selection.email,
+            _id: selection._id
+          });
+          $scope.$broadcast('clearInput');
+        };
+        $scope.removeMember = function( i ) {
+          $scope.board.members.splice( i, 1);
+        };
+        $scope.getUsers = function(val) {
+          return $http.get('/api/autocomplete/users', {
+            params: {
+              q: val
+            }
+          }).then(function(response){
+            usersCache = response.data.users;
+            var current = currentUser.get(),
+              filteredUserList =  _
+                .filter( response.data.users, function(user){
+                  return user.email !== current.email && !_.find($scope.board.members, function(i){return i.email ===user.email;});
+                });
+            return filteredUserList.map(function(user){
+              return (user.firstName ? user.firstName : '') + ' ' + (user.lastName ?user.lastName:'') + '&lt;'+user.email+'&gt;';
+            });
+          });
+        };
+        $scope.addColumn = function(name){
+          $scope.board.columns.push( {name: name});
+        };
+        $scope.removeColumn = function( i ) {
+          $scope.board.columns.splice( i, 1);
+        };
+      };
+      $scope.currentUser = currentUser.get();
+      switch( $state.current.name ) {
+        case 'boards.new':
+          $scope.board = {
+            members: [],
+            columns: []
+          };
+          $scope.add = function(){
+            Board.add( $scope.board )
+              .then( function(){
+                console.log('added');
+                $state.go('boards.list',{}, { reload: true });
+              });
+          };
+          formSetup();
+          break;
+        case 'boards.detail':
+          $scope.board = Board.get( $state.params.id );
+          break;
+        case 'boards.list':
+          console.log('im in here');
+          Board.get()
+            .then( function( res ) {
+              $scope.boards = res.boards;
+            });
+          break;
+        case 'boards.edit':
+          console.log('im in here');
+          Board.get( $state.params.board )
+            .then( function( res ) {
+              $scope.board = res.board;
+            });
+          formSetup();
+          $scope.update = function( ) {
+            Board.update( $scope.board )
+              .then( function(){
+                console.log('updated');
+                $state.go('boards.list');
+              });
+          };
+          break;
+        default:
+          break;
+      }
+
+      $scope.remove = function( id ){
+        Board.remove( id )
+          .then( function(){
+            $scope.boards = _.filter( $scope.boards, function(board){ return board._id !== id; });
+            $state.go('boards.list');
+          });
+      };
+    }]);
+angular.module('baseApp.services').factory('BoardResource', [ '$resource', function($resource) {
+  'use strict';
+  return $resource('/api/boards/:id',
+    { id: '@id' },
+    {
+      create: {
+        method: 'POST'
+      },
+      read: {
+        method: 'GET'
+      },
+      update: {
+        method: 'PUT'
+      },
+      remove: {
+        method: 'DELETE'
+      }
+    }
+  );
+}]);
+angular.module('baseApp.services').factory('Board', [ 'BoardResource', function( BoardResource) {
+  'use strict';
+  // Caching Option here...
+  return {
+    add: function( obj ) {
+      return BoardResource.create( {board: obj} ).$promise;
+    },
+    get: function( id ) {
+      return BoardResource.read( id ? {id: id} : {} ).$promise;
+    },
+    update: function( obj ) {
+      return BoardResource.update( {id: obj._id}, {board: obj} ) .$promise;
+    },
+    remove: function(id){
+      return BoardResource.remove( {id: id} ).$promise;
+    }
+  };
+}]);
+
+angular.module('baseApp.controllers')
   .controller('CalendarController', ['$scope','Calendar', function($scope, Calendar){
     'use strict';
 
@@ -105040,24 +105220,6 @@ angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', fun
   };
 }]);
 
-angular.module('baseApp.controllers')
-  .controller('SubHeaderController', ['$scope','SubHeader',
-    function($scope, SubHeader) {
-      'use strict';
-
-      var skip1 = false;
-      $scope.$watch( SubHeader.get, function(n){
-
-        if( !skip1 ){
-          skip1 = true;
-          return;
-        }
-        $scope.subHeader.breadcrumbs = n;
-      });
-      $scope.subHeader = SubHeader.get();
-    }
-  ]
-);
 angular.module('baseApp.services')
 
 .factory('ChatResource', [ '$resource', function($resource) {
@@ -105299,7 +105461,13 @@ angular.module('baseApp.directives')
       scope: {
         inputModel: '=',
         placeholder: '@',
-        autoCompleteHttp: '='
+        autoCompleteHttp: '=',
+        selected: '=' || function(){}
+      },
+      link: function(scope){
+        scope.$on('clearInput', function(){
+          delete scope.inputModel;
+        });
       }
     };
   }]);
@@ -105634,6 +105802,13 @@ angular.module('baseApp.directives')
     };
   });
 angular.module('baseApp.filters');
+angular.module('baseApp.filters', [])
+  .filter('rawhtml', ['$sce', function($sce){
+    'use strict';
+    return function(val) {
+      return $sce.trustAsHtml(val);
+    };
+  }]);
 angular.module('baseApp.controllers')
   .controller('KnowledgeController', ['$scope',
     function($scope) {
@@ -105682,12 +105857,15 @@ angular.module('baseApp.directives')
             }
             switch( newUser.role ){
               case 'any':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop2';
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/primaryTop';
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/admin';
                 scope.user = newUser;
-                console.log( newUser );
+                break;
+              case 'authorized':
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
+                scope.user = newUser;
                 break;
               default:
             }
@@ -105697,6 +105875,76 @@ angular.module('baseApp.directives')
           });
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
+      };
+    }
+  ]);
+angular.module('baseApp.controllers')
+  .controller('SubHeaderController', ['$scope','SubHeader',
+    function($scope, SubHeader) {
+      'use strict';
+
+      var skip1 = false;
+      $scope.$watch( SubHeader.get, function(n){
+
+        if( !skip1 ){
+          skip1 = true;
+          return;
+        }
+        $scope.subHeader.breadcrumbs = n;
+      });
+      $scope.subHeader = SubHeader.get();
+    }
+  ]
+);
+
+angular.module('baseApp.directives')
+  .directive('heading', [ '$rootScope',
+    function( $rootScope ){
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/layout/heading/index',
+        link: function( scope ) {
+          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+            //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
+            var head, breadcrumbs = [{url: 'root',value: 'Home'}];
+            switch( toState.name ) {
+              case 'boards.list':
+                breadcrumbs.push({url:'', value: 'View Boards'});
+                head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
+                break;
+              case 'boards.new':
+                breadcrumbs.push({url:'', value: 'Create Board'});
+                head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
+                break;
+              case 'boards.detail':
+                breadcrumbs.push({url:'', value: 'Name'});
+                head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
+                break;
+              default:
+                breadcrumbs.push({url:'', value:'Undefined'});
+                head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
+                break;
+            }
+            scope.heading = head;
+          });
+
+          scope.heading = {
+            title: 'Title',
+            subTitle: 'Sub Title',
+            breadcrumbs: [
+              {
+                url: 'root',
+                value: 'Home'
+              },
+              {
+                url: 'root',
+                value: 'Blank Page'
+              }
+            ]
+          };
+        }
       };
     }
   ]);
@@ -106788,18 +107036,21 @@ angular.module('baseApp.controllers')
 
       $scope.tab = [false, false, false, false];
       switch( $state.current.name ) {
-        case 'tasks.current':
+        case 'boards.detail':
+          $scope.$parent.board.then( function( res ) {
+            $scope.board = res.board;
+          });
           $scope.tab[0] = true;
           break;
-        case 'tasks':
+        case 'boards.detail.backlog':
           $scope.tab[1] = true;
           break;
-        case 'tasks.new':
+        case 'boards.detail.backlog.new':
           $scope.tab[2] = true;
           break;
-        case 'tasks.edit':
+        case 'boards.detail.backlog.edit':
           $scope.tab[3] = true;
-          $scope.id = $state.params.id;
+          $scope.id = $state.params.task;
           break;
         default:
           $scope.tab[0] = true;
@@ -106820,14 +107071,15 @@ angular.module('baseApp.controllers')
   ]
 );
 angular.module('baseApp.directives')
-  .directive( 'tasksCurrent', [ 'Task','SubHeader', function( Task, SubHeader ) {
+  .directive( 'tasksCurrent', [ 'Task', function( Task ) {
     'use strict';
     return {
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/task/directiveTasksCurrent',
       scope: {
-        active: '='
+        active: '=',
+        board: '='
       },
       link: function( scope ) {
         scope.initDraggable = function(){
@@ -106839,58 +107091,49 @@ angular.module('baseApp.directives')
             });
           });
         };
+        scope.initDroppable = function(){
+          $('.drop-test').each( function(){
+            $( this ).droppable({
+              accept: '.current-task',
+              hoverClass: 'droppable-hover',
+              drop: function(event, ui) {
+                var dropped = ui.draggable;
+                var droppedOn = $(this);
+                if( dropped.parent().attr('id') === droppedOn.attr('id') ) {
+                  return;
+                }
+                Task.update( dropped.attr('id'), { _column: droppedOn.attr('id') || null } )
+                  .then( function(){
 
-        $('.drop-test').each( function(){
-          $( this ).droppable({
-            accept: '.current-task',
-            hoverClass: 'droppable-hover',
-            drop: function(event, ui) {
-              var dropped = ui.draggable;
-              var droppedOn = $(this);
-              var task = {};
-              var newParent = $(this).attr('id'), oldParent = dropped.parent().parent().attr('id');
-              if( newParent ) {
-                task[ newParent ] = true;
+                  });
+                $(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
               }
-              task[ oldParent ] = false;
-              if( newParent === oldParent ) {
-                return;
-              }
-              Task.update( dropped.attr('id'), task )
-                .then( function(){
-                  $(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
-                });
-            }
+            });
           });
-        });
+        };
+
         $('.box-title').matchHeight();
         if( scope.active ) {
-          Task.getAll()
-            .then( function(response){
-              scope.tasks = response.tasks;
-            });
-          SubHeader.setHeader( 'Tasks' );
-          SubHeader.set.subTitle = 'Viewing Current';
+
         }
       }
     };
   }])
-  .directive('tasksBacklog', ['Task','SubHeader', function(Task, SubHeader) {
+  .directive('tasksBacklog', ['Task','$stateParams', '_',  function(Task, $stateParams, _) {
     'use strict';
     return {
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/task/directiveTasksBacklog',
       scope: {
-        active: '='
+        active: '=',
+        id: '='
       },
       link: function( scope ) {
         if( scope.active ) {
-          SubHeader.setHeader( 'Tasks' );
-          SubHeader.set.subTitle = 'Viewing All Backlog';
-          Task.getAll()
+          Task.getAll( $stateParams.id )
             .then( function(response){
-              scope.tasks = response.tasks;
+              scope.tasks = _.filter( response.tasks, function(task) { return !task.start; });
               if( scope.tasks.length ) {
                 scope.current = scope.tasks[0];
               }
@@ -106905,10 +107148,17 @@ angular.module('baseApp.directives')
               window.alert('assigned');
             });
         };
+        scope.startTask = function( id ) {
+          Task.start( id )
+            .then( function() {
+              scope.tasks = _.filter( scope.tasks, function(task){ return task._id !== id; });
+              if( scope.tasks.length ) { scope.current = scope.tasks[id]; }
+            });
+        };
       }
     };
   }])
-  .directive('tasksNew', ['Task','SubHeader','$state',function( Task, SubHeader, $state ){
+  .directive('tasksNew', ['Task','$state','$stateParams', function( Task, $state, $stateParams ){
     'use strict';
     return {
       restrict: 'E',
@@ -106940,33 +107190,27 @@ angular.module('baseApp.directives')
                 .css({'background-color': scope.task.color, 'border-color': scope.task.color})
                 .html('Color:  <span class="caret"></span>');
               console.log( scope.task );
-              //$('#wysihtml5-content').val( scope.task.description );
             });
-          if( scope.active ) {
-            SubHeader.setHeader( 'Tasks' );
-            SubHeader.set.subTitle = 'Edit Task';
-          }
         } else {
-          if( scope.active ) {
-            SubHeader.setHeader( 'Tasks' );
-            SubHeader.set.subTitle = 'New Task';
-          }
           scope.task = {
             color: currColor
           };
         }
         scope.save = function(){
           scope.task.description = $('#wysihtml5-content').val();
+          if( !scope.task._board ) {
+            scope.task._board = $stateParams.id;
+          }
           Task.save( scope.task )
             .then( function(){
-              $state.go('tasks',{}, { reload: true });
+              $state.go('boards.detail.backlog',{}, { reload: true });
             });
 
         };
       }
     };
   }])
-  .directive('tasksView', ['Task','SubHeader',function(Task, SubHeader){
+  .directive('tasksView', ['Task',function(Task){
     'use strict';
     return {
       restrict: 'E',
@@ -106982,8 +107226,7 @@ angular.module('baseApp.directives')
             scope.task = response.task;
           });
         if( scope.active ) {
-          SubHeader.setHeader( 'Tasks' );
-          SubHeader.set.subTitle = 'Viewing Task';
+
         }
       }
     };
@@ -106991,8 +107234,8 @@ angular.module('baseApp.directives')
 angular.module('baseApp.services')
   .factory('TaskResource', [ '$resource', function($resource) {
     'use strict';
-    return $resource('/api/tasks/:id',
-      { id: '@id' },
+    return $resource('/api/tasks/:action/:id/',
+      { id: '@id', action: '@action' },
       {
         create: {
           method: 'POST'
@@ -107013,8 +107256,8 @@ angular.module('baseApp.services')
     'use strict';
 
     return {
-      getAll: function(){
-        return TaskResource.read().$promise;
+      getAll: function( boardId ){
+        return TaskResource.read( {id: boardId, action: 'board'} ).$promise;
       },
       getOne: function( id ) {
         return TaskResource.read( {id: id} ).$promise;
@@ -107030,6 +107273,9 @@ angular.module('baseApp.services')
       },
       assignToMe: function(id){
         return TaskResource.update( {id: id} ).$promise;
+      },
+      start: function( id ) {
+        return TaskResource.update( {id: id, action: 'start'}).$promise;
       }
     };
   }]);

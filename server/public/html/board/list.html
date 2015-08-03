@@ -1,0 +1,21 @@
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><strong><i class="fa fa-server"></i>Name</strong></div>
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><strong><i class="fa fa-server"></i>Members</strong></div>
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><strong><i class="fa fa-server"></i>Columns</strong></div>
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><strong><i class="fa fa-server"></i>Actions</strong></div>
+</div>
+<div class="row">
+  <div class="list-group">
+    <div ng-repeat="board in boards track by $index" ui-sref="boards.detail({id: board._id})" ui-sref-opts="{reload: true}" style="cursor:pointer" class="list-group-item">
+      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><strong><i class="fa fa-server"></i>{{board.name}}</strong></div>
+      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><span ng-repeat="member in board.members track by $index">{{member.email}}<br/></span></div>
+      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><span ng-repeat="column in board.columns track by $index">{{column.name}}<br/></span></div>
+      <div ng-show="board._owner === currentUser._id" class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><a ui-sref="boards.edit({board: board._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" class="btn btn-default btn-block">EDIT</a><a ng-click="remove( board._id )" class="btn btn-danger btn-block">DELETE</a></div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+<div style="margin-top: 50px;" class="row">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="boards.new" ui-sref-opts="{reload: true}" class="btn btn-primary"><i class="fa fa-plus"></i>  Add Board</a></div>
+</div>

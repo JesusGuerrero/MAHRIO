@@ -1,0 +1,17 @@
+.row
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2
+        a.btn.btn-default(ui-sref="boards.list" ui-sref-opts="{reload: true}")
+            h4
+                i.fa.fa-chevron-left
+                |   Back
+
+    .col-xs-12
+        |   Board Name: {{board.name}}
+    .col-xs-12
+        |   Board Members:
+        span( ng-repeat="member in board.members track by $index")
+            |   {{member.email}}
+    .col-xs-12
+        |   Board Columns:
+        span( ng-repeat="column in board.columns track by $index")
+            |   {{column.name}}
