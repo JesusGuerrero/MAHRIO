@@ -1,10 +1,22 @@
 'use strict';
 
-require('./Chat');
+//require('./Article');
+//require('./Attribute');
+require('./Board');
+//require('./Cart');
+require('./Column');
 require('./Comment');
-require('./User');
 require('./Contact');
+require('./Conversation');
 require('./Event');
+//require('./List');
 require('./Mail');
+require('./Membership');
+require('./Message');
+//require('./Order');
+//require('./Page');
+//require('./Product');
+//require('./Section');
 require('./Task');
-
+require('./User');
+//require('./Widget');
