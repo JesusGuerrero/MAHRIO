@@ -1,8 +1,8 @@
 angular.module('baseApp.services')
   .factory('TaskResource', [ '$resource', function($resource) {
     'use strict';
-    return $resource('/api/tasks/:id',
-      { id: '@id' },
+    return $resource('/api/tasks/:action/:id/',
+      { id: '@id', action: '@action' },
       {
         create: {
           method: 'POST'
@@ -23,8 +23,8 @@ angular.module('baseApp.services')
     'use strict';
 
     return {
-      getAll: function(){
-        return TaskResource.read().$promise;
+      getAll: function( boardId ){
+        return TaskResource.read( {id: boardId, action: 'board'} ).$promise;
       },
       getOne: function( id ) {
         return TaskResource.read( {id: id} ).$promise;
@@ -40,6 +40,9 @@ angular.module('baseApp.services')
       },
       assignToMe: function(id){
         return TaskResource.update( {id: id} ).$promise;
+      },
+      start: function( id ) {
+        return TaskResource.update( {id: id, action: 'start'}).$promise;
       }
     };
   }]);

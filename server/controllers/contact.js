@@ -1,7 +1,6 @@
 
 var server,
-  NewsletterEntry = require('mongoose').model('NewsletterList'),
-  QuestionEntry = require('mongoose').model('QuestionList'),
+  Contact = require('mongoose').model('Contact'),
   Boom = require('boom');
 
 module.exports = function(config, _server){
@@ -9,7 +8,7 @@ module.exports = function(config, _server){
   server = _server;
 
   function addNewsletterEntry( request, reply ){
-    var entry = new NewsletterEntry( request.payload );
+    var entry = new Contact( request.payload );
 
     entry.save( function(error) {
       if( error ) { reply(Boom.badRequest('Bad request')); }
@@ -18,7 +17,7 @@ module.exports = function(config, _server){
     });
   }
   function addQuestionEntry( request, reply ){
-    var entry = new QuestionEntry( request.payload );
+    var entry = new Contact( request.payload );
 
     entry.save( function(error) {
       if( error ) { reply(Boom.badRequest('Bad request')); }
@@ -52,13 +51,13 @@ module.exports = function(config, _server){
         handler: function( request, reply ){
           switch( request.params.option ){
             case 'newsletter':
-              server.sendEmail( null, 'Newsletter: '+request.payload.name + '<'+request.payload.email+'>',
-                request.payload.domain, 'newsletter' );
+              /*server.sendEmail( null, 'Newsletter: '+request.payload.name + '<'+request.payload.email+'>',
+                request.payload.domain, 'newsletter' );*/
               addNewsletterEntry( request, reply );
               break;
             case 'question':
-              server.sendEmail( null, 'Question: '+request.payload.name + '<'+request.payload.email+'>',
-                request.payload.question, 'question' );
+              /*server.sendEmail( null, 'Question: '+request.payload.name + '<'+request.payload.email+'>',
+                request.payload.question, 'question' );*/
               addQuestionEntry( request, reply );
               break;
             default:
@@ -73,7 +72,7 @@ module.exports = function(config, _server){
       config: {
         handler: function( request, reply ){
           if( request.method === 'get' ) {
-            QuestionEntry.find(function (err, list) {
+            Contact.find(function (err, list) {
               if (err) {
                 reply(Boom.badRequest('Bad request'));
               }
@@ -83,7 +82,7 @@ module.exports = function(config, _server){
               });
             });
           }else if( request.method === 'delete' && request.params.id ){
-            QuestionEntry.findById( request.params.id, function(err, entry){
+            Contact.findById( request.params.id, function(err, entry){
               if (err || !entry) {
                 return reply(Boom.badRequest(err));
               }
@@ -102,7 +101,7 @@ module.exports = function(config, _server){
       config: {
         handler: function( request, reply ){
           if( request.method === 'get' ) {
-            NewsletterEntry.find(function (err, list) {
+            Contact.find(function (err, list) {
               if (err) {
                 reply(Boom.badRequest('Bad request'));
               }
@@ -112,7 +111,7 @@ module.exports = function(config, _server){
               });
             });
           }else if( request.method === 'delete' && request.params.id ){
-            NewsletterEntry.findById( request.params.id, function(err, entry){
+            Contact.findById( request.params.id, function(err, entry){
               if (err || !entry) {
                 return reply(Boom.badRequest(err));
               }

@@ -45,7 +45,7 @@ schema = mongoose.Schema({
   resetPasswordToken: {type: String},
   resetPasswordExpires: {type: Date },
   authorizationToken: {type: String},
-  memberships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }],
+  membership: { type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }, // ACCESS CONTROL
   created: { type: Date, default: Date.now }
 });
 

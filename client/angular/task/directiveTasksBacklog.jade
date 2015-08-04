@@ -5,28 +5,38 @@
                 ng-repeat="task in tasks track by $index" ng-click="loadTask($index)" style="border-left: 5px solid {{task.color}};")
                 h4.list-group-item-heading
                     |   {{task.title}}
-                p.list-group-item-text
-                    |   {{task.description | limitTo : 40}}
+                p.list-group-item-text( ng-bind-html="task.description | rawhtml | limitTo:40")
 
     .col-xs-12.col-sm-6.col-md-6.col-lg-6(ng-show="current")
         .form-group
             label
                 |   Title
-            div.form-control
+            div
                 |   {{current.title}}
         .form-group
             label
                 |   Description
-            div.form-control
-                |   {{current.description}}
+            div(ng-bind-html="current.description | rawhtml")
         .form-group
             label
                 |   Label
             div.btn-block.btn-lg(style="background: {{current.color}}")
                 |   &nbsp;
+        .form-group
+            label
+                |   Assigned To
+            div
+                |   {{current.assignedTo.firstName}} {{current.assignedTo.lastName}} {{current.assignedTo.email}}
+        .form-group
+            label
+                |   Created
+            div
+                |   {{current.created | date : 'medium' }}
         hr
         .form-group
-            button.pull-left.btn.btn-default(ui-sref="tasks.edit({id: current._id})" ui-sref-opts="{reload: true}")
+            button.pull-left.btn.btn-default(ui-sref="boards.detail.backlog.edit({task: current._id})" ui-sref-opts="{reload: true}")
                 |   Edit
+            button.pull-left.btn.btn-primary(ng-click="startTask(current._id)")
+                |   Start
             button.btn.btn-success.pull-right(ng-click="assignToMe(current._id)")
                 |   Assign To Me

@@ -6,6 +6,13 @@ module.exports = function(config, server) {
   [
     {
       method: ['GET'],
+      path: '/api/tasks/board/{id?}',
+      config: {
+        handler: TaskCtrl.getFromBoard,
+        auth: 'simple'
+      }
+    },{
+      method: ['GET'],
       path: '/api/tasks/{id?}',
       config: {
         handler: TaskCtrl.get,
@@ -17,6 +24,14 @@ module.exports = function(config, server) {
       path: '/api/tasks',
       config: {
         handler: TaskCtrl.create,
+        auth: 'simple'
+      }
+    },
+    {
+      method: ['PUT'],
+      path: '/api/tasks/start/{id?}',
+      config: {
+        handler: TaskCtrl.start,
         auth: 'simple'
       }
     },

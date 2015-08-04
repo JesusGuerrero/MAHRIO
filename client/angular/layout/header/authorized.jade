@@ -13,6 +13,9 @@ header.main-header
             span.icon-bar
         .navbar-custom-menu
             ul.nav.navbar-nav
+                li
+                    a(ui-sref="boards.list" ui-sref-opts="{reload: true}")
+                        |   Boards
                 li.dropdown.messages-menu
                     a.dropdown-toggle( href="#" data-toggle="dropdown")
                         i.fa.fa-envelope-o

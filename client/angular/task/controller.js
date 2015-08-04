@@ -7,18 +7,21 @@ angular.module('baseApp.controllers')
 
       $scope.tab = [false, false, false, false];
       switch( $state.current.name ) {
-        case 'tasks.current':
+        case 'boards.detail':
+          $scope.$parent.board.then( function( res ) {
+            $scope.board = res.board;
+          });
           $scope.tab[0] = true;
           break;
-        case 'tasks':
+        case 'boards.detail.backlog':
           $scope.tab[1] = true;
           break;
-        case 'tasks.new':
+        case 'boards.detail.backlog.new':
           $scope.tab[2] = true;
           break;
-        case 'tasks.edit':
+        case 'boards.detail.backlog.edit':
           $scope.tab[3] = true;
-          $scope.id = $state.params.id;
+          $scope.id = $state.params.task;
           break;
         default:
           $scope.tab[0] = true;

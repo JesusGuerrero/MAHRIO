@@ -31,6 +31,7 @@
     "hapi-auth-bearer-token": "latest",
     "hapi-auth-cookie": "latest",
     "jade": "^1.9.1",
+    "mailgun-js": "^0.7.1",
     "mongoose": "^4.0.0",
     "mongoose-unique-validator": "~0.4.1",
     "node-env-file": "^0.1.4",

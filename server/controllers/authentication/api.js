@@ -2,7 +2,6 @@
 
 var User = require('mongoose').model('User'),
     Boom = require('boom'),
-    http = require('request'),
     authUserMethods = require('./_userFunctions'),
     adminUserMethods = require('./_adminFunctions');
 
@@ -32,42 +31,10 @@ module.exports = function ( config, server ) {
   [
     {
       method: ['GET'],
-      path: '/api/oauth/linkedin',
+      path: '/api/oauth/{party?}',
       config: {
         handler: function (request, reply) {
-          if( request.query.error && request.query.error === 'access_denied'){
-            return reply.redirect('/app#login?error='+request.query.error );
-          }
-          /*jshint camelcase: false */
-          var linkedIn = {
-            oauth: {
-              client_id: config.IN_CLIENT_ID,
-              client_secret: config.IN_CLIENT_SECRET,
-              redirect_uri: config.IN_CALLBACK_URL,
-              grant_type: 'authorization_code',
-              code: request.query.code
-            },
-            url: 'https://www.linkedin.com/uas/oauth2/accessToken'
-          };
-
-          http.post( {
-            url: linkedIn.url,
-            form: linkedIn.oauth
-          }, function(err, httpResponse, body){
-            var firstBody = body;
-            http.get({
-              url: 'https://api.linkedin.com/v1/people/~:(first-name,last-name,headline,location,industry,picture-url,email-address)?format=json',
-              headers: {
-                Authorization: 'Bearer ' + JSON.parse(firstBody).access_token
-              }
-            }, function(err, httpResponse, body) {
-              try {
-                reply({firstBody: JSON.parse(firstBody), secondBody: JSON.parse(body) });
-              } catch(e){
-                reply('FAILED');
-              }
-            });
-          });
+          authUserMethods.loginThroughOauth(request, reply, request.params.party, config);
         }
       }
     },
@@ -80,47 +47,6 @@ module.exports = function ( config, server ) {
           linkedInUrl += config.IN_CLIENT_ID+'&redirect_uri=' + encodeURIComponent(config.IN_CALLBACK_URL);
           linkedInUrl += '&state=987654321&scope=r_basicprofile%20r_emailaddress';
           reply.redirect( linkedInUrl );
-        }
-      }
-    },
-    {
-      method: ['GET'],
-      path: '/api/oauth/facebook',
-      config: {
-        handler: function (request, reply) {
-          if( request.query.error && request.query.error === 'access_denied'){
-            return reply.redirect('/app#login?error='+request.query.error );
-          }
-          /*jshint camelcase: false */
-          var facebook = {
-            oauth: {
-              client_id: config.FB_CLIENT_ID,
-              client_secret: config.FB_CLIENT_SECRET,
-              redirect_uri: config.FB_CALLBACK_URL,
-              grant_type: 'authorization_code',
-              code: request.query.code
-            },
-            url: 'https://graph.facebook.com/v2.3/oauth/access_token?'
-          };
-
-          http.get( {
-            url: facebook.url,
-            qs: facebook.oauth
-          }, function(err, httpResponse, body){
-            var firstBody = body;
-            http.get({
-              url: 'https://graph.facebook.com/v2.3/me?scope=email',
-              headers: {
-                Authorization: 'Bearer ' + JSON.parse(firstBody).access_token
-              }
-            }, function(err, httpResponse, body) {
-              try {
-                reply({firstBody: JSON.parse(firstBody), secondBody: JSON.parse(body) });
-              } catch(e){
-                reply('FAILED');
-              }
-            });
-          });
         }
       }
     },

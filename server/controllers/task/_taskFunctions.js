@@ -3,12 +3,13 @@
 var _ = require('underscore'),
   Boom = require('boom'),
   mongoose = require('mongoose'),
-  Task = mongoose.model('Task');
+  Task = mongoose.model('Task'),
+  Board = mongoose.model('Board');
 
 function updateTask( request, reply ) {
   if( request.params.id ) {
     Task
-      .findOne( {createdBy: request.auth.credentials.id, _id: request.params.id })
+      .findOne( { _id: request.params.id })
       .exec( function(err, task){
         if( err ) { return Boom.badRequest(); }
 
@@ -17,6 +18,7 @@ function updateTask( request, reply ) {
         } else {
           task = _.extendOwn( task, request.payload.task );
         }
+        delete task._board;
 
         task.save( function(err, task) {
           if( err ) { return reply( Boom.badRequest() ); }
@@ -33,19 +35,45 @@ function createTask( request, reply ) {
     request.params.id = request.payload.task._id;
     return updateTask( request, reply);
   }
-  request.payload.task.createdBy = request.auth.credentials.id;
+  request.payload.task._creator = request.auth.credentials.id;
   var task = new Task( request.payload.task );
 
-  task.save( function(err, task) {
-    if( err ) { return reply( Boom.badRequest() ); }
+  Board.findOne( { _id: request.payload.task._board }, function(err, board){
+    if( err ) { return reply( Boom.badRequest(err) ); }
 
-    reply( {task: task} );
+    if( board ){
+      task.save( function(err, task) {
+        if( err ) { return reply( Boom.badRequest(err) ); }
+
+        board.tasks.push( task.id );
+        board.save( function(err){
+          if( err ) { return reply( Boom.badRequest(err) ); }
+
+          reply( {task: task} );
+        });
+      });
+    } else {
+      return reply( Boom.badRequest('Board not found') );
+    }
   });
+}
+function getFromBoard( request, reply ){
+  Task
+    .find( { _board: request.params.id } )
+    .populate([{
+      path: 'assignedTo',
+      select: 'firstName lastName email'
+    }])
+    .exec( function(err, tasks){
+      if( err ) { return reply( Boom.badRequest() ); }
+
+      reply( {tasks: tasks} );
+    });
 }
 function getTask( request, reply ) {
   if( request.params.id ) {
     Task
-      .findOne( {createdBy: request.auth.credentials.id, _id: request.params.id })
+      .findOne( { _id: request.params.id })
       .exec( function(err, task){
         if( err ) { return reply( Boom.badRequest() ); }
 
@@ -53,7 +81,7 @@ function getTask( request, reply ) {
       });
   } else {
     Task
-      .find( {createdBy: request.auth.credentials.id })
+      .find( )
       .exec( function(err, tasks){
         if( err ) { return reply( Boom.badRequest() ); }
 
@@ -61,10 +89,22 @@ function getTask( request, reply ) {
       });
   }
 }
+function start( request, reply ) {
+  if( request.params.id ) {
+    Task.update( {_id: request.params.id}, { $set : { start : true } }, function(err,task){
+      if( err ) return Boom.badRequest(err);
 
+      reply();
+    })
+  } else {
+    reply( Boom.badRequest() );
+  }
+}
 
 module.exports = {
   create: createTask,
   get: getTask,
-  update: updateTask
+  update: updateTask,
+  start: start,
+  getFromBoard: getFromBoard
 };

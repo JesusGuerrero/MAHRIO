@@ -1,0 +1,21 @@
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+      <div class="panel panel-default">
+        <error-message-box validation-errors="validationErrors"></error-message-box>
+        <div class="panel-body">
+          <h3 class="text-center">Add Board</h3>
+          <form novalidate="novalidate" ng-submit="add()">
+            <form-input-tag model="board.name" label="Name" required="true"></form-input-tag>
+            <hr/>
+            <div class="text-center form-group">
+              <button type="submit" class="btn btn-block btn-primary btn-lg">Create</button>
+            </div>
+          </form>
+          <div class="col-xs-8 col-xs-offset-2 text-center form-group"><a ui-sref="boards.list" class="btn btn-block btn-default">Cancel</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
