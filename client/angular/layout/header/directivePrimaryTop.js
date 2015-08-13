@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser',
-    function( $rootScope, currentUser ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket',
+    function( $rootScope, currentUser, Socket ){
       'use strict';
       return {
         restrict: 'A',
@@ -20,7 +20,7 @@ angular.module('baseApp.directives')
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/admin';
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
                 scope.user = newUser;
                 break;
               case 'authorized':
@@ -33,6 +33,7 @@ angular.module('baseApp.directives')
               $rootScope.toggleSidebarCollapsed();
             };
           });
+
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };

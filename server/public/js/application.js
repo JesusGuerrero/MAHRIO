@@ -109340,10 +109340,10 @@ angular.module('baseApp.directives')
               Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
                 .then( function(res){
                   scope.currentConversation.messages.push( res.message );
-                  Socket.emit('event:ping', res.message);
-                  $('.direct-chat-messages', el).animate({
-                    scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  }, 500);
+                  //Socket.emit('event:ping', res.message);
+                  //$('.direct-chat-messages', el).animate({
+                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
+                  //}, 500);
                   delete scope.newMessage;
                 });
             }
@@ -109379,20 +109379,21 @@ angular.module('baseApp.directives')
           scope.rightMessage = 'rightMessage';
           scope.newMessage = '';
           scope.currentUser = currentUser.get();
+          var existingConversation = false;
           scope.sendMessage = function(){
-            if( !scope.currentConversation ) {
-              Chat.startPrivateConversation( scope.open, { message: {content: scope.newMessage }} )
+            if( !existingConversation ) {
+              Chat.startPrivateConversation( scope.toUser._id, { message: {content: scope.newMessage }} )
                 .then( function( res ){
                   scope.currentConversation = res.conversation;
                   delete scope.newMessage;
                 });
             } else {
-              Chat.sendPrivateMessage( scope.open, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.toUser._id, { content: scope.newMessage } )
                 .then( function(res){
                   scope.currentConversation.messages.push( res.message );
-                  $('.direct-chat-messages', el).animate({
-                    scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  }, 500);
+                  //$('.direct-chat-messages', el).animate({
+                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
+                  //}, 500);
                   delete scope.newMessage;
                 });
             }
@@ -109400,9 +109401,18 @@ angular.module('baseApp.directives')
           scope.$watch( 'open', function() {
             if( scope.open !== "0" ) {
               delete scope.currentConversation;
-              Chat.getPrivateConversation( scope.open )
+              scope.toUser = JSON.parse( scope.open );
+              scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.first_name + " " + scope.toUser.profile.last_name) : '';
+              scope.otherUser += " <"+scope.toUser.email+">";
+              Chat.getPrivateConversation( scope.toUser._id )
                 .then( function(res){
-                  scope.currentConversation = res.conversation;
+                  if( res.conversation ) {
+                    scope.currentConversation = res.conversation;
+                    existingConversation = true;
+                  } else {
+                    scope.currentConversation = true;
+                  }
+
                 });
             }
           });
@@ -109455,6 +109465,7 @@ angular.module('baseApp.directives')
             });
             scope.conversations = res.conversations;
             scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
+            scope.isPrivate = true;
           });
           scope.load = function(id){
             scope.conversation = _.findWhere( scope.conversations, {_id: id});
@@ -109935,8 +109946,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser',
-    function( $rootScope, currentUser ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket',
+    function( $rootScope, currentUser, Socket ){
       'use strict';
       return {
         restrict: 'A',
@@ -109956,7 +109967,7 @@ angular.module('baseApp.directives')
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/admin';
+                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
                 scope.user = newUser;
                 break;
               case 'authorized':
@@ -109969,6 +109980,7 @@ angular.module('baseApp.directives')
               $rootScope.toggleSidebarCollapsed();
             };
           });
+
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
       };
@@ -111628,10 +111640,9 @@ angular.module('baseApp.controllers')
               $scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
               console.log( res.list );
             });
-          $scope.messageModal = function(id){
+          $scope.messageModal = function( index ){
             $('#modalNewMessage').modal().toggle();
-            $scope.open = id;
-            console.log( $scope.open );
+            $scope.open = $scope.usersList[ index ];
           };
           break;
         default:

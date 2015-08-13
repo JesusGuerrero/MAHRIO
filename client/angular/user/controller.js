@@ -46,10 +46,9 @@ angular.module('baseApp.controllers')
               $scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
               console.log( res.list );
             });
-          $scope.messageModal = function(id){
+          $scope.messageModal = function( index ){
             $('#modalNewMessage').modal().toggle();
-            $scope.open = id;
-            console.log( $scope.open );
+            $scope.open = $scope.usersList[ index ];
           };
           break;
         default:

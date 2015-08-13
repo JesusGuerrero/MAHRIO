@@ -40,6 +40,7 @@ angular.module('baseApp.directives')
             });
             scope.conversations = res.conversations;
             scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
+            scope.isPrivate = true;
           });
           scope.load = function(id){
             scope.conversation = _.findWhere( scope.conversations, {_id: id});

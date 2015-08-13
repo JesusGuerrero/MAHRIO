@@ -11,7 +11,7 @@ div
                     span.info-box-text.text-center
                         small
                             |   {{user.email}}
-            button.btn.btn-block.btn-primary(ng-click="messageModal(user._id);")
+            button.btn.btn-block.btn-primary(ng-click="messageModal($index);")
                 |   Message
     .row
         modal-window-view( modal-id="modalNewMessage" actions='actions' title="New Message" type="conversation")

@@ -28,10 +28,10 @@ angular.module('baseApp.directives')
               Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
                 .then( function(res){
                   scope.currentConversation.messages.push( res.message );
-                  Socket.emit('event:ping', res.message);
-                  $('.direct-chat-messages', el).animate({
-                    scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  }, 500);
+                  //Socket.emit('event:ping', res.message);
+                  //$('.direct-chat-messages', el).animate({
+                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
+                  //}, 500);
                   delete scope.newMessage;
                 });
             }

@@ -25,6 +25,7 @@ server.route({
     var socket = config.getSocket();
     console.log( socket );
     socket.emit('event:restroom', request.query.signal);
+    socket.broadcast.emit('event:restroom', request.query.signal);
     reply({ok: true});
   }
 });

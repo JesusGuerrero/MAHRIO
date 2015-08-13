@@ -2,6 +2,8 @@
     .box-header.with-border
         h3.box-title
             |   Direct Chat
+            small(ng-show="otherUser")
+                |   {{otherUser}}
         .box-tools.pull-right
             //span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")
             //    |   3
