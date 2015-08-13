@@ -1,0 +1,27 @@
+.row(style="margin-top: 50px;")
+    .col-xs-12.col-sm-4.col-sm-offset-4.col-md-6.col-md-offset-3.col-lg-2.col-lg-offset-5
+        a.btn.btn-primary.btn-block(ui-sref="articles.new" ui-sref-opts="{reload: true}")
+            i.fa.fa-plus
+            |   Add Article
+.row
+    .col-sm-10.col-sm-offset-1
+        ul(style="list-style-type: none; padding: 0; margin: 0")
+            li( ng-repeat="article in articles track by $index" style="padding-left: 495px; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #e3e3e3; clear: both; padding-top: 30px;")
+                a(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                    figure(style="float: left; width: 465px; margin-left: -495px")
+                        img(src="http://cdn.theatlantic.com/assets/media/img/photo/2015/08/winners-of-the-2015-national-geogra/01%20Grand%20Prize-1/hero_wide_640.jpg?1438628037" style="width: 100%")
+                        figcaption(class="credit")
+                    h3
+                        |{{article.title}}
+                a
+                    small
+                        |{{article._creator.firstName}} {{article._creator.lastName}} &lt;{{article._creator.email}}&gt;
+                div(class="article-content")
+                    p(ng-repeat="section in article.sections track by $index" ng-show="$first")
+                        |{{section.body}}
+                a.btn.btn-default.btn-block(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                    |Read More
+                a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
+                    |Edit
+
+

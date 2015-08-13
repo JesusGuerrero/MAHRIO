@@ -1,20 +1,21 @@
 angular.module('baseApp.directives')
-  .directive('sideBar', ['$rootScope','$state',
-    function($rootScope, $state){
+  .directive('sideBar', ['$rootScope','$state','currentUser',
+    function($rootScope, $state, currentUser){
       'use strict';
       return {
         restrict: 'A',
         scope: {
-          role: '='
+          access: '='
         },
         link: function(scope, elem, attrs) {
           scope.logout = $rootScope.logout;
-          scope.$watch( 'role', function(newRole){
-            switch( newRole ){
+          scope.$watch( 'access', function(access){
+            switch( access ){
               case 'any':
                 scope.dynamicTemplateUrl = '';
                 break;
               case 'admin':
+              case 'authorized':
                 if( attrs.type === 'navigation' ){
                   scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/leftMainNavigation';
                 } else {

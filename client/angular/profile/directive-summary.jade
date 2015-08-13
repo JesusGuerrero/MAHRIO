@@ -1,15 +1,21 @@
 div
     .row
+        .col-xs-12
+            a.btn.btn-default(ui-sref="users.list" ui-sref-opts="{reload: true}" ng-show="!myProfile")
+                h4
+                    i.fa.fa-chevron-left
+                    |   Back
+    .row
         .col-md-6
             b
                 |   First Name:
             br
-            |   {{current.firstName}}
+            |   {{current.profile.first_name}}
         .col-md-6
             b
                 |   Last Name:
             br
-            |   {{current.lastName}}
+            |   {{current.profile.last_name}}
     .row
         .col-md-6
             b
@@ -20,4 +26,4 @@ div
             b
                 |   Role:
             br
-            |   {{current.role}}
+            |   {{current.profile.role}}

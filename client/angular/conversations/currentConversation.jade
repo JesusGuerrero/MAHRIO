@@ -1,0 +1,40 @@
+.box.box-primary.direct-chat.direct-chat-primary(ng-show="currentConversation")
+    .box-header.with-border
+        h3.box-title
+            |   Direct Chat
+        .box-tools.pull-right
+            //span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")
+            //    |   3
+            //button.btn.btn-box-tool( data-widget="collapse")
+            //    i.fa.fa-minus
+            //button.btn.btn-box-tool( data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle")
+            //    i.fa.fa-comments
+            button.btn.btn-box-tool( data-dismiss="modal" aria-label="Close")
+                i.fa.fa-times
+    .box-body
+        .direct-chat-messages
+            div.direct-chat-msg( ng-repeat="message in currentConversation.messages track by $index" repeat-end="scrollBottom()"
+                ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'left' : 'right'")
+                .direct-chat-info.clearfix
+                    span.direct-chat-name(ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-left' : 'pull-right'")
+                        |   {{currentConversation.members[message._user].profile.first_name}}
+                        |   {{currentConversation.members[message._user].profile.last_name}}
+                        |   <{{currentConversation.members[message._user].email}}>
+                    span.direct-chat-timestamp(ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'")
+                        |   {{message.created | date : 'MM-dd h:mm a' }}
+                i.fa.fa-user-secret(ng-show="!currentConversation.members[message._user].avatarImage.url" style="font-size:2.5em")
+                img.direct-chat-img( src="{{currentConversation.members[message._user].avatarImage.url}}"
+                    ng-show="currentConversation.members[message._user].avatarImage.url")
+                .direct-chat-text
+                    |   {{message.content}}
+            div(ng-show="!currentConversation")
+                p
+                    |   No Messages.
+
+
+    .box-footer
+        .input-group
+            input.form-control( type="text" name="message" placeholder="Type Message ..." ng-model="newMessage")
+            span.input-group-btn
+                button.btn.btn-primary.btn-flat( type="button" ng-click="sendMessage()")
+                    |   Send

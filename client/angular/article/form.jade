@@ -1,0 +1,42 @@
+.row
+    .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+        .panel.panel-default
+            error-message-box( validation-errors="validationErrors" )
+            .panel-body
+                h3.text-center
+                    | Add Article
+                form(novalidate ng-submit="article._id ? update() : add()" id="article-form")
+                    form-input-tag(
+                        model="article.title"
+                        label="Title"
+                        required="true")
+                    .form-group(ng-show="article.sections.length" ng-class="{'sorting-sections': sortingSections}")
+                        div(class="pull-right" ng-show="article.sections.length > 1")
+                            i.fa.fa-arrows(style="cursor: pointer; float: right"
+                                ng-show="!sortingSections" ng-click="sortSections('#sortable')")
+                            i.fa.fa-check(style="cursor: pointer; float: right"
+                                ng-show="sortingSections" ng-click="stopSorting( '#sortable') ")
+                        label
+                            | Sections
+                        ul.list(style="list-style-type: none; padding: 0;" ui-sortable="sortableOptions" ng-model="article.sections")
+                            li.item( ng-repeat="section in article.sections track by $index" style="padding-bottom: 10px;")
+                                textarea( type="text" class="form-control" ng-model="section.body" ng-show="section.edit")
+                                div(ng-show="!section.edit")
+                                    |   {{section.body}}
+                                div( ng-show="!sortingSections")
+                                    i.fa.fa-close(style="cursor: pointer" ng-click="removeSection($index)")
+                                    i.fa.fa-edit(style="padding: 0 5px; cursor: pointer" ng-click="editSection($index)" ng-show="!section.edit")
+                                    i.fa.fa-check(style="padding: 0 5px; cursor: pointer" ng-click="saveSection($index)" ng-show="section.edit")
+                    .form-group
+                        .input-group
+                            textarea( type="text" ng-model="tempSection" class="form-control" placeholder="Section (e.g Text, Code, Img, etc.)")
+                            span.btn.btn-primary.input-group-addon(style="background: #3C8DDD; color: #fff" ng-click="addSection(tempSection); tempSection = '';")
+                                i( class="fa fa-plus" style="width: 30px")
+                    hr
+                    .text-center.form-group
+                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+                            | {{article._id ? 'Save' : 'Create'}}
+
+                .col-xs-8.col-xs-offset-2.text-center.form-group
+                    a.btn.btn-block.btn-default( ui-sref="articles.list" ui-sref-opts="{reload: true}")
+                        | Cancel

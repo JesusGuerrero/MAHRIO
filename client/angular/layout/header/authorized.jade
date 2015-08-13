@@ -1,9 +1,9 @@
 header.main-header
     a.logo( ui-sref="root")
         span.logo-mini
-            |   CE
+            i.fa.fa-beer
         span.logo-lg
-            |   CompEngr
+            |   MAHR.IO
     nav.navbar.navbar-static-top( role="navigation")
         a.sidebar-toggle( ng-click="toggleSidebar()" href="#" data-toggle="offcanvas" role="button")
             span.sr-only
@@ -13,9 +13,9 @@ header.main-header
             span.icon-bar
         .navbar-custom-menu
             ul.nav.navbar-nav
-                li
-                    a(ui-sref="boards.list" ui-sref-opts="{reload: true}")
-                        |   Boards
+                //li
+                //    a(ui-sref="boards.list" ui-sref-opts="{reload: true}")
+                //        |   Boards
                 li.dropdown.messages-menu
                     a.dropdown-toggle( href="#" data-toggle="dropdown")
                         i.fa.fa-envelope-o
@@ -81,32 +81,37 @@ header.main-header
                             a( href="#")
                                 |   View all tasks
                 li.dropdown.user.user-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        img.user-image( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
+                        i.fa.fa-user( style="font-size: 1.3em" ng-show="!user.avatarImage || !user.avatarImage.url")
+                        img.user-image( src="{{user.avatarImage.url}}" ng-show="user.avatarImage && user.avatarImage.url")
                         span.hidden-xs
-                            |   {{user.firstName}}
+                            |   {{user.profile.first_name}}
                     ul.dropdown-menu
                         li.user-header
-                            img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
+                            i.fa.fa-user-secret.text-gray( style="font-size: 5em" ng-show="!user.avatarImage || !user.avatarImage.url")
+                            img.img-circle( src="{{user.avatarImage.url}}" ng-show="user.avatarImage && user.avatarImage.url")
                             p
-                                |   {{user.firstName}} {{user.lastName}}
+                                |   {{user.profile.first_name}} {{user.profile.last_name}}
+                                br
+                                |   {{user.email}}
+                                br
                                 small
                                     |   Member since {{user.created | date: mediumDate}}
 
 
-                        li.user-body
-                            .col-xs-4.text-center
-                                a( href="#")
-                                    |   Followers
-                            .col-xs-4.text-center
-                                a( href="#")
-                                    |   Friends
-                            .col-xs-4.text-center
-                                a( href="#")
-                                    |   Sales
+                        //li.user-body
+                        //    .col-xs-4.text-center
+                        //        a( href="#")
+                        //            |   Followers
+                        //    .col-xs-4.text-center
+                        //        a( href="#")
+                        //            |   Friends
+                        //    .col-xs-4.text-center
+                        //        a( href="#")
+                        //            |   Sales
                         li.user-footer
                             .pull-left
-                                a.btn.btn-default.btn-flat( ui-sref="profile")
+                                a.btn.btn-default.btn-flat( ui-sref="profile" ui-sref-opts="{reload: true}")
                                     |   Profile
                             .pull-right
                                 a.btn.btn-default.btn-flat( href="javascript: void(0)" ng-click="logout()" )

@@ -7,7 +7,6 @@
         <div class="panel-body">
           <h3 class="text-center">{{locale['form'].page['register'].title}}</h3>
           <form novalidate="novalidate" ng-submit="register()">
-            <form-input-tag model="user.name" label="{{locale['form'].label['shared'].name}}" required="true" icon="user"></form-input-tag>
             <form-input-tag model="user.email" label="{{locale['form'].label['shared'].email}}" required="true" icon="envelope" regex="validate['email']"></form-input-tag>
             <form-input-tag model="user.password" type="password" label="{{locale['form'].label['shared'].password}}" required="true" icon="lock"></form-input-tag>
             <form-input-tag model="user.confirmPassword" type="password" label="{{locale['form'].label['shared'].confirmPassword}}" required="true" icon="lock" regex="validate['confirmPass']"></form-input-tag>

@@ -38,7 +38,7 @@ angular.module('baseApp.services')
         return AdminResource.delete({action:'users', id: id}).$promise;
       },
       makeAdmin: function(email){
-        return AdminResource.post( {action: 'user', id: 'profile'}, {email: email, role: 'admin'}).$promise;
+        return AdminResource.post( {action: 'user', id: 'profile'}, {email: email, access: 'admin'}).$promise;
       },
       getSessionToCMS: function(){
         return AdminResource.get( {action: 'cms', id: 'session'}).$promise;

@@ -1,9 +1,11 @@
 
-<header class="main-header"><a ui-sref="root" class="logo"><span class="logo-mini">  CE</span><span class="logo-lg">  CompEngr</span></a>
+<header class="main-header"><a ui-sref="root" class="logo"><span class="logo-mini"><i class="fa fa-beer"></i></span><span class="logo-lg">  MAHR.IO</span></a>
   <nav role="navigation" class="navbar navbar-static-top"><a ng-click="toggleSidebar()" href="#" data-toggle="offcanvas" role="button" class="sidebar-toggle"><span class="sr-only">  Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a>
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
-        <li><a ui-sref="boards.list" ui-sref-opts="{reload: true}">  Boards</a></li>
+        <!--li-->
+        <!--    a(ui-sref="boards.list" ui-sref-opts="{reload: true}")-->
+        <!--        |   Boards-->
         <li class="dropdown messages-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-envelope-o"></i><span class="label label-success">  4</span></a>
           <ul class="dropdown-menu">
             <li class="header">  You have 4 messages</li>
@@ -44,18 +46,23 @@
             <li class="footer"><a href="#">  View all tasks</a></li>
           </ul>
         </li>
-        <li class="dropdown user user-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image" class="user-image"/><span class="hidden-xs">  {{user.firstName}}</span></a>
+        <li class="dropdown user user-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i style="font-size: 1.3em" ng-show="!user.avatarImage || !user.avatarImage.url" class="fa fa-user"></i><img src="{{user.avatarImage.url}}" ng-show="user.avatarImage &amp;&amp; user.avatarImage.url" class="user-image"/><span class="hidden-xs">  {{user.profile.first_name}}</span></a>
           <ul class="dropdown-menu">
-            <li class="user-header"><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image" class="img-circle"/>
-              <p>  {{user.firstName}} {{user.lastName}}<small>  Member since {{user.created | date: mediumDate}}</small></p>
+            <li class="user-header"><i style="font-size: 5em" ng-show="!user.avatarImage || !user.avatarImage.url" class="fa fa-user-secret text-gray"></i><img src="{{user.avatarImage.url}}" ng-show="user.avatarImage &amp;&amp; user.avatarImage.url" class="img-circle"/>
+              <p>  {{user.profile.first_name}} {{user.profile.last_name}}<br/>  {{user.email}}<br/><small>  Member since {{user.created | date: mediumDate}}</small></p>
             </li>
-            <li class="user-body">
-              <div class="col-xs-4 text-center"><a href="#">  Followers</a></div>
-              <div class="col-xs-4 text-center"><a href="#">  Friends</a></div>
-              <div class="col-xs-4 text-center"><a href="#">  Sales</a></div>
-            </li>
+            <!--li.user-body-->
+            <!--    .col-xs-4.text-center-->
+            <!--        a( href="#")-->
+            <!--            |   Followers-->
+            <!--    .col-xs-4.text-center-->
+            <!--        a( href="#")-->
+            <!--            |   Friends-->
+            <!--    .col-xs-4.text-center-->
+            <!--        a( href="#")-->
+            <!--            |   Sales-->
             <li class="user-footer">
-              <div class="pull-left"><a ui-sref="profile" class="btn btn-default btn-flat">  Profile</a></div>
+              <div class="pull-left"><a ui-sref="profile" ui-sref-opts="{reload: true}" class="btn btn-default btn-flat">  Profile</a></div>
               <div class="pull-right"><a href="javascript: void(0)" ng-click="logout()" class="btn btn-default btn-flat">  Sign Out</a></div>
             </li>
           </ul>

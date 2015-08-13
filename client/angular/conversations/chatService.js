@@ -104,6 +104,66 @@ angular.module('baseApp.services')
       },
       startConversation: function( userId, message ){
         return ChatResource.post({resource: 'conversations', id: userId}, message).$promise;
+      },
+      getAllPublicConversations: function(){
+        return ChatResource.get({
+          resource: 'conversations',
+          id: 'public'
+        }).$promise;
+      },
+      getAllPrivateConversations: function(){
+        return ChatResource.get({
+          resource: 'conversations',
+          id: 'private'
+        }).$promise;
+      },
+      getPublicConversation: function( id ){
+        return ChatResource.get({
+          resource: 'conversations',
+          id: 'public',
+          conversationId: id
+        }).$promise;
+      },
+      getPrivateConversation: function( userId ) {
+        return ChatResource.get({
+          resource: 'conversations',
+          id: 'private',
+          userId: userId
+        }).$promise;
+      },
+      startPrivateConversation: function( userId, conversation ) {
+        return ChatResource.post( {
+          resource: 'conversations',
+          id: 'private',
+          userId: userId
+        },{
+          conversation: conversation
+        }).$promise;
+      },
+      startPublicConversation: function( conversation ) {
+        return ChatResource.post( {
+          resource: 'conversations',
+          id: 'public'
+        },{
+          conversation: conversation
+        }).$promise;
+      },
+      sendPrivateMessage: function( userId, message ) {
+        return ChatResource.post( {
+          resource: 'messages',
+          id: 'private',
+          userId: userId
+        },{
+          message: message
+        }).$promise;
+      },
+      sendPublicMessage: function( message ){
+        return ChatResource.post( {
+          resource: 'messages',
+          id: 'public'
+        },{
+          message: message
+        })
       }
     };
 }]);

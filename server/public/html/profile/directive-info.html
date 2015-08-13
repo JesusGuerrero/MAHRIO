@@ -1,6 +1,10 @@
 
-<form novalidate="novalidate" ng-submit="update()">
-  <form-input-tag model="user.firstName" type="text" label="First Name" required="true"></form-input-tag>
-  <form-input-tag model="user.lastName" type="text" label="Last Name" required="true"></form-input-tag>
-  <button type="submit" class="btn btn-block btn-primary btn-lg">Update</button>
-</form>
+<div class="col-xs-12">
+  <media media="user.avatarImage" container="profile" actions="avatarActions"></media>
+  <hr/>
+  <form novalidate="novalidate" ng-submit="update()">
+    <form-input-tag model="user.first_name" type="text" label="First Name" required="true"></form-input-tag>
+    <form-input-tag model="user.last_name" type="text" label="Last Name" required="true"></form-input-tag>
+    <button type="submit" class="btn btn-block btn-primary btn-lg">Update</button>
+  </form>
+</div>

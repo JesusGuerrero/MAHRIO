@@ -1,0 +1,27 @@
+// DROP (UNSET) COLUMNS
+db.tasks.update( {},
+    { $unset: {
+        isDone:'',
+        isValidated:'',
+        isApproved:'',
+        isTested:'',
+        isReviewed:'',
+        isBlocked:'',
+        isStarted:''
+    }},
+    {multi: true});
+
+// RENAME COLUMNS
+db.tasks.update( {},
+    { $rename: {
+        'createdBy':'_creator'
+    }},
+    {multi: true});
+
+// FIND
+db.users.find({_id: ObjectId('552c846357e0823f022d879b')})
+
+// UPDATE
+db.users.update( { _id: objectid('55b9a356e44cfba846ed9f31')}, {$set: { role: 'authorized'}})
+db.boards.update( {}, { $set: { startColumn: 'To Do' } }, {multi: true} );
+db.boards.update( {_id: ObjectId('55b7ef579d3518ff2f9eca6e') }, { $set : { tasks : [ ObjectId('559c3497cf1c5e730eca0d38'), ObjectId('559c34cfcf1c5e730eca0d39'), ObjectId('559c3587cf1c5e730eca0d3a'), ObjectId('559d4ff3cf1c5e730eca0d3b'), ObjectId('559d5042cf1c5e730eca0d3e') ] } } )

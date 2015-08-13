@@ -44,9 +44,15 @@ module.exports = function( env ) {
 
   baseSetup.CMS_URL = env.CMS_URL;
 
+  baseSetup.AWS_ACCESS_KEY = env.AWS_ACCESS_KEY;
+  baseSetup.AWS_SECRET_KEY = env.AWS_SECRET_KEY;
+  baseSetup.S3_BUCKET = env.S3_BUCKET;
+
   if ( baseSetup.env === 'production' ) {
     baseSetup.port = env.PORT || env.NODE_PORT || 8140;
   }
+
+  baseSetup.DOMAIN = env.NODE_DOMAIN || 'http://localhost:'+baseSetup.port;
 
   return baseSetup;
 };
