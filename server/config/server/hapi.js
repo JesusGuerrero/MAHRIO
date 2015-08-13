@@ -18,19 +18,21 @@ module.exports = function (config, url) {
     }]
   };
 
-
   var SocketHandler = function(socket){
     console.log( 'sockets listening' );
     socket.emit('welcome', {
       message: 'Hello from Hapi!'
     });
-    var messageHandler = function( data ){
+    config.messageHandler = function( data ){
       console.log( 'We got pinged: ' + data );
-      socket.broadcast.emit('event:pong', data);
+      socket.emit('event:pong', data);
       console.log( 'We emitted pong: '+ data );
     };
+    config.getSocket = function(){
+      return socket;
+    };
 
-    socket.on('event:ping', messageHandler );
+    socket.on('event:ping', config.messageHandler );
   };
 
   var serverConfig = {

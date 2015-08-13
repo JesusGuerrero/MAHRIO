@@ -5,11 +5,11 @@ angular.module('baseApp.directives')
       return {
         restrict: 'A',
         templateUrl: function() {
-          switch ($rootScope.role) {
+          switch ($rootScope.access) {
             case 'any':
               return '/assets/html/views/home';
-            case 'authorizedUser':
-              return '';
+            case 'authorized':
+              return '/assets/html/views/dashboard';
             case 'admin':
               return '/assets/html/views/dashboard';
           }

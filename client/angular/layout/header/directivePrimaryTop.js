@@ -6,16 +6,16 @@ angular.module('baseApp.directives')
         restrict: 'A',
         replace: true,
         scope: {
-          role: '='
+          access: '='
         },
         link: function(scope) {
           scope.logout = $rootScope.logout;
           scope.current = currentUser.get();
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
-              newUser = {role: 'any'};
+              newUser = {access: 'any'};
             }
-            switch( newUser.role ){
+            switch( newUser.access ){
               case 'any':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
                 break;

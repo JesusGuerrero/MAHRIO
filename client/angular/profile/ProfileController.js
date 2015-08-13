@@ -1,5 +1,5 @@
 angular.module('baseApp.controllers')
-  .controller('ProfileController', ['$scope', '$state', function( $scope, $state ) {
+  .controller('ProfileController', ['$scope', '$state', 'currentUser', function( $scope, $state, currentUser ) {
     'use strict';
 
     $scope.activeState = $state.current.name;
@@ -7,6 +7,7 @@ angular.module('baseApp.controllers')
     switch( $state.current.name ) {
       case 'profile':
         $scope.tab[0] = true;
+        $scope.myProfile = true;
         break;
       case 'profile.info':
         $scope.tab[1] = true;
@@ -19,6 +20,10 @@ angular.module('baseApp.controllers')
         break;
       default:
         $scope.tab[0] = true;
+        $scope.currentUser = currentUser.get();
+        $scope.$parent.user.then( function( res ) {
+          $scope.current = res.user;
+        });
         break;
     }
 

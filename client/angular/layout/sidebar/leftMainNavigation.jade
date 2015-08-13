@@ -1,14 +1,17 @@
-aside.main-sidebar
+aside.main-sidebar(ng-controller="LeftNavigationController")
     section.sidebar
         .user-panel
-            .pull-left.image
-                img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
+            .pull-left.image(style="overflow: hidden; min-height: 40px; max-width: 50px;")
+                h3.text-center(style="margin:0" ng-show="!user.avatarImage || !user.avatarImage.url")
+                    i.fa.fa-user-secret.fa-2x(ng-class="{'text-green': !offline, 'text-red':offline}")
+                img.img-circle( src="{{user.avatarImage.url}}" alt="User Image"
+                    ng-show="user.avatarImage && user.avatarImage.url")
             .pull-left.info
                 p
-                    |   Jesus Rocha
+                    |   {{user.profile.first_name}} {{user.profile.last_name}}
                 a( href="#")
-                    i.fa.fa-circle.text-success
-                        |   Online
+                    i.fa.fa-circle(ng-class="{'text-green': !offline, 'text-red':offline}" ng-click="offline = !offline")
+                        |   {{!offline ? 'Online' : 'Offline'}}
         .sidebar-form
             .input-group
                 input.form-control( type="text" name="q" placeholder="Search...")
@@ -18,28 +21,28 @@ aside.main-sidebar
         ul.sidebar-menu
             li.header
                 |   MAIN NAVIGATION
-            li.treeview
-                a( href="#")
+            li
+                a( href="#/")
                     i.fa.fa-dashboard
                     span
                         |   Dashboard
-                    i.fa.fa-angle-left.pull-right
-                ul.treeview-menu
-                    li
-                        a( href="#/dashboard-v1")
-                            i.fa.fa-circle-o
-                                |   Dashboard v1
-                    li
-                        a( href="#/blank")
-                            i.fa.fa-circle-o
-                                |   Blank
+            li
+                a( ui-sref="restrooms")
+                    i.fa.fa-male
+                    span
+                        |   Restrooms
+            li
+                a( ui-sref="articles.list")
+                    i.fa.fa-book
+                    span
+                        |   Articles
             li
                 a( ui-sref="boards.list")
                     i.fa.fa-building
                     span
                         |   Boards
             li
-                a( href="#/users")
+                a( ui-sref="users.list" ui-sref-opts="{reload: true}")
                     i.fa.fa-users
                     span
                         |   Users
@@ -67,7 +70,7 @@ aside.main-sidebar
                     small.label.pull-right.bg-red
                         |   3
             li
-                a( href="#/conversations")
+                a( ui-sref="conversations.public" ui-sref-opts="{reload: true}")
                     i.fa.fa-comments
                     span
                         |   Conversations

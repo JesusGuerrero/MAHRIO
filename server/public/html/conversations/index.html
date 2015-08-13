@@ -1,9 +1,11 @@
 
-<div class="row">
-  <div class="col-xs-12 col-sm-5 col-md-5 col-lg-4">
-    <component-conversations conversationList="conversationList"></component-conversations>
-  </div>
-  <div class="col-xs-12 col-sm-7 col-md-7 col-lg-8">
-    <component-last-conversation ng-model="lastConversation"></component-last-conversation>
-  </div>
+<div class="container-fluid">
+  <tabset id="conversation-tabs">
+    <tab heading="Public Channels" ui-sref="conversations.public" ui-sref-opts="{reload: true}" active="tab[0]" select="tabSelect(0)">
+      <public-conversations active="tab[0]"></public-conversations>
+    </tab>
+    <tab heading="Private Channels" ui-sref="conversations.private" ui-sref-opts="{reload: true}" active="tab[1]" select="tabSelect(1)">
+      <private-conversations active="tab[1]"></private-conversations>
+    </tab>
+  </tabset>
 </div>

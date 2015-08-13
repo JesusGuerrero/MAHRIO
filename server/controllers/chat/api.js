@@ -10,11 +10,10 @@ module.exports = function(config, server) {
       config: {
         handler: function(request, reply){
           switch( request.params.action ){
-            case 'all':
-              return userChatMethods.getConversations(request, reply);
-            default:
-              var idInActionParameter = request.params.action ? request.params.action : null;
-              return userChatMethods.getOneConversation( idInActionParameter, reply );
+            case 'public':
+              return userChatMethods.getPublicConversation(request, reply);
+            case 'private':
+              return userChatMethods.getPrivateConversation( request, reply);
           }
         },
         auth: 'simple'
@@ -22,17 +21,31 @@ module.exports = function(config, server) {
     },
     {
       method: ['POST'],
-      path: '/api/chats/conversations/{userId}',
+      path: '/api/chats/conversations/{action?}',
       config: {
-        handler: userChatMethods.postConversation,
+        handler: function(request, reply){
+          switch( request.params.action ){
+            case 'public':
+              return userChatMethods.postPublicConversation( request, reply);
+            case 'private':
+              return userChatMethods.postPrivateConversation( request, reply);
+          }
+        },
         auth: 'simple'
       }
     },
     {
       method: ['POST'],
-      path: '/api/chats/messages/{conversationId}',
+      path: '/api/chats/messages/{action?}',
       config: {
-        handler: userChatMethods.sendMessage,
+        handler: function(request, reply){
+          switch( request.params.action ){
+            case 'private':
+              return userChatMethods.sendPrivateMessage( request, reply);
+            default:
+              return userChatMethods.sendMessage( request, reply );
+          }
+        },
         auth: 'simple'
       }
     }

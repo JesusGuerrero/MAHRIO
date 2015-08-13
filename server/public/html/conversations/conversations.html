@@ -1,0 +1,6 @@
+
+<div class="list-group"><a href="javascript:void(0)" ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)" class="list-group-item">
+    <h5 class="list-group-item-heading"><span ng-repeat="member in conversation.members track by $index" style="margin-right: 5px;">
+          {{member.profile.first_name}}
+          {{member.profile.last_name}};</span></h5>
+    <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap" class="list-group-item-text"><small><b>  {{conversation.members[ conversation.lastMessage._user ].profile.first_name}}:</b>  {{conversation.lastMessage.content | limitTo : 40}}</small></p></a></div>

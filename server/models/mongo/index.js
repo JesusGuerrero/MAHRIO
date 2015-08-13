@@ -1,6 +1,6 @@
 'use strict';
 
-//require('./Article');
+require('./Article');
 //require('./Attribute');
 require('./Board');
 //require('./Cart');
@@ -12,11 +12,13 @@ require('./Event');
 //require('./List');
 require('./Mail');
 require('./Membership');
+require('./Media');
 require('./Message');
 //require('./Order');
 //require('./Page');
 //require('./Product');
-//require('./Section');
+require('./Profile');
+require('./Section');
 require('./Task');
 require('./User');
-//require('./Widget');
+require('./Widget');

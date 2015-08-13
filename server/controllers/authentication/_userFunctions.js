@@ -3,18 +3,20 @@
 var async = require('async'),
     _ = require('underscore'),
     http = require('request'),
-    User = require('mongoose').model('User'),
+    mongoose = require('mongoose'),
+    User = mongoose.model('User'),
+    Media = mongoose.model('Media'),
     Boom = require('boom');
 
 var crypto = require('crypto');
 
-function register (request, reply, server) {
+function register (request, reply, config, server) {
   if (request.auth.isAuthenticated) { return reply(Boom.badRequest('You Logged In')); }
 
   var newUser = new User({
     email: request.payload.email,
     password: request.payload.password,
-    role: !server.needAdmin ? 'user' : 'admin'
+    access: !server.needAdmin ? 'authorized' : 'admin'
   });
 
   if( server.needAdmin ){
@@ -24,10 +26,16 @@ function register (request, reply, server) {
   newUser.save(function (err, user) {
     if (err) { return reply(Boom.badRequest(err)); }
 
-    var confirmAccountLink = 'http://whichdegree.co/app#/confirm/';
+    var confirmAccountLink = config.DOMAIN + '/#/confirm/';
     confirmAccountLink += user.resetPasswordToken+'?user=true';
     server.mailer( {to: user.email, subject: 'Activate Account', html: confirmAccountLink});
     console.log( confirmAccountLink );
+
+    delete user.authorizationToken;
+    delete user.password;
+    delete user.resetPasswordToken;
+    delete user.salt;
+
     reply(user)
       .header('Authorization', 'Bearer ' + user.authorizationToken)
       .header('Access-Control-Expose-Headers', 'authorization');
@@ -57,7 +65,20 @@ function activateUser( request, reply ){
     });
   });
 }
+function addAvatar( request, reply ) {
+  try {
+    request.payload.media._owner = request.auth.credentials.id;
+    var media = new Media( request.payload.media );
+    media.save( function(err, media){
+      if( err ) return reply( Boom.badRequest(err) );
 
+      request.payload.avatarImage = media.id;
+      return currentUser( request, reply, 'PUT', 'avatarImage' );
+    });
+  } catch (e) {
+    return reply( Boom.badRequest(e) );
+  }
+}
 function isValidToken( request, reply ){
   User.findOne( { resetPasswordToken: request.payload.token}, function(err, user){
     if( err || !user ){ return reply(Boom.badRequest(err)); }
@@ -108,8 +129,22 @@ function currentUser (request, reply, method, selectString) {
   User
     .findOne({_id: request.auth.credentials.id})
     .select( selectString )
+    .populate( 'avatarImage' )
     .exec( function (err, user) {
       if (err || !user) { return reply(Boom.badRequest(err)); }
+
+      function completeUserSave(){
+        var returnedUser = {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        };
+        user.save( function(err){
+          if (err) { return reply(Boom.badRequest(err)); }
+
+          return reply({user: returnedUser});
+        });
+      }
 
       switch( method ){
         case 'GET':
@@ -127,26 +162,28 @@ function currentUser (request, reply, method, selectString) {
             } else {
               return reply( Boom.badRequest() );
             }
+            completeUserSave();
           } else if( typeof request.payload.password === 'undefined' && typeof request.payload.email === 'undefined' ) {
-            async.forEach( Object.keys( request.payload ), function( key ){
-              if( !_.contains(['email', 'role', 'salt', 'password'], key ) ) {
-                user[ key ] = request.payload[ key ];
-              }
-            });
+            var copyFields = function (){
+              async.forEach( Object.keys( request.payload ), function( key ){
+                if( !_.contains(['email', 'role', 'salt', 'password'], key ) ) {
+                  user[ key ] = request.payload[ key ];
+                }
+              });
+              completeUserSave();
+            };
+            if( user.avatarImage && user.avatarImage.id ) {
+              Media.remove( {_id: user.avatarImage.id}, function(err){
+                if (err ) { return reply(Boom.badRequest(err)); }
+                // TODO : AWS REMOVE
+                copyFields();
+              })
+            } else {
+              copyFields();
+            }
           } else {
             return reply( Boom.badRequest() );
           }
-
-          var returnedUser = {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email
-          };
-          user.save( function(err){
-            if (err) { return reply(Boom.badRequest(err)); }
-
-            return reply({user: returnedUser});
-          });
           break;
         default:
           return reply( Boom.badRequest() );
@@ -283,6 +320,7 @@ module.exports = {
   login: login,
   register: register,
   activateUser: activateUser,
+  addAvatar: addAvatar,
   recoverPassword: recoverPassword,
   isValidToken: isValidToken,
   passwordReset: passwordReset,
