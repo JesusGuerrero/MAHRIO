@@ -45,7 +45,7 @@ module.exports = function( env ) {
   baseSetup.CMS_URL = env.CMS_URL;
 
   baseSetup.AWS_ACCESS_KEY = env.AWS_ACCESS_KEY;
-  baseSetup.AWS_SECRET_KEY = env.AWS_SECRET_KEY;
+  baseSetup.AWS_SECRET_KEY = env.AWS_SECRET;
   baseSetup.S3_BUCKET = env.S3_BUCKET;
 
   if ( baseSetup.env === 'production' ) {
