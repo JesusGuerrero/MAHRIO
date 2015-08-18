@@ -28,7 +28,7 @@
     "crypto": "0.0.3",
     "good": "latest",
     "good-console": "^5.0.0",
-    "hapi": "latest",
+    "hapi": "~8.8.1",
     "hapi-auth-bearer-token": "latest",
     "hapi-auth-cookie": "latest",
     "jade": "^1.9.1",
