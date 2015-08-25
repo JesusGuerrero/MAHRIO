@@ -6,9 +6,11 @@ angular.module('baseApp', [
   'ui.router',
   'ui.bootstrap.typeahead',
   'ui.bootstrap.tabs',
+  'ui.sortable',
   'ngResource',
   'btford.socket-io',
   'angular-loading-bar',
+  'chart.js',
   'baseApp.services',
   'baseApp.directives',
   'baseApp.filters',
@@ -46,7 +48,33 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/',
       templateUrl: '/assets/html/views/root'
     })
-
+    .state('restrooms', {
+      url: '/restrooms',
+      controller: 'RestroomController',
+      templateUrl: '/assets/html/restroom/index'
+    })
+    .state('articles', {
+      abstract: true,
+      url: '/articles',
+      controller: 'ArticleController',
+      template: '<ui-view/>'
+    })
+    .state('articles.new', {
+      url: '/new',
+      templateUrl: '/assets/html/article/form'
+    })
+    .state('articles.list', {
+      url: '/all',
+      templateUrl: '/assets/html/article/list'
+    })
+    .state('articles.edit', {
+      url: '/:id/edit',
+      templateUrl: '/assets/html/article/form'
+    })
+    .state('articles.detail', {
+      url: '/:id',
+      templateUrl: '/assets/html/article/detail'
+    })
     .state('knowledge', {
       url: '/knowledge',
       templateUrl: '/assets/html/knowledge/index',
@@ -58,9 +86,6 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('knowledge.articles.view', {
       url: '/view'
     })
-
-
-
     .state('adminDashV1', {
       url: '/dashboard-v1',
       templateUrl: '/assets/html/views/dashboard-v1'
@@ -74,9 +99,23 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       templateUrl: '/assets/html/views/feed'
     })
     .state('users', {
+      abstract: true,
       url: '/users',
-      templateUrl: '/assets/html/users/index',
+      template: '<ui-view/>',
       controller: 'UsersController'
+    })
+    .state('users.new', {
+      url: '/new',
+      templateUrl: '/assets/html/user/form-register'
+    })
+    .state('users.list', {
+      url: '/list',
+      templateUrl: '/assets/html/user/list'
+    })
+    .state('users.detail', {
+      url: '/profile/:id',
+      controller: 'ProfileController',
+      templateUrl: '/assets/html/profile/directive-summary'
     })
     .state('newsletters', {
       url: '/admin/newsletter',
@@ -89,18 +128,21 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       controller: 'QuestionsController'
     })
     .state('conversations', {
+      abstract: true,
       url: '/conversations',
       templateUrl: '/assets/html/conversations/index',
       controller: 'ConversationsController'
     })
+    .state('conversations.public', {
+      url: '/public'
+    })
+    .state('conversations.private', {
+      url: '/private'
+    })
     .state('login', {
       url: '/login?linkedIn',
-      templateUrl: '/assets/html/auth/login',
-      controller: 'authController'
-    })
-    .state('register', {
-      url: '/register',
-      templateUrl: '/assets/html/auth/register'
+      templateUrl: '/assets/html/session/form-login',
+      controller: 'SessionController'
     })
     .state('confirm', {
       url: '/confirm/:token?user=true',
@@ -109,13 +151,13 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('recoverpassword', {
       url: '/recoverpassword',
-      controller: 'authController',
-      templateUrl: '/assets/html/auth/recoverpassword'
+      controller: 'SessionController',
+      templateUrl: '/assets/html/session/form-recover-password'
     })
     .state('passwordreset', {
       url: '/passwordreset/:token',
-      controller: 'authController',
-      templateUrl: '/assets/html/auth/passwordreset'
+      controller: 'SessionController',
+      templateUrl: '/assets/html/session/form-password-reset'
     })
     .state('calendar', {
       url: '/calendar',
@@ -222,7 +264,17 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
 
   $urlRouterProvider.otherwise('/');
 
-});
+})
+  .config(['ChartJsProvider', function (ChartJsProvider) {
+    // Configure all charts
+    ChartJsProvider.setOptions({
+      responsive: false
+    });
+    // Configure all line charts
+    ChartJsProvider.setOptions('Line', {
+      datasetFill: false
+    });
+  }]);
 
 angular.module('baseApp.services', ['ngResource']);
 angular.module('baseApp.directives', []);
@@ -243,19 +295,20 @@ angular.module('baseApp.controllers', [])
         currentUser.logout()
           .then( function(){
             delete $http.defaults.headers.common.Authorization;
-            delete window.localStorage.Role;
+            delete window.localStorage.Access;
             delete window.localStorage.Authorization;
           });
       };
 
       // AUTHENTICATION
-      $rootScope.setRole = function( role ){
-        $rootScope.role = role;
-        window.localStorage.Role = role;
+      $rootScope.setAccess = function( access ){
+        $rootScope.access = access;
+        window.localStorage.Access = access;
       };
-      $rootScope.setRole( window.localStorage.Role || 'any' );
+      $rootScope.setAccess( window.localStorage.Access || 'any' );
 
       $rootScope.setAuthorizationHeader = function(token){
+
         if( token ) {
           $http.defaults.headers.common.Authorization = token;
           window.localStorage.Authorization = token;
@@ -270,6 +323,10 @@ angular.module('baseApp.controllers', [])
               if( response.user ) {
                 currentUser.login( response.user, route || false );
               }
+            }, function(){
+              delete window.localStorage.Authorization;
+              window.localStorage.Access = 'any';
+              $rootScope.access = 'any';
             });
         }
       };
@@ -279,8 +336,7 @@ angular.module('baseApp.controllers', [])
         return angular.isDefined( val );
       };
 
-      console.log( $location.search(), $rootScope.role );
-      $rootScope.user = 'anyUser';
+      $rootScope.user = 'any';
 
       window.rootScope = $rootScope;
 

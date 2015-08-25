@@ -1,0 +1,16 @@
+
+<div>
+  <div class="row">
+    <div ng-repeat="user in usersList track by $index" class="col-lg-3 col-sm-6 col-xs-12">
+      <div style="cursor: pointer;" ui-sref="users.detail( {id: user._id} )" ui-sref-opts="{reload: true}" class="info-box"><span style="overflow: hidden; float: none; width: 100%" class="info-box-icon"><i ng-show="!user.avatarImage" class="fa fa-user-secret"></i><img src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -40px auto 0"/></span>
+        <div style="margin: 0 auto" class="info-box-content"><span class="info-box-text text-center">  {{user.profile.first_name}} {{user.profile.last_name}}</span><span class="info-box-text text-center"><small>  {{user.email}}</small></span></div>
+      </div>
+      <button ng-click="messageModal($index);" class="btn btn-block btn-primary">  Message</button>
+    </div>
+  </div>
+  <div class="row">
+    <modal-window-view modal-id="modalNewMessage" actions="actions" title="New Message" type="conversation">
+      <modal-private-conversation open="{{open}}"></modal-private-conversation>
+    </modal-window-view>
+  </div>
+</div>

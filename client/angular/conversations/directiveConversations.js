@@ -1,10 +1,14 @@
 angular.module('baseApp.directives')
-  .directive('componentConversations', ['$rootScope',
+  .directive('conversations', ['$rootScope',
     function(){
       'use strict';
       return {
         restrict: 'E',
-        templateUrl: '/assets/html/conversations/componentConversations',
+        scope: {
+          conversations: '=',
+          load: '='
+        },
+        templateUrl: '/assets/html/conversations/conversations',
         link: function(){
         }
       };

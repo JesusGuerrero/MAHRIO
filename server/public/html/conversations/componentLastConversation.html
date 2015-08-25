@@ -1,27 +1,28 @@
 
-<style>
-    .rightMessage { float: right; clear: both; text-align: right; width: 100%; }
-    .leftMessage { float: left; clear: both; text-align: left; width: 100%;  }
-</style>
-<div class="row">
-  <div class="col-xs-12">
-    <p><strong>  Members: {{currentConversation.currentMembers}}</strong></p>
-  </div>
-</div>
 <div class="box box-primary direct-chat direct-chat-primary">
   <div class="box-header with-border">
     <h3 class="box-title">  Direct Chat</h3>
-    <div class="box-tools pull-right"><span data-toggle="tooltip" title="" data-original-title="3 New Messages" class="badge bg-blue">  3</span>
-      <button data-widget="collapse" class="btn btn-box-tool"><i class="fa fa-minus"></i></button>
-      <button data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle" class="btn btn-box-tool"><i class="fa fa-comments"></i></button>
-      <button data-widget="remove" class="btn btn-box-tool"><i class="fa fa-times"></i></button>
+    <div class="box-tools pull-right">
+      <!--span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")-->
+      <!--    |   3-->
+      <!--button.btn.btn-box-tool( data-widget="collapse")-->
+      <!--    i.fa.fa-minus-->
+      <!--button.btn.btn-box-tool( data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle")-->
+      <!--    i.fa.fa-comments-->
+      <button data-dismiss="modal" aria-label="Close" class="btn btn-box-tool"><i class="fa fa-times"></i></button>
     </div>
   </div>
   <div class="box-body">
     <div class="direct-chat-messages">
-      <div ng-repeat="message in currentConversation.messages track by $index" ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'left' : 'right'" class="direct-chat-msg">
-        <div class="direct-chat-info clearfix"><span ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-left' : 'pull-right'" class="direct-chat-name">  {{currentConversation.members[message._user][0].email}}</span><span ng-class="currentUser===currentConversation.members[message._user][0]._id ? 'pull-right' : 'pull-left'" class="direct-chat-timestamp">  {{message.created | date : 'MM-dd h:mm a' }}</span></div><img src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user1-128x128.jpg" class="direct-chat-img"/>
-        <div class="direct-chat-text">  {{message.content}}</div>
+      <div ng-repeat="message in currentConversation.messages track by $index" repeat-end="scrollBottom()" ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'left' : 'right'" class="direct-chat-msg">
+        <div class="direct-chat-info clearfix"><span ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-left' : 'pull-right'" class="direct-chat-name">
+              {{::currentConversation.members[message._user].profile.first_name}}
+              {{::currentConversation.members[message._user].profile.last_name}}
+              <{{::currentConversation.members[message._user].email}}></span><span ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'" class="direct-chat-timestamp">  {{::message.created | date : 'MM-dd h:mm a' }}</span></div><img src="{{currentConversation.members[message._user].avatarImage.url}}" class="direct-chat-img"/>
+        <div class="direct-chat-text">  {{::message.content}}</div>
+      </div>
+      <div ng-show="!currentConversation">
+        <p>  No Messages.</p>
       </div>
     </div>
   </div>

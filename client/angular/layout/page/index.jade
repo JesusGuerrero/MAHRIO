@@ -1,17 +1,19 @@
 .content-wrapper
-    ng-switch( on="role")
+    ng-switch( on="access")
         div( ng-switch-when="admin")
             //ng-include( src="'/assets/html/layout/header/secondaryTop'")
             heading
-        div.container(ng-switch-when="any" ng-show="subHeader")
+        div.container(ng-switch-when="authorized" ng-show="subHeader")
             section.content-header
                 h1
                     |    Top Navigation
                     small
                         |   Example 2.0
 
-    ng-switch( on="role")
+    ng-switch( on="access")
         section.content(ng-switch-when="admin")
+            div( ng-transclude )
+        section.content(ng-switch-when="authorized")
             div( ng-transclude )
         section.content(ng-switch-when="any")
             .container(ng-transclude)

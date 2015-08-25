@@ -1,0 +1,16 @@
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="articles.list" ui-sref-opts="{reload: true}" class="btn btn-default">
+      <h4><i class="fa fa-chevron-left"></i>  Back</h4></a></div>
+</div>
+<div class="row">
+  <div class="col-sm-10 col-sm-offset-1">
+    <figure><img src="http://cdn.theatlantic.com/assets/media/img/photo/2015/08/winners-of-the-2015-national-geogra/01%20Grand%20Prize-1/hero_wide_640.jpg?1438628037"/>
+      <figcaption class="credit"></figcaption>
+    </figure>
+    <h3>{{article.title}}<br/><small>By {{article._creator.firstName}} {{article._creator.lastName}} &lt;{{article._creator.email}}&gt;</small></h3>
+    <div class="article-content">
+      <p ng-repeat="section in article.sections track by $index">{{section.body}}</p>
+    </div>
+  </div>
+</div>

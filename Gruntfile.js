@@ -66,8 +66,10 @@ module.exports = function (grunt) {
           'bower_components/jquery.slimscroll/jquery.slimscroll.min.js',
           'bower_components/fastclick/lib/fastclick.js',
           'bower_components/icheck/icheck.min.js',
+          'bower_components/Chart.js/Chart.js',
           'bower_components/angular/angular.js',
           'bower_components/angular-ui-router/release/angular-ui-router.js',
+          'bower_components/angular-ui-sortable/sortable.min.js',
           'bower_components/angular-ui-bootstrap/src/modal/modal.js',
           'bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js',
           'bower_components/angular-ui-bootstrap/src/position/position.js',
@@ -83,6 +85,7 @@ module.exports = function (grunt) {
           'bower_components/angular-loading-bar/build/loading-bar.js',
           'bower_components/angular-underscore/angular-underscore.min.js',
           'bower_components/angular-socket-io/socket.js',
+          'bower_components/angular-chart.js/dist/angular-chart.js',
           'bower_components/matchHeight/jquery.matchHeight-min.js'
         ],
         dest: 'server/public/js/angular.js'
@@ -126,7 +129,7 @@ module.exports = function (grunt) {
     copy: {
       build: {
         cwd: 'bower_components',
-        src: [ 'fontawesome/fonts/*.{otf,eot,svg,ttf,woff}', 'bootstrap/fonts/*.{otf,eot,svg,ttf,woff,woff2}'],
+        src: [ 'fontawesome/fonts/*.{otf,eot,svg,ttf,woff,woff2}', 'bootstrap/fonts/*.{otf,eot,svg,ttf,woff,woff2}'],
         dest: 'server/public/fonts',
         expand: true,
         flatten: true

@@ -1,0 +1,12 @@
+.list-group
+    a.list-group-item( href="javascript:void(0)"
+        ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)")
+        h5.list-group-item-heading
+            span( ng-repeat="member in conversation.members track by $index" style="margin-right: 5px;")
+                |   {{member.profile.first_name}}
+                |   {{member.profile.last_name}};
+        p.list-group-item-text(style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap")
+            small
+                b
+                    |   {{conversation.members[ conversation.lastMessage._user ].profile.first_name}}:
+                |   {{conversation.lastMessage.content | limitTo : 40}}

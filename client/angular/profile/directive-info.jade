@@ -1,14 +1,18 @@
-form(novalidate ng-submit="update()")
-    form-input-tag(
-        model="user.firstName"
-        type="text"
-        label="First Name"
-        required="true")
-    form-input-tag(
-        model="user.lastName"
-        type="text"
-        label="Last Name"
-        required="true")
+.col-xs-12
+    media( media="user.avatarImage" container='profile' actions="avatarActions")
+    hr
 
-    button.btn.btn-block.btn-primary.btn-lg( type="submit" )
-        | Update
+    form(novalidate ng-submit="update()")
+        form-input-tag(
+            model="user.first_name"
+            type="text"
+            label="First Name"
+            required="true")
+        form-input-tag(
+            model="user.last_name"
+            type="text"
+            label="Last Name"
+            required="true")
+
+        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+            | Update

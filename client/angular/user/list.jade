@@ -1,0 +1,18 @@
+div
+    .row
+        .col-lg-3.col-sm-6.col-xs-12(ng-repeat="user in usersList track by $index")
+            .info-box(style="cursor: pointer;" ui-sref="users.detail( {id: user._id} )" ui-sref-opts="{reload: true}")
+                span.info-box-icon(style="overflow: hidden; float: none; width: 100%")
+                    i.fa.fa-user-secret(ng-show="!user.avatarImage")
+                    img( src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -40px auto 0")
+                .info-box-content(style="margin: 0 auto")
+                    span.info-box-text.text-center
+                        |   {{user.profile.first_name}} {{user.profile.last_name}}
+                    span.info-box-text.text-center
+                        small
+                            |   {{user.email}}
+            button.btn.btn-block.btn-primary(ng-click="messageModal($index);")
+                |   Message
+    .row
+        modal-window-view( modal-id="modalNewMessage" actions='actions' title="New Message" type="conversation")
+            modal-private-conversation( open="{{open}}" )

@@ -16,20 +16,6 @@ function hashPwd (salt, pwd) {
 }
 
 schema = mongoose.Schema({
-  username:      String,
-  name:   String,
-
-  firstName: String,
-  lastName: String,
-  
-/*  twitterToken:  String,
-  twitterSecret: String,
-  twitterId: {
-    type:  String,
-    index: true,
-    unique: true
-  },*/
-
   email: {
     type: String,
     trim: true,
@@ -38,15 +24,18 @@ schema = mongoose.Schema({
     unique: true,
     index: true
   },
+  avatarImage: { type: mongoose.Schema.Types.ObjectId, ref: 'Media' },
   salt:     {type: String },
   password: {type: String },
-  role: String,
-  confirmed: Boolean,
+  confirmed: {type: Boolean, default: false},
   resetPasswordToken: {type: String},
   resetPasswordExpires: {type: Date },
   authorizationToken: {type: String},
   membership: { type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }, // ACCESS CONTROL
-  created: { type: Date, default: Date.now }
+  created: { type: Date, default: Date.now },
+  access: String,
+  status: {type: String},
+  profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
 });
 
 schema.methods.authenticate = function(passwordToMatch) {

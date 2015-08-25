@@ -66,7 +66,7 @@ module.exports = function ( config, server ) {
         handler: function( request, reply ){
           switch( request.params.action ){
             case 'me':
-              return authUserMethods.currentUser( request, reply, 'GET', 'firstName lastName email role created' );
+              return authUserMethods.currentUser( request, reply, 'GET', 'email access created avatarImage' );
             case 'all':
               return authUserMethods.getUsers( request, reply );
             default:
@@ -89,9 +89,11 @@ module.exports = function ( config, server ) {
             case 'login':
               return authUserMethods.login( request, reply );
             case 'register':
-              return authUserMethods.register( request, reply, server );
+              return authUserMethods.register( request, reply, config, server );
             case 'activate':
               return authUserMethods.activateUser( request, reply );
+            case 'avatar':
+              return authUserMethods.addAvatar( request, reply );
             case 'recoverPassword':
               return authUserMethods.recoverPassword( request, reply, server );
             case 'isValidToken':

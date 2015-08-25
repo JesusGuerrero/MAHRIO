@@ -1,0 +1,35 @@
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
+    <div class="panel panel-default">
+      <error-message-box validation-errors="validationErrors"></error-message-box>
+      <div class="panel-body">
+        <h3 class="text-center">Add Article</h3>
+        <form novalidate="novalidate" ng-submit="article._id ? update() : add()" id="article-form">
+          <form-input-tag model="article.title" label="Title" required="true"></form-input-tag>
+          <div ng-show="article.sections.length" ng-class="{'sorting-sections': sortingSections}" class="form-group">
+            <div ng-show="article.sections.length &gt; 1" class="pull-right"><i style="cursor: pointer; float: right" ng-show="!sortingSections" ng-click="sortSections('#sortable')" class="fa fa-arrows"></i><i style="cursor: pointer; float: right" ng-show="sortingSections" ng-click="stopSorting( '#sortable') " class="fa fa-check"></i></div>
+            <label>Sections</label>
+            <ul style="list-style-type: none; padding: 0;" ui-sortable="sortableOptions" ng-model="article.sections" class="list">
+              <li ng-repeat="section in article.sections track by $index" style="padding-bottom: 10px;" class="item">
+                <textarea type="text" ng-model="section.body" ng-show="section.edit" class="form-control"></textarea>
+                <div ng-show="!section.edit">  {{section.body}}</div>
+                <div ng-show="!sortingSections"><i style="cursor: pointer" ng-click="removeSection($index)" class="fa fa-close"></i><i style="padding: 0 5px; cursor: pointer" ng-click="editSection($index)" ng-show="!section.edit" class="fa fa-edit"></i><i style="padding: 0 5px; cursor: pointer" ng-click="saveSection($index)" ng-show="section.edit" class="fa fa-check"></i></div>
+              </li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <textarea type="text" ng-model="tempSection" placeholder="Section (e.g Text, Code, Img, etc.)" class="form-control"></textarea><span style="background: #3C8DDD; color: #fff" ng-click="addSection(tempSection); tempSection = '';" class="btn btn-primary input-group-addon"><i style="width: 30px" class="fa fa-plus"></i></span>
+            </div>
+          </div>
+          <hr/>
+          <div class="text-center form-group">
+            <button type="submit" class="btn btn-block btn-primary btn-lg">{{article._id ? 'Save' : 'Create'}}</button>
+          </div>
+        </form>
+        <div class="col-xs-8 col-xs-offset-2 text-center form-group"><a ui-sref="articles.list" ui-sref-opts="{reload: true}" class="btn btn-block btn-default">Cancel</a></div>
+      </div>
+    </div>
+  </div>
+</div>
