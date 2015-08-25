@@ -1,0 +1,38 @@
+angular.module('baseApp.services').factory('BoardResource', [ '$resource', function($resource) {
+  'use strict';
+  return $resource('/api/boards/:id',
+    { id: '@id' },
+    {
+      create: {
+        method: 'POST'
+      },
+      read: {
+        method: 'GET'
+      },
+      update: {
+        method: 'PUT'
+      },
+      remove: {
+        method: 'DELETE'
+      }
+    }
+  );
+}]);
+angular.module('baseApp.services').factory('Board', [ 'BoardResource', function( BoardResource) {
+  'use strict';
+  // Caching Option here...
+  return {
+    add: function( obj ) {
+      return BoardResource.create( {board: obj} ).$promise;
+    },
+    get: function( id ) {
+      return BoardResource.read( id ? {id: id} : {} ).$promise;
+    },
+    update: function( obj ) {
+      return BoardResource.update( {id: obj._id}, {board: obj} ) .$promise;
+    },
+    remove: function(id){
+      return BoardResource.remove( {id: id} ).$promise;
+    }
+  };
+}]);

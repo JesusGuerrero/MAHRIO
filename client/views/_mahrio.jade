@@ -1,0 +1,19 @@
+doctype
+html(lang="en", itemtype="http://schema.org/WebPage" itemscope ng-app="baseApp")
+    include common/_head
+
+    body.skin-blue.sidebar-mini(ng-cloak ng-class="access==='admin' || access==='authorized' ? isSidebarCollapsed ? 'sidebar-collapse':'' :'layout-top-nav'")
+
+        .wrapper
+            div( header-navigation-top access="access" )
+
+            div( side-bar type="navigation" access="access")
+
+            div( page-layout )
+                div(ui-view)
+
+            div( footer )
+
+            div( side-bar type="settings" access="access" render-app-gestures)
+
+    script( src="/assets/js/application.js")
