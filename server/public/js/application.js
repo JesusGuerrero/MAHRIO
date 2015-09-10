@@ -109026,7 +109026,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('confirm', {
       url: '/confirm/:token?user=true',
       templateUrl: '/assets/html/auth/confirm',
-      controller: 'authController'
+      controller: 'UsersController'
     })
     .state('recoverpassword', {
       url: '/recoverpassword',
@@ -110087,6 +110087,7 @@ angular.module('baseApp.directives')
               Chat.startPrivateConversation( scope.toUser._id, { message: {content: scope.newMessage }} )
                 .then( function( res ){
                   scope.currentConversation = res.conversation;
+                  existingConversation = true;
                   delete scope.newMessage;
                 });
             } else {
@@ -110662,6 +110663,19 @@ angular.module('baseApp.directives')
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
               newUser = {access: 'any'};
+            } else {
+
+              Socket.get.on('event:private:'+newUser._id, function(socket){
+                console.log( socket );
+                alert('got socket message');
+                //  //if( conversations[ socket._conversation.id] ){
+                //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
+                //  //}
+                //  //if( socket._conversation.id === $scope.currentConversation.id ){
+                //  //  $scope.currentConversation.messages.unshift(socket);
+                //  //}
+                //  //console.log('message: ' + socket.content);
+              });
             }
             switch( newUser.access ){
               case 'any':
@@ -111307,7 +111321,7 @@ angular.module('baseApp.services')
     };
   }]);
 
-angular.module('baseApp.directives')
+  angular.module('baseApp.directives')
   .directive('modalWindowView', [
     function(){
       'use strict';
@@ -111577,10 +111591,10 @@ angular.module('baseApp.controllers')
       'use strict';
 
       $scope.questionsList = [];
-      Admin.getQuestionList()
-        .then( function( res ){
-          $scope.questionsList = res.list;
-        });
+      //Admin.getQuestionList()
+      //  .then( function( res ){
+      //    $scope.questionsList = res.list;
+      //  });
 
       $scope.removeEntry = function( id, index ){
         if ( confirm('Are you sure you want to delete?') ) {

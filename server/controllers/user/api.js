@@ -2,8 +2,7 @@
 
 var User = require('mongoose').model('User'),
     Boom = require('boom'),
-    UserCtrl = require('./_userFunctions'),
-    adminUserMethods = require('./_adminFunctions');
+    UserCtrl = require('./_userFunctions');
 
 module.exports = function ( config, server ) {
   [
@@ -58,20 +57,10 @@ module.exports = function ( config, server ) {
           switch( request.params.action ){
             case 'me':
               return UserCtrl.currentUser( request, reply, 'PUT', 'firstName lastName email role salt password' );
-            case 'other':
-              return adminUserMethods.updateUser( request, reply );
+            default:
+              return Boom.badRequest('no action');
           }
         },
-        auth: {
-          strategy: 'simple'
-        }
-      }
-    },
-    {
-      method: ['DELETE'],
-      path: '/api/users/{id?}',
-      config: {
-        handler: adminUserMethods.removeUser,
         auth: {
           strategy: 'simple'
         }

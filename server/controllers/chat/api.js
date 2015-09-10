@@ -3,6 +3,7 @@
 var userChatMethods = require('./_userFunctions');
 
 module.exports = function(config, server) {
+  userChatMethods.setConfig( config );
   [
     {
       method: ['GET'],

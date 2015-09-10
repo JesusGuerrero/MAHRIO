@@ -75,14 +75,14 @@ function findUserForOauth( emailAddress, reply ) {
       var newUser = new User({
         email: emailAddress,
         password: crypto.randomBytes(20).toString('hex'),
-        role: 'admin'
+        access: 'authorized'
       });
       newUser.save(function (err, user2) {
         if (err) {
           return reply(Boom.badRequest(err));
         }
 
-        var response = '<html><body></body><script>window.localStorage.Role="admin";window.localStorage.Authorization="Bearer ';
+        var response = '<html><body></body><script>window.localStorage.Access="admin";window.localStorage.Authorization="Bearer ';
         response += user2.authorizationToken + '";window.location.href="/";</script></html>';
         return reply(response);
       });
@@ -93,7 +93,7 @@ function findUserForOauth( emailAddress, reply ) {
           return reply(Boom.badRequest(err));
         }
 
-        var response = '<html><body></body><script>window.localStorage.Role="admin";window.localStorage.Authorization="Bearer ';
+        var response = '<html><body></body><script>window.localStorage.Access="admin";window.localStorage.Authorization="Bearer ';
         response += user.authorizationToken + '";window.location.href="/";</script></html>';
         return reply(response);
       });

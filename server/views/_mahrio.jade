@@ -16,4 +16,8 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope ng-app="baseApp")
 
             div( side-bar type="settings" access="access" render-app-gestures)
 
-    script( src="/assets/js/application.js")
+    if( typeof develop === 'undefined' )
+        script( src="/assets/js/application.js")
+    else
+        script( src="/assets/js/angular.js")
+        include common/_scripts

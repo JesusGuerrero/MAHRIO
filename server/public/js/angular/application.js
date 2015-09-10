@@ -147,7 +147,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('confirm', {
       url: '/confirm/:token?user=true',
       templateUrl: '/assets/html/auth/confirm',
-      controller: 'authController'
+      controller: 'UsersController'
     })
     .state('recoverpassword', {
       url: '/recoverpassword',

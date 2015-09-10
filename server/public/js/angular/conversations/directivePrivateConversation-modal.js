@@ -19,6 +19,7 @@ angular.module('baseApp.directives')
               Chat.startPrivateConversation( scope.toUser._id, { message: {content: scope.newMessage }} )
                 .then( function( res ){
                   scope.currentConversation = res.conversation;
+                  existingConversation = true;
                   delete scope.newMessage;
                 });
             } else {

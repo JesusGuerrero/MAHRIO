@@ -4,7 +4,7 @@ module.exports = function (config, server) {
 
   server.lang = config.lang.get();
 
-  require('../../controllers/session/api')(config, server);
+  require('../../controllers/oauth/api')(config, server);
   require('../../controllers/user/api')(config, server);
   require('../../controllers/profile/api')(config, server);
   require('../../controllers/article/api')(config, server);
@@ -59,7 +59,7 @@ module.exports = function (config, server) {
       switch( request.params.page ){
         case notDefined:
           reply.view('_mahrio', {
-            mahriorequestparameter: request.query.mahriorequestparameter
+            develop: request.query.develop
           });
           break;
         default:

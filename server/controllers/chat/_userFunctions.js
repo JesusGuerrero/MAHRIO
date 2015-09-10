@@ -9,8 +9,16 @@ var async = require('async'),
     Conversation = mongoose.model('Conversation'),
     Message = mongoose.model('Message'),
     Media = mongoose.model('Media'),
-    Profile = mongoose.model('Profile');
+    Profile = mongoose.model('Profile'),
+    config;
 
+function emitMessage( eventLabel ) {
+  if( typeof config !== 'undefined') {
+    var socket = config.getSocket();
+    socket.emit( eventLabel );
+    socket.broadcast.emit( eventLabel );
+  }
+}
 function getConversations(request, reply) {
   Membership
     .find({_user: request.auth.credentials.id})
@@ -219,15 +227,20 @@ function getPrivateConversation( request, reply, callback ) {
   if( typeof callback === 'undefined' && !request.query.userId ) {
     return getPrivateConversations( request, reply );
   }
+
   Conversation
-    .findOne({members: {$all: [request.query.userId, request.auth.credentials.id]}})
+    .findOne({
+      $or: [
+        { members: [request.auth.credentials.id, request.query.userId]},
+        { members: [request.query.userId,request.auth.credentials.id]}]
+    })
     .populate([{
       path: 'members',
       select: 'email profile avatarImage'
     },{
       path: 'messages'
     }])
-    .exec(function (err, conversation) {
+    .exec( function (err, conversation) {
       if (err) {
         return reply(Boom.badRequest(err));
       }
@@ -236,7 +249,7 @@ function getPrivateConversation( request, reply, callback ) {
         callback(conversation);
       } else {
         if( conversation === null ) {
-          return reply({conversations: []});
+          return reply({conversation: null});
         }
         async.forEach(conversation.members ,function(item,callback) {
           Media.populate( item,{ "path": "avatarImage" },function(err) {
@@ -278,7 +291,7 @@ function postPrivateConversation( request, reply ) {
             if( err ) { return reply( Boom.badRequest(err));}
             conv.messages = [msg];
 
-
+            emitMessage( 'event:private:'+request.query.userId );
             return getPrivateConversation( request, reply);
           })
         })
@@ -304,6 +317,7 @@ function sendPrivateMessage( request, reply ){
       conversation.save( function(){
         if( err ) { return reply(Boom.badRequest(err)); }
 
+        emitMessage( 'event:private:'+request.query.userId );
         reply( {message: msg} );
       });
     });
@@ -371,10 +385,14 @@ function sendPublicMessage( request, reply ){
 
 }
 module.exports = {
+  setConfig: function( cfg ) {
+    config = cfg;
+  },
   getConversations: getConversations,
   getOneConversation: getOneConversation,
   postConversation: postConversation,
   sendMessage: sendMessage,
+  /* -------- */
   getPrivateConversations: getPrivateConversations,
   getPrivateConversation: getPrivateConversation,
   postPrivateConversation: postPrivateConversation,

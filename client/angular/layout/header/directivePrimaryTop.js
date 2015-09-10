@@ -14,6 +14,19 @@ angular.module('baseApp.directives')
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
               newUser = {access: 'any'};
+            } else {
+
+              Socket.get.on('event:private:'+newUser._id, function(socket){
+                console.log( socket );
+                alert('got socket message');
+                //  //if( conversations[ socket._conversation.id] ){
+                //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
+                //  //}
+                //  //if( socket._conversation.id === $scope.currentConversation.id ){
+                //  //  $scope.currentConversation.messages.unshift(socket);
+                //  //}
+                //  //console.log('message: ' + socket.content);
+              });
             }
             switch( newUser.access ){
               case 'any':

@@ -33,7 +33,7 @@ schema = mongoose.Schema({
   authorizationToken: {type: String},
   membership: { type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }, // ACCESS CONTROL
   created: { type: Date, default: Date.now },
-  access: String,
+  access: {type: String},
   status: {type: String},
   profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
 });

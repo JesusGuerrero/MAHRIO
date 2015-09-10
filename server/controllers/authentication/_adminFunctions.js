@@ -4,7 +4,7 @@ var User = require('mongoose').model('User'),
     Boom = require('boom');
 
 function remove(request, reply){
-  if( request.auth.credentials.role !== 'admin' || request.auth.credentials.id !== request.params.id ){
+  if( request.auth.credentials.access !== 'admin' || request.auth.credentials.id !== request.params.id ){
     return reply( Boom.unauthorized('unauthorized'));
   }
 

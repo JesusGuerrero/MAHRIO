@@ -1,4 +1,4 @@
-angular.module('baseApp.directives')
+  angular.module('baseApp.directives')
   .directive('modalWindowView', [
     function(){
       'use strict';
