@@ -48,11 +48,6 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/',
       templateUrl: '/assets/html/views/root'
     })
-    .state('restrooms', {
-      url: '/restrooms',
-      controller: 'RestroomController',
-      templateUrl: '/assets/html/restroom/index'
-    })
     .state('articles', {
       abstract: true,
       url: '/articles',
