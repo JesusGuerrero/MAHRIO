@@ -107630,11 +107630,11 @@ $.executeTheme = function () {
 
   //Add slimscroll to navbar dropdown
   if (o.navbarMenuSlimscroll && typeof $.fn.slimscroll != 'undefined') {
-    $(".navbar .menu").slimscroll({
+    /*$(".navbar .menu").slimscroll({
       height: o.navbarMenuHeight,
       alwaysVisible: false,
       size: o.navbarMenuSlimscrollWidth
-    }).css("width", "100%");
+    }).css("width", "100%");*/
   }
 
   //Activate sidebar push menu
@@ -108337,11 +108337,11 @@ $.executeTheme = function () {
 
   //Add slimscroll to navbar dropdown
   if (o.navbarMenuSlimscroll && typeof $.fn.slimscroll != 'undefined') {
-    $(".navbar .menu").slimscroll({
+    /*$(".navbar .menu").slimscroll({
       height: o.navbarMenuHeight,
       alwaysVisible: false,
       size: o.navbarMenuSlimscrollWidth
-    }).css("width", "100%");
+    }).css("width", "100%");*/
   }
 
   //Activate sidebar push menu
@@ -108926,11 +108926,6 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('root', {
       url: '/',
       templateUrl: '/assets/html/views/root'
-    })
-    .state('restrooms', {
-      url: '/restrooms',
-      controller: 'RestroomController',
-      templateUrl: '/assets/html/restroom/index'
     })
     .state('articles', {
       abstract: true,
@@ -110648,8 +110643,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket',
-    function( $rootScope, currentUser, Socket ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_',
+    function( $rootScope, currentUser, Socket, Notification, _ ){
       'use strict';
       return {
         restrict: 'A',
@@ -110665,9 +110660,12 @@ angular.module('baseApp.directives')
               newUser = {access: 'any'};
             } else {
 
-              Socket.get.on('event:private:'+newUser._id, function(socket){
-                console.log( socket );
-                alert('got socket message');
+              Socket.get.on('event:notification:'+newUser._id, function(){
+
+                Notification.get()
+                  .then( function(res){
+                    scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
+                  });
                 //  //if( conversations[ socket._conversation.id] ){
                 //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
                 //  //}
@@ -110688,6 +110686,12 @@ angular.module('baseApp.directives')
               case 'authorized':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
                 scope.user = newUser;
+                scope.notifications = {};
+                Notification.get()
+                  .then( function(res){
+                    scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
+                    console.log( scope.notifications );
+                  });
                 break;
               default:
             }
@@ -111606,38 +111610,24 @@ angular.module('baseApp.controllers')
       };
     }
   ]);
-angular.module('baseApp.controllers')
-  .controller('RestroomController', ['$scope','Socket',
-    function ($scope, Socket) {
-      'use strict';
-
-      $scope.restroom = false;
-      Socket.get.on('event:restroom', function(socket){
-        console.log( socket );
-        $scope.$apply( function(){
-          if( socket === "1") {
-            $scope.restroom = true;
-          } else {
-            $scope.restroom = false;
-          }
-        });
-
-        //if( conversations[ socket._conversation.id] ){
-        //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
-        //}
-        //if( socket._conversation.id === $scope.currentConversation.id ){
-        //  $scope.currentConversation.messages.unshift(socket);
-        //}
-        //console.log('message: ' + socket.content);
+angular.module('baseApp.services')
+  .factory('NotificationResource', [ '$resource', function($resource) {
+    'use strict';
+    return $resource('/api/notifications/:id',
+      { id: '@id' },
+      {
+        read:   { method: 'GET' },
+        remove: { method: 'DELETE' }
       });
+  }])
+  .factory('Notification', [ 'NotificationResource', function( NotificationResource ) {
+    'use strict';
+    return {
+      get: function( ) { return NotificationResource.read( ).$promise; },
+      remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; }
+    };
+  }]);
 
-      //$scope.$on('socket:restroom', function(){
-      //  console.log('in socket');
-      //  $scope.restroom = !$scope.restroom;
-      //});
-
-    }
-  ]);
 angular.module('baseApp.services').factory('Socket', [ function() {
   'use strict';
 

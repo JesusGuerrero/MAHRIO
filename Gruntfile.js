@@ -8,7 +8,13 @@ module.exports = function (grunt) {
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
-
+    newer: {
+      options: {
+        override: function(detail, include) {
+          include( false );
+        }
+      }
+    },
     jshint: {
       options: {
         jshintrc: '.jshintrc'
@@ -163,44 +169,44 @@ module.exports = function (grunt) {
         expand: true
       }
     },
-
     watch: {
       less: {
-        files: ['client/styles/**/*.less'],
+        files: ['client/styles/**/*.less','client/angular/**/*.less'],
         tasks: ['less']
       },
-      angular: {
+      angular_jade: {
         files: ['client/angular/**/*.jade', '!**/_*.jade'],
-        tasks: ['jade']
+        tasks: ['newer:jade']
       },
-      requireJs: {
-        files: ['client/requirejs/**/_*.js'],
-        tasks: ['copy:requireJs']
-      },
-      jade: {
+      server_jade: {
         files: ['client/views/**/_*.jade'],
-        tasks: ['copy:jade']
+        tasks: ['newer:jade']
       },
-      scripts: {
-        files: [
-          '*.js',
-          'server/**/*.js',
-          '!server/public/**/*.js',
-          'client/**/*.js',
-          'test/**/*.js'
-        ],
-        tasks: ['jshint:all', 'concat']
-      },
-      dev_scripts: {
+      scripts_client: {
         files: ['client/angular/**/*.js'],
         tasks: ['newer:copy:dev']
       },
-      dev_views: {
-        files: ['client/angular/**/*.jade'],
-        tasks: ['jade']
+      scripts_server: {
+        files: [
+          'server/**/*.js',
+          '!server/public/**/*.js',
+          'test/**/*.js'
+        ],
+        tasks: ['newer:jshint:all']
+      },
+      scripts_grunt: {
+        files: [
+          '*.js'
+        ],
+        tasks: ['newer:jshint:all']
+      },
+      scripts_tests: {
+        files: [
+          'test/**/*.js'
+        ],
+        tasks: ['jshint:all']
       }
     },
-
     tags: {
       build: {
         options: {
@@ -220,5 +226,4 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['watch']);
   grunt.registerTask('build', ['less', 'jade', 'concat', 'copy']);
   grunt.registerTask('build-dev', ['less', 'jade', 'tags', 'copy:dev', 'copy:devScripts', 'concat:angular']);
-  grunt.registerTask('watch-dev', ['watch:dev_scripts', 'watch:dev_views']);
 };

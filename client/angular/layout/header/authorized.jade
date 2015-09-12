@@ -13,41 +13,69 @@ header.main-header
             span.icon-bar
         .navbar-custom-menu
             ul.nav.navbar-nav
-                //li
-                //    a(ui-sref="boards.list" ui-sref-opts="{reload: true}")
-                //        |   Boards
                 li.dropdown.messages-menu
                     a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        i.fa.fa-envelope-o
-                        span.label.label-success
-                            |   4
+                        i.fa.fa-comments
+                        span.label.label-success(ng-show="notifications.chat && notifications.chat.length")
+                            |   {{notifications.chat.length}}
                     ul.dropdown-menu
                         li.header
-                            |   You have 4 messages
+                            b
+                                |   Conversations
+                            span( ng-show="notifications.chat && notifications.chat.length")
+                                |   ({{notifications.chat.length}})
                         li
                             ul.menu
-                                li
-                                    a( href="#")
+                                li( ng-repeat="message in notifications.chat")
+                                    a( ui-sref="conversations" ui-sref-opts="{reload: true}")
                                         .pull-left
                                             img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
                                         h4
-                                            |   Support Team
+                                            |   {{message.heading}}
                                             small
                                                 i.fa.fa-clock-o
-                                                    |   5 mins
+                                                    |   {{message.created | date : 'MM-dd h:mm a' }}
                                         p
-                                            |   Why not buy a new aswesome theme?
+                                            |   {{message.teaser}}
                         li.footer
-                            a( href="#")
-                                |   See All Messages
-                li.dropdown.notifications-menu
+                            a( ui-sref="conversations" ui-sref-opts="{reload: true}" )
+                                |   See All Conversations
+                li.dropdown.messages-menu
                     a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        i.fa.fa-bell-o
-                        span.label.label-warning
-                            |   10
+                        i.fa.fa-envelope
+                        span.label.label-success(ng-show="notifications.mail && notifications.mail.count")
+                            |   {{notifications.mail.count}}
                     ul.dropdown-menu
                         li.header
-                            |   You have 10 notifications
+                            b
+                                |   Messages 10
+                            span( ng-show="notifications.mail && notifications.mail.messages && notifications.mail.messages.length")
+                                |   ( {{notification.mail.messages.length}} )
+                        li
+                            ul.menu
+                                li( ng-repeat="message in notifications.mail.messages")
+                                    a( ui-sref="mail.view({id: message._id})" ui-sref-opts="{reload: true}")
+                                        .pull-left
+                                            img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
+                                        h4
+                                            |   {{message.heading}}
+                                            small
+                                                i.fa.fa-clock-o
+                                                    |   {{message.created}}
+                                        p
+                                            |   {{message.teaser}}
+                        li.footer
+                            a( ui-sref="mail.inbox" ui-sref-opts="{reload: true}")
+                                |   See All Messages
+                li.dropdown.messages-menu
+                    a.dropdown-toggle( href="#" data-toggle="dropdown")
+                        i.fa.fa-bell
+                        span.label.label-success(ng-show="notifications.all && notifications.all.length")
+                            |   {{notifications.all.length}}
+                    ul.dropdown-menu
+                        li.header
+                            b
+                                |   You have {{notifications.all.length}} notifications
                         li
                             ul.menu
                                 li
@@ -59,12 +87,13 @@ header.main-header
                                 |   View All
                 li.dropdown.tasks-menu
                     a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        i.fa.fa-flag-o
-                        span.label.label-danger
-                            |   9
+                        i.fa.fa-flag
+                        span.label.label-success(ng-show="notifications.tasks && notifications.tasks.length")
+                            |   {{notifications.tasks.length}}
                     ul.dropdown-menu
                         li.header
-                            |   You have 9 tasks
+                            b
+                                |   You have {{notifications.tasks.length}} tasks
                         li
                             ul.menu
                                 li

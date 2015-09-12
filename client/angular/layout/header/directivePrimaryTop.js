@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket',
-    function( $rootScope, currentUser, Socket ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_',
+    function( $rootScope, currentUser, Socket, Notification, _ ){
       'use strict';
       return {
         restrict: 'A',
@@ -16,16 +16,12 @@ angular.module('baseApp.directives')
               newUser = {access: 'any'};
             } else {
 
-              Socket.get.on('event:private:'+newUser._id, function(socket){
-                console.log( socket );
-                alert('got socket message');
-                //  //if( conversations[ socket._conversation.id] ){
-                //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
-                //  //}
-                //  //if( socket._conversation.id === $scope.currentConversation.id ){
-                //  //  $scope.currentConversation.messages.unshift(socket);
-                //  //}
-                //  //console.log('message: ' + socket.content);
+              Socket.get.on('event:notification:'+newUser._id, function(){
+
+                Notification.get()
+                  .then( function(res){
+                    scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
+                  });
               });
             }
             switch( newUser.access ){
@@ -39,6 +35,11 @@ angular.module('baseApp.directives')
               case 'authorized':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
                 scope.user = newUser;
+                scope.notifications = {};
+                Notification.get()
+                  .then( function(res){
+                    scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
+                  });
                 break;
               default:
             }

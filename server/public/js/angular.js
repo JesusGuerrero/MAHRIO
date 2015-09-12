@@ -107630,11 +107630,11 @@ $.executeTheme = function () {
 
   //Add slimscroll to navbar dropdown
   if (o.navbarMenuSlimscroll && typeof $.fn.slimscroll != 'undefined') {
-    $(".navbar .menu").slimscroll({
+    /*$(".navbar .menu").slimscroll({
       height: o.navbarMenuHeight,
       alwaysVisible: false,
       size: o.navbarMenuSlimscrollWidth
-    }).css("width", "100%");
+    }).css("width", "100%");*/
   }
 
   //Activate sidebar push menu

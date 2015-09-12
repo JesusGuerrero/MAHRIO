@@ -14,6 +14,7 @@ require('./Mail');
 require('./Membership');
 require('./Media');
 require('./Message');
+require('./Notification');
 //require('./Order');
 //require('./Page');
 //require('./Product');

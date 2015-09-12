@@ -12,6 +12,7 @@ module.exports = function (config, server) {
   require('../../controllers/board/api')( config, server );
   require('../../controllers/calendar/api')(config, server);
   require('../../controllers/chat/api')(config, server);
+  require('../../controllers/notification/api')(config, server);
   require('../../controllers/mail/api')(config, server);
   require('../../controllers/media/api')(config, server);
   require('../../controllers/task/api')(config, server);

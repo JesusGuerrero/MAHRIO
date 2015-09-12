@@ -10,6 +10,7 @@ var async = require('async'),
     Message = mongoose.model('Message'),
     Media = mongoose.model('Media'),
     Profile = mongoose.model('Profile'),
+    Notification = mongoose.model('Notification'),
     config;
 
 function emitMessage( eventLabel ) {
@@ -291,8 +292,16 @@ function postPrivateConversation( request, reply ) {
             if( err ) { return reply( Boom.badRequest(err));}
             conv.messages = [msg];
 
-            emitMessage( 'event:private:'+request.query.userId );
-            return getPrivateConversation( request, reply);
+            emitMessage( 'event:notification:'+request.query.userId );
+            Notification.create({
+              resource: 'chat',
+              id: conv.id,
+              heading: 'Private Conversation',
+              teaser: msg.content,
+              _user: request.query.userId
+            }, function() {
+              return getPrivateConversation( request, reply);
+            });
           })
         })
       });
@@ -317,8 +326,16 @@ function sendPrivateMessage( request, reply ){
       conversation.save( function(){
         if( err ) { return reply(Boom.badRequest(err)); }
 
-        emitMessage( 'event:private:'+request.query.userId );
-        reply( {message: msg} );
+        emitMessage( 'event:notification:'+request.query.userId );
+        Notification.create({
+          resource: 'chat',
+          id: conversation.id,
+          heading: 'Private Conversation',
+          teaser: msg.content,
+          _user: request.query.userId
+        }, function(err) {
+          reply( {message: msg, err: err} );
+        });
       });
     });
   })
