@@ -108927,6 +108927,11 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/',
       templateUrl: '/assets/html/views/root'
     })
+    .state('notifications', {
+      url: '/notifications',
+      templateUrl: '/assets/html/notifications/index',
+      controller: 'NotificationsController'
+    })
     .state('articles', {
       abstract: true,
       url: '/articles',
@@ -109002,7 +109007,6 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       controller: 'QuestionsController'
     })
     .state('conversations', {
-      abstract: true,
       url: '/conversations',
       templateUrl: '/assets/html/conversations/index',
       controller: 'ConversationsController'
@@ -109141,6 +109145,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
 })
   .config(['ChartJsProvider', function (ChartJsProvider) {
     // Configure all charts
+    'use strict';
     ChartJsProvider.setOptions({
       responsive: false
     });
@@ -109283,15 +109288,7 @@ angular.module('baseApp.controllers')
         };
         $scope.sortSections = function( ){
           $scope.sortableOptions = {
-            disabled: false,
-            stop: function(e, ui) {
-              var logEntry = {
-                Text: ui.item.scope().section.body,
-                E: e
-              };
-              //console.log(logEntry);
-              //console.log( $scope.article.sections );
-            }
+            disabled: false
           };
           $scope.sortingSections = true;
         };
@@ -109388,7 +109385,7 @@ angular.module('baseApp.services').factory('Article', [ 'ArticleResource', funct
     add: function( article ) { return ArticleResource.create( {article: article} ).$promise; },
     get: function( id ) { return ArticleResource.read( id ? {id: id} : {} ).$promise; },
     update: function( article ) { return ArticleResource.update( {id: article._id}, {article: article} ) .$promise; },
-    remove: function(id){ return BoardResource.remove( {id: id} ).$promise; }
+    remove: function(id){ return ArticleResource.remove( {id: id} ).$promise; }
   };
 }]);
 angular.module('baseApp.controllers')
@@ -109913,7 +109910,7 @@ angular.module('baseApp.services')
           id: 'public'
         },{
           message: message
-        })
+        }).$promise;
       }
     };
 }]);
@@ -110018,7 +110015,7 @@ angular.module('baseApp.directives')
           private: '='
         },
         templateUrl: '/assets/html/conversations/currentConversation',
-        link: function(scope, el){
+        link: function(scope){
           scope.currentUser = currentUser.get();
           scope.currentConversations = [];
           scope.leftMessage = 'leftMessage';
@@ -110069,9 +110066,9 @@ angular.module('baseApp.directives')
         restrict: 'E',
         templateUrl: '/assets/html/conversations/currentConversation',
         scope: {
-          open: "@"
+          open: '@'
         },
-        link: function(scope, el){
+        link: function(scope){
           scope.leftMessage = 'leftMessage';
           scope.rightMessage = 'rightMessage';
           scope.newMessage = '';
@@ -110097,11 +110094,11 @@ angular.module('baseApp.directives')
             }
           };
           scope.$watch( 'open', function() {
-            if( scope.open !== "0" ) {
+            if( scope.open !== '0' ) {
               delete scope.currentConversation;
               scope.toUser = JSON.parse( scope.open );
-              scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.first_name + " " + scope.toUser.profile.last_name) : '';
-              scope.otherUser += " <"+scope.toUser.email+">";
+              scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.firstName + ' ' + scope.toUser.profile.lastName) : '';
+              scope.otherUser += ' <'+scope.toUser.email+'>';
               Chat.getPrivateConversation( scope.toUser._id )
                 .then( function(res){
                   if( res.conversation ) {
@@ -110130,7 +110127,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/conversations/directiveConversations',
         scope: {
-          active: "="
+          active: '='
         },
         link: function(scope){
           if( scope.active ){
@@ -110150,7 +110147,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/conversations/directiveConversations',
         scope: {
-          active: "="
+          active: '='
         },
         link: function(scope){
           if( scope.active ) {
@@ -110174,14 +110171,25 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('DashboardController', ['$scope','$timeout',
-    function($scope, $timeout){
+  .controller('DashboardController', ['$scope',
+    function($scope){
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
       'use strict';
-      //alert(10);
-      $scope.line_labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
       $scope.line_series = ['Average Online Traffic'];
       $scope.line_data = [
-        [10065, 10059, 10080, 10081, 10056, 10055, 10040]
+        [65, 59, 80, 81, 56, 55, 90]
       ];
       $scope.onClick = function (points, evt) {
         console.log(points, evt);
@@ -110194,8 +110202,8 @@ angular.module('baseApp.controllers')
         }
       };
 
-      $scope.doughnut_labels = ["Chrome", "IE", "FireFox", "Safari", "Opera"];
-      $scope.doughnut_data = [300, 50, 100, 75, 40];
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
 
 
     }]);
@@ -110525,7 +110533,7 @@ angular.module('baseApp.directives')
     }]);
 angular.module('baseApp.directives')
   .directive('media', ['Media','User','$http',
-    function( Media, User, $http ){
+    function( ){
       'use strict';
       return {
         restrict: 'E',
@@ -110538,9 +110546,6 @@ angular.module('baseApp.directives')
         },
         link: function( scope, el ) {
           //scope.media = {};
-          scope.$watch( function(){ return scope.media; }, function(ol, nw){
-
-          });
           var imageObject = {}, fileInput = el.find('input');
           scope.filename = 'none';
           fileInput.bind('change', function(event) {
@@ -110589,6 +110594,10 @@ angular.module('baseApp.directives')
         restrict: 'A',
         link: function(){
           $.executeTheme();
+          $('.control-sidebar-tabs a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+          });
         }
       };
     }
@@ -110666,13 +110675,6 @@ angular.module('baseApp.directives')
                   .then( function(res){
                     scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
                   });
-                //  //if( conversations[ socket._conversation.id] ){
-                //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
-                //  //}
-                //  //if( socket._conversation.id === $scope.currentConversation.id ){
-                //  //  $scope.currentConversation.messages.unshift(socket);
-                //  //}
-                //  //console.log('message: ' + socket.content);
               });
             }
             switch( newUser.access ){
@@ -110690,7 +110692,6 @@ angular.module('baseApp.directives')
                 Notification.get()
                   .then( function(res){
                     scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
-                    console.log( scope.notifications );
                   });
                 break;
               default:
@@ -110733,7 +110734,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/layout/heading/index',
         link: function( scope ) {
-          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+          $rootScope.$on('$stateChangeStart', function(event, toState) {
             //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
             var head, breadcrumbs = [{url: 'root',value: 'Home'}];
             switch( toState.name ) {
@@ -110797,7 +110798,7 @@ angular.module('baseApp.controllers')
   ]);
 angular.module('baseApp.directives')
   .directive('sideBar', ['$rootScope','$state','currentUser',
-    function($rootScope, $state, currentUser){
+    function($rootScope, $state ){
       'use strict';
       return {
         restrict: 'A',
@@ -111373,6 +111374,11 @@ angular.module('baseApp.services')
     }
   ]);
 angular.module('baseApp.controllers')
+  .controller('NotificationsController', ['$scope', function( $scope ) {
+    'use strict';
+    console.log( $scope );
+  }]);
+angular.module('baseApp.controllers')
   .controller('ProfileController', ['$scope', '$state', 'currentUser', function( $scope, $state, currentUser ) {
     'use strict';
 
@@ -111429,16 +111435,16 @@ angular.module('baseApp.directives')
           var user = currentUser.get();
           if( user.profile ) {
             scope.user = {
-              first_name: user.profile.first_name,
-              last_name: user.profile.last_name,
-              avatarImage: user.avatarImage
+              firstName: user.profile.firstName,
+              lastName: user.profile.lastName
             };
           } else {
             scope.user = {};
           }
+          scope.user.avatarImage = user.avatarImage;
 
           scope.update = function() {
-            currentUser.update( _.extendOwn( {first_name: '', last_name: ''}, scope.user) )
+            currentUser.update( _.extendOwn( {firstName: '', lastName: ''}, scope.user) )
               .then( function(res) {
                 currentUser.get().profile = _.extendOwn( currentUser.get().profile, res.profile );
                 FeedbackService.set({feedbackSuccess: 'Profile Updated!'});
@@ -111453,7 +111459,7 @@ angular.module('baseApp.directives')
               Media.getKey( mediaDetails )
                 .then( function(res) {
                   $http({
-                    url: res.signed_request,
+                    url: res.signedRequest,
                     method: 'PUT',
                     data: file,
                     transformRequest: angular.identity,
@@ -111473,22 +111479,18 @@ angular.module('baseApp.directives')
                       });
                   }, function(){
                     defer.reject();
-                  })
+                  });
                 }, function(){
                   defer.reject();
                 });
               return defer.promise;
-            },
-            send: function( task ){
-              task.description = $('#wysihtml5-content').val();
-              return Task.create( task );
             }
           };
         }
       };
     }
   ])
-  .directive( 'profileContact', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService) {
+  .directive( 'profileContact', ['User', 'FeedbackService','currentUser', function( User, FeedbackService, currentUser) {
     'use strict';
     return {
       restrict: 'E',
@@ -111510,8 +111512,9 @@ angular.module('baseApp.directives')
         });
 
         scope.update = function() {
-          currentUser.update( scope.user )
+          User.update( scope.user )
             .then( function() {
+              currentUser.get().email = scope.user.email;
               _init();
               FeedbackService.set({feedbackSuccess: 'Email Updated!'});
             }, function(){
@@ -111522,7 +111525,7 @@ angular.module('baseApp.directives')
       }
     };
   }])
-  .directive( 'profileSecurity', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService ) {
+  .directive( 'profileSecurity', ['User', 'FeedbackService', function( User, FeedbackService ) {
     'use strict';
     return {
       restrict: 'E',
@@ -111549,7 +111552,7 @@ angular.module('baseApp.directives')
             scope.validationErrors = ['Passwords do not match.'];
           }
 
-          currentUser.update( scope.user )
+          User.update( scope.user )
             .then( function() {
               _init();
               FeedbackService.set({feedbackSuccess: 'Password Updated!'});
@@ -111579,7 +111582,7 @@ angular.module('baseApp.services').factory('Profile', [ 'ProfileResource', funct
   'use strict';
   return {
     get: function(){
-      ProfileResource.get().$promise;
+      return ProfileResource.get().$promise;
     },
     update: function( profile ) {
       return ProfileResource.update( {}, {profile: profile}).$promise;
@@ -111627,6 +111630,8 @@ angular.module('baseApp.services')
       remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; }
     };
   }]);
+
+/* global io */
 
 angular.module('baseApp.services').factory('Socket', [ function() {
   'use strict';
@@ -111990,7 +111995,7 @@ angular.module('baseApp.controllers')
         Session.passwordReset( {token: $stateParams.token, newPassword: $scope.user.newPassword} )
           .then( function( res ){
             $scope.setAuthorizationHeader( res.headers('Authorization') );
-            currentUser.login(res.user, true);
+            $scope.getProfile(true);
           }, function(err){
             $scope.validationErrors = err.message;
           });

@@ -1,9 +1,6 @@
 'use strict';
 
-module.exports = function (config, server) {
-
-  server.lang = config.lang.get();
-
+function requireControllers(config, server){
   require('../../controllers/oauth/api')(config, server);
   require('../../controllers/user/api')(config, server);
   require('../../controllers/profile/api')(config, server);
@@ -19,6 +16,12 @@ module.exports = function (config, server) {
   require('../../controllers/cms')(config, server);
   require('../../controllers/contact')(config, server);
   require('../../controllers/knowledge')(config, server);
+}
+module.exports = function (config, server) {
+
+  server.lang = config.lang.get();
+
+  requireControllers(config, server);
 
   /* ASSETS & TEMPLATES */
   server.route({

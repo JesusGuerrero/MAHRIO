@@ -9,7 +9,7 @@ angular.module('baseApp.directives')
             case 'any':
               return '/assets/html/views/home';
             case 'authorized':
-              return '/assets/html/views/dashboard';
+              return '/assets/html/dashboard/index';
             case 'admin':
               return '/assets/html/views/dashboard';
           }

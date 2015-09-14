@@ -1,14 +1,6 @@
 .content-wrapper
-    ng-switch( on="access")
-        div( ng-switch-when="admin")
-            //ng-include( src="'/assets/html/layout/header/secondaryTop'")
-            heading
-        div.container(ng-switch-when="authorized" ng-show="subHeader")
-            section.content-header
-                h1
-                    |    Top Navigation
-                    small
-                        |   Example 2.0
+    div
+        heading
 
     ng-switch( on="access")
         section.content(ng-switch-when="admin")

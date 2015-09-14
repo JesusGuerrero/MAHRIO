@@ -16,7 +16,7 @@ angular.module('baseApp.services').factory('Profile', [ 'ProfileResource', funct
   'use strict';
   return {
     get: function(){
-      ProfileResource.get().$promise;
+      return ProfileResource.get().$promise;
     },
     update: function( profile ) {
       return ProfileResource.update( {}, {profile: profile}).$promise;

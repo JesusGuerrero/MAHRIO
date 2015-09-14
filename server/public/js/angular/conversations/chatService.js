@@ -163,7 +163,7 @@ angular.module('baseApp.services')
           id: 'public'
         },{
           message: message
-        })
+        }).$promise;
       }
     };
 }]);

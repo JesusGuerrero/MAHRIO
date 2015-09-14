@@ -1,11 +1,8 @@
 'use strict';
 
-var async = require('async'),
-    _ = require('underscore'),
-    http = require('request'),
+var http = require('request'),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    Media = mongoose.model('Media'),
     Boom = require('boom');
 
 var crypto = require('crypto');
@@ -56,7 +53,7 @@ function logout (request, reply) {
     User.findOne( {authorizationToken: request.auth.credentials.token}, function(err, user) {
       if( err ) { return reply( Boom.badRequest() ); }
 
-      user.authorizationToken = null;
+      user.authorizationToken = '';
       user.save( function(err) {
         if( err ) { return reply( Boom.badRequest()); }
         reply({logout: true});

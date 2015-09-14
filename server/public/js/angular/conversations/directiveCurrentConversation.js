@@ -9,7 +9,7 @@ angular.module('baseApp.directives')
           private: '='
         },
         templateUrl: '/assets/html/conversations/currentConversation',
-        link: function(scope, el){
+        link: function(scope){
           scope.currentUser = currentUser.get();
           scope.currentConversations = [];
           scope.leftMessage = 'leftMessage';

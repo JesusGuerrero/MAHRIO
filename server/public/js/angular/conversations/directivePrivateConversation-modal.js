@@ -6,9 +6,9 @@ angular.module('baseApp.directives')
         restrict: 'E',
         templateUrl: '/assets/html/conversations/currentConversation',
         scope: {
-          open: "@"
+          open: '@'
         },
-        link: function(scope, el){
+        link: function(scope){
           scope.leftMessage = 'leftMessage';
           scope.rightMessage = 'rightMessage';
           scope.newMessage = '';
@@ -34,11 +34,11 @@ angular.module('baseApp.directives')
             }
           };
           scope.$watch( 'open', function() {
-            if( scope.open !== "0" ) {
+            if( scope.open !== '0' ) {
               delete scope.currentConversation;
               scope.toUser = JSON.parse( scope.open );
-              scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.first_name + " " + scope.toUser.profile.last_name) : '';
-              scope.otherUser += " <"+scope.toUser.email+">";
+              scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.firstName + ' ' + scope.toUser.profile.lastName) : '';
+              scope.otherUser += ' <'+scope.toUser.email+'>';
               Chat.getPrivateConversation( scope.toUser._id )
                 .then( function(res){
                   if( res.conversation ) {

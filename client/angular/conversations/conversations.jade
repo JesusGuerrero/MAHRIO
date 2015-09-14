@@ -3,10 +3,10 @@
         ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)")
         h5.list-group-item-heading
             span( ng-repeat="member in conversation.members track by $index" style="margin-right: 5px;")
-                |   {{member.profile.first_name}}
-                |   {{member.profile.last_name}};
+                |   {{member.profile.firstName}}
+                |   {{member.profile.lastName}};
         p.list-group-item-text(style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap")
             small
                 b
-                    |   {{conversation.members[ conversation.lastMessage._user ].profile.first_name}}:
+                    |   {{conversation.members[ conversation.lastMessage._user ].profile.firstName}}:
                 |   {{conversation.lastMessage.content | limitTo : 40}}

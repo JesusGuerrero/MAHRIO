@@ -1,7 +1,6 @@
 'use strict';
 
 var User = require('mongoose').model('User'),
-    Boom = require('boom'),
     adminUserMethods = require('./_adminFunctions');
 
 module.exports = function ( config, server ) {

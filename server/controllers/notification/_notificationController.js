@@ -1,7 +1,6 @@
 'use strict';
 
-var _ = require('underscore'),
-  Boom = require('boom'),
+var Boom = require('boom'),
   mongoose = require('mongoose'),
   Notice = mongoose.model('Notification');
 

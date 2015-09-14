@@ -1,16 +1,8 @@
 
 <div class="content-wrapper">
-  <ng-switch on="access">
-    <div ng-switch-when="admin">
-      <!--ng-include( src="'/assets/html/layout/header/secondaryTop'")-->
-      <heading></heading>
-    </div>
-    <div ng-switch-when="authorized" ng-show="subHeader" class="container">
-      <section class="content-header">
-        <h1>   Top Navigation<small>  Example 2.0</small></h1>
-      </section>
-    </div>
-  </ng-switch>
+  <div>
+    <heading></heading>
+  </div>
   <ng-switch on="access">
     <section ng-switch-when="admin" class="content">
       <div ng-transclude="ng-transclude"></div>

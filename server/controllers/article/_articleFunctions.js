@@ -1,13 +1,46 @@
 'use strict';
 
-var require = require,
-  async = require('async'),
+var async = require('async'),
   _ = require('underscore'),
   Boom = require('boom'),
   mongoose = require('mongoose'),
   Article = mongoose.model('Article'),
   Section = mongoose.model('Section');
 
+function getArticle( request, reply, next ) {
+  var query, key;
+  if( request.params.id ) {
+    query = Article.findOne({_id: request.params.id});
+    key = 'article';
+  } else {
+    query = Article.find({});
+    key = 'articles';
+  }
+
+  query
+    .and([{
+      _removed: false
+    }])
+    .populate([{
+      path: 'widgets'
+    },{
+      path: 'sections'
+    }, {
+      path: '_creator',
+      select: 'email firstName lastName'
+    }])
+    .exec( function(err, article){
+      if( err ) { return reply( Boom.badRequest(err) ); }
+
+      if( typeof next === 'function' ) {
+        next( article );
+      } else {
+        var replyObject = {};
+        replyObject[ key ] = article;
+        reply( replyObject );
+      }
+    });
+}
 function _removeSections( sections, next ){
   if( sections.length ) {
     async.forEach( sections, function(item, callback){
@@ -88,40 +121,7 @@ function createArticle( request, reply ) {
       return reply( Boom.badRequest(err) );
     });
 }
-function getArticle( request, reply, next ) {
-  var query, key;
-  if( request.params.id ) {
-    query = Article.findOne({_id: request.params.id});
-    key = 'article';
-  } else {
-    query = Article.find({});
-    key = 'articles';
-  }
 
-  query
-    .and([{
-      _removed: false
-    }])
-    .populate([{
-      path: 'widgets'
-    },{
-      path: 'sections'
-    }, {
-      path: '_creator',
-      select: 'email firstName lastName'
-    }])
-    .exec( function(err, article){
-      if( err ) { return reply( Boom.badRequest(err) ); }
-
-      if( typeof next === 'function' ) {
-        next( article );
-      } else {
-        var replyObject = {};
-        replyObject[ key ] = article;
-        reply( replyObject );
-      }
-    });
-}
 function removeArticle(request, reply){
   getArticle( request, reply, function( article ) {
     if( !article ) {

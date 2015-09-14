@@ -1,11 +1,10 @@
 'use strict';
 
-var require = require,
-  mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
   schema = mongoose.Schema({
     title: String,
-    first_name: String,
-    last_name: String,
+    firstName: String,
+    lastName: String,
     role: String,
     phone: String,
     address: String,

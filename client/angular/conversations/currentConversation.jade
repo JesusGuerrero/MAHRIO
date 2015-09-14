@@ -19,8 +19,8 @@
                 ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'left' : 'right'")
                 .direct-chat-info.clearfix
                     span.direct-chat-name(ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-left' : 'pull-right'")
-                        |   {{currentConversation.members[message._user].profile.first_name}}
-                        |   {{currentConversation.members[message._user].profile.last_name}}
+                        |   {{currentConversation.members[message._user].profile.firstName}}
+                        |   {{currentConversation.members[message._user].profile.lastName}}
                         |   <{{currentConversation.members[message._user].email}}>
                     span.direct-chat-timestamp(ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'")
                         |   {{message.created | date : 'MM-dd h:mm a' }}

@@ -174,19 +174,25 @@ module.exports = function (grunt) {
         files: ['client/styles/**/*.less','client/angular/**/*.less'],
         tasks: ['less']
       },
-      angular_jade: {
+      angularJade: {
         files: ['client/angular/**/*.jade', '!**/_*.jade'],
-        tasks: ['newer:jade']
+        tasks: ['newer:jade'],
+        options: {
+          interrupt: true
+        }
       },
-      server_jade: {
+      serverJade: {
         files: ['client/views/**/_*.jade'],
         tasks: ['newer:jade']
       },
-      scripts_client: {
+      scriptsClient: {
         files: ['client/angular/**/*.js'],
-        tasks: ['newer:copy:dev']
+        tasks: ['newer:copy:dev'],
+        options: {
+          interrupt: true
+        }
       },
-      scripts_server: {
+      scriptsServer: {
         files: [
           'server/**/*.js',
           '!server/public/**/*.js',
@@ -194,13 +200,13 @@ module.exports = function (grunt) {
         ],
         tasks: ['newer:jshint:all']
       },
-      scripts_grunt: {
+      scriptsGrunt: {
         files: [
           '*.js'
         ],
         tasks: ['newer:jshint:all']
       },
-      scripts_tests: {
+      scriptsTests: {
         files: [
           'test/**/*.js'
         ],

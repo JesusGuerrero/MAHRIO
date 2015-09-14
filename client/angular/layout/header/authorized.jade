@@ -14,7 +14,7 @@ header.main-header
         .navbar-custom-menu
             ul.nav.navbar-nav
                 li.dropdown.messages-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-comments
                         span.label.label-success(ng-show="notifications.chat && notifications.chat.length")
                             |   {{notifications.chat.length}}
@@ -41,14 +41,14 @@ header.main-header
                             a( ui-sref="conversations" ui-sref-opts="{reload: true}" )
                                 |   See All Conversations
                 li.dropdown.messages-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-envelope
                         span.label.label-success(ng-show="notifications.mail && notifications.mail.count")
                             |   {{notifications.mail.count}}
                     ul.dropdown-menu
                         li.header
                             b
-                                |   Messages 10
+                                |   Messages
                             span( ng-show="notifications.mail && notifications.mail.messages && notifications.mail.messages.length")
                                 |   ( {{notification.mail.messages.length}} )
                         li
@@ -68,14 +68,16 @@ header.main-header
                             a( ui-sref="mail.inbox" ui-sref-opts="{reload: true}")
                                 |   See All Messages
                 li.dropdown.messages-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-bell
                         span.label.label-success(ng-show="notifications.all && notifications.all.length")
                             |   {{notifications.all.length}}
                     ul.dropdown-menu
                         li.header
                             b
-                                |   You have {{notifications.all.length}} notifications
+                                |   Notifications
+                            span( ng-show="notifications.all && notifications.all.length")
+                                |   ( {{notification.all.length}} )
                         li
                             ul.menu
                                 li
@@ -83,17 +85,19 @@ header.main-header
                                         i.fa.fa-users.text-aqua
                                         |   5 new members joined today
                         li.footer
-                            a( href="#")
+                            a( ui-sref="notifications" )
                                 |   View All
                 li.dropdown.tasks-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        i.fa.fa-flag
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
+                        i.fa.fa-tasks
                         span.label.label-success(ng-show="notifications.tasks && notifications.tasks.length")
                             |   {{notifications.tasks.length}}
                     ul.dropdown-menu
                         li.header
                             b
-                                |   You have {{notifications.tasks.length}} tasks
+                                |   Tasks
+                            span( ng-show="notifications.tasks && notifications.tasks.length")
+                                |   ( {{notification.tasks.length}} )
                         li
                             ul.menu
                                 li
@@ -107,20 +111,20 @@ header.main-header
                                                 span.sr-only
                                                     |   20% Complete
                         li.footer
-                            a( href="#")
+                            a( ui-sref="boards.list")
                                 |   View all tasks
                 li.dropdown.user.user-menu
                     a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-user( style="font-size: 1.3em" ng-show="!user.avatarImage || !user.avatarImage.url")
                         img.user-image( src="{{user.avatarImage.url}}" ng-show="user.avatarImage && user.avatarImage.url")
                         span.hidden-xs
-                            |   {{user.profile.first_name}}
+                            |   {{user.profile.firstName}}&nbsp;
                     ul.dropdown-menu
                         li.user-header
                             i.fa.fa-user-secret.text-gray( style="font-size: 5em" ng-show="!user.avatarImage || !user.avatarImage.url")
                             img.img-circle( src="{{user.avatarImage.url}}" ng-show="user.avatarImage && user.avatarImage.url")
                             p
-                                |   {{user.profile.first_name}} {{user.profile.last_name}}
+                                |   {{user.profile.firstName}}&nbsp;{{user.profile.lastName}}
                                 br
                                 |   {{user.email}}
                                 br
@@ -145,6 +149,6 @@ header.main-header
                             .pull-right
                                 a.btn.btn-default.btn-flat( href="javascript: void(0)" ng-click="logout()" )
                                     |   Sign Out
-                li
-                    a( href="#" data-toggle="control-sidebar")
+                li.dropdown
+                    a( href="javascript:void(0)" data-toggle="control-sidebar")
                         i.fa.fa-gears

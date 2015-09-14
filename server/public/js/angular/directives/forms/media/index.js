@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
   .directive('media', ['Media','User','$http',
-    function( Media, User, $http ){
+    function( ){
       'use strict';
       return {
         restrict: 'E',
@@ -13,9 +13,6 @@ angular.module('baseApp.directives')
         },
         link: function( scope, el ) {
           //scope.media = {};
-          scope.$watch( function(){ return scope.media; }, function(ol, nw){
-
-          });
           var imageObject = {}, fileInput = el.find('input');
           scope.filename = 'none';
           fileInput.bind('change', function(event) {

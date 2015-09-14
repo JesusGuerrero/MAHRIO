@@ -16,8 +16,8 @@
     <div class="direct-chat-messages">
       <div ng-repeat="message in currentConversation.messages track by $index" repeat-end="scrollBottom()" ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'left' : 'right'" class="direct-chat-msg">
         <div class="direct-chat-info clearfix"><span ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-left' : 'pull-right'" class="direct-chat-name">
-              {{currentConversation.members[message._user].profile.first_name}}
-              {{currentConversation.members[message._user].profile.last_name}}
+              {{currentConversation.members[message._user].profile.firstName}}
+              {{currentConversation.members[message._user].profile.lastName}}
               <{{currentConversation.members[message._user].email}}></span><span ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'" class="direct-chat-timestamp">  {{message.created | date : 'MM-dd h:mm a' }}</span></div><i ng-show="!currentConversation.members[message._user].avatarImage.url" style="font-size:2.5em" class="fa fa-user-secret"></i><img src="{{currentConversation.members[message._user].avatarImage.url}}" ng-show="currentConversation.members[message._user].avatarImage.url" class="direct-chat-img"/>
         <div class="direct-chat-text">  {{message.content}}</div>
       </div>

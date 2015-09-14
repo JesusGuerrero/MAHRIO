@@ -18,15 +18,7 @@ angular.module('baseApp.controllers')
         };
         $scope.sortSections = function( ){
           $scope.sortableOptions = {
-            disabled: false,
-            stop: function(e, ui) {
-              var logEntry = {
-                Text: ui.item.scope().section.body,
-                E: e
-              };
-              //console.log(logEntry);
-              //console.log( $scope.article.sections );
-            }
+            disabled: false
           };
           $scope.sortingSections = true;
         };

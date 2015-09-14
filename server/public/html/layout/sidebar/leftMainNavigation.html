@@ -6,7 +6,7 @@
         <h3 style="margin:0" ng-show="!user.avatarImage || !user.avatarImage.url" class="text-center"><i ng-class="{'text-green': !offline, 'text-red':offline}" class="fa fa-user-secret fa-2x"></i></h3><img src="{{user.avatarImage.url}}" alt="User Image" ng-show="user.avatarImage &amp;&amp; user.avatarImage.url" class="img-circle"/>
       </div>
       <div class="pull-left info">
-        <p>  {{user.profile.first_name}} {{user.profile.last_name}}</p><a href="#"><i ng-class="{'text-green': !offline, 'text-red':offline}" ng-click="offline = !offline" class="fa fa-circle">  {{!offline ? 'Online' : 'Offline'}}</i></a>
+        <p>  {{user.profile.firstName}} {{user.profile.lastName}}</p><a href="#"><i ng-class="{'text-green': !offline, 'text-red':offline}" ng-click="offline = !offline" class="fa fa-circle">  {{!offline ? 'Online' : 'Offline'}}</i></a>
       </div>
     </div>
     <div class="sidebar-form">
@@ -18,33 +18,53 @@
     <ul class="sidebar-menu">
       <li class="header">  MAIN NAVIGATION</li>
       <li><a href="#/"><i class="fa fa-dashboard"></i><span>  Dashboard</span></a></li>
+      <li><a ui-sref="notifications"><i class="fa fa-bell"></i><span>  Notifications</span></a></li>
       <!--li-->
       <!--    a( ui-sref="restrooms")-->
       <!--        i.fa.fa-male-->
       <!--        span-->
       <!--            |   Restrooms-->
       <li><a ui-sref="articles.list"><i class="fa fa-book"></i><span>  Articles</span></a></li>
-      <li><a ui-sref="boards.list"><i class="fa fa-building"></i><span>  Boards</span></a></li>
+      <li><a ui-sref="boards.list"><i class="fa fa-tasks"></i><span>  Boards</span></a></li>
       <li><a ui-sref="users.list" ui-sref-opts="{reload: true}"><i class="fa fa-users"></i><span>  Users</span><small class="label pull-right bg-green">  New</small></a></li>
       <li><a href="#/admin/newsletter"><i class="fa fa-newspaper-o"></i><span>  Newsletters</span><small class="label pull-right bg-red">  3</small></a></li>
       <li><a href="#/questions"><i class="fa fa-question"></i><span>  Questions</span><small class="label pull-right bg-red">  3</small></a></li>
-      <li><a href="#/calendar"><i class="fa fa-calendar"></i><span>  Calendar</span><small class="label pull-right bg-red">  3</small></a></li>
+      <li><a ui-sref="calendar"><i class="fa fa-calendar"></i><span>  Calendar</span><small class="label pull-right bg-red">  3</small></a></li>
       <li><a ui-sref="conversations.public" ui-sref-opts="{reload: true}"><i class="fa fa-comments"></i><span>  Conversations</span><small class="label pull-right bg-red">  3</small></a></li>
-      <li><a href="#/mail"><i class="fa fa-envelope"></i><span>  Mailbox</span><small class="label pull-right bg-yellow">  12</small></a></li>
-      <li class="treeview"><a href="#"><i class="fa fa-share"></i><span>  Multilevel</span><small class="fa fa-angle-left pull-right"></small></a>
-        <ul class="treeview-menu">
-          <li><a href="#"><i class="fa fa-circle-o"></i>  Level One<i class="fa fa-angle-left pull-right"></i></a>
-            <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-circle-o"></i>  Level Two<i class="fa fa-angle-left pull-right"></i></a>
-                <ul class="treeview-menu">
-                  <li><a href="#"><i class="fa fa-circle-o"></i>  Level Three</a><a href="#"><i class="fa fa-circle-o"></i>  Level Three</a></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li><a href="#"><i class="fa fa-circle-o"></i>  Level One<i class="fa fa-angle-left pull-right"></i></a></li>
-        </ul>
-      </li>
+      <li><a ui-sref="mail.inbox"><i class="fa fa-envelope"></i><span>  Mailbox</span><small class="label pull-right bg-yellow">  12</small></a></li>
+      <!--li.treeview-->
+      <!--    a( href="#")-->
+      <!--        i.fa.fa-share-->
+      <!--        span-->
+      <!--            |   Multilevel-->
+      <!--        small.fa.fa-angle-left.pull-right-->
+      <!--    ul.treeview-menu-->
+      <!--        li-->
+      <!--            a( href="#")-->
+      <!--                i.fa.fa-circle-o-->
+      <!--                |   Level One-->
+      <!--                i.fa.fa-angle-left.pull-right-->
+      <!---->
+      <!--            ul.treeview-menu-->
+      <!--                li-->
+      <!--                    a( href="#")-->
+      <!--                        i.fa.fa-circle-o-->
+      <!--                        |   Level Two-->
+      <!--                        i.fa.fa-angle-left.pull-right-->
+      <!--                    ul.treeview-menu-->
+      <!--                        li-->
+      <!--                            a( href="#")-->
+      <!--                                i.fa.fa-circle-o-->
+      <!--                                |   Level Three-->
+      <!--                            a( href="#")-->
+      <!--                                i.fa.fa-circle-o-->
+      <!--                                |   Level Three
+      li
+          a( href="#")
+              i.fa.fa-circle-o
+              |   Level One
+              i.fa.fa-angle-left.pull-right
+      -->
     </ul>
   </section>
 </aside>

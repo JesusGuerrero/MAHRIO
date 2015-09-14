@@ -3,7 +3,7 @@
   <nav role="navigation" class="navbar navbar-static-top"><a ng-click="toggleSidebar()" href="#" data-toggle="offcanvas" role="button" class="sidebar-toggle"><span class="sr-only">  Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a>
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
-        <li class="dropdown messages-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-comments"></i><span ng-show="notifications.chat &amp;&amp; notifications.chat.length" class="label label-success">  {{notifications.chat.length}}</span></a>
+        <li class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-comments"></i><span ng-show="notifications.chat &amp;&amp; notifications.chat.length" class="label label-success">  {{notifications.chat.length}}</span></a>
           <ul class="dropdown-menu">
             <li class="header"><b>  Conversations</b><span ng-show="notifications.chat &amp;&amp; notifications.chat.length">  ({{notifications.chat.length}})</span></li>
             <li>
@@ -17,9 +17,9 @@
             <li class="footer"><a ui-sref="conversations" ui-sref-opts="{reload: true}">  See All Conversations</a></li>
           </ul>
         </li>
-        <li class="dropdown messages-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-envelope"></i><span ng-show="notifications.mail &amp;&amp; notifications.mail.count" class="label label-success">  {{notifications.mail.count}}</span></a>
+        <li class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-envelope"></i><span ng-show="notifications.mail &amp;&amp; notifications.mail.count" class="label label-success">  {{notifications.mail.count}}</span></a>
           <ul class="dropdown-menu">
-            <li class="header"><b>  Messages 10</b><span ng-show="notifications.mail &amp;&amp; notifications.mail.messages &amp;&amp; notifications.mail.messages.length">  ( {{notification.mail.messages.length}} )</span></li>
+            <li class="header"><b>  Messages</b><span ng-show="notifications.mail &amp;&amp; notifications.mail.messages &amp;&amp; notifications.mail.messages.length">  ( {{notification.mail.messages.length}} )</span></li>
             <li>
               <ul class="menu">
                 <li ng-repeat="message in notifications.mail.messages"><a ui-sref="mail.view({id: message._id})" ui-sref-opts="{reload: true}">
@@ -31,20 +31,20 @@
             <li class="footer"><a ui-sref="mail.inbox" ui-sref-opts="{reload: true}">  See All Messages</a></li>
           </ul>
         </li>
-        <li class="dropdown messages-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-bell"></i><span ng-show="notifications.all &amp;&amp; notifications.all.length" class="label label-success">  {{notifications.all.length}}</span></a>
+        <li class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-bell"></i><span ng-show="notifications.all &amp;&amp; notifications.all.length" class="label label-success">  {{notifications.all.length}}</span></a>
           <ul class="dropdown-menu">
-            <li class="header"><b>  You have {{notifications.all.length}} notifications</b></li>
+            <li class="header"><b>  Notifications</b><span ng-show="notifications.all &amp;&amp; notifications.all.length">  ( {{notification.all.length}} )</span></li>
             <li>
               <ul class="menu">
                 <li><a href="#"><i class="fa fa-users text-aqua"></i>  5 new members joined today</a></li>
               </ul>
             </li>
-            <li class="footer"><a href="#">  View All</a></li>
+            <li class="footer"><a ui-sref="notifications">  View All</a></li>
           </ul>
         </li>
-        <li class="dropdown tasks-menu"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-flag"></i><span ng-show="notifications.tasks &amp;&amp; notifications.tasks.length" class="label label-success">  {{notifications.tasks.length}}</span></a>
+        <li class="dropdown tasks-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-tasks"></i><span ng-show="notifications.tasks &amp;&amp; notifications.tasks.length" class="label label-success">  {{notifications.tasks.length}}</span></a>
           <ul class="dropdown-menu">
-            <li class="header"><b>  You have {{notifications.tasks.length}} tasks</b></li>
+            <li class="header"><b>  Tasks</b><span ng-show="notifications.tasks &amp;&amp; notifications.tasks.length">  ( {{notification.tasks.length}} )</span></li>
             <li>
               <ul class="menu">
                 <li><a href="#">
@@ -54,13 +54,13 @@
                     </div></a></li>
               </ul>
             </li>
-            <li class="footer"><a href="#">  View all tasks</a></li>
+            <li class="footer"><a ui-sref="boards.list">  View all tasks</a></li>
           </ul>
         </li>
-        <li class="dropdown user user-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i style="font-size: 1.3em" ng-show="!user.avatarImage || !user.avatarImage.url" class="fa fa-user"></i><img src="{{user.avatarImage.url}}" ng-show="user.avatarImage &amp;&amp; user.avatarImage.url" class="user-image"/><span class="hidden-xs">  {{user.profile.first_name}}</span></a>
+        <li class="dropdown user user-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i style="font-size: 1.3em" ng-show="!user.avatarImage || !user.avatarImage.url" class="fa fa-user"></i><img src="{{user.avatarImage.url}}" ng-show="user.avatarImage &amp;&amp; user.avatarImage.url" class="user-image"/><span class="hidden-xs">  {{user.profile.firstName}}&nbsp;</span></a>
           <ul class="dropdown-menu">
             <li class="user-header"><i style="font-size: 5em" ng-show="!user.avatarImage || !user.avatarImage.url" class="fa fa-user-secret text-gray"></i><img src="{{user.avatarImage.url}}" ng-show="user.avatarImage &amp;&amp; user.avatarImage.url" class="img-circle"/>
-              <p>  {{user.profile.first_name}} {{user.profile.last_name}}<br/>  {{user.email}}<br/><small>  Member since {{user.created | date: mediumDate}}</small></p>
+              <p>  {{user.profile.firstName}}&nbsp;{{user.profile.lastName}}<br/>  {{user.email}}<br/><small>  Member since {{user.created | date: mediumDate}}</small></p>
             </li>
             <!--li.user-body-->
             <!--    .col-xs-4.text-center-->
@@ -78,7 +78,7 @@
             </li>
           </ul>
         </li>
-        <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
+        <li class="dropdown"><a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
       </ul>
     </div>
   </nav>

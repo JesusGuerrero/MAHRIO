@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
   .directive('sideBar', ['$rootScope','$state','currentUser',
-    function($rootScope, $state, currentUser){
+    function($rootScope, $state ){
       'use strict';
       return {
         restrict: 'A',

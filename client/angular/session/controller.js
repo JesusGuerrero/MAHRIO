@@ -55,7 +55,7 @@ angular.module('baseApp.controllers')
         Session.passwordReset( {token: $stateParams.token, newPassword: $scope.user.newPassword} )
           .then( function( res ){
             $scope.setAuthorizationHeader( res.headers('Authorization') );
-            currentUser.login(res.user, true);
+            $scope.getProfile(true);
           }, function(err){
             $scope.validationErrors = err.message;
           });

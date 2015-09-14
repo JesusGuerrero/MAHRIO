@@ -1,3 +1,5 @@
+/* global io */
+
 angular.module('baseApp.services').factory('Socket', [ function() {
   'use strict';
 

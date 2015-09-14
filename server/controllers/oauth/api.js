@@ -78,6 +78,10 @@ module.exports = function ( config, server ) {
             default:
               return reply( Boom.badRequest() );
           }
+        },
+        auth: {
+          mode: 'try',
+          strategy: 'simple'
         }
       }
     }

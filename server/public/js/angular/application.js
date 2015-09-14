@@ -46,7 +46,15 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
   $stateProvider
     .state('root', {
       url: '/',
-      templateUrl: '/assets/html/views/root'
+      templateUrl: '/assets/html/views/root',
+      title: 'Dashboard'
+    })
+    .state('notifications', {
+      url: '/notifications',
+      templateUrl: '/assets/html/notifications/index',
+      controller: 'NotificationsController',
+      title: 'Notifications',
+      subTitle: 'What\'s New'
     })
     .state('articles', {
       abstract: true,
@@ -56,19 +64,23 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('articles.new', {
       url: '/new',
-      templateUrl: '/assets/html/article/form'
+      templateUrl: '/assets/html/article/form',
+      title: 'New Article'
     })
     .state('articles.list', {
       url: '/all',
-      templateUrl: '/assets/html/article/list'
+      templateUrl: '/assets/html/article/list',
+      title: 'List Articles'
     })
     .state('articles.edit', {
       url: '/:id/edit',
-      templateUrl: '/assets/html/article/form'
+      templateUrl: '/assets/html/article/form',
+      title: 'Edit Article'
     })
     .state('articles.detail', {
       url: '/:id',
-      templateUrl: '/assets/html/article/detail'
+      templateUrl: '/assets/html/article/detail',
+      title: 'Article'
     })
     .state('knowledge', {
       url: '/knowledge',
@@ -101,16 +113,18 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('users.new', {
       url: '/new',
-      templateUrl: '/assets/html/user/form-register'
+      templateUrl: '/assets/html/user/form-register',
     })
     .state('users.list', {
       url: '/list',
-      templateUrl: '/assets/html/user/list'
+      templateUrl: '/assets/html/user/list',
+      title: 'List Users'
     })
     .state('users.detail', {
       url: '/profile/:id',
       controller: 'ProfileController',
-      templateUrl: '/assets/html/profile/directive-summary'
+      templateUrl: '/assets/html/profile/directive-summary',
+      title: 'User'
     })
     .state('newsletters', {
       url: '/admin/newsletter',
@@ -123,16 +137,18 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       controller: 'QuestionsController'
     })
     .state('conversations', {
-      abstract: true,
       url: '/conversations',
       templateUrl: '/assets/html/conversations/index',
-      controller: 'ConversationsController'
+      controller: 'ConversationsController',
+      title: 'Conversations'
     })
     .state('conversations.public', {
-      url: '/public'
+      url: '/public',
+      title: 'Public Conversations'
     })
     .state('conversations.private', {
-      url: '/private'
+      url: '/private',
+      title: 'Private Conversations'
     })
     .state('login', {
       url: '/login?linkedIn',
@@ -157,21 +173,30 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('calendar', {
       url: '/calendar',
       controller: 'CalendarController',
-      templateUrl: '/assets/html/calendar/index'
+      templateUrl: '/assets/html/calendar/index',
+      title: 'Calendar',
+      subTitle: 'Events'
     })
     .state('profile', {
       url: '/profile',
       controller: 'ProfileController',
-      templateUrl: '/assets/html/profile/profile-landing'
+      templateUrl: '/assets/html/profile/profile-landing',
+      title: 'My Profile'
     })
     .state('profile.info', {
-      url: '/info'
+      url: '/info',
+      title: 'My Profile',
+      subTitle: 'General'
     })
     .state('profile.contact', {
-      url: '/contact'
+      url: '/contact',
+      title: 'My Profile',
+      subTitle: 'Contact'
     })
     .state('profile.security', {
-      url: '/security'
+      url: '/security',
+      title: 'My Profile',
+      subTitle: 'Security'
     })
     .state('boards', {
       abstract: true,
@@ -181,36 +206,47 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('boards.new', {
       url: '/new',
-      templateUrl: '/assets/html/board/form'
+      templateUrl: '/assets/html/board/form',
+      title: 'New Board'
     })
     .state('boards.list', {
       url: '/all',
       controller: 'BoardController',
-      templateUrl: '/assets/html/board/list'
+      templateUrl: '/assets/html/board/list',
+      title: 'List Boards'
     })
     .state('boards.edit', {
       url: '/:board/edit',
-      templateUrl: '/assets/html/board/form'
+      templateUrl: '/assets/html/board/form',
+      title: 'Edit Board'
     })
     .state('boards.detail', {
       url: '/:id',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Tasks'
     })
     .state('boards.detail.backlog', {
       url: '/backlog',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Backlog'
     })
     .state('boards.detail.backlog.new', {
       url: '/new',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'New Task'
     })
     .state('boards.detail.backlog.edit', {
       url: '/:task/edit',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Edit Task'
     })
 
     //.state('tasks', {
@@ -233,28 +269,44 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
-      templateUrl: '/assets/html/mail/index'
+      templateUrl: '/assets/html/mail/index',
+      title: 'Mailbox',
+      subTitle: 'Inbox'
     })
     .state('mail.inbox', {
-      url: '/inbox'
+      url: '/inbox',
+      title: 'Mailbox',
+      subTitle: 'Inbox'
     })
     .state('mail.new', {
-      url: '/new'
+      url: '/new',
+      title: 'Mailbox',
+      subTitle: 'New'
     })
     .state('mail.drafts', {
-      url: '/drafts'
+      url: '/drafts',
+      title: 'Mailbox',
+      subTitle: 'Drafts'
     })
     .state('mail.sent', {
-      url: '/sent'
+      url: '/sent',
+      title: 'Mailbox',
+      subTitle: 'Sent'
     })
     .state('mail.starred', {
-      url: '/starred'
+      url: '/starred',
+      title: 'Mailbox',
+      subTitle: 'Starred'
     })
     .state('mail.archived', {
-      url: '/archived'
+      url: '/archived',
+      title: 'Mailbox',
+      subTitle: 'Archived'
     })
     .state('mail.view', {
-      url: '/view/:id/:action'
+      url: '/view/:id/:action',
+      title: 'Mailbox',
+      subTitle: 'View'
     });
 
   $urlRouterProvider.otherwise('/');
@@ -262,6 +314,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
 })
   .config(['ChartJsProvider', function (ChartJsProvider) {
     // Configure all charts
+    'use strict';
     ChartJsProvider.setOptions({
       responsive: false
     });

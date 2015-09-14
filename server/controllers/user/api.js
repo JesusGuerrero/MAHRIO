@@ -1,7 +1,6 @@
 'use strict';
 
-var User = require('mongoose').model('User'),
-    Boom = require('boom'),
+var Boom = require('boom'),
     UserCtrl = require('./_userFunctions');
 
 module.exports = function ( config, server ) {

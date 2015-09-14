@@ -1,12 +1,23 @@
 angular.module('baseApp.controllers')
-  .controller('DashboardController', ['$scope','$timeout',
-    function($scope, $timeout){
+  .controller('DashboardController', ['$scope',
+    function($scope){
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
       'use strict';
-      //alert(10);
-      $scope.line_labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
       $scope.line_series = ['Average Online Traffic'];
       $scope.line_data = [
-        [10065, 10059, 10080, 10081, 10056, 10055, 10040]
+        [65, 59, 80, 81, 56, 55, 90]
       ];
       $scope.onClick = function (points, evt) {
         console.log(points, evt);
@@ -19,8 +30,8 @@ angular.module('baseApp.controllers')
         }
       };
 
-      $scope.doughnut_labels = ["Chrome", "IE", "FireFox", "Safari", "Opera"];
-      $scope.doughnut_data = [300, 50, 100, 75, 40];
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
 
-
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
     }]);

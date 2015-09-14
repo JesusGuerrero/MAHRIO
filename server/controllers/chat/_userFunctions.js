@@ -178,7 +178,7 @@ function sendMessage(request, reply) {
   });
 }
 
-function getPrivateConversations( request, reply ) {
+function getPrivateConversations( request, reply, callback ) {
   Conversation
     .find({members: {$in: [request.auth.credentials.id]}})
     .populate([{
@@ -199,14 +199,14 @@ function getPrivateConversations( request, reply ) {
           return reply({conversations: []});
         }
         async.forEach(conversations ,function(item,callback) {
-          Media.populate( item.members,{ "path": "avatarImage" },function(err) {
+          Media.populate( item.members,{ 'path': 'avatarImage' },function(err) {
             if (err) { return reply( Boom.badRequest(err)); }
 
             callback();
           });
         }, function() {
           async.forEach(conversations ,function(item,callback) {
-            Profile.populate( item.members,{ "path": "profile" },function(err) {
+            Profile.populate( item.members,{ 'path': 'profile' },function(err) {
               if (err) { return reply( Boom.badRequest(err)); }
 
               callback();
@@ -253,14 +253,14 @@ function getPrivateConversation( request, reply, callback ) {
           return reply({conversation: null});
         }
         async.forEach(conversation.members ,function(item,callback) {
-          Media.populate( item,{ "path": "avatarImage" },function(err) {
+          Media.populate( item,{ 'path': 'avatarImage' },function(err) {
             if (err) { return reply( Boom.badRequest(err)); }
 
             callback();
           });
         }, function() {
           async.forEach(conversation.members ,function(item,callback) {
-            Profile.populate( item,{ "path": "profile" },function(err) {
+            Profile.populate( item,{ 'path': 'profile' },function(err) {
               if (err) { return reply( Boom.badRequest(err)); }
 
               callback();
@@ -302,8 +302,8 @@ function postPrivateConversation( request, reply ) {
             }, function() {
               return getPrivateConversation( request, reply);
             });
-          })
-        })
+          });
+        });
       });
     } else {
       return reply( Boom.badRequest('Conversation Exists') );
@@ -338,7 +338,7 @@ function sendPrivateMessage( request, reply ){
         });
       });
     });
-  })
+  });
 }
 function getPublicConversations( request, reply ){
   Conversation
@@ -394,12 +394,12 @@ function postPublicConversation( request, reply ) {
 
         request.query = { conversationId: conv.id };
         return getPublicConversation( request, reply);
-      })
-    })
+      });
+    });
   });
 }
 function sendPublicMessage( request, reply ){
-
+  console.log( request, reply );
 }
 module.exports = {
   setConfig: function( cfg ) {

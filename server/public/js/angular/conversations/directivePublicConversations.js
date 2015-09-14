@@ -7,7 +7,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/conversations/directiveConversations',
         scope: {
-          active: "="
+          active: '='
         },
         link: function(scope){
           if( scope.active ){
@@ -27,7 +27,7 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/conversations/directiveConversations',
         scope: {
-          active: "="
+          active: '='
         },
         link: function(scope){
           if( scope.active ) {

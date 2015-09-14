@@ -6,6 +6,10 @@ angular.module('baseApp.directives')
         restrict: 'A',
         link: function(){
           $.executeTheme();
+          $('.control-sidebar-tabs a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+          });
         }
       };
     }
