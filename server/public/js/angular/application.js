@@ -332,6 +332,9 @@ angular.module('baseApp.controllers', [])
     function ($rootScope, $state, $http, $location, LocaleFactory, ValidatorFactory, currentUser) {
       'use strict';
 
+      $rootScope.Utils = {
+        keys : Object.keys
+      };
       $rootScope.locale = LocaleFactory.getEnglish();
       $rootScope.validate = ValidatorFactory;
 

@@ -26,9 +26,9 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/layout/heading/index',
         link: function( scope ) {
-          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+          $rootScope.$on('$stateChangeStart', function(event, toState) {
             //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
-            var head, breadcrumbs = [{url: 'root',value: 'Home'}];
+            //var head, breadcrumbs = [{url: 'root',value: 'Home'}];
             //switch( toState.name ) {
             //  case 'boards.list':
             //    breadcrumbs.push({url:'', value: 'View Boards'});

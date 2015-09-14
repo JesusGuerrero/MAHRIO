@@ -1,9 +1,9 @@
 angular.module('baseApp.controllers')
   .controller('DashboardController', ['$scope',
     function($scope){
+      'use strict';
       /*jshint camelcase: false */
       var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
-      'use strict';
 
       $scope.line_labels = [];
       var today = new Date();

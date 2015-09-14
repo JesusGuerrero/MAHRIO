@@ -108925,12 +108925,15 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
   $stateProvider
     .state('root', {
       url: '/',
-      templateUrl: '/assets/html/views/root'
+      templateUrl: '/assets/html/views/root',
+      title: 'Dashboard'
     })
     .state('notifications', {
       url: '/notifications',
       templateUrl: '/assets/html/notifications/index',
-      controller: 'NotificationsController'
+      controller: 'NotificationsController',
+      title: 'Notifications',
+      subTitle: 'What\'s New'
     })
     .state('articles', {
       abstract: true,
@@ -108940,19 +108943,23 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('articles.new', {
       url: '/new',
-      templateUrl: '/assets/html/article/form'
+      templateUrl: '/assets/html/article/form',
+      title: 'New Article'
     })
     .state('articles.list', {
       url: '/all',
-      templateUrl: '/assets/html/article/list'
+      templateUrl: '/assets/html/article/list',
+      title: 'List Articles'
     })
     .state('articles.edit', {
       url: '/:id/edit',
-      templateUrl: '/assets/html/article/form'
+      templateUrl: '/assets/html/article/form',
+      title: 'Edit Article'
     })
     .state('articles.detail', {
       url: '/:id',
-      templateUrl: '/assets/html/article/detail'
+      templateUrl: '/assets/html/article/detail',
+      title: 'Article'
     })
     .state('knowledge', {
       url: '/knowledge',
@@ -108985,16 +108992,18 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('users.new', {
       url: '/new',
-      templateUrl: '/assets/html/user/form-register'
+      templateUrl: '/assets/html/user/form-register',
     })
     .state('users.list', {
       url: '/list',
-      templateUrl: '/assets/html/user/list'
+      templateUrl: '/assets/html/user/list',
+      title: 'List Users'
     })
     .state('users.detail', {
       url: '/profile/:id',
       controller: 'ProfileController',
-      templateUrl: '/assets/html/profile/directive-summary'
+      templateUrl: '/assets/html/profile/directive-summary',
+      title: 'User'
     })
     .state('newsletters', {
       url: '/admin/newsletter',
@@ -109009,13 +109018,16 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('conversations', {
       url: '/conversations',
       templateUrl: '/assets/html/conversations/index',
-      controller: 'ConversationsController'
+      controller: 'ConversationsController',
+      title: 'Conversations'
     })
     .state('conversations.public', {
-      url: '/public'
+      url: '/public',
+      title: 'Public Conversations'
     })
     .state('conversations.private', {
-      url: '/private'
+      url: '/private',
+      title: 'Private Conversations'
     })
     .state('login', {
       url: '/login?linkedIn',
@@ -109040,21 +109052,30 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('calendar', {
       url: '/calendar',
       controller: 'CalendarController',
-      templateUrl: '/assets/html/calendar/index'
+      templateUrl: '/assets/html/calendar/index',
+      title: 'Calendar',
+      subTitle: 'Events'
     })
     .state('profile', {
       url: '/profile',
       controller: 'ProfileController',
-      templateUrl: '/assets/html/profile/profile-landing'
+      templateUrl: '/assets/html/profile/profile-landing',
+      title: 'My Profile'
     })
     .state('profile.info', {
-      url: '/info'
+      url: '/info',
+      title: 'My Profile',
+      subTitle: 'General'
     })
     .state('profile.contact', {
-      url: '/contact'
+      url: '/contact',
+      title: 'My Profile',
+      subTitle: 'Contact'
     })
     .state('profile.security', {
-      url: '/security'
+      url: '/security',
+      title: 'My Profile',
+      subTitle: 'Security'
     })
     .state('boards', {
       abstract: true,
@@ -109064,36 +109085,47 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('boards.new', {
       url: '/new',
-      templateUrl: '/assets/html/board/form'
+      templateUrl: '/assets/html/board/form',
+      title: 'New Board'
     })
     .state('boards.list', {
       url: '/all',
       controller: 'BoardController',
-      templateUrl: '/assets/html/board/list'
+      templateUrl: '/assets/html/board/list',
+      title: 'List Boards'
     })
     .state('boards.edit', {
       url: '/:board/edit',
-      templateUrl: '/assets/html/board/form'
+      templateUrl: '/assets/html/board/form',
+      title: 'Edit Board'
     })
     .state('boards.detail', {
       url: '/:id',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Tasks'
     })
     .state('boards.detail.backlog', {
       url: '/backlog',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Backlog'
     })
     .state('boards.detail.backlog.new', {
       url: '/new',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'New Task'
     })
     .state('boards.detail.backlog.edit', {
       url: '/:task/edit',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Edit Task'
     })
 
     //.state('tasks', {
@@ -109116,28 +109148,44 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
-      templateUrl: '/assets/html/mail/index'
+      templateUrl: '/assets/html/mail/index',
+      title: 'Mailbox',
+      subTitle: 'Inbox'
     })
     .state('mail.inbox', {
-      url: '/inbox'
+      url: '/inbox',
+      title: 'Mailbox',
+      subTitle: 'Inbox'
     })
     .state('mail.new', {
-      url: '/new'
+      url: '/new',
+      title: 'Mailbox',
+      subTitle: 'New'
     })
     .state('mail.drafts', {
-      url: '/drafts'
+      url: '/drafts',
+      title: 'Mailbox',
+      subTitle: 'Drafts'
     })
     .state('mail.sent', {
-      url: '/sent'
+      url: '/sent',
+      title: 'Mailbox',
+      subTitle: 'Sent'
     })
     .state('mail.starred', {
-      url: '/starred'
+      url: '/starred',
+      title: 'Mailbox',
+      subTitle: 'Starred'
     })
     .state('mail.archived', {
-      url: '/archived'
+      url: '/archived',
+      title: 'Mailbox',
+      subTitle: 'Archived'
     })
     .state('mail.view', {
-      url: '/view/:id/:action'
+      url: '/view/:id/:action',
+      title: 'Mailbox',
+      subTitle: 'View'
     });
 
   $urlRouterProvider.otherwise('/');
@@ -109163,6 +109211,9 @@ angular.module('baseApp.controllers', [])
     function ($rootScope, $state, $http, $location, LocaleFactory, ValidatorFactory, currentUser) {
       'use strict';
 
+      $rootScope.Utils = {
+        keys : Object.keys
+      };
       $rootScope.locale = LocaleFactory.getEnglish();
       $rootScope.validate = ValidatorFactory;
 
@@ -110173,9 +110224,9 @@ angular.module('baseApp.directives')
 angular.module('baseApp.controllers')
   .controller('DashboardController', ['$scope',
     function($scope){
+      'use strict';
       /*jshint camelcase: false */
       var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
-      'use strict';
 
       $scope.line_labels = [];
       var today = new Date();
@@ -110205,7 +110256,7 @@ angular.module('baseApp.controllers')
       $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
       $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
 
-
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
     }]);
 angular.module('baseApp.directives')
   .directive('autoComplete', [ function(){
@@ -110652,8 +110703,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_',
-    function( $rootScope, currentUser, Socket, Notification, _ ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat',
+    function( $rootScope, currentUser, Socket, Notification, _, Chat ){
       'use strict';
       return {
         restrict: 'A',
@@ -110664,6 +110715,52 @@ angular.module('baseApp.directives')
         link: function(scope) {
           scope.logout = $rootScope.logout;
           scope.current = currentUser.get();
+          function populateMessageNotice(res, newUser ){
+            scope.notifications = res.notifications;
+            _.each( Object.keys( scope.notifications ), function( key ) {
+              scope[ key ] = {
+                total: Object.keys( scope.notifications[key] ).length
+              };
+            });
+            Chat.getAllPrivateConversations()
+              .then( function(res){
+                var groupById = _.groupBy( res.conversations, function(conv){ return conv._id; });
+                _.each( Object.keys( groupById ), function(key){ groupById[key] = groupById[key][0]; })
+                var allConversations = {};
+                _.each( Object.keys( groupById ), function( key ) {
+                  delete groupById[key].members[newUser._id];
+                  var users = [];
+                  _.each( Object.keys( groupById[key].members ), function(k){
+                    users.push( groupById[key].members[k] );
+                  });
+                  groupById[key].members = users;
+                  groupById[key].messages.reverse();
+                  if( scope.notifications && scope.notifications.chat  ) {
+                    if( typeof scope.notifications.chat[key] === 'undefined' ) {
+                      scope.notifications.chat[key] = groupById[key];
+                      delete scope.notifications.chat[key].members[newUser._id ];
+                      var users = [];
+                      _.each( Object.keys( scope.notifications.chat[key].members ), function(k){
+                        users.push( scope.notifications.chat[key].members[k] );
+                      });
+                      scope.notifications.chat[key].members = users;
+                      scope.notifications.chat[key].messages.reverse();
+                    } else {
+                      scope.notifications.chat[key].isNew = true;
+                    }
+                  } else {
+                    allConversations[key] = groupById[key];
+                  }
+                });
+                if( Object.keys( allConversations ).length ) {
+                  scope.notifications = {
+                    chat: allConversations
+                  };
+                }
+                scope.notifications.chat = _.sortBy( scope.notifications.chat, function(entry){ return new Date(entry.messages[0].created).getTime()*-1; });
+                console.log( scope.notifications );
+              });
+          }
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
               newUser = {access: 'any'};
@@ -110673,7 +110770,7 @@ angular.module('baseApp.directives')
 
                 Notification.get()
                   .then( function(res){
-                    scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
+                    populateMessageNotice(res, newUser);
                   });
               });
             }
@@ -110691,7 +110788,7 @@ angular.module('baseApp.directives')
                 scope.notifications = {};
                 Notification.get()
                   .then( function(res){
-                    scope.notifications = _.groupBy( res.notifications, function(item){ return item.resource; });
+                    populateMessageNotice(res, newUser);
                   });
                 break;
               default:
@@ -110726,8 +110823,8 @@ angular.module('baseApp.controllers')
 );
 
 angular.module('baseApp.directives')
-  .directive('heading', [ '$rootScope',
-    function( $rootScope ){
+  .directive('heading', [ '$rootScope','$state',
+    function( $rootScope, $state ){
       'use strict';
       return {
         restrict: 'E',
@@ -110736,31 +110833,42 @@ angular.module('baseApp.directives')
         link: function( scope ) {
           $rootScope.$on('$stateChangeStart', function(event, toState) {
             //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
-            var head, breadcrumbs = [{url: 'root',value: 'Home'}];
-            switch( toState.name ) {
-              case 'boards.list':
-                breadcrumbs.push({url:'', value: 'View Boards'});
-                head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
-                break;
-              case 'boards.new':
-                breadcrumbs.push({url:'', value: 'Create Board'});
-                head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
-                break;
-              case 'boards.detail':
-                breadcrumbs.push({url:'', value: 'Name'});
-                head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
-                break;
-              default:
-                breadcrumbs.push({url:'', value:'Undefined'});
-                head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
-                break;
-            }
-            scope.heading = head;
+            //var head, breadcrumbs = [{url: 'root',value: 'Home'}];
+            //switch( toState.name ) {
+            //  case 'boards.list':
+            //    breadcrumbs.push({url:'', value: 'View Boards'});
+            //    head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
+            //    break;
+            //  case 'boards.new':
+            //    breadcrumbs.push({url:'', value: 'Create Board'});
+            //    head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
+            //    break;
+            //  case 'boards.detail':
+            //    breadcrumbs.push({url:'', value: 'Name'});
+            //    head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
+            //    break;
+            //  default:
+            //    breadcrumbs.push({url:'', value:'Undefined'});
+            //    head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
+            //    break;
+            //}
+            scope.heading = {
+              title: toState.title,
+              subTitle: toState.subTitle,
+              breadcrumbs: [
+                {
+                  url: 'root',
+                  value: 'Home'},
+                {
+                  url: 'root',
+                  value: toState.title
+                }
+              ]
+            };
           });
-
           scope.heading = {
-            title: 'Title',
-            subTitle: 'Sub Title',
+            title: $state.current.title,
+            subTitle: $state.current.subTitle,
             breadcrumbs: [
               {
                 url: 'root',
@@ -110768,7 +110876,7 @@ angular.module('baseApp.directives')
               },
               {
                 url: 'root',
-                value: 'Blank Page'
+                value: $state.current.title
               }
             ]
           };
@@ -111939,8 +112047,8 @@ angular.module('baseApp.services')
     };
   }]);
 angular.module('baseApp.controllers')
-  .controller('SessionController', ['$scope','$stateParams','Session','ValidatorFactory','currentUser',
-    function($scope, $stateParams, Session, validate, currentUser ){
+  .controller('SessionController', ['$scope','$stateParams','Session','ValidatorFactory',
+    function($scope, $stateParams, Session, validate ){
       'use strict';
 
       if( $stateParams.token && !$stateParams.user ){
@@ -112471,7 +112579,7 @@ angular.module('baseApp.directives')
             case 'any':
               return '/assets/html/views/home';
             case 'authorized':
-              return '/assets/html/views/dashboard';
+              return '/assets/html/dashboard/index';
             case 'admin':
               return '/assets/html/views/dashboard';
           }

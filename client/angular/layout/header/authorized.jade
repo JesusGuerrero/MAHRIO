@@ -16,27 +16,28 @@ header.main-header
                 li.dropdown.messages-menu
                     a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-comments
-                        span.label.label-success(ng-show="notifications.chat && notifications.chat.length")
-                            |   {{notifications.chat.length}}
+                        span.label.label-success(ng-show="chat && chat.total")
+                            |   {{chat.total}}
                     ul.dropdown-menu
                         li.header
                             b
                                 |   Conversations
-                            span( ng-show="notifications.chat && notifications.chat.length")
-                                |   ({{notifications.chat.length}})
+                            span( ng-show="chat && chat.total")
+                                |   ({{chat.total}})
                         li
                             ul.menu
-                                li( ng-repeat="message in notifications.chat")
+                                li( ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}")
                                     a( ui-sref="conversations" ui-sref-opts="{reload: true}")
                                         .pull-left
-                                            img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
+                                            img.img-circle( ng-src="{{conversation.members[0].avatarImage.url}}" alt="User Image")
                                         h4
-                                            |   {{message.heading}}
+                                            span(ng-repeat="user in conversation.members")
+                                                |   {{user.profile.firstName}}
                                             small
                                                 i.fa.fa-clock-o
-                                                    |   {{message.created | date : 'MM-dd h:mm a' }}
+                                                    |   {{conversation.messages[0].created | date : 'MM-dd h:mm a' }}
                                         p
-                                            |   {{message.teaser}}
+                                            |   {{conversation.messages[0].content}}
                         li.footer
                             a( ui-sref="conversations" ui-sref-opts="{reload: true}" )
                                 |   See All Conversations

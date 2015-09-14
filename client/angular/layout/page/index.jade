@@ -1,5 +1,5 @@
 .content-wrapper
-    div
+    div(ng-show="['authorized','admin'].indexOf(access) !== -1")
         heading
 
     ng-switch( on="access")

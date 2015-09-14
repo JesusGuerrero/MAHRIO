@@ -1,6 +1,6 @@
 angular.module('baseApp.controllers')
-  .controller('SessionController', ['$scope','$stateParams','Session','ValidatorFactory','currentUser',
-    function($scope, $stateParams, Session, validate, currentUser ){
+  .controller('SessionController', ['$scope','$stateParams','Session','ValidatorFactory',
+    function($scope, $stateParams, Session, validate ){
       'use strict';
 
       if( $stateParams.token && !$stateParams.user ){
