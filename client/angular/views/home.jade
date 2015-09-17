@@ -14,18 +14,18 @@
         div( id="registration-form")
             h4.text-center
                 |   Free Domain-Knowledge News
-            form( name="newsletter" id="newsletter")
+            form( name="newsletter" id="newsletter" ng-submit="newsletterSignup()")
                 .form-group
                     div.alert.alert-danger( role="alert" id="error" style="display: none")
                         |   Please Try Again!
                     div.alert.alert-success.text-center( role="alert" id="valid" style="display: none")
                         |   Thank You! We'll reach out soon.
                 .form-group.input-group-lg
-                    input.form-control( type="text" name="name" placeholder="Name")
+                    input.form-control( type="text" name="name" placeholder="Name" ng-model="entry.name")
                 .form-group.input-group-lg
-                    input.form-control( type="email" name="email" placeholder="Email" )
+                    input.form-control( type="email" name="email" placeholder="Email" ng-model="entry.email")
                 .form-group.input-group-lg
-                    select.form-control( name="domain" id="domain")
+                    select.form-control( name="domain" id="domain" ng-model="domain")
                         option( value="" selected disabled)
                             |   Domain
                         option( value="Information Technology")
@@ -37,5 +37,5 @@
                     small
                         |   We are working on extending into other domain
                 .form-group.input-group-lg
-                    button.btn.btn-primary.btn-block.btn-lg
+                    button.btn.btn-primary.btn-block.btn-lg(type="submit")
                         |   Sign Me Up!

@@ -1,9 +1,12 @@
 .box.box-primary.direct-chat.direct-chat-primary(ng-show="currentConversation")
     .box-header.with-border
-        h3.box-title
+        h3.box-title(ng-show="currentConversation.topic")
+            |   {{currentConversation.topic}}
+        h3.box-title(ng-show="!currentConversation.topic")
             |   Direct Chat
             small(ng-show="otherUser")
                 |   {{otherUser}}
+
         .box-tools.pull-right
             //span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")
             //    |   3
@@ -11,7 +14,7 @@
             //    i.fa.fa-minus
             //button.btn.btn-box-tool( data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle")
             //    i.fa.fa-comments
-            button.btn.btn-box-tool( data-dismiss="modal" aria-label="Close")
+            button.btn.btn-box-tool( data-dismiss="modal" aria-label="Close" ng-show="isModal")
                 i.fa.fa-times
     .box-body
         .direct-chat-messages

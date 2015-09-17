@@ -8,9 +8,11 @@ function get( type, query, reply) {
   if (type === 'users') {
     User.
       find({})
-      .lean()
-      .select('email firstName lastName')
-      .limit( 10 )
+      .select('email profile')
+      .populate( {
+        path: 'profile',
+        select: 'firstName lastName'
+      })
       .exec( function (err, users) {
         if (err || !users) {
           return reply(Boom.badRequest(err));

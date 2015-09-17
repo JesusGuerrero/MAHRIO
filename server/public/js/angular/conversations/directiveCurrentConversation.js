@@ -27,27 +27,17 @@ angular.module('baseApp.directives')
               });
               Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
                 .then( function(res){
-                  scope.currentConversation.messages.push( res.message );
-                  //Socket.emit('event:ping', res.message);
-                  //$('.direct-chat-messages', el).animate({
-                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  //}, 500);
+                  scope.currentConversation.messages.unshift( res.message );
+                  delete scope.newMessage;
+                });
+            } else {
+              Chat.sendPublicMessage( scope.currentConversation._id, { content: scope.newMessage } )
+                .then( function(res){
+                  scope.currentConversation.messages.unshift( res.message );
                   delete scope.newMessage;
                 });
             }
           };
-
-
-          //Socket.on('event:pong', function(socket){
-          //  console.log( socket );
-          //  //if( conversations[ socket._conversation.id] ){
-          //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
-          //  //}
-          //  //if( socket._conversation.id === $scope.currentConversation.id ){
-          //  //  $scope.currentConversation.messages.unshift(socket);
-          //  //}
-          //  //console.log('message: ' + socket.content);
-          //});
         }
       };
     }

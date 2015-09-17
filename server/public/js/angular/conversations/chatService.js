@@ -157,10 +157,11 @@ angular.module('baseApp.services')
           message: message
         }).$promise;
       },
-      sendPublicMessage: function( message ){
+      sendPublicMessage: function( conversationId, message ){
         return ChatResource.post( {
           resource: 'messages',
-          id: 'public'
+          id: 'public',
+          conversationId: conversationId
         },{
           message: message
         }).$promise;

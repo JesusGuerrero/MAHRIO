@@ -44,7 +44,7 @@ module.exports = function(config, server) {
             case 'private':
               return userChatMethods.sendPrivateMessage( request, reply);
             default:
-              return userChatMethods.sendMessage( request, reply );
+              return userChatMethods.sendPublicMessage( request, reply );
           }
         },
         auth: 'simple'

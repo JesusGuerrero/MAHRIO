@@ -185,7 +185,10 @@ function getPrivateConversations( request, reply, callback ) {
       path: 'members',
       select: 'email profile avatarImage'
     },{
-      path: 'messages'
+      path: 'messages',
+      options: {
+        sort: { created: -1 }
+      }
     }])
     .exec(function (err, conversations) {
       if (err) {
@@ -239,7 +242,10 @@ function getPrivateConversation( request, reply, callback ) {
       path: 'members',
       select: 'email profile avatarImage'
     },{
-      path: 'messages'
+      path: 'messages',
+      options: {
+        sort: { created: -1 }
+      }
     }])
     .exec( function (err, conversation) {
       if (err) {
@@ -344,35 +350,80 @@ function getPublicConversations( request, reply ){
   Conversation
     .find( {} )
     .and([{
-      members: {$exists: false}
+      members: {$size: 0}
     }])
     .populate([{
-      path: 'messages'
+      path: 'messages',
+      select: 'content created _user',
+      options: {
+        sort: { created: -1 }
+      }
     }])
+    .lean()
     .exec(function (err, conversations) {
       if (err) {
         return reply(Boom.badRequest(err));
       }
-      reply({conversations: conversations});
+
+      async.forEach(conversations ,function(conversation, convCallback) {
+        var users = [];
+        _.each( conversation.messages, function(item){
+          users.push( item._user );
+        });
+
+        User.find( {'_id': {$in: users}})
+          .select('email profile avatarImage')
+          .populate('profile avatarImage')
+          .exec(function(err, members) {
+            if (err) { return reply( Boom.badRequest(err)); }
+
+            conversation.members = _.indexBy( members, '_id');
+            convCallback();
+          });
+      }, function() {
+        reply({conversations: conversations});
+      });
     });
 }
-function getPublicConversation( request, reply ){
+function getPublicConversation( request, reply, callback ){
   if( !request.query.conversationId ) {
     return getPublicConversations( request, reply );
   }
   Conversation
-    .find( {_id: request.query.conversationId } )
+    .findOne( {_id: request.query.conversationId} )
     .and([{
-      members: {$exists: false}
+      members: {$size: 0}
     }])
     .populate([{
-      path: 'messages'
+      path: 'messages',
+      select: 'content created _user',
+      options: {
+        sort: { created: -1 }
+      }
     }])
     .exec(function (err, conversation) {
       if (err) {
         return reply(Boom.badRequest(err));
       }
-      reply({conversations: conversation});
+
+      if( typeof callback === 'function'){
+        callback(conversation);
+      } else {
+        var users = [];
+        _.each( conversation.messages, function(item){
+          users.push( item._user );
+        });
+
+        User.find( {'_id': {$in: users}})
+          .select('email profile avatarImage')
+          .populate('profile avatarImage')
+          .exec(function(err, members) {
+            if (err) { return reply( Boom.badRequest(err)); }
+
+            conversation.members = _.indexBy( members, '_id');
+            reply({conversation: conversation});
+          });
+      }
     });
 }
 // request.query.userId && request.payload.conversation
@@ -399,7 +450,24 @@ function postPublicConversation( request, reply ) {
   });
 }
 function sendPublicMessage( request, reply ){
-  console.log( request, reply );
+  getPublicConversation( request, reply, function(conversation){
+    if( conversation === null ) {
+      return reply( Boom.badRequest('Conversation not found!') );
+    }
+    request.payload.message._user = request.auth.credentials.id;
+    request.payload.message._conversation = conversation.id;
+    Message.create( request.payload.message, function(err, msg){
+      if( err ) { return reply(Boom.badRequest(err)); }
+
+      conversation.messages = _.map(conversation.messages, function(item){ return item.id;});
+      conversation.messages.push( msg.id );
+      conversation.save( function(err){
+        if( err ) { return reply(Boom.badRequest(err)); }
+
+        reply( {message: msg, err: err} );
+      });
+    });
+  });
 }
 module.exports = {
   setConfig: function( cfg ) {

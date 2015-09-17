@@ -10,6 +10,7 @@
     <tr ng-repeat="elem in newsletterList track by $index">
       <td>
         <button ng-click="removeEntry(elem._id, $index)" class="btn btn-danger">  Remove</button>
+        <button ng-click="alert('email sent')" class="btn btn-success">  E-mail</button>
       </td>
       <td>{{elem.name}}</td>
       <td>{{elem.email}}</td>

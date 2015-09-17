@@ -109211,9 +109211,6 @@ angular.module('baseApp.controllers', [])
     function ($rootScope, $state, $http, $location, LocaleFactory, ValidatorFactory, currentUser) {
       'use strict';
 
-      $rootScope.Utils = {
-        keys : Object.keys
-      };
       $rootScope.locale = LocaleFactory.getEnglish();
       $rootScope.validate = ValidatorFactory;
 
@@ -109955,10 +109952,11 @@ angular.module('baseApp.services')
           message: message
         }).$promise;
       },
-      sendPublicMessage: function( message ){
+      sendPublicMessage: function( conversationId, message ){
         return ChatResource.post( {
           resource: 'messages',
-          id: 'public'
+          id: 'public',
+          conversationId: conversationId
         },{
           message: message
         }).$promise;
@@ -109966,78 +109964,25 @@ angular.module('baseApp.services')
     };
 }]);
 angular.module('baseApp.controllers')
-  .controller('ConversationsController', ['$scope', '$state','Socket',
+  .controller('ConversationsController', ['$scope', '$state',
     function ($scope, $state) {
       'use strict';
 
       $scope.tab = [false, false];
       switch( $state.current.name ) {
         case 'conversations.public':
+          $scope.type = 'public';
           $scope.tab[0] = true;
           break;
         case 'conversations.private':
+          $scope.type = 'private';
           $scope.tab[1] = true;
           break;
       }
-      //
-      //var conversations;
-      //$scope.conversationList = [];
-      //$scope.currentConversation = {};
-      //$scope.newMessage = '';
-      //
-      //Chat.getConversations()
-      //  .then( function( res ) {
-      //    var keys = Object.keys( res.conversations );
-      //    if( keys.length ){
-      //      conversations = angular.copy( res.conversations );
-      //      conversations = $scope
-      //        ._( conversations )
-      //        .groupBy( function(item){ return item._id; });
-      //
-      //      $scope.conversationList = angular.copy( res.conversations );
-      //
-      //      $scope.currentConversation = res.conversations[0];
-      //      $scope.currentConversation.currentMembers = $scope
-      //        ._( $scope.currentConversation.members )
-      //        .reduce( function(member, val) {
-      //          return member[0].email  + ', ' + val[0].email;
-      //        });
-      //
-      //      $scope.currentUser = res.currentUser;
-      //      $scope
-      //        ._( $scope.conversationList )
-      //        .map( function(item ){
-      //          var members = $scope
-      //            ._( item.members )
-      //            .reduce( function(member, val) {
-      //              return member[0].email  + ', ' + val[0].email;
-      //            });
-      //          console.log( members );
-      //          item.lastMessage = item.messages.length ? item.messages[0].content : '';
-      //          item.members = members;
-      //          delete item.messages;
-      //          return item;
-      //        });
-      //    }
-      //  });
-      //
-      //$scope.sendMessage = function(){
-      //  Chat.sendMessage( $scope.currentConversation._id, { message: $scope.newMessage } )
-      //    .then( function(res){
-      //      Socket.emit('event:ping', res.message);
-      //      $scope.currentConversation.messages.unshift(res.message);
-      //      $scope.newMessage = '';
-      //    });
-      //};
-      //
-      //$scope.loadConversation = function(id){
-      //  $scope.currentConversation = conversations[ id ][0];
-      //  $scope.currentConversation.currentMembers = $scope
-      //    ._( $scope.currentConversation.members )
-      //    .reduce( function(member, val) {
-      //      return member[0].email  + ', ' + val[0].email;
-      //    });
-      //};
+
+      $scope.composeConversation = function(){
+        $('#modalComposeConversation').modal().toggle();
+      };
     }]);
 angular.module('baseApp.directives')
   .directive('conversations', ['$rootScope',
@@ -110051,6 +109996,74 @@ angular.module('baseApp.directives')
         },
         templateUrl: '/assets/html/conversations/conversations',
         link: function(){
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('modalCreateConversation', ['Chat','currentUser','$http','_',
+    function(Chat, currentUser, $http, _){
+      'use strict';
+      return {
+        restrict: 'E',
+        templateUrl: '/assets/html/conversations/form',
+        scope: {
+          type: '='
+        },
+        link: function(scope){
+          scope.conversation = {
+            members: [],
+            message: {
+              content: ''
+            }
+          };
+          var usersCache = [];
+          scope.selected = function($item) {
+            var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+              selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+
+            scope.conversation.members.push({
+              name: selection.profile.firstName + ' ' + selection.profile.lastName,
+              email: selection.email,
+              _id: selection._id
+            });
+            scope.$broadcast('clearInput');
+          };
+          scope.removeMember = function( i ) {
+            scope.conversation.members.splice( i, 1);
+          };
+          scope.getAutoCompleteUserEmails = function(val) {
+            return $http.get('/api/autocomplete/users', {
+              params: {
+                q: val
+              }
+            }).then(function(response){
+              usersCache = response.data.users;
+              var current = currentUser.get(),
+                filteredUserList =  _
+                  .filter( response.data.users, function(user){
+                    return user.email !== current.email && !_.find(scope.conversation.members, function(i){return i.email ===user.email;});
+                  });
+              return filteredUserList.map(function(user){
+                return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + '&lt;'+user.email+'&gt;';
+              });
+            });
+          };
+          scope.sendMessage = function(){
+            switch( scope.type ) {
+              case 'public':
+                Chat.startPublicConversation( scope.conversation )
+                  .then( function(){
+
+                  });
+                break;
+              default:
+                Chat.startPrivateConversation( scope.conversation )
+                  .then( function(){
+
+                  });
+            }
+          };
         }
       };
     }
@@ -110084,27 +110097,17 @@ angular.module('baseApp.directives')
               });
               Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
                 .then( function(res){
-                  scope.currentConversation.messages.push( res.message );
-                  //Socket.emit('event:ping', res.message);
-                  //$('.direct-chat-messages', el).animate({
-                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  //}, 500);
+                  scope.currentConversation.messages.unshift( res.message );
+                  delete scope.newMessage;
+                });
+            } else {
+              Chat.sendPublicMessage( scope.currentConversation._id, { content: scope.newMessage } )
+                .then( function(res){
+                  scope.currentConversation.messages.unshift( res.message );
                   delete scope.newMessage;
                 });
             }
           };
-
-
-          //Socket.on('event:pong', function(socket){
-          //  console.log( socket );
-          //  //if( conversations[ socket._conversation.id] ){
-          //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
-          //  //}
-          //  //if( socket._conversation.id === $scope.currentConversation.id ){
-          //  //  $scope.currentConversation.messages.unshift(socket);
-          //  //}
-          //  //console.log('message: ' + socket.content);
-          //});
         }
       };
     }
@@ -110124,6 +110127,7 @@ angular.module('baseApp.directives')
           scope.rightMessage = 'rightMessage';
           scope.newMessage = '';
           scope.currentUser = currentUser.get();
+          scope.isModal = true;
           var existingConversation = false;
           scope.sendMessage = function(){
             if( !existingConversation ) {
@@ -110136,10 +110140,7 @@ angular.module('baseApp.directives')
             } else {
               Chat.sendPrivateMessage( scope.toUser._id, { content: scope.newMessage } )
                 .then( function(res){
-                  scope.currentConversation.messages.push( res.message );
-                  //$('.direct-chat-messages', el).animate({
-                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  //}, 500);
+                  scope.currentConversation.messages.unshift( res.message );
                   delete scope.newMessage;
                 });
             }
@@ -110170,8 +110171,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('publicConversations', ['Chat',
-    function(Chat){
+  .directive('publicConversations', ['Chat','_',
+    function(Chat, _){
       'use strict';
       return {
         restrict: 'E',
@@ -110183,8 +110184,20 @@ angular.module('baseApp.directives')
         link: function(scope){
           if( scope.active ){
             Chat.getAllPublicConversations().then(function (res) {
+              _.map( res.conversations, function(item){
+                var lastMessage = item.messages.slice(-1);
+                item.lastMessage = lastMessage[0];
+                return item;
+              });
               scope.conversations = res.conversations;
+              console.log( scope.conversations );
+              scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
+              scope.isPrivate = false;
             });
+            scope.load = function(id){
+              scope.conversation = _.findWhere( scope.conversations, {_id: id});
+              scope.isPrivate = false;
+            };
           }
         }
       };
@@ -110202,21 +110215,23 @@ angular.module('baseApp.directives')
         },
         link: function(scope){
           if( scope.active ) {
-          }
-          Chat.getAllPrivateConversations().then(function (res) {
-            _.map( res.conversations, function(item){
-              var lastMessage = item.messages.slice(-1);
-              item.lastMessage = lastMessage[0];
-              return item;
+
+            Chat.getAllPrivateConversations().then(function (res) {
+              _.map(res.conversations, function (item) {
+                var lastMessage = item.messages.slice(-1);
+                item.lastMessage = lastMessage[0];
+                return item;
+              });
+              scope.conversations = res.conversations;
+              console.log( scope.conversations );
+              scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
+              scope.isPrivate = true;
             });
-            scope.conversations = res.conversations;
-            scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
-            scope.isPrivate = true;
-          });
-          scope.load = function(id){
-            scope.conversation = _.findWhere( scope.conversations, {_id: id});
-            scope.isPrivate = true;
-          };
+            scope.load = function (id) {
+              scope.conversation = _.findWhere(scope.conversations, {_id: id});
+              scope.isPrivate = true;
+            };
+          }
         }
       };
     }
@@ -110725,7 +110740,7 @@ angular.module('baseApp.directives')
             Chat.getAllPrivateConversations()
               .then( function(res){
                 var groupById = _.groupBy( res.conversations, function(conv){ return conv._id; });
-                _.each( Object.keys( groupById ), function(key){ groupById[key] = groupById[key][0]; })
+                _.each( Object.keys( groupById ), function(key){ groupById[key] = groupById[key][0]; });
                 var allConversations = {};
                 _.each( Object.keys( groupById ), function( key ) {
                   delete groupById[key].members[newUser._id];
@@ -110739,11 +110754,11 @@ angular.module('baseApp.directives')
                     if( typeof scope.notifications.chat[key] === 'undefined' ) {
                       scope.notifications.chat[key] = groupById[key];
                       delete scope.notifications.chat[key].members[newUser._id ];
-                      var users = [];
+                      var users2 = [];
                       _.each( Object.keys( scope.notifications.chat[key].members ), function(k){
                         users.push( scope.notifications.chat[key].members[k] );
                       });
-                      scope.notifications.chat[key].members = users;
+                      scope.notifications.chat[key].members = users2;
                       scope.notifications.chat[key].messages.reverse();
                     } else {
                       scope.notifications.chat[key].isNew = true;
@@ -110758,7 +110773,6 @@ angular.module('baseApp.directives')
                   };
                 }
                 scope.notifications.chat = _.sortBy( scope.notifications.chat, function(entry){ return new Date(entry.messages[0].created).getTime()*-1; });
-                console.log( scope.notifications );
               });
           }
           scope.$watch( currentUser.get, function(newUser){
@@ -112001,6 +112015,26 @@ angular.module('baseApp.services').factory('Media', [ 'MediaResource', function(
   };
 }]);
 angular.module('baseApp.services')
+  .factory('NewsletterResource', [ '$resource', function($resource) {
+    'use strict';
+    return $resource('/api/contact/:action',
+      { action: '@action' },
+      {
+        add: { method: 'POST'},
+        read:   { method: 'GET' },
+        remove: { method: 'DELETE' }
+      });
+  }])
+  .factory('Newsletter', [ 'NewsletterResource', function( NewsletterResource ) {
+    'use strict';
+    return {
+      add: function( entry ) { return NewsletterResource.add( {action: 'newsletter'}, entry).$promise; },
+      get: function( ) { return NewsletterResource.read( ).$promise; },
+      remove: function( id ){ return NewsletterResource.remove( { id: id } ).$promise; }
+    };
+  }]);
+
+angular.module('baseApp.services')
   .factory('ValidatorFactory', [ function() {
     'use strict';
 
@@ -112569,8 +112603,8 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
 }]);
 
 angular.module('baseApp.directives')
-  .directive('rootPageView', ['$rootScope',
-    function($rootScope){
+  .directive('rootPageView', ['$rootScope','Newsletter',
+    function($rootScope, Newsletter){
       'use strict';
       return {
         restrict: 'A',
@@ -112583,6 +112617,15 @@ angular.module('baseApp.directives')
             case 'admin':
               return '/assets/html/views/dashboard';
           }
+        },
+        link: function( scope ){
+          scope.entry = {};
+          scope.newsletterSignup = function(){
+            Newsletter.add( scope.entry).then( function(){
+              alert('thank you for sign up');
+              scope.entry = {};
+            });
+          };
         }
       };
     }
