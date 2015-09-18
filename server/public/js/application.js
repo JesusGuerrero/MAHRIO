@@ -108898,8 +108898,12 @@ angular.module('baseApp', [
 ])
   .constant('_', window._);
 
-angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $locationProvider, ChartJsProvider) {
   'use strict';
+
+  ChartJsProvider.setOptions({ responsive: true });
+  ChartJsProvider.setOptions('Line', { responsive: true });
+  ChartJsProvider.setOptions('Doughnut', { responsive: true });
 
   $locationProvider.html5Mode(false);
 /*      .html5Mode({
@@ -109824,7 +109828,7 @@ angular.module('baseApp.services')
     }
   );
 }])
-.factory('Chat', [ 'ChatResource', function( ChatResource ) {
+.factory('Chat', [ 'ChatResource', '_', function( ChatResource, _ ) {
     'use strict';
 
     return {
@@ -109941,6 +109945,9 @@ angular.module('baseApp.services')
         }).$promise;
       },
       startPrivateConversation: function( userId, conversation ) {
+        if( conversation.members && conversation.members.length ) {
+          conversation.members = Object.keys(_.indexBy( conversation.members, '_id'));
+        }
         return ChatResource.post( {
           resource: 'conversations',
           id: 'private',
@@ -109957,11 +109964,11 @@ angular.module('baseApp.services')
           conversation: conversation
         }).$promise;
       },
-      sendPrivateMessage: function( userId, message ) {
+      sendPrivateMessage: function( conversationId, message ) {
         return ChatResource.post( {
           resource: 'messages',
           id: 'private',
-          userId: userId
+          conversationId: conversationId
         },{
           message: message
         }).$promise;
@@ -110083,7 +110090,7 @@ angular.module('baseApp.directives')
                   });
                 break;
               default:
-                Chat.startPrivateConversation( scope.conversation )
+                Chat.startPrivateConversation( null, scope.conversation )
                   .then( function(){
                     $state.reload();
                   });
@@ -110114,39 +110121,13 @@ angular.module('baseApp.directives')
               scope.currentConversation = scope.current;
               Socket.get.on('event:conversation:'+scope.currentConversation._id, function(){
                 $state.reload();
-                //var processResponse = function(res) {
-                //  var messages = scope.currentConversation.messages,
-                //    hasMissingUser = false;
-                //  angular.forEach( res.messages, function(item){
-                //    if( typeof scope.currentConversation.members[ item._user ] === 'undefined') {
-                //      hasMissingUser = true;
-                //    }
-                //    messages.unshift( item );
-                //  });
-                //  if( hasMissingUser ) {
-                //    $state.reload();
-                //  } else {
-                //    scope.currentConversation.messages = messages;
-                //  }
-                //};
-                //if( scope.private ) {
-                //  Chat.getPrivateMessagesIn( scope.currentConversation._id, scope.currentConversation.messages[0].created )
-                //    .then( processResponse );
-                //} else {
-                //  Chat.getPublicMessagesIn( scope.currentConversation._id, scope.currentConversation.messages[0].created )
-                //    .then( processResponse );
-                //}
-
               });
             }
           });
 
           scope.sendMessage = function(){
             if( scope.private ) {
-              var otherUser = _.find( Object.keys(scope.currentConversation.members), function(item){
-                return item !== scope.currentUser._id;
-              });
-              Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
                 .then( function(){
                   delete scope.newMessage;
                 });
@@ -110190,7 +110171,7 @@ angular.module('baseApp.directives')
                   delete scope.newMessage;
                 });
             } else {
-              Chat.sendPrivateMessage( scope.toUser._id, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
                 .then( function(res){
                   scope.currentConversation.messages.unshift( res.message );
                   delete scope.newMessage;
@@ -110238,9 +110219,10 @@ angular.module('baseApp.directives')
         link: function(scope){
           if( scope.active ){
             Chat.getAllPublicConversations().then(function (res) {
-              _.map( res.conversations, function(item){
+              _.map(res.conversations, function (item) {
                 var lastMessage = item.messages[0];
                 item.lastMessage = lastMessage;
+                item.totalUsers = Object.keys( item.members).length;
                 return item;
               });
               scope.conversations = res.conversations;
@@ -110268,11 +110250,11 @@ angular.module('baseApp.directives')
         },
         link: function(scope){
           if( scope.active ) {
-
             Chat.getAllPrivateConversations().then(function (res) {
               _.map(res.conversations, function (item) {
                 var lastMessage = item.messages[0];
                 item.lastMessage = lastMessage;
+                item.totalUsers = Object.keys( item.members).length;
                 return item;
               });
               scope.conversations = res.conversations;
@@ -110288,8 +110270,8 @@ angular.module('baseApp.directives')
       };
     }
   ])
-  .directive('allConversations', ['Chat','_','$state',
-    function(Chat, _, $state){
+  .directive('allConversations', ['Chat','_','$state','currentUser',
+    function(Chat, _, $state, currentUser ){
       'use strict';
       return {
         restrict: 'E',
@@ -110301,27 +110283,32 @@ angular.module('baseApp.directives')
         link: function(scope){
           if( scope.active ) {
             var current = $state.params.id;
-            console.log( $state );
             Chat.getAllConversations().then(function (res) {
               if( res.conversations && res.conversations.length ) {
                 _.map(res.conversations, function (item) {
                   var lastMessage = item.messages[0];
                   item.lastMessage = lastMessage;
+                  item.totalUsers = Object.keys( item.members).length;
                   return item;
                 });
                 scope.conversations = _.indexBy( res.conversations, '_id');
-                console.log( scope.conversations );
                 if( typeof current !== 'undefined'){
-                  scope.conversation = scope.conversations[ current ];
-                  scope.isPrivate = scope.conversation.isPrivate;
+                  if( scope.conversations.hasOwnProperty( current ) ) {
+                    scope.conversation = scope.conversations[ current ];
+                    scope.isPrivate = scope.conversation.isPrivate;
+                  } else {
+                    Chat.getConversation( current )
+                      .then( function(res){
+                        console.log( currentUser );
+                        scope.conversation = res.conversation;
+                        scope.isPrivate = scope.conversation.isPrivate;
+                      });
+                  }
                 } else {
                   if( res.conversations.length ) {
                     $state.go( 'conversations.view', {id: res.conversations[0]._id}, {reload: true});
                   }
                 }
-                //scope.conversations = res.conversations;
-                //scope.conversation = null; //scope.conversations.length ? scope.conversations[0] : null;
-                //scope.isPrivate = scope.conversation.isPrivate;
               }
             });
             scope.load = function (id) {
@@ -110815,8 +110802,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat',
-    function( $rootScope, currentUser, Socket, Notification, _, Chat ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout',
+    function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout ){
       'use strict';
       return {
         restrict: 'A',
@@ -110906,6 +110893,11 @@ angular.module('baseApp.directives')
             }
             scope.toggleSidebar = function(){
               $rootScope.toggleSidebarCollapsed();
+              if( newUser.access !== 'any' && $state.current.url === '/') {
+                $timeout( function(){
+                  $state.reload();
+                }, 400);
+              }
             };
           });
 
