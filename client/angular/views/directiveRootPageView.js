@@ -11,7 +11,7 @@ angular.module('baseApp.directives')
             case 'authorized':
               return '/assets/html/dashboard/index';
             case 'admin':
-              return '/assets/html/views/dashboard';
+              return '/assets/html/dashboard/index';
           }
         },
         link: function( scope ){
