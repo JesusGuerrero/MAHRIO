@@ -19,8 +19,12 @@ angular.module('baseApp', [
 ])
   .constant('_', window._);
 
-angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $locationProvider, ChartJsProvider) {
   'use strict';
+
+  ChartJsProvider.setOptions({ responsive: true });
+  ChartJsProvider.setOptions('Line', { responsive: true });
+  ChartJsProvider.setOptions('Doughnut', { responsive: true });
 
   $locationProvider.html5Mode(false);
 /*      .html5Mode({

@@ -24,7 +24,7 @@ angular.module('baseApp.services')
     }
   );
 }])
-.factory('Chat', [ 'ChatResource', function( ChatResource ) {
+.factory('Chat', [ 'ChatResource', '_', function( ChatResource, _ ) {
     'use strict';
 
     return {
@@ -141,6 +141,9 @@ angular.module('baseApp.services')
         }).$promise;
       },
       startPrivateConversation: function( userId, conversation ) {
+        if( conversation.members && conversation.members.length ) {
+          conversation.members = Object.keys(_.indexBy( conversation.members, '_id'));
+        }
         return ChatResource.post( {
           resource: 'conversations',
           id: 'private',
@@ -157,11 +160,11 @@ angular.module('baseApp.services')
           conversation: conversation
         }).$promise;
       },
-      sendPrivateMessage: function( userId, message ) {
+      sendPrivateMessage: function( conversationId, message ) {
         return ChatResource.post( {
           resource: 'messages',
           id: 'private',
-          userId: userId
+          conversationId: conversationId
         },{
           message: message
         }).$promise;

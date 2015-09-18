@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat',
-    function( $rootScope, currentUser, Socket, Notification, _, Chat ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout',
+    function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout ){
       'use strict';
       return {
         restrict: 'A',
@@ -90,6 +90,11 @@ angular.module('baseApp.directives')
             }
             scope.toggleSidebar = function(){
               $rootScope.toggleSidebarCollapsed();
+              if( newUser.access !== 'any' && $state.current.url === '/') {
+                $timeout( function(){
+                  $state.reload();
+                }, 400);
+              }
             };
           });
 

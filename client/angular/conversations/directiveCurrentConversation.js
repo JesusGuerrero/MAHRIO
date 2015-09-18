@@ -19,39 +19,13 @@ angular.module('baseApp.directives')
               scope.currentConversation = scope.current;
               Socket.get.on('event:conversation:'+scope.currentConversation._id, function(){
                 $state.reload();
-                //var processResponse = function(res) {
-                //  var messages = scope.currentConversation.messages,
-                //    hasMissingUser = false;
-                //  angular.forEach( res.messages, function(item){
-                //    if( typeof scope.currentConversation.members[ item._user ] === 'undefined') {
-                //      hasMissingUser = true;
-                //    }
-                //    messages.unshift( item );
-                //  });
-                //  if( hasMissingUser ) {
-                //    $state.reload();
-                //  } else {
-                //    scope.currentConversation.messages = messages;
-                //  }
-                //};
-                //if( scope.private ) {
-                //  Chat.getPrivateMessagesIn( scope.currentConversation._id, scope.currentConversation.messages[0].created )
-                //    .then( processResponse );
-                //} else {
-                //  Chat.getPublicMessagesIn( scope.currentConversation._id, scope.currentConversation.messages[0].created )
-                //    .then( processResponse );
-                //}
-
               });
             }
           });
 
           scope.sendMessage = function(){
             if( scope.private ) {
-              var otherUser = _.find( Object.keys(scope.currentConversation.members), function(item){
-                return item !== scope.currentUser._id;
-              });
-              Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
                 .then( function(){
                   delete scope.newMessage;
                 });

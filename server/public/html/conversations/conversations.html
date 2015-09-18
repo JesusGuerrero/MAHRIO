@@ -1,6 +1,6 @@
 
-<div class="list-group"><a href="javascript:void(0)" ng-class="{active: conversation._id == current}" ui-sref="conversations.view({id: conversation._id})" ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)" class="list-group-item">
-    <h5 class="list-group-item-heading"><span ng-repeat="member in conversation.members track by $index" style="margin-right: 5px;">
+<div class="list-group"><a href="javascript:void(0)" ng-class="{active: conversation._id == current}" ui-sref="conversations.view({id: conversation._id})" ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)" class="list-group-item"><i ng-show="conversation.totalUsers &gt; 2" class="fa fa-users pull-right"></i><i ng-show="conversation.isPrivate" class="fa fa-lock pull-right"></i>
+    <h5 class="list-group-item-heading"><span ng-repeat="member in conversation.members track by $index">
           {{member.profile.firstName}}
           {{member.profile.lastName}};</span></h5>
-    <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap" class="list-group-item-text"><small><b>  {{conversation.members[ conversation.lastMessage._user ].profile.firstName}}:</b>  {{conversation.lastMessage.content | limitTo : 40}}</small></p></a></div>
+    <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="list-group-item-text"><small><b>  {{conversation.members[ conversation.lastMessage._user ].profile.firstName}}:</b>  {{conversation.lastMessage.content | limitTo : 40}}</small></p></a></div>

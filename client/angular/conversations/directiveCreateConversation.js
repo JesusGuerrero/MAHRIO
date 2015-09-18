@@ -57,7 +57,7 @@ angular.module('baseApp.directives')
                   });
                 break;
               default:
-                Chat.startPrivateConversation( scope.conversation )
+                Chat.startPrivateConversation( null, scope.conversation )
                   .then( function(){
                     $state.reload();
                   });
