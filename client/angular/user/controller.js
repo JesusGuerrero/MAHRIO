@@ -31,7 +31,8 @@ angular.module('baseApp.controllers')
                 $scope.setAuthorizationHeader( res.headers('Authorization') );
                 currentUser.login(res.user, true);
               }, function( err ){
-                $scope.validationErrors = err.message;
+                delete $scope.user.email;
+                $scope.validationErrors = [err.data.message];
               });
           };
           break;
