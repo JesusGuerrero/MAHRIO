@@ -109029,6 +109029,11 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/private',
       title: 'Private Conversations'
     })
+    .state('conversations.view', {
+      url: '/:id',
+      controller: 'ConversationsController',
+      title: 'Conversation'
+    })
     .state('login', {
       url: '/login?linkedIn',
       templateUrl: '/assets/html/session/form-login',
@@ -109987,6 +109992,11 @@ angular.module('baseApp.controllers')
           $scope.private = true;
           $scope.tab[2] = true;
           break;
+        case 'conversations.view':
+          $scope.private = true;
+          $scope.type = 'all';
+          $scope.tab[0] = true;
+          break;
         default:
           $scope.private = true;
           $scope.type = 'all';
@@ -110278,8 +110288,8 @@ angular.module('baseApp.directives')
       };
     }
   ])
-  .directive('allConversations', ['Chat','_',
-    function(Chat, _){
+  .directive('allConversations', ['Chat','_','$state',
+    function(Chat, _, $state){
       'use strict';
       return {
         restrict: 'E',
@@ -110290,7 +110300,8 @@ angular.module('baseApp.directives')
         },
         link: function(scope){
           if( scope.active ) {
-
+            var current = $state.params.id;
+            console.log( $state );
             Chat.getAllConversations().then(function (res) {
               if( res.conversations && res.conversations.length ) {
                 _.map(res.conversations, function (item) {
@@ -110298,9 +110309,19 @@ angular.module('baseApp.directives')
                   item.lastMessage = lastMessage;
                   return item;
                 });
-                scope.conversations = res.conversations;
-                scope.conversation = scope.conversations.length ? scope.conversations[0] : null;
-                scope.isPrivate = scope.conversation.isPrivate;
+                scope.conversations = _.indexBy( res.conversations, '_id');
+                console.log( scope.conversations );
+                if( typeof current !== 'undefined'){
+                  scope.conversation = scope.conversations[ current ];
+                  scope.isPrivate = scope.conversation.isPrivate;
+                } else {
+                  if( res.conversations.length ) {
+                    $state.go( 'conversations.view', {id: res.conversations[0]._id}, {reload: true});
+                  }
+                }
+                //scope.conversations = res.conversations;
+                //scope.conversation = null; //scope.conversations.length ? scope.conversations[0] : null;
+                //scope.isPrivate = scope.conversation.isPrivate;
               }
             });
             scope.load = function (id) {

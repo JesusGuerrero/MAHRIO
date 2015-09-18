@@ -150,6 +150,11 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/private',
       title: 'Private Conversations'
     })
+    .state('conversations.view', {
+      url: '/:id',
+      controller: 'ConversationsController',
+      title: 'Conversation'
+    })
     .state('login', {
       url: '/login?linkedIn',
       templateUrl: '/assets/html/session/form-login',

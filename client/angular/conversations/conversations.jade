@@ -1,6 +1,6 @@
 .list-group
-    a.list-group-item( href="javascript:void(0)" ng-class="{active: conversation._id == current}" ui-sref="conversations.view({_id: conversation._id})"
-        ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)" ui-sref-opts="{reload: true}")
+    a.list-group-item( href="javascript:void(0)" ng-class="{active: conversation._id == current}" ui-sref="conversations.view({id: conversation._id})"
+        ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)" )
         h5.list-group-item-heading
             span( ng-repeat="member in conversation.members track by $index" style="margin-right: 5px;")
                 |   {{member.profile.firstName}}

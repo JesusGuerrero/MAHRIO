@@ -13,6 +13,11 @@ angular.module('baseApp.controllers')
           $scope.private = true;
           $scope.tab[2] = true;
           break;
+        case 'conversations.view':
+          $scope.private = true;
+          $scope.type = 'all';
+          $scope.tab[0] = true;
+          break;
         default:
           $scope.private = true;
           $scope.type = 'all';
