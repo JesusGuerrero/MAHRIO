@@ -18,7 +18,7 @@ angular.module('baseApp.directives')
           scope.entry = {};
           scope.newsletterSignup = function(){
             Newsletter.add( scope.entry).then( function(){
-              alert('thank you for sign up');
+              //alert('thank you for sign up');
               scope.entry = {};
             });
           };

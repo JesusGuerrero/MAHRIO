@@ -1,9 +1,9 @@
 .box.box-primary
    .box-header.with-border
       h3.box-title
-         |   Start New {{type}} Conversation
+         |   Start New {{private ? 'Private' : 'Public'}} Conversation
       .box-tools.pull-right
-         button.btn.btn-box-tool( data-dismiss="modal" aria-label="Close")
+         button.btn.btn-box-tool( id="closeBox" data-dismiss="modal" aria-label="Close")
             i.fa.fa-times
    .box-body
       form(novalidate)
@@ -11,7 +11,11 @@
             model="conversation.topic"
             label="Topic (optional)"
             required="true")
-         .form-group(ng-show="conversation.members.length")
+         .form-group
+            label
+               |  Private
+            input( type="checkbox" ng-model="private" i-check)
+         .form-group(ng-show="conversation.members.length && private")
             label
                | Members
             div
@@ -22,7 +26,7 @@
                      |  {{member.email}}
 
                   i.fa.fa-close(style="padding: 0 5px; cursor: pointer" ng-click="removeMember($index)")
-         div(ng-if="type=='private'")
+         div(ng-if="private")
             auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getAutoCompleteUserEmails" selected="selected")
          .input-group
             input.form-control( type="text" placeholder="Type Message ..." ng-model="conversation.message.content")

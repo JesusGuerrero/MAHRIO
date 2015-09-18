@@ -1,10 +1,12 @@
 .container-fluid
     modal-window-view( modal-id="modalComposeConversation" title="Compose New Conversation" type="conversation")
-        modal-create-conversation( type="type" )
+        modal-create-conversation( private="private" )
     button.btn.btn-success(style="float:right" ng-click="composeConversation()")
         |   Create Conversation
     tabset(id="conversation-tabs")
-        tab( heading="Public Channels" ui-sref="conversations.public" ui-sref-opts="{reload: true}"  active="tab[0]" select="tabSelect(0)")
-            public-conversations(active="tab[0]")
-        tab( heading="Private Channels" ui-sref="conversations.private" ui-sref-opts="{reload: true}" active="tab[1]" select="tabSelect(1)")
-            private-conversations(active="tab[1]")
+        tab( heading="All Channels" ui-sref="conversations" ui-sref-opts="{reload: true}"  active="tab[0]" select="tabSelect(0)")
+            all-conversations(active="tab[0]")
+        tab( heading="Public Channels" ui-sref="conversations.public" ui-sref-opts="{reload: true}"  active="tab[1]" select="tabSelect(1)")
+            public-conversations(active="tab[1]")
+        tab( heading="Private Channels" ui-sref="conversations.private" ui-sref-opts="{reload: true}" active="tab[2]" select="tabSelect(2)")
+            private-conversations(active="tab[2]")

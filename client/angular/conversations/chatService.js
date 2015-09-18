@@ -78,9 +78,13 @@ angular.module('baseApp.services')
         // Server: get one where I am initiator, receiver, or member
         return ChatResource.get({resource: 'conversations', id: conversationId}).$promise;
       },
-      getMessagesIn: function( conversationId ) {
+      getPublicMessagesIn: function( conversationId, time ) {
         // Server: get (list) all (last 10) messages where I am a part of the conversation
-        return ChatResource.get({resource:'messages', id: conversationId}).$promise;
+        return ChatResource.get({resource:'messages', id: conversationId, time: time}).$promise;
+      },
+      getPrivateMessagesIn: function( conversationId, time ) {
+        // Server: get (list) all (last 10) messages where I am a part of the conversation
+        return ChatResource.get({resource:'messages', id: conversationId, time: time, private: true}).$promise;
       },
       getMemberships: function() {
         // Server: get (list) all (last 10) memberships that I belong to.
@@ -104,6 +108,11 @@ angular.module('baseApp.services')
       },
       startConversation: function( userId, message ){
         return ChatResource.post({resource: 'conversations', id: userId}, message).$promise;
+      },
+      getAllConversations: function(){
+        return ChatResource.get({
+          resource: 'conversations'
+        }).$promise;
       },
       getAllPublicConversations: function(){
         return ChatResource.get({

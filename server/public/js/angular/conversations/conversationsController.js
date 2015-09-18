@@ -6,13 +6,17 @@ angular.module('baseApp.controllers')
       $scope.tab = [false, false];
       switch( $state.current.name ) {
         case 'conversations.public':
-          $scope.type = 'public';
-          $scope.tab[0] = true;
-          break;
-        case 'conversations.private':
-          $scope.type = 'private';
+          $scope.private = false;
           $scope.tab[1] = true;
           break;
+        case 'conversations.private':
+          $scope.private = true;
+          $scope.tab[2] = true;
+          break;
+        default:
+          $scope.private = true;
+          $scope.type = 'all';
+          $scope.tab[0] = true;
       }
 
       $scope.composeConversation = function(){

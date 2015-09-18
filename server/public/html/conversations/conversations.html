@@ -1,5 +1,5 @@
 
-<div class="list-group"><a href="javascript:void(0)" ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)" class="list-group-item">
+<div class="list-group"><a href="javascript:void(0)" ng-class="{active: conversation._id == current}" ui-sref="conversations.view({_id: conversation._id})" ng-repeat="conversation in conversations track by $index" ng-click="load(conversation._id)" ui-sref-opts="{reload: true}" class="list-group-item">
     <h5 class="list-group-item-heading"><span ng-repeat="member in conversation.members track by $index" style="margin-right: 5px;">
           {{member.profile.firstName}}
           {{member.profile.lastName}};</span></h5>

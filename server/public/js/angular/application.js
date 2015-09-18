@@ -140,7 +140,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/conversations',
       templateUrl: '/assets/html/conversations/index',
       controller: 'ConversationsController',
-      title: 'Conversations'
+      title: 'All Conversations'
     })
     .state('conversations.public', {
       url: '/public',

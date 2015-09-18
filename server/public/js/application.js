@@ -109019,7 +109019,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/conversations',
       templateUrl: '/assets/html/conversations/index',
       controller: 'ConversationsController',
-      title: 'Conversations'
+      title: 'All Conversations'
     })
     .state('conversations.public', {
       url: '/public',
@@ -109873,9 +109873,13 @@ angular.module('baseApp.services')
         // Server: get one where I am initiator, receiver, or member
         return ChatResource.get({resource: 'conversations', id: conversationId}).$promise;
       },
-      getMessagesIn: function( conversationId ) {
+      getPublicMessagesIn: function( conversationId, time ) {
         // Server: get (list) all (last 10) messages where I am a part of the conversation
-        return ChatResource.get({resource:'messages', id: conversationId}).$promise;
+        return ChatResource.get({resource:'messages', id: conversationId, time: time}).$promise;
+      },
+      getPrivateMessagesIn: function( conversationId, time ) {
+        // Server: get (list) all (last 10) messages where I am a part of the conversation
+        return ChatResource.get({resource:'messages', id: conversationId, time: time, private: true}).$promise;
       },
       getMemberships: function() {
         // Server: get (list) all (last 10) memberships that I belong to.
@@ -109899,6 +109903,11 @@ angular.module('baseApp.services')
       },
       startConversation: function( userId, message ){
         return ChatResource.post({resource: 'conversations', id: userId}, message).$promise;
+      },
+      getAllConversations: function(){
+        return ChatResource.get({
+          resource: 'conversations'
+        }).$promise;
       },
       getAllPublicConversations: function(){
         return ChatResource.get({
@@ -109971,13 +109980,17 @@ angular.module('baseApp.controllers')
       $scope.tab = [false, false];
       switch( $state.current.name ) {
         case 'conversations.public':
-          $scope.type = 'public';
-          $scope.tab[0] = true;
-          break;
-        case 'conversations.private':
-          $scope.type = 'private';
+          $scope.private = false;
           $scope.tab[1] = true;
           break;
+        case 'conversations.private':
+          $scope.private = true;
+          $scope.tab[2] = true;
+          break;
+        default:
+          $scope.private = true;
+          $scope.type = 'all';
+          $scope.tab[0] = true;
       }
 
       $scope.composeConversation = function(){
@@ -109992,6 +110005,7 @@ angular.module('baseApp.directives')
         restrict: 'E',
         scope: {
           conversations: '=',
+          current: '=',
           load: '='
         },
         templateUrl: '/assets/html/conversations/conversations',
@@ -110001,16 +110015,17 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('modalCreateConversation', ['Chat','currentUser','$http','_',
-    function(Chat, currentUser, $http, _){
+  .directive('modalCreateConversation', ['Chat','currentUser','$http','_','$state',
+    function(Chat, currentUser, $http, _, $state){
       'use strict';
       return {
         restrict: 'E',
         templateUrl: '/assets/html/conversations/form',
         scope: {
-          type: '='
+          private: '='
         },
         link: function(scope){
+          scope.private = scope.private || false;
           scope.conversation = {
             members: [],
             message: {
@@ -110050,17 +110065,17 @@ angular.module('baseApp.directives')
             });
           };
           scope.sendMessage = function(){
-            switch( scope.type ) {
-              case 'public':
+            switch( scope.private ) {
+              case false:
                 Chat.startPublicConversation( scope.conversation )
                   .then( function(){
-
+                    $state.reload();
                   });
                 break;
               default:
                 Chat.startPrivateConversation( scope.conversation )
                   .then( function(){
-
+                    $state.reload();
                   });
             }
           };
@@ -110069,8 +110084,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('currentConversation', ['currentUser','Socket','Chat','_',
-    function(currentUser, Socket, Chat, _){
+  .directive('currentConversation', ['currentUser','Socket','Chat','_','$state',
+    function(currentUser, Socket, Chat, _, $state){
       'use strict';
       return {
         restrict: 'E',
@@ -110087,6 +110102,32 @@ angular.module('baseApp.directives')
           scope.$watch( 'current', function(){
             if( scope.current ) {
               scope.currentConversation = scope.current;
+              Socket.get.on('event:conversation:'+scope.currentConversation._id, function(){
+                $state.reload();
+                //var processResponse = function(res) {
+                //  var messages = scope.currentConversation.messages,
+                //    hasMissingUser = false;
+                //  angular.forEach( res.messages, function(item){
+                //    if( typeof scope.currentConversation.members[ item._user ] === 'undefined') {
+                //      hasMissingUser = true;
+                //    }
+                //    messages.unshift( item );
+                //  });
+                //  if( hasMissingUser ) {
+                //    $state.reload();
+                //  } else {
+                //    scope.currentConversation.messages = messages;
+                //  }
+                //};
+                //if( scope.private ) {
+                //  Chat.getPrivateMessagesIn( scope.currentConversation._id, scope.currentConversation.messages[0].created )
+                //    .then( processResponse );
+                //} else {
+                //  Chat.getPublicMessagesIn( scope.currentConversation._id, scope.currentConversation.messages[0].created )
+                //    .then( processResponse );
+                //}
+
+              });
             }
           });
 
@@ -110096,14 +110137,15 @@ angular.module('baseApp.directives')
                 return item !== scope.currentUser._id;
               });
               Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
-                .then( function(res){
-                  scope.currentConversation.messages.unshift( res.message );
+                .then( function(){
                   delete scope.newMessage;
                 });
             } else {
               Chat.sendPublicMessage( scope.currentConversation._id, { content: scope.newMessage } )
-                .then( function(res){
-                  scope.currentConversation.messages.unshift( res.message );
+                .then( function(){
+                  if( typeof scope.currentConversation.members[ currentUser.get()._id ] === 'undefined' ) {
+                    scope.currentConversation.members[ currentUser.get()._id ] = currentUser.get();
+                  }
                   delete scope.newMessage;
                 });
             }
@@ -110157,7 +110199,9 @@ angular.module('baseApp.directives')
                     scope.currentConversation = res.conversation;
                     existingConversation = true;
                   } else {
-                    scope.currentConversation = true;
+                    scope.currentConversation = {
+                      isPrivate: true
+                    };
                   }
 
                 });
@@ -110185,13 +110229,12 @@ angular.module('baseApp.directives')
           if( scope.active ){
             Chat.getAllPublicConversations().then(function (res) {
               _.map( res.conversations, function(item){
-                var lastMessage = item.messages.slice(-1);
-                item.lastMessage = lastMessage[0];
+                var lastMessage = item.messages[0];
+                item.lastMessage = lastMessage;
                 return item;
               });
               scope.conversations = res.conversations;
-              console.log( scope.conversations );
-              scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
+              scope.conversation = scope.conversations.length ? scope.conversations[0] : null;
               scope.isPrivate = false;
             });
             scope.load = function(id){
@@ -110218,18 +110261,51 @@ angular.module('baseApp.directives')
 
             Chat.getAllPrivateConversations().then(function (res) {
               _.map(res.conversations, function (item) {
-                var lastMessage = item.messages.slice(-1);
-                item.lastMessage = lastMessage[0];
+                var lastMessage = item.messages[0];
+                item.lastMessage = lastMessage;
                 return item;
               });
               scope.conversations = res.conversations;
-              console.log( scope.conversations );
-              scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
+              scope.conversation = scope.conversations.length ? scope.conversations[0] : null;
               scope.isPrivate = true;
             });
             scope.load = function (id) {
               scope.conversation = _.findWhere(scope.conversations, {_id: id});
               scope.isPrivate = true;
+            };
+          }
+        }
+      };
+    }
+  ])
+  .directive('allConversations', ['Chat','_',
+    function(Chat, _){
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/conversations/directiveConversations',
+        scope: {
+          active: '='
+        },
+        link: function(scope){
+          if( scope.active ) {
+
+            Chat.getAllConversations().then(function (res) {
+              if( res.conversations && res.conversations.length ) {
+                _.map(res.conversations, function (item) {
+                  var lastMessage = item.messages[0];
+                  item.lastMessage = lastMessage;
+                  return item;
+                });
+                scope.conversations = res.conversations;
+                scope.conversation = scope.conversations.length ? scope.conversations[0] : null;
+                scope.isPrivate = scope.conversation.isPrivate;
+              }
+            });
+            scope.load = function (id) {
+              scope.conversation = _.findWhere(scope.conversations, {_id: id});
+              scope.isPrivate = scope.conversation.isPrivate;
             };
           }
         }
@@ -112622,7 +112698,7 @@ angular.module('baseApp.directives')
           scope.entry = {};
           scope.newsletterSignup = function(){
             Newsletter.add( scope.entry).then( function(){
-              alert('thank you for sign up');
+              //alert('thank you for sign up');
               scope.entry = {};
             });
           };

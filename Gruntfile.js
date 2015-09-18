@@ -187,7 +187,7 @@ module.exports = function (grunt) {
       },
       scriptsClient: {
         files: ['client/angular/**/*.js'],
-        tasks: ['newer:copy:dev'],
+        tasks: ['newer:copy:dev','newer:jshint:all'],
         options: {
           interrupt: true
         }

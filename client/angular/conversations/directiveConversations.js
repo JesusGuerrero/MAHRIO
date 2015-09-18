@@ -6,6 +6,7 @@ angular.module('baseApp.directives')
         restrict: 'E',
         scope: {
           conversations: '=',
+          current: '=',
           load: '='
         },
         templateUrl: '/assets/html/conversations/conversations',

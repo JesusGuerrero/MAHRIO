@@ -43,7 +43,9 @@ angular.module('baseApp.directives')
                     scope.currentConversation = res.conversation;
                     existingConversation = true;
                   } else {
-                    scope.currentConversation = true;
+                    scope.currentConversation = {
+                      isPrivate: true
+                    };
                   }
 
                 });

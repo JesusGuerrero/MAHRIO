@@ -5,11 +5,8 @@ var async = require('async'),
     Boom = require('boom'),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    Membership = mongoose.model('Membership'),
     Conversation = mongoose.model('Conversation'),
     Message = mongoose.model('Message'),
-    Media = mongoose.model('Media'),
-    Profile = mongoose.model('Profile'),
     Notification = mongoose.model('Notification'),
     config;
 
@@ -20,176 +17,66 @@ function emitMessage( eventLabel ) {
     socket.broadcast.emit( eventLabel );
   }
 }
-function getConversations(request, reply) {
-  Membership
-    .find({_user: request.auth.credentials.id})
-    .lean()
-    .limit( 10 )
-    .exec( function(err, memberships){
-      var conversations = _.groupBy( memberships, '_conversation');
-      async.forEach( Object.keys(conversations), function(conversationId, callback){
-        Conversation
-          .findOne( {_id: conversationId} )
-          .lean()
-          .select('messages members created')
-          .populate([{
-            path: 'members',
-            select: 'email'
-          },{
-            path: 'messages',
-            select: 'content _user created',
-            options: {
-              limit: 20,
-              sort: {
-                'created': -1
-              }
-            }
-          }])
-          .exec( function(err, cvr){
-            cvr.members = _.groupBy( cvr.members, '_id');
-            conversations[conversationId] = cvr;
-            callback();
-          });
-      }, function(){
-        conversations = _.sortBy( conversations, function(v){ return v.created*-1; });
-        return reply( { currentUser: request.auth.credentials.id, conversations: conversations } );
-      });
-    });
-}
-function getOneConversation( id, reply ){
-  Conversation
-    .findOne( {_id : id })
-    .populate('members')
-    .lean()
-    .exec( function(err, doc){
-      if( !doc ){
-        return reply( Boom.badRequest('conversation not found'));
-      }
-
-      doc.users = [];
-      async.forEach( doc.members, function(item, callback){
-        User.findOne( item._user, function(err, user){
-          if( err ){ return reply(Boom.badImplementation()); }
-
-          doc.users.push( {id: user.id, email: user.email, joined: item.created} );
-          callback();
-        });
-      }, function(){
-        delete doc.members;
-        Message
-          .find( {_conversation: id})
-          .lean()
-          .exec(function(err, msgs){
-            _.each( msgs, function(item){ delete item._conversation; });
-            doc.messages = msgs;
-
-            return reply( doc );
-          });
-      });
-    });
-}
-
-function postConversation(request, reply) {
-  var startConversation;
-  if( typeof request.payload.message === 'undefined' || request.payload.message === '' ) {
-    return reply( Boom.badRequest('no message sent') );
+function _conversationsHelper( reply, conversations) {
+  if( conversations === null ) {
+    return reply({conversations: []});
   }
+  async.forEach(conversations ,function(conversation,callback) {
+    var users;
+    if( conversation.members && conversation.members.length ) {
+      users = conversation.members;
+      conversation.isPrivate = true;
+    } else {
+      conversation.isPrivate = false;
+      users = Object.keys(_.indexBy( conversation.messages, '_user'));
+    }
+    User
+      .find( {_id: {$in: users }})
+      .select('email profile avatarImage')
+      .populate('profile avatarImage')
+      .exec( function(err, users){
+        if( err ) { return reply( Boom.badRequest(err) ); }
 
-  // TODO CHECK OTHER USER IS VALID
-  User.findById( request.params.userId, function(err){
-    if( err ) { reply( Boom.badRequest('invalid message receiver') ); }
-
-    Membership.find({
-      _user: {
-        $in:[request.params.userId, request.auth.credentials.id]
-      }})
-      .populate('_conversation')
-      .exec( function(err, docs){
-        var conversations = _.groupBy( docs, function(item){ return item._conversation._id; });
-        var existingConversation = _.find( conversations, function(item){
-          if( item[0]._conversation.members.length === 2 &&
-            item[0]._conversation.members.indexOf(request.params.userId) !== -1 &&
-            item[0]._conversation.members.indexOf( request.auth.credentials.id) !== -1 ) {
-            return item;
-          }
-        });
-        if( existingConversation ){
-          var msg = new Message( {
-            content: request.payload.message,
-            _user: request.auth.credentials.id,
-            _conversation: existingConversation[0]._conversation._id
-          });
-
-          msg.save( function(err, msg){
-            Conversation.update({_id: existingConversation[0]._conversation._id},
-              {$push: {messages: msg}},
-              {upsert: false}, function(){
-                return reply(msg);
-              });
-          });
-        }else {
-          startConversation = new Conversation();
-          startConversation.save( function(err, conversation){
-            var myMembership = new Membership({
-              _user: request.auth.credentials.id,
-              _conversation: conversation.id
-            });
-            var otherMembership = new Membership({
-              _user: request.params.userId,
-              _conversation: conversation.id
-            });
-            var msgId, msg = new Message( {
-              content: request.payload.message,
-              _user: request.auth.credentials.id,
-              _conversation: conversation.id });
-
-            async.forEach([myMembership, otherMembership, msg], function(entity, callback){
-              entity.save( function(err, data){
-                if( data.content ){
-                  msgId = data.id;
-                }
-                callback();
-              });
-            }, function(){
-              conversation.members.push(request.params.userId);
-              conversation.members.push(request.auth.credentials.id);
-              conversation.messages.push( msgId );
-
-              conversation.save( function(){
-                return reply({conversation: conversation});
-              });
-            });
-          });
-        }
-
+        conversation.members = _.indexBy( users, '_id');
+        callback();
       });
+  }, function(){
+    return reply({conversations: conversations});
   });
 }
-function sendMessage(request, reply) {
-  var msg = new Message( {
-    content: request.payload.message,
-    _user: request.auth.credentials.id,
-    _conversation: request.params.conversationId });
+function getAllConversations( request, reply ) {
+  Conversation
+    .find()
+    .or([{
+      members: {$size: 0}
+    },{
+      members: {$in: [request.auth.credentials.id]}
+    }])
+    .populate({
+      path: 'messages',
+      options: {
+        sort: { created: -1}
+      }
+    })
+    .lean()
+    .limit(10)
+    .exec( function(err, conversations){
+      if( err ) { return Boom.badRequest(err); }
 
-  msg.save( function(err, message){
-    Conversation.update({_id: request.params.conversationId}, {$push: {messages: msg}}, {upsert: false}, function(){
-      return reply({ message: message} );
+      return _conversationsHelper( reply, conversations);
     });
-  });
 }
 
 function getPrivateConversations( request, reply, callback ) {
   Conversation
     .find({members: {$in: [request.auth.credentials.id]}})
     .populate([{
-      path: 'members',
-      select: 'email profile avatarImage'
-    },{
       path: 'messages',
       options: {
         sort: { created: -1 }
       }
     }])
+    .lean()
     .exec(function (err, conversations) {
       if (err) {
         return reply(Boom.badRequest(err));
@@ -198,31 +85,7 @@ function getPrivateConversations( request, reply, callback ) {
       if( typeof callback === 'function'){
         callback(conversations);
       } else {
-        if( conversations === null ) {
-          return reply({conversations: []});
-        }
-        async.forEach(conversations ,function(item,callback) {
-          Media.populate( item.members,{ 'path': 'avatarImage' },function(err) {
-            if (err) { return reply( Boom.badRequest(err)); }
-
-            callback();
-          });
-        }, function() {
-          async.forEach(conversations ,function(item,callback) {
-            Profile.populate( item.members,{ 'path': 'profile' },function(err) {
-              if (err) { return reply( Boom.badRequest(err)); }
-
-              callback();
-            });
-          }, function() {
-            conversations = _.map( conversations, function(item){
-              var jsonItem = item.toJSON();
-              jsonItem.members = _.indexBy( jsonItem.members, '_id');
-              return jsonItem;
-            });
-            reply({conversations: conversations});
-          });
-        });
+        return _conversationsHelper( reply, conversations);
       }
     });
 }
@@ -239,14 +102,12 @@ function getPrivateConversation( request, reply, callback ) {
         { members: [request.query.userId,request.auth.credentials.id]}]
     })
     .populate([{
-      path: 'members',
-      select: 'email profile avatarImage'
-    },{
       path: 'messages',
       options: {
         sort: { created: -1 }
       }
     }])
+    .lean()
     .exec( function (err, conversation) {
       if (err) {
         return reply(Boom.badRequest(err));
@@ -258,25 +119,17 @@ function getPrivateConversation( request, reply, callback ) {
         if( conversation === null ) {
           return reply({conversation: null});
         }
-        async.forEach(conversation.members ,function(item,callback) {
-          Media.populate( item,{ 'path': 'avatarImage' },function(err) {
-            if (err) { return reply( Boom.badRequest(err)); }
+        conversation.isPrivate = true;
+        User
+          .find( {_id: {$in: conversation.members }})
+          .select('email profile avatarImage')
+          .populate('profile avatarImage')
+          .exec( function(err, users){
+            if( err ) { return reply( Boom.badRequest(err) ); }
 
-            callback();
+            conversation.members = _.indexBy( users, '_id');
+            return reply({conversation: conversation});
           });
-        }, function() {
-          async.forEach(conversation.members ,function(item,callback) {
-            Profile.populate( item,{ 'path': 'profile' },function(err) {
-              if (err) { return reply( Boom.badRequest(err)); }
-
-              callback();
-            });
-          }, function() {
-            conversation = conversation.toJSON();
-            conversation.members = _.indexBy( conversation.members, '_id' );
-            reply({conversation: conversation});
-          });
-        });
       }
     });
 }
@@ -327,22 +180,22 @@ function sendPrivateMessage( request, reply ){
     Message.create( request.payload.message, function(err, msg){
       if( err ) { return reply(Boom.badRequest(err)); }
 
-      conversation.messages = _.map(conversation.messages, function(item){ return item.id;});
-      conversation.messages.push( msg.id );
-      conversation.save( function(){
-        if( err ) { return reply(Boom.badRequest(err)); }
+      Conversation
+        .update({_id: conversation._id}, {$push: {messages: mongoose.Types.ObjectId(msg.id)}}, function(err){
+          if( err ) { return reply(Boom.badRequest(err)); }
 
-        emitMessage( 'event:notification:'+request.query.userId );
-        Notification.create({
-          resource: 'chat',
-          id: conversation.id,
-          heading: 'Private Conversation',
-          teaser: msg.content,
-          _user: request.query.userId
-        }, function(err) {
-          reply( {message: msg, err: err} );
+          emitMessage( 'event:notification:'+request.query.userId );
+          emitMessage( 'event:conversation:'+conversation._id );
+          Notification.create({
+            resource: 'chat',
+            id: conversation._id,
+            heading: 'Private Conversation',
+            teaser: msg.content,
+            _user: request.query.userId
+          }, function() {
+            return reply( {message: msg} );
+          });
         });
-      });
     });
   });
 }
@@ -364,25 +217,7 @@ function getPublicConversations( request, reply ){
       if (err) {
         return reply(Boom.badRequest(err));
       }
-
-      async.forEach(conversations ,function(conversation, convCallback) {
-        var users = [];
-        _.each( conversation.messages, function(item){
-          users.push( item._user );
-        });
-
-        User.find( {'_id': {$in: users}})
-          .select('email profile avatarImage')
-          .populate('profile avatarImage')
-          .exec(function(err, members) {
-            if (err) { return reply( Boom.badRequest(err)); }
-
-            conversation.members = _.indexBy( members, '_id');
-            convCallback();
-          });
-      }, function() {
-        reply({conversations: conversations});
-      });
+      return _conversationsHelper( reply, conversations);
     });
 }
 function getPublicConversation( request, reply, callback ){
@@ -464,20 +299,62 @@ function sendPublicMessage( request, reply ){
       conversation.save( function(err){
         if( err ) { return reply(Boom.badRequest(err)); }
 
-        reply( {message: msg, err: err} );
+        emitMessage( 'event:conversation:'+conversation.id );
+        reply( {message: msg} );
       });
     });
   });
+}
+function getMessagesIn( request, reply) {
+  Message
+    .find( {
+      _conversation: request.params.id,
+      created: {
+        $gte: new Date( request.query.time)
+      }
+    })
+    .exec( function(err, messages) {
+      if( err ) { return Boom.badRequest(err); }
+
+      return reply( {messages: messages} );
+    });
+}
+function getPublicMessagesIn( request, reply) {
+  Conversation
+    .findOne( {
+      _id: request.params.id
+    })
+    .and([{
+      members: {$size: 0}
+    }])
+    .exec( function(err, conversation){
+      if( err || !conversation) { return Boom.badRequest(err); }
+
+      return getMessagesIn( request, reply);
+    });
+}
+function getPrivateMessagesIn( request, reply ) {
+  Conversation
+    .findOne( {
+      members: {
+        $in: [ request.auth.credentials.id ]
+      },
+      _id: request.params.id
+    })
+    .exec( function(err, conversation){
+      if( err || !conversation ) { return Boom.badRequest(err); }
+
+      return getMessagesIn( request, reply);
+    });
+}
+function getMyLastMessages( request, reply) {
+  console.log( request, reply);
 }
 module.exports = {
   setConfig: function( cfg ) {
     config = cfg;
   },
-  getConversations: getConversations,
-  getOneConversation: getOneConversation,
-  postConversation: postConversation,
-  sendMessage: sendMessage,
-  /* -------- */
+  getAllConversations: getAllConversations,
   getPrivateConversations: getPrivateConversations,
   getPrivateConversation: getPrivateConversation,
   postPrivateConversation: postPrivateConversation,
@@ -485,5 +362,8 @@ module.exports = {
   getPublicConversations: getPublicConversations,
   getPublicConversation: getPublicConversation,
   postPublicConversation: postPublicConversation,
-  sendPublicMessage: sendPublicMessage
+  sendPublicMessage: sendPublicMessage,
+  getMyLastMessages: getMyLastMessages,
+  getPublicMessagesIn: getPublicMessagesIn,
+  getPrivateMessagesIn: getPrivateMessagesIn
 };

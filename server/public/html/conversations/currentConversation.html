@@ -2,7 +2,8 @@
 <div ng-show="currentConversation" class="box box-primary direct-chat direct-chat-primary">
   <div class="box-header with-border">
     <h3 ng-show="currentConversation.topic" class="box-title">  {{currentConversation.topic}}</h3>
-    <h3 ng-show="!currentConversation.topic" class="box-title">  Direct Chat<small ng-show="otherUser">  {{otherUser}}</small></h3>
+    <h3 ng-show="!currentConversation.topic &amp;&amp; !currentConversation.isPrivate" class="box-title">  Public Conversation<small><i class="fa fa-edit"></i></small></h3>
+    <h3 ng-show="currentConversation.isPrivate" class="box-title">  Direct Chat<small ng-show="otherUser">  {{otherUser}}</small></h3>
     <div class="box-tools pull-right">
       <!--span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")-->
       <!--    |   3-->
