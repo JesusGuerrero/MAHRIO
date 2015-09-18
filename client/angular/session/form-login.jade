@@ -44,9 +44,8 @@
                             a.btn.btn-block.btn-primary.btn-lg(href="/api/oauth/facebook/login" style="background: #3D5A98")
                                 i.fa.fa-facebook-square
                                 |   facebook
-                //
                   .form-group.text-center
                     p.text-center
                       | {{locale['form'].page['signin'].signUp}}
-                    a.btn.btn-default( ui-sref="register")
+                    a.btn.btn-default( ui-sref="users.new")
                       | {{locale['form'].page['signin'].register }}

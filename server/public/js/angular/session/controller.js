@@ -20,6 +20,7 @@ angular.module('baseApp.controllers')
               $scope.setAuthorizationHeader( res.headers('Authorization') );
               $scope.getProfile(true);
             }, function( err ){
+              $scope.user = {};
               $scope.validationErrors = [err.data.message];
 
             });
@@ -57,7 +58,7 @@ angular.module('baseApp.controllers')
             $scope.setAuthorizationHeader( res.headers('Authorization') );
             $scope.getProfile(true);
           }, function(err){
-            $scope.validationErrors = err.message;
+            $scope.validationErrors = [err.data.message];
           });
       };
     }
