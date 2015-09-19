@@ -11,7 +11,7 @@ require('./Conversation');
 require('./Event');
 //require('./List');
 require('./Mail');
-require('./Membership');
+require('./Network');
 require('./Media');
 require('./Message');
 require('./Notification');

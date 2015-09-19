@@ -7,11 +7,13 @@ angular.module('baseApp.directives')
         templateUrl: function() {
           switch ($rootScope.access) {
             case 'any':
-              return '/assets/html/views/home';
+              return '/assets/html/pages/home';
             case 'authorized':
-              return '/assets/html/dashboard/index';
+              return '/assets/html/dashboard/authorized_view';
             case 'admin':
-              return '/assets/html/views/dashboard';
+              return '/assets/html/dashboard/admin_view';
+            case 'sudo':
+              return '/assets/html/dashboard/sudo_view';
           }
         },
         link: function( scope ){

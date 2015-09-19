@@ -108929,7 +108929,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
   $stateProvider
     .state('root', {
       url: '/',
-      templateUrl: '/assets/html/views/root',
+      templateUrl: '/assets/html/layout/page/root',
       title: 'Dashboard'
     })
     .state('notifications', {
@@ -110321,7 +110321,81 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('DashboardController', ['$scope',
+  .controller('AdminDashboardController', ['$scope',
+    function($scope){
+      'use strict';
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
+
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
+      $scope.line_series = ['Average Online Traffic'];
+      $scope.line_data = [
+        [65, 59, 80, 81, 56, 55, 90]
+      ];
+      $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+      };
+      $scope.onHover = function (points) {
+        if (points.length > 0) {
+          console.log('Point', points[0].value);
+        } else {
+          console.log('No point');
+        }
+      };
+
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
+
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+    }]);
+angular.module('baseApp.controllers')
+  .controller('AuthorizedDashboardController', ['$scope',
+    function($scope){
+      'use strict';
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
+
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
+      $scope.line_series = ['Average Online Traffic'];
+      $scope.line_data = [
+        [65, 59, 80, 81, 56, 55, 90]
+      ];
+      $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+      };
+      $scope.onHover = function (points) {
+        if (points.length > 0) {
+          console.log('Point', points[0].value);
+        } else {
+          console.log('No point');
+        }
+      };
+
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
+
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+    }]);
+angular.module('baseApp.controllers')
+  .controller('SudoController', ['$scope',
     function($scope){
       'use strict';
       /*jshint camelcase: false */
@@ -110877,10 +110951,8 @@ angular.module('baseApp.directives')
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
-                scope.user = newUser;
-                break;
               case 'authorized':
+              case 'sudo':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
                 scope.user = newUser;
                 scope.notifications = {};
@@ -110999,6 +111071,36 @@ angular.module('baseApp.directives')
       };
     }
   ]);
+angular.module('baseApp.directives')
+  .directive('rootPageView', ['$rootScope','Newsletter',
+    function($rootScope, Newsletter){
+      'use strict';
+      return {
+        restrict: 'A',
+        templateUrl: function() {
+          switch ($rootScope.access) {
+            case 'any':
+              return '/assets/html/pages/home';
+            case 'authorized':
+              return '/assets/html/dashboard/authorized_view';
+            case 'admin':
+              return '/assets/html/dashboard/admin_view';
+            case 'sudo':
+              return '/assets/html/dashboard/sudo_view';
+          }
+        },
+        link: function( scope ){
+          scope.entry = {};
+          scope.newsletterSignup = function(){
+            Newsletter.add( scope.entry).then( function(){
+              //alert('thank you for sign up');
+              scope.entry = {};
+            });
+          };
+        }
+      };
+    }
+  ]);
 angular.module('baseApp.controllers')
   .controller('LeftNavigationController', ['$scope','currentUser',
     function ($scope, currentUser) {
@@ -111020,9 +111122,7 @@ angular.module('baseApp.directives')
           scope.logout = $rootScope.logout;
           scope.$watch( 'access', function(access){
             switch( access ){
-              case 'any':
-                scope.dynamicTemplateUrl = '';
-                break;
+              case 'sudo':
               case 'admin':
               case 'authorized':
                 if( attrs.type === 'navigation' ){
@@ -111032,6 +111132,7 @@ angular.module('baseApp.directives')
                 }
                 break;
               default:
+                scope.dynamicTemplateUrl = '';
             }
           });
           scope.goTo = function( state, id ) {
@@ -112191,6 +112292,7 @@ angular.module('baseApp.controllers')
               $scope.setAuthorizationHeader( res.headers('Authorization') );
               $scope.getProfile(true);
             }, function( err ){
+              $scope.user = {};
               $scope.validationErrors = [err.data.message];
 
             });
@@ -112228,7 +112330,7 @@ angular.module('baseApp.controllers')
             $scope.setAuthorizationHeader( res.headers('Authorization') );
             $scope.getProfile(true);
           }, function(err){
-            $scope.validationErrors = err.message;
+            $scope.validationErrors = [err.data.message];
           });
       };
     }
@@ -112560,7 +112662,8 @@ angular.module('baseApp.controllers')
                 $scope.setAuthorizationHeader( res.headers('Authorization') );
                 currentUser.login(res.user, true);
               }, function( err ){
-                $scope.validationErrors = err.message;
+                delete $scope.user.email;
+                $scope.validationErrors = [err.data.message];
               });
           };
           break;
@@ -112690,32 +112793,3 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     }
   };
 }]);
-
-angular.module('baseApp.directives')
-  .directive('rootPageView', ['$rootScope','Newsletter',
-    function($rootScope, Newsletter){
-      'use strict';
-      return {
-        restrict: 'A',
-        templateUrl: function() {
-          switch ($rootScope.access) {
-            case 'any':
-              return '/assets/html/views/home';
-            case 'authorized':
-              return '/assets/html/dashboard/index';
-            case 'admin':
-              return '/assets/html/views/dashboard';
-          }
-        },
-        link: function( scope ){
-          scope.entry = {};
-          scope.newsletterSignup = function(){
-            Newsletter.add( scope.entry).then( function(){
-              //alert('thank you for sign up');
-              scope.entry = {};
-            });
-          };
-        }
-      };
-    }
-  ]);

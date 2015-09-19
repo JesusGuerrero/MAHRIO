@@ -1,9 +1,12 @@
 
 <div class="content-wrapper">
-  <div ng-show="['authorized','admin'].indexOf(access) !== -1">
+  <div ng-show="['authorized','admin','sudo'].indexOf(access) !== -1">
     <heading></heading>
   </div>
   <ng-switch on="access">
+    <section ng-switch-when="sudo" class="content">
+      <div ng-transclude="ng-transclude"></div>
+    </section>
     <section ng-switch-when="admin" class="content">
       <div ng-transclude="ng-transclude"></div>
     </section>

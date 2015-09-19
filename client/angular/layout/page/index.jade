@@ -1,8 +1,10 @@
 .content-wrapper
-    div(ng-show="['authorized','admin'].indexOf(access) !== -1")
+    div(ng-show="['authorized','admin','sudo'].indexOf(access) !== -1")
         heading
 
     ng-switch( on="access")
+        section.content(ng-switch-when="sudo")
+            div( ng-transclude )
         section.content(ng-switch-when="admin")
             div( ng-transclude )
         section.content(ng-switch-when="authorized")

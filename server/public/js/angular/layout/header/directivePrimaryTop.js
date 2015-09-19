@@ -74,10 +74,8 @@ angular.module('baseApp.directives')
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
                 break;
               case 'admin':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
-                scope.user = newUser;
-                break;
               case 'authorized':
+              case 'sudo':
                 scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
                 scope.user = newUser;
                 scope.notifications = {};

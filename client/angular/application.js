@@ -50,7 +50,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
   $stateProvider
     .state('root', {
       url: '/',
-      templateUrl: '/assets/html/views/root',
+      templateUrl: '/assets/html/layout/page/root',
       title: 'Dashboard'
     })
     .state('notifications', {
@@ -101,13 +101,13 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/dashboard-v1',
       templateUrl: '/assets/html/views/dashboard-v1'
     })
-    .state('blankPage', {
-      url: '/blank',
-      templateUrl: '/assets/html/views/blank'
+    .state('about', {
+      url: '/about',
+      templateUrl: '/assets/html/pages/about'
     })
-    .state('userDash', {
-      url: '/feed',
-      templateUrl: '/assets/html/views/feed'
+    .state('contact', {
+      url: '/contact',
+      templateUrl: '/assets/html/pages/contact'
     })
     .state('users', {
       abstract: true,

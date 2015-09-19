@@ -11,9 +11,7 @@ angular.module('baseApp.directives')
           scope.logout = $rootScope.logout;
           scope.$watch( 'access', function(access){
             switch( access ){
-              case 'any':
-                scope.dynamicTemplateUrl = '';
-                break;
+              case 'sudo':
               case 'admin':
               case 'authorized':
                 if( attrs.type === 'navigation' ){
@@ -23,6 +21,7 @@ angular.module('baseApp.directives')
                 }
                 break;
               default:
+                scope.dynamicTemplateUrl = '';
             }
           });
           scope.goTo = function( state, id ) {

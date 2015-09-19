@@ -1,5 +1,5 @@
 angular.module('baseApp.controllers')
-  .controller('DashboardController', ['$scope',
+  .controller('AuthorizedDashboardController', ['$scope',
     function($scope){
       'use strict';
       /*jshint camelcase: false */
