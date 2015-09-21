@@ -29,10 +29,11 @@ schema = mongoose.Schema({
 
   networks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Network' }], // ACCESS CONTROL
   created:    { type: Date, default: Date.now },
-  access:     {type: String},
+  access:     [{type: String}],
   status:     {type: String},
   notifications: [{type: mongoose.Schema.Types.ObjectId, ref: 'Notification'}],
-  profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
+  profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' },
+  disabled: {type: Boolean}
 });
 
 schema.methods.authenticate = function(passwordToMatch) {

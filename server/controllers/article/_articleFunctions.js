@@ -79,6 +79,10 @@ function _saveSections( sections, next ) {
   });
 }
 function updateArticle( request, reply ) {
+  if( !_.contains(request.params.credentials.access, 'admin') ) {
+    return reply( Boom.forbidden() );
+  }
+
   getArticle( request, reply, function( article ) {
     if( !article ) {
       return reply(Boom.badRequest('article not found'));
@@ -103,6 +107,9 @@ function _createArticle( request ){
   return new Article( request.payload.article ).save();
 }
 function createArticle( request, reply ) {
+  if( !_.contains(request.params.credentials.access, 'admin') ) {
+    return reply( Boom.forbidden() );
+  }
   if( !request.payload.article ) {
     return reply( Boom.badRequest() );
   }
@@ -123,6 +130,10 @@ function createArticle( request, reply ) {
 }
 
 function removeArticle(request, reply){
+  if( !_.contains(request.params.credentials.access, 'admin') ) {
+    return reply( Boom.forbidden() );
+  }
+
   getArticle( request, reply, function( article ) {
     if( !article ) {
       return reply(Boom.badRequest('article not found'));

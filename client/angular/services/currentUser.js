@@ -8,7 +8,7 @@ angular.module('baseApp.services')
     function login (user, route) {
       currentUser = user;
 
-      $rootScope.setAccess( user.access || 'any' );
+      $rootScope.setAccess( user.access || ['any'] );
       $rootScope.$emit('userLoggedIn');
       if( route ){
         $state.transitionTo( 'root', {}, { reload: true});
@@ -23,8 +23,8 @@ angular.module('baseApp.services')
       var defer = $q.defer();
       Session.logout()
         .then( function(){
-          currentUser = {access: 'any'};
-          $rootScope.setAccess( 'any' );
+          currentUser = {access: ['any']};
+          $rootScope.setAccess( ['any'] );
           $state.transitionTo('root');
           defer.resolve();
         });

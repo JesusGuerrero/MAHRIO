@@ -108980,13 +108980,13 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/dashboard-v1',
       templateUrl: '/assets/html/views/dashboard-v1'
     })
-    .state('blankPage', {
-      url: '/blank',
-      templateUrl: '/assets/html/views/blank'
+    .state('about', {
+      url: '/about',
+      templateUrl: '/assets/html/pages/about'
     })
-    .state('userDash', {
-      url: '/feed',
-      templateUrl: '/assets/html/views/feed'
+    .state('contact', {
+      url: '/contact',
+      templateUrl: '/assets/html/pages/contact'
     })
     .state('users', {
       abstract: true,
@@ -109136,7 +109136,34 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       title: 'Board',
       subTitle: 'Edit Task'
     })
-
+    .state('networks', {
+      abstract: true,
+      url: '/networks',
+      controller: 'NetworkController',
+      template: '<ui-view/>'
+    })
+    .state('networks.new', {
+      url: '/new',
+      templateUrl: '/assets/html/network/form',
+      title: 'New Network'
+    })
+    .state('networks.list', {
+      url: '/all',
+      controller: 'NetworkController',
+      templateUrl: '/assets/html/network/list',
+      title: 'List Networks'
+    })
+    .state('networks.edit', {
+      url: '/:id/edit',
+      templateUrl: '/assets/html/network/form',
+      title: 'Edit Network'
+    })
+    .state('networks.detail', {
+      url: '/:id',
+      templateUrl: '/assets/html/network/detail',
+      title: 'Network',
+      subTitle: 'View'
+    })
     //.state('tasks', {
     //  url: '/tasks',
     //  controller: 'TaskController',
@@ -109241,7 +109268,7 @@ angular.module('baseApp.controllers', [])
         $rootScope.access = access;
         window.localStorage.Access = access;
       };
-      $rootScope.setAccess( window.localStorage.Access || 'any' );
+      $rootScope.setAccess( window.localStorage.Access || ['any'] );
 
       $rootScope.setAuthorizationHeader = function(token){
 
@@ -109261,8 +109288,8 @@ angular.module('baseApp.controllers', [])
               }
             }, function(){
               delete window.localStorage.Authorization;
-              window.localStorage.Access = 'any';
-              $rootScope.access = 'any';
+              window.localStorage.Access = ['any'];
+              $rootScope.access = ['any'];
             });
         }
       };
@@ -109272,7 +109299,7 @@ angular.module('baseApp.controllers', [])
         return angular.isDefined( val );
       };
 
-      $rootScope.user = 'any';
+      $rootScope.user = ['any'];
 
       window.rootScope = $rootScope;
 
@@ -110395,7 +110422,7 @@ angular.module('baseApp.controllers')
       setTimeout( function(){ $('.box').matchHeight(); }, 10 );
     }]);
 angular.module('baseApp.controllers')
-  .controller('SudoController', ['$scope',
+  .controller('SudoDashboardController', ['$scope',
     function($scope){
       'use strict';
       /*jshint camelcase: false */
@@ -110859,14 +110886,14 @@ angular.module('baseApp.controllers')
   ]
 );
 angular.module('baseApp.directives')
-  .directive('footer', ['$rootScope',
-    function( $rootScope ){
+  .directive('footer', ['$rootScope','_',
+    function( $rootScope, _ ){
       'use strict';
       return {
         restrict: 'A',
         replace: true,
         templateUrl: function() {
-          if( $rootScope.user === 'anyUser') {
+          if( !_.contains( $rootScope.access, 'any' ) ) {
             return 'assets/html/layout/footer/index';
           } else {
             return '/assets/html/layout/footer/user';
@@ -110935,7 +110962,7 @@ angular.module('baseApp.directives')
           }
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
-              newUser = {access: 'any'};
+              newUser = {access: ['any']};
             } else {
 
               Socket.get.on('event:notification:'+newUser._id, function(){
@@ -110946,26 +110973,21 @@ angular.module('baseApp.directives')
                   });
               });
             }
-            switch( newUser.access ){
-              case 'any':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
-                break;
-              case 'admin':
-              case 'authorized':
-              case 'sudo':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
-                scope.user = newUser;
-                scope.notifications = {};
-                Notification.get()
-                  .then( function(res){
-                    populateMessageNotice(res, newUser);
-                  });
-                break;
-              default:
+
+            if( _.contains( newUser.access, 'any' ) ) {
+              scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
+            } else {
+              scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
+              scope.user = newUser;
+              scope.notifications = {};
+              Notification.get()
+                .then( function(res){
+                  populateMessageNotice(res, newUser);
+                });
             }
             scope.toggleSidebar = function(){
               $rootScope.toggleSidebarCollapsed();
-              if( newUser.access !== 'any' && $state.current.url === '/') {
+              if( !_.contains(newUser.access, 'any') && $state.current.url === '/') {
                 $timeout( function(){
                   $state.reload();
                 }, 400);
@@ -111072,21 +111094,20 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('rootPageView', ['$rootScope','Newsletter',
-    function($rootScope, Newsletter){
+  .directive('rootPageView', ['$rootScope','Newsletter','_',
+    function($rootScope, Newsletter, _){
       'use strict';
       return {
         restrict: 'A',
         templateUrl: function() {
-          switch ($rootScope.access) {
-            case 'any':
-              return '/assets/html/pages/home';
-            case 'authorized':
-              return '/assets/html/dashboard/authorized_view';
-            case 'admin':
-              return '/assets/html/dashboard/admin_view';
-            case 'sudo':
-              return '/assets/html/dashboard/sudo_view';
+          if( _.contains( $rootScope.access, 'sudo' ) ) {
+            return '/assets/html/dashboard/sudo_view';
+          } else if ( _.contains( $rootScope.access, 'admin' ) ) {
+            return '/assets/html/dashboard/admin_view';
+          } else if ( _.contains( $rootScope.access, 'authorized' ) ) {
+            return '/assets/html/dashboard/authorized_view';
+          } else {
+            return '/assets/html/pages/home';
           }
         },
         link: function( scope ){
@@ -111110,8 +111131,8 @@ angular.module('baseApp.controllers')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('sideBar', ['$rootScope','$state','currentUser',
-    function($rootScope, $state ){
+  .directive('sideBar', ['$rootScope','$state','_',
+    function($rootScope, $state, _ ){
       'use strict';
       return {
         restrict: 'A',
@@ -111121,18 +111142,14 @@ angular.module('baseApp.directives')
         link: function(scope, elem, attrs) {
           scope.logout = $rootScope.logout;
           scope.$watch( 'access', function(access){
-            switch( access ){
-              case 'sudo':
-              case 'admin':
-              case 'authorized':
-                if( attrs.type === 'navigation' ){
-                  scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/leftMainNavigation';
-                } else {
-                  scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/rightMainSettings';
-                }
-                break;
-              default:
-                scope.dynamicTemplateUrl = '';
+            if( _.contains( access, 'sudo' ) || _.contains( access, 'admin' ) || _.contains( access, 'authorized' ) ) {
+              if( attrs.type === 'navigation' ){
+                scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/leftMainNavigation';
+              } else {
+                scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/rightMainSettings';
+              }
+            } else {
+              scope.dynamicTemplateUrl = '';
             }
           });
           scope.goTo = function( state, id ) {
@@ -111686,6 +111703,145 @@ angular.module('baseApp.services')
     }
   ]);
 angular.module('baseApp.controllers')
+  .controller('NetworkController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_',
+    function($scope, $state, $http, currentUser, Network, _){
+      'use strict';
+
+      $scope.networks = [];
+      var formSetup = function(){
+        var usersCache = [];
+        $scope.selected = function($item) {
+          var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+            selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+
+          $scope.network.members[ selection._id ] = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
+          $scope.$broadcast('clearInput');
+        };
+        $scope.removeMember = function( id ) {
+          delete $scope.network.members[ id ];
+          $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
+        };
+        $scope.getUsers = function(val) {
+          return $http.get('/api/autocomplete/users', {
+            params: {
+              q: val
+            }
+          }).then(function(response){
+            usersCache = response.data.users;
+            var current = currentUser.get(),
+              filteredUserList =  _
+                .filter( response.data.users, function(user){
+                  return user.email !== current.email && !_.find($scope.network.members, function(i){return i.email ===user.email;});
+                });
+            return filteredUserList.map(function(user){
+              return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
+            });
+          });
+        };
+      };
+      $scope.currentUser = currentUser.get();
+      switch( $state.current.name ) {
+        case 'networks.new':
+          $scope.network = {
+            members: {}
+          };
+          $scope.add = function(){
+            $scope.network.members = Object.keys( _.indexBy( $scope.network.members, '_id') );
+            Network.add( $scope.network )
+              .then( function(){
+                $state.go('networks.list',{}, { reload: true });
+              });
+          };
+          formSetup();
+          break;
+        case 'networks.detail':
+          Network.get( $state.params.id )
+             .then( function(res){
+               $scope.network = res.network;
+             });
+          break;
+        case 'networks.list':
+          Network.get()
+            .then( function( res ) {
+              $scope.networks = res.networks;
+            });
+          break;
+        case 'networks.edit':
+          Network.get( $state.params.id )
+            .then( function( res ) {
+              $scope.network = res.network;
+              $scope.network.members = res.network.members || {};
+              $scope.hasMembers = res.network.members ? Object.keys( res.network.members).length : false;
+            });
+          formSetup();
+          $scope.update = function( ) {
+            Network.update( $scope.network )
+              .then( function(){
+                $state.go('networks.list');
+              });
+          };
+          break;
+        default:
+          break;
+      }
+
+
+      $scope.remove = function( id ){
+        Network.remove( id )
+          .then( function(){
+            $scope.networks = _.filter( $scope.networks, function(network){ return network._id !== id; });
+            $state.go('networks.list');
+          });
+      };
+    }]);
+angular.module('baseApp.services').factory('NetworkResource', [ '$resource', function($resource) {
+  'use strict';
+  return $resource('/api/networks/:id',
+    { id: '@id' },
+    {
+      create: {
+        method: 'POST'
+      },
+      read: {
+        method: 'GET'
+      },
+      update: {
+        method: 'PUT'
+      },
+      remove: {
+        method: 'DELETE'
+      }
+    }
+  );
+}]);
+angular.module('baseApp.services').factory('Network', [ 'NetworkResource', function( NetworkResource) {
+  'use strict';
+  // Caching Option here...
+  return {
+    add: function( obj ) {
+      return NetworkResource.create( {network: obj} ).$promise;
+    },
+    get: function( id ) {
+      return NetworkResource.read( id ? {id: id} : {} ).$promise;
+    },
+    update: function( obj ) {
+      return NetworkResource.update( {id: obj._id}, {network: obj} ) .$promise;
+    },
+    remove: function(id){
+      return NetworkResource.remove( {id: id} ).$promise;
+    }
+  };
+}]);
+
+angular.module('baseApp.controllers')
   .controller('NotificationsController', ['$scope', function( $scope ) {
     'use strict';
     console.log( $scope );
@@ -112061,7 +112217,7 @@ angular.module('baseApp.services')
     function login (user, route) {
       currentUser = user;
 
-      $rootScope.setAccess( user.access || 'any' );
+      $rootScope.setAccess( user.access || ['any'] );
       $rootScope.$emit('userLoggedIn');
       if( route ){
         $state.transitionTo( 'root', {}, { reload: true});
@@ -112076,8 +112232,8 @@ angular.module('baseApp.services')
       var defer = $q.defer();
       Session.logout()
         .then( function(){
-          currentUser = {access: 'any'};
-          $rootScope.setAccess( 'any' );
+          currentUser = {access: ['any']};
+          $rootScope.setAccess( ['any'] );
           $state.transitionTo('root');
           defer.resolve();
         });

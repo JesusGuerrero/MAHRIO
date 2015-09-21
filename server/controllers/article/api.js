@@ -8,8 +8,7 @@ module.exports = function(config, server) {
       method: ['GET'],
       path: '/api/articles/{id?}',
       config: {
-        handler: ArticleCtrl.get,
-        auth: 'simple'
+        handler: ArticleCtrl.get
       }
     },
     {

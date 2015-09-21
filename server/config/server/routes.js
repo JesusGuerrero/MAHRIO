@@ -14,9 +14,8 @@ function requireControllers(config, server){
   require('../../controllers/media/api')(config, server);
   require('../../controllers/network/api')(config, server);
   require('../../controllers/task/api')(config, server);
-  require('../../controllers/cms')(config, server);
-  require('../../controllers/contact')(config, server);
-  require('../../controllers/knowledge')(config, server);
+  require('../../controllers/contact/newsletter')(config, server);
+  require('../../controllers/contact/knowledge')(config, server);
 }
 module.exports = function (config, server) {
 

@@ -58,7 +58,7 @@ angular.module('baseApp.directives')
           }
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
-              newUser = {access: 'any'};
+              newUser = {access: ['any']};
             } else {
 
               Socket.get.on('event:notification:'+newUser._id, function(){
@@ -69,26 +69,21 @@ angular.module('baseApp.directives')
                   });
               });
             }
-            switch( newUser.access ){
-              case 'any':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
-                break;
-              case 'admin':
-              case 'authorized':
-              case 'sudo':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
-                scope.user = newUser;
-                scope.notifications = {};
-                Notification.get()
-                  .then( function(res){
-                    populateMessageNotice(res, newUser);
-                  });
-                break;
-              default:
+
+            if( _.contains( newUser.access, 'any' ) ) {
+              scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
+            } else {
+              scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
+              scope.user = newUser;
+              scope.notifications = {};
+              Notification.get()
+                .then( function(res){
+                  populateMessageNotice(res, newUser);
+                });
             }
             scope.toggleSidebar = function(){
               $rootScope.toggleSidebarCollapsed();
-              if( newUser.access !== 'any' && $state.current.url === '/') {
+              if( !_.contains(newUser.access, 'any') && $state.current.url === '/') {
                 $timeout( function(){
                   $state.reload();
                 }, 400);

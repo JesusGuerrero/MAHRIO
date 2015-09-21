@@ -389,7 +389,7 @@ angular.module('baseApp.controllers', [])
         $rootScope.access = access;
         window.localStorage.Access = access;
       };
-      $rootScope.setAccess( window.localStorage.Access || 'any' );
+      $rootScope.setAccess( window.localStorage.Access || ['any'] );
 
       $rootScope.setAuthorizationHeader = function(token){
 
@@ -409,8 +409,8 @@ angular.module('baseApp.controllers', [])
               }
             }, function(){
               delete window.localStorage.Authorization;
-              window.localStorage.Access = 'any';
-              $rootScope.access = 'any';
+              window.localStorage.Access = ['any'];
+              $rootScope.access = ['any'];
             });
         }
       };
@@ -420,7 +420,7 @@ angular.module('baseApp.controllers', [])
         return angular.isDefined( val );
       };
 
-      $rootScope.user = 'any';
+      $rootScope.user = ['any'];
 
       window.rootScope = $rootScope;
 

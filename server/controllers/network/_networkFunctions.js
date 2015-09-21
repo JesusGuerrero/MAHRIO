@@ -8,7 +8,7 @@ var async = require('async'),
   Network = mongoose.model('Network');
 
 function createNetwork( request, reply ) {
-  if( !request.payload.network /*|| request.auth.credentials.access !== 'sudo'*/ ) {
+  if( !request.payload.network || !_.contains(request.auth.credentials.access, 'sudo') ) {
     return reply( Boom.badRequest() );
   }
 
@@ -53,9 +53,9 @@ function _getAllNetworks( request, reply, callback ) {
     });
 }
 function getNetwork( request, reply, callback ) {
-  //if( request.auth.credentials.access !== 'sudo' ) {
-  //  return reply( Boom.badRequest() );
-  //}
+  if( !_.contains(request.auth.credentials.access, 'sudo') ) {
+    return reply( Boom.badRequest() );
+  }
   if( typeof request.params.id === 'undefined' ) {
     _getAllNetworks( request, reply, function(networks){
       async.each( networks, function(network, callback){
@@ -87,7 +87,7 @@ function getNetwork( request, reply, callback ) {
   }
 }
 function updateNetwork( request, reply ) {
-  if( !request.payload.network /*|| request.auth.credentials.access !== 'sudo'*/ || typeof request.params.id === 'undefined') {
+  if( !request.payload.network || !_.contains(request.auth.credentials.access, 'sudo') || typeof request.params.id === 'undefined') {
     return reply( Boom.badRequest() );
   } else if( typeof request.payload.networkIds !== 'undefined' && Array.isArray( request.payload.networkIds ) ) {
     // TODO: update several networks at once

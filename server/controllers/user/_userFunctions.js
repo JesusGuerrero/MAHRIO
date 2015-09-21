@@ -11,7 +11,7 @@ function register (request, reply, config, server) {
   var newUser = new User({
     email: request.payload.email,
     password: request.payload.password,
-    access: !server.needAdmin ? 'authorized' : 'admin'
+    access: [!server.needAdmin ? 'authorized' : 'admin']
   });
 
   if( server.needAdmin ){

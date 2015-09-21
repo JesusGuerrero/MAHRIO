@@ -31,7 +31,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                     i.fa.fa-bell
                     span
                         |   Notifications
-            li(ng-show="access=='sudo'")
+            li(ng-show="access.indexOf('sudo') !== -1")
                 a( ui-sref="networks.list")
                     i.fa.fa-share-alt
                     span

@@ -83,6 +83,9 @@ function _createBoard( request ){
   return new Board( request.payload.board).save();
 }
 function createBoard( request, reply ) {
+  if( !_.contains(request.params.credentials.access, 'admin') ) {
+    return reply( Boom.forbidden() );
+  }
   if( !request.payload.board ) {
     return reply( Boom.badRequest() );
   }
