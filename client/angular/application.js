@@ -257,7 +257,34 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       title: 'Board',
       subTitle: 'Edit Task'
     })
-
+    .state('networks', {
+      abstract: true,
+      url: '/networks',
+      controller: 'NetworkController',
+      template: '<ui-view/>'
+    })
+    .state('networks.new', {
+      url: '/new',
+      templateUrl: '/assets/html/network/form',
+      title: 'New Network'
+    })
+    .state('networks.list', {
+      url: '/all',
+      controller: 'NetworkController',
+      templateUrl: '/assets/html/network/list',
+      title: 'List Networks'
+    })
+    .state('networks.edit', {
+      url: '/:id/edit',
+      templateUrl: '/assets/html/network/form',
+      title: 'Edit Network'
+    })
+    .state('networks.detail', {
+      url: '/:id',
+      templateUrl: '/assets/html/network/detail',
+      title: 'Network',
+      subTitle: 'View'
+    })
     //.state('tasks', {
     //  url: '/tasks',
     //  controller: 'TaskController',

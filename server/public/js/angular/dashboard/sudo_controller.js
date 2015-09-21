@@ -1,5 +1,5 @@
 angular.module('baseApp.controllers')
-  .controller('SudoController', ['$scope',
+  .controller('SudoDashboardController', ['$scope',
     function($scope){
       'use strict';
       /*jshint camelcase: false */

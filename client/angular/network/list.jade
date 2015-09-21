@@ -1,0 +1,56 @@
+.col-xs-12
+    .row
+        .col-xs-12
+            .col-md-2.col-lg-2.no-padding
+                strong
+                    | Name
+            .col-md-2.col-lg-3
+                strong
+                    | Members
+            .col-md-2.col-lg-2
+                strong
+                    | Events
+            .col-md-2.col-lg-2
+                strong
+                    | Boards
+            .col-md-2.col-lg-2
+                strong
+                    | Conversations
+            .col-md-2.col-lg-1
+                strong
+                    | Actions
+.row
+    .col-xs-12
+        .list-group
+            .list-group-item( ng-repeat="network in networks track by $index" ui-sref="networks.detail({id: network._id})" ui-sref-opts="{reload: true}" style="cursor:pointer")
+                .col-md-2.col-lg-2.no-padding
+                    strong
+                        i.fa.fa-lock(ng-show="network.isPrivate")
+                        | {{network.name}}
+                .col-md-2.col-lg-3.no-padding
+                    span(ng-repeat="member in network.members track by $index")
+                        | {{member.profile.firstName}} {{member.profile.lastName}}
+                        br
+                .col-md-2.col-lg-2.no-padding
+                    span(ng-repeat="board in network.boards track by $index")
+                        | {{board.name}}
+                        br
+                .col-md-2.col-lg-2.no-padding
+                    span(ng-repeat="event in network.events track by $index")
+                        | {{event.title}} {{event.start | date:'medium' }}
+                        br
+                .col-md-2.col-lg-2.no-padding
+                    span(ng-repeat="conversation in network.conversations track by $index")
+                        | {{conversation.topic}}
+                        br
+                .col-md-2.col-lg-1.no-padding(ng-show="network.owner === currentUser._id")
+                    a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()")
+                        i.fa.fa-edit
+                    a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()")
+                        i.fa.fa-trash
+                .clearfix
+.row(style="margin-top: 50px;")
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2
+        a.btn.btn-primary(ui-sref="networks.new" ui-sref-opts="{reload: true}")
+            i.fa.fa-plus
+            |   Add Network
