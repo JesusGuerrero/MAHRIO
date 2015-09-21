@@ -12,6 +12,7 @@ function requireControllers(config, server){
   require('../../controllers/notification/api')(config, server);
   require('../../controllers/mail/api')(config, server);
   require('../../controllers/media/api')(config, server);
+  require('../../controllers/network/api')(config, server);
   require('../../controllers/task/api')(config, server);
   require('../../controllers/cms')(config, server);
   require('../../controllers/contact')(config, server);

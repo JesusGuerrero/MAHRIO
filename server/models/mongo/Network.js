@@ -2,14 +2,17 @@
 
 var mongoose = require('mongoose'),
   schema = mongoose.Schema({
-    type: { type: String }, // educator / learner
+    name: { type: String },
+    type: { type: String },   // internal, external
     domain: { type: String }, // finance, technology, etc
     location: { type: String }, // greater area, country, city, high school, etc.
     created: { type: Date, default: Date.now },
     start: { type: Date },
     end: { type: Date },
+    isPrivate: { type: Boolean, default: false },
     boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }],
-    events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CalendarEvent' }]
+    events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CalendarEvent' }],
+    owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   }),
   Network = mongoose.model('Network', schema);
 
@@ -17,8 +20,8 @@ module.exports = Network;
 
 /*
   Access:
-    sudo - can see all memberships
-    admin - administers x numbers of memberships
+    admin - can see all memberships
+    moderator - administers x numbers of memberships
     authorized - registered & belongs to x number of memberships
 
   Memberships - authorized dependant
@@ -26,5 +29,5 @@ module.exports = Network;
     teacher - educator, facilitator, moderator
 
     client - engages professional services
-    student - seeks professional experience
+    student - seeks knowledge of professional experience
  */

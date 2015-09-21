@@ -27,7 +27,7 @@ schema = mongoose.Schema({
   resetPasswordExpires: {type: Date },
   authorizationToken:   {type: String},
 
-  membership: { type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }, // ACCESS CONTROL
+  networks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Network' }], // ACCESS CONTROL
   created:    { type: Date, default: Date.now },
   access:     {type: String},
   status:     {type: String},
