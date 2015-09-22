@@ -15,10 +15,18 @@ angular.module('baseApp.directives')
             });
 
           function updateEvent( event ){
+            var allDay;
+            if( /(\d{4})-(\d{2})-(\d{2})T/.test( event.start.format() ) ) {
+              allDay = false;
+            } else {
+              allDay = true;
+            }
+
             Calendar.updateEvent( {
               _id: event._id,
-              start: event.start._d,
-              end: event.end._d
+              start: new Date( event.start.format() ).toISOString(), //event.start._d,
+              end: event.end ? new Date( event.end.format() ).toISOString() : null,
+              allDay: allDay
             });
           }
 
@@ -30,7 +38,7 @@ angular.module('baseApp.directives')
                 right: 'month,agendaWeek,agendaDay'
               },
               height: 600,
-              timezone: 'local',
+              timezone: 'UTC',
               defaultDate: new Date(),
               defaultView: 'agendaWeek',
               editable: true,
@@ -38,11 +46,18 @@ angular.module('baseApp.directives')
               events: scope.events,
               droppable: true, // this allows things to be dropped onto the calendar !!!
               drop: function( date){
-                var originalEventObject = $(this).data('eventObject');
-                var copiedEventObject = $.extend({}, originalEventObject);
-                copiedEventObject.start = new Date( date._d );
-                copiedEventObject.end = new Date( new Date(date._d).getTime() + 7200000 );
-                copiedEventObject.allDay = false;
+                var copiedEventObject = $.extend({}, $(this).data('eventObject') );
+                copiedEventObject.start = new Date( date.format() ).toISOString();
+                if( $(elem).fullCalendar('getView').name === 'month' ) {
+                  copiedEventObject.allDay = true;
+                } else {
+                  if( /(\d{4})-(\d{2})-(\d{2})T/.test( date.format() ) ) {
+                    copiedEventObject.allDay = false;
+                    copiedEventObject.end = new Date( new Date(date.format() ).getTime() + 7200000 ).toISOString();
+                  } else {
+                    copiedEventObject.allDay = true;
+                  }
+                }
 
                 Calendar.createEvent( copiedEventObject )
                   .then( function(res){

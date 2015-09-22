@@ -32,8 +32,8 @@ function getOneEvent( id, reply ){
 function newEvent(request, reply) {
   new CalendarEvent({
     title: request.payload.event.title || '',
-    start: request.payload.event.start ? new Date(request.payload.event.start) : null,
-    end: request.payload.event.end ? new Date(request.payload.event.end) : null,
+    start: request.payload.event.start ? request.payload.event.start : null,
+    end: request.payload.event.end ? request.payload.event.end : null,
     allDay: request.payload.event.allDay || false,
     url: request.payload.event.url || '',
     color: request.payload.event.color || '',
@@ -52,6 +52,7 @@ function updateEvent( request, reply ) {
       event.title = request.payload.event.title || event.title;
       event.start = request.payload.event.start || event.start;
       event.end = request.payload.event.end || event.end;
+      event.allDay = request.payload.event.allDay;
 
       event.save( function(err, event) {
         if (err) { return reply(Boom.badRequest(err)); }
