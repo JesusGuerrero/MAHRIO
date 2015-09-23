@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('calendar', ['Calendar',
-    function( Calendar ){
+  .directive('calendar', ['Calendar','$state','_',
+    function( Calendar, $state, _ ){
       'use strict';
       return {
         restrict: 'A',
@@ -8,7 +8,7 @@ angular.module('baseApp.directives')
         link: function(scope, elem, attrs ) {
           var calendar;
 
-          Calendar.getEvents()
+          Calendar.get()
             .then( function(response){
               scope.events = response.events;
               initCalendar();
@@ -21,15 +21,27 @@ angular.module('baseApp.directives')
             } else {
               allDay = true;
             }
+            var theEvent = _.find( scope.events, function(item){ return item._id === event._id; });
+            theEvent.start = new Date( event.start.format() ).toISOString();
+            theEvent.end = event.end ? new Date( event.end.format() ).toISOString() : null;
+            theEvent.allDay = allDay;
+            theEvent.invited = Object.keys(_.indexBy( theEvent.invited, '_id' ));
 
-            Calendar.updateEvent( {
-              _id: event._id,
-              start: new Date( event.start.format() ).toISOString(), //event.start._d,
-              end: event.end ? new Date( event.end.format() ).toISOString() : null,
-              allDay: allDay
-            });
+            Calendar.update( theEvent );
+
           }
-
+          var renderView;
+          switch( $state.current.name ) {
+            case 'calendar.month':
+              renderView = 'month';
+              break;
+            case 'calendar.day':
+              renderView = 'agendaDay';
+              break;
+            default:
+              renderView = 'agendaWeek';
+              break;
+          }
           function initCalendar(){
             calendar = $(elem).fullCalendar({
               header: {
@@ -40,7 +52,7 @@ angular.module('baseApp.directives')
               height: 600,
               timezone: 'UTC',
               defaultDate: new Date(),
-              defaultView: 'agendaWeek',
+              defaultView: renderView,
               editable: true,
               eventLimit: true, // allow "more" link when too many events
               events: scope.events,
@@ -59,7 +71,7 @@ angular.module('baseApp.directives')
                   }
                 }
 
-                Calendar.createEvent( copiedEventObject )
+                Calendar.add( copiedEventObject )
                   .then( function(res){
                     copiedEventObject.id = res.event._id;
                     $(elem).fullCalendar('renderEvent', copiedEventObject, true);
@@ -75,16 +87,43 @@ angular.module('baseApp.directives')
                 console.log(view);
               },
               eventClick: function(event){
-                Calendar.currentEvent = event;
-                $('#'+attrs.modalId).modal().show();
+                Calendar.currentEventId = event._id;
+                $('#'+attrs.modalId ).modal().show();
                 scope.$apply();
                 if (event.url) {
-                  //window.open(event.url);
-                  //return false;
+
                 }
               },
               eventDrop: updateEvent,
               eventResize: updateEvent
+            });
+            var clicked = [0,0,0];
+            $('.fc-month-button', elem).on('click', function(){
+              if( clicked[0] ) {
+                return;
+              }
+              clicked = [1,0,0];
+              scope.$apply( function(){
+                $state.go('calendar.month');
+              });
+            });
+            $('.fc-agendaWeek-button', elem).on('click', function(){
+              if( clicked[1] ) {
+                return;
+              }
+              clicked = [0,1,0];
+              scope.$apply( function() {
+                $state.go('calendar');
+              });
+            });
+            $('.fc-agendaDay-button', elem).on('click', function(){
+              if( clicked[2] ) {
+                return;
+              }
+              clicked = [0,0,1];
+              scope.$apply( function() {
+                $state.go('calendar.day');
+              });
             });
           }
 

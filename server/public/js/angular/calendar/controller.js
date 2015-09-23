@@ -1,5 +1,5 @@
 angular.module('baseApp.controllers')
-  .controller('CalendarController', ['$scope','Calendar', function($scope, Calendar){
+  .controller('CalendarController', ['$scope', 'Calendar', function($scope,Calendar){
     'use strict';
 
     function initEvents(ele) {
@@ -59,12 +59,8 @@ angular.module('baseApp.controllers')
       $('#new-event').val('');
     });
 
-    $scope.actions = {
-      save: function( dataObject ){
-        return Calendar.updateEvent( dataObject.id );
-      },
-      discard: function( dataObject ){
-        return Calendar.removeEvent( dataObject._id );
-      }
+    $scope.newEvent = function(){
+      Calendar.currentEventId = null;
+      $('#modalEditEvent' ).modal().show();
     };
   }]);

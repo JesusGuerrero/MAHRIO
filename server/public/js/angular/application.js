@@ -186,6 +186,12 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       title: 'Calendar',
       subTitle: 'Events'
     })
+    .state('calendar.day', {
+      url: '/day'
+    })
+    .state('calendar.month', {
+      url: '/month'
+    })
     .state('profile', {
       url: '/profile',
       controller: 'ProfileController',
@@ -420,7 +426,7 @@ angular.module('baseApp.controllers', [])
         return angular.isDefined( val );
       };
 
-      $rootScope.user = ['any'];
+      $rootScope.access = ['any'];
 
       window.rootScope = $rootScope;
 

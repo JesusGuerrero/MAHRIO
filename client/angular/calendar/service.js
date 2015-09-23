@@ -1,7 +1,7 @@
 angular.module('baseApp.services').factory('CalendarResource', [ '$resource', function($resource) {
   'use strict';
-  return $resource('/api/calendar/events/:action',
-    { action: '@action' },
+  return $resource('/api/events/:id',
+    { id: '@id' },
     {
       create: {
         method: 'POST'
@@ -20,32 +20,21 @@ angular.module('baseApp.services').factory('CalendarResource', [ '$resource', fu
 }]);
 angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', function( CalendarResource) {
   'use strict';
-  var eventSchema = {
-    title: '',
-    start: null,
-    end: null,
-    allDay: false,
-    url: '',
-    backgroundColor: '#3c8dbc',
-    borderColor: '#3c8dbc'
-  }, currentEvent = null;
+
+  var currentEventId = null;
   return {
-    getOneEvent: function( eventId ) {
-      return CalendarResource.read( {action: eventId }).$promise;
+    add: function( obj ) {
+      return CalendarResource.create( {event: obj} ).$promise;
     },
-    getEvents: function(){
-      return CalendarResource.read( {action: 'all'}).$promise;
+    get: function( id ) {
+      return CalendarResource.read( id ? {id: id} : {} ).$promise;
     },
-    createEvent: function( eventObject ){
-      var newEvent = $.extend( angular.copy(eventSchema), eventObject );
-      return CalendarResource.create( {}, {event: newEvent}).$promise;
+    update: function( obj ) {
+      return CalendarResource.update( {id: obj._id}, {event: obj} ) .$promise;
     },
-    updateEvent: function( eventObject ) {
-      return CalendarResource.update( {action: eventObject._id}, {event: eventObject}).$promise;
+    remove: function(id){
+      return CalendarResource.remove( {id: id} ).$promise;
     },
-    removeEvent: function( eventId ) {
-      return CalendarResource.remove( {action: eventId }).$promise;
-    },
-    currentEvent: currentEvent
+    currentEventId: currentEventId
   };
 }]);

@@ -68,7 +68,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                     small.label.pull-right.bg-red
                         |   3
             li
-                a( ui-sref="calendar" )
+                a( ui-sref="calendar" ui-sref-opts="{reload: true}" )
                     i.fa.fa-calendar
                     span
                         |   Calendar

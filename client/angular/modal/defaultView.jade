@@ -1,6 +1,6 @@
 .modal.fade(id="{{modalId}}" tabindex="-1" role="dialog"
             aria-labelledby="{{modalId}}" aria-hidden="true")
-    .modal-dialog(ng-class="type=='message' ? 'modal-lg' : ''")
+    .modal-dialog(ng-class="type=='message' || type=='event' ? 'modal-lg' : ''")
         ng-switch(on="type")
             .modal-content(ng-switch-when="conversation" style="background-color: transparent")
                 div(ng-transclude)
@@ -35,7 +35,7 @@
                             button.btn.btn-primary( ng-click="save()" )
                                 i.fa.fa-floppy-o
                                 |   Save
-                        button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close" ng-click="discard()")
+                        button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close" ng-click="discard()" ng-show="objectId")
                             i.fa.fa-trash
                             |   Delete
                     .modal-footer(ng-switch-when="conversation")

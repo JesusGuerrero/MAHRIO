@@ -1,5 +1,5 @@
 .row
-    .col-md-3
+    .col-md-3.hidden-sm.hidden-xs( hide-on-touch-screen="true" )
         .box.box-success
             .box-header
                 h4.box-title
@@ -58,7 +58,10 @@
                         button.btn.btn-default.btn-flat( id="add-new-event" type="button")
                             |   Add
 
-    .col-md-9
+    .col-md-9.col-sm-12.col-xs-12(hide-on-touch-screen="false" add-class="col-md-12" remove-class="col-md-9" )
+        button.btn.btn-primary.hidden( style="margin-bottom: 10px" ng-show="access.indexOf('admin') >= 0 || access.indexOf('sudo') >= 0"
+            hide-on-touch-screen="false" add-class="btn-block" remove-class="hidden" ng-click="newEvent();" )
+            |   Add Event
         .box.box-primary
             .box-body.no-padding
                 modal-window-view( modal-id="modalEditEvent" title="Calendar Event" type="event" actions='actions')

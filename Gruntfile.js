@@ -69,6 +69,7 @@ module.exports = function (grunt) {
           'bower_components/moment/moment.js',
           'bower_components/fullcalendar/dist/fullcalendar.js',
           'bower_components/bootstrap/dist/js/bootstrap.js',
+          'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
           'bower_components/jquery.slimscroll/jquery.slimscroll.min.js',
           'bower_components/fastclick/lib/fastclick.js',
           'bower_components/icheck/icheck.min.js',

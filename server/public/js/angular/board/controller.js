@@ -11,8 +11,11 @@ angular.module('baseApp.controllers')
             selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
 
           $scope.board.members.push({
-            name: selection.firstName + ' ' + selection.lastName,
             email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            },
             _id: selection._id
           });
           $scope.$broadcast('clearInput');
@@ -33,7 +36,7 @@ angular.module('baseApp.controllers')
                   return user.email !== current.email && !_.find($scope.board.members, function(i){return i.email ===user.email;});
                 });
             return filteredUserList.map(function(user){
-              return (user.firstName ? user.firstName : '') + ' ' + (user.lastName ?user.lastName:'') + '&lt;'+user.email+'&gt;';
+              return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
             });
           });
         };
