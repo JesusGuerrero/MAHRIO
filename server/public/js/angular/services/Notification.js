@@ -10,8 +10,11 @@ angular.module('baseApp.services')
   }])
   .factory('Notification', [ 'NotificationResource', function( NotificationResource ) {
     'use strict';
+    var confirmMessage = null, confirmed = null;
     return {
       get: function( ) { return NotificationResource.read( ).$promise; },
-      remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; }
+      remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; },
+      confirm: confirmMessage,
+      confirmed: confirmed
     };
   }]);

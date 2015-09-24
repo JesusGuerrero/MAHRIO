@@ -1,6 +1,9 @@
 .row
     .col-md-3.hidden-sm.hidden-xs( hide-on-touch-screen="true" )
-        .box.box-success
+        button.btn.btn-primary.btn-block( style="margin-bottom: 20px" ng-show="access.indexOf('admin') >= 0 || access.indexOf('sudo') >= 0"
+            ng-click="newEvent();" )
+                |   Add Event
+        .box.box-primary
             .box-header
                 h4.box-title
                     |   Draggable Events
@@ -17,7 +20,7 @@
         .box.box-primary
             .box-header
                 h3.box-title
-                    |   Create Event
+                    |   Create Draggable Event
             .box-body
                 .btn-group(style="width: 100%; margin-bottom: 10px;")
                     button.btn.btn-danger.btn-block.btn-sm.dropdown-toggle( type="button" id="color-chooser-btn" data-toggle="dropdown")
@@ -57,6 +60,7 @@
                     .input-group-btn
                         button.btn.btn-default.btn-flat( id="add-new-event" type="button")
                             |   Add
+
 
     .col-md-9.col-sm-12.col-xs-12(hide-on-touch-screen="false" add-class="col-md-12" remove-class="col-md-9" )
         button.btn.btn-primary.hidden( style="margin-bottom: 10px" ng-show="access.indexOf('admin') >= 0 || access.indexOf('sudo') >= 0"

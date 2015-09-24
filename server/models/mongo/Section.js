@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
     heading: {type: String, default: null},
     body: {type: String},
     type: {type: String, default: 'Text'},  // type in [Text, HTML, CSS, JavaScript]
-    order: {type: Number, required: true}
+    order: {type: Number}
   }),
   Section = mongoose.model('Section', schema);
 

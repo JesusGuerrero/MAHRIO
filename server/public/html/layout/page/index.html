@@ -1,5 +1,26 @@
 
 <div class="content-wrapper">
+  <modal-window-view modal-id="pageNotification" type="conversation">
+    <div class="box box-danger">
+      <div class="box-header with-border">
+        <h3 class="box-title">  {{title}}</h3>
+        <div class="box-tools pull-right">
+          <button id="closeBox" data-dismiss="modal" aria-label="Close" ng-click="close()" class="btn btn-box-tool"><i class="fa fa-times"></i></button>
+        </div>
+      </div>
+      <div class="box-body">
+        <p>  {{message}}</p>
+      </div>
+      <div class="box-footer">
+        <div class="col-xs-4">
+          <button data-dismiss="modal" aria-label="Close" ng-click="close()" class="btn btn-block btn-default">  Cancel</button>
+        </div>
+        <div class="col-xs-4 col-xs-offset-4">
+          <button ng-click="confirm()" class="btn btn-block btn-danger">  Confirm</button>
+        </div>
+      </div>
+    </div>
+  </modal-window-view>
   <div ng-show="access.indexOf('any') === -1">
     <heading></heading>
   </div>

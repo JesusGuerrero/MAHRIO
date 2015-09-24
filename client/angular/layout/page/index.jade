@@ -1,4 +1,23 @@
 .content-wrapper
+    modal-window-view(modal-id="pageNotification" type="conversation")
+        .box.box-danger
+            .box-header.with-border
+                h3.box-title
+                    |   {{title}}
+                .box-tools.pull-right
+                    button.btn.btn-box-tool( id="closeBox" data-dismiss="modal" aria-label="Close" ng-click="close()")
+                        i.fa.fa-times
+            .box-body
+                p
+                    |   {{message}}
+            .box-footer
+                .col-xs-4
+                    button.btn.btn-block.btn-default(data-dismiss="modal" aria-label="Close" ng-click="close()")
+                        |   Cancel
+                .col-xs-4.col-xs-offset-4
+                    button.btn.btn-block.btn-danger(ng-click="confirm()")
+                        |   Confirm
+
     div(ng-show="access.indexOf('any') === -1")
         heading
 

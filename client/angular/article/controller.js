@@ -1,6 +1,6 @@
 angular.module('baseApp.controllers')
-  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_',
-    function($scope, $state, $http, currentUser, Article, _){
+  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_','Notification',
+    function($scope, $state, $http, currentUser, Article, _, Notification){
       'use strict';
 
       $scope.articles = [];
@@ -50,7 +50,7 @@ angular.module('baseApp.controllers')
             sections: [],
             widgets: []
           };
-          $scope.add = function(){
+          $scope.save = function(){
             _.forEach( $scope.article.sections, function(sec, key) {
               sec.order = key;
             });
@@ -79,10 +79,11 @@ angular.module('baseApp.controllers')
               $scope.article = res.article;
             });
           formSetup();
-          $scope.update = function( ) {
+          $scope.save = function( ) {
             Article.update( $scope.article )
               .then( function(){
-                $state.go('articles.list');
+                //$state.go('articles.list');
+                $state.go('articles.list', {}, {reload: true});
               });
           };
           break;
@@ -91,10 +92,17 @@ angular.module('baseApp.controllers')
       }
 
       $scope.remove = function( id ){
-        Article.remove( id )
-          .then( function(){
-            $scope.articles = _.filter( $scope.articles, function(article){ return article._id !== id; });
-            $state.go('articles.list');
-          });
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+        $scope.$watch( function(){ return Notification.confirmed; }, function(){
+          if( Notification.confirmed ) {
+            Notification.confirmed = null;
+            Article.remove( id )
+              .then( function(){
+                $scope.articles = _.filter( $scope.articles, function(article){ return article._id !== id; });
+                $state.go('articles.list', {}, {reload: true});
+              });
+          }
+        });
       };
     }]);

@@ -15,13 +15,19 @@
                         |{{article.title}}
                 a
                     small
-                        |{{article._creator.firstName}} {{article._creator.lastName}} &lt;{{article._creator.email}}&gt;
+                        |{{article.owner.profile.firstName}} {{article.owner.profile.lastName}} &lt;{{article.owner.email}}&gt;
                 div(class="article-content")
                     p(ng-repeat="section in article.sections track by $index" ng-show="$first")
                         |{{section.body}}
-                a.btn.btn-default.btn-block(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
-                    |Read More
-                a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
-                    |Edit
-
-
+                .form-group
+                    a.btn.btn-primary.btn-block.form-control(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                        |   Read More
+                .row
+                    .col-xs-6
+                        a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
+                            i.fa.fa-edit
+                            |   &nbsp;Edit
+                    .col-xs-6
+                        a.btn.btn-block.btn-danger(ng-click="remove( article._id )" ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
+                            i.fa.fa-trash
+                            |   &nbsp;Remove

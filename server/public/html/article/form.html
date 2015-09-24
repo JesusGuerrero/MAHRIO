@@ -1,15 +1,15 @@
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
+  <div class="col-sm-10 col-sm-offset-1 col-xs-12">
     <div class="panel panel-default">
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
         <h3 class="text-center">Add Article</h3>
-        <form novalidate="novalidate" ng-submit="article._id ? update() : add()" id="article-form">
+        <form novalidate="novalidate" id="article-form">
           <form-input-tag model="article.title" label="Title" required="true"></form-input-tag>
           <div ng-show="article.sections.length" ng-class="{'sorting-sections': sortingSections}" class="form-group">
             <div ng-show="article.sections.length &gt; 1" class="pull-right"><i style="cursor: pointer; float: right" ng-show="!sortingSections" ng-click="sortSections('#sortable')" class="fa fa-arrows"></i><i style="cursor: pointer; float: right" ng-show="sortingSections" ng-click="stopSorting( '#sortable') " class="fa fa-check"></i></div>
-            <label>Sections</label>
+            <label>Body</label>
             <ul style="list-style-type: none; padding: 0;" ui-sortable="sortableOptions" ng-model="article.sections" class="list">
               <li ng-repeat="section in article.sections track by $index" style="padding-bottom: 10px;" class="item">
                 <textarea type="text" ng-model="section.body" ng-show="section.edit" class="form-control"></textarea>
@@ -24,11 +24,18 @@
             </div>
           </div>
           <hr/>
-          <div class="text-center form-group">
-            <button type="submit" class="btn btn-block btn-primary btn-lg">{{article._id ? 'Save' : 'Create'}}</button>
-          </div>
         </form>
-        <div class="col-xs-8 col-xs-offset-2 text-center form-group"><a ui-sref="articles.list" ui-sref-opts="{reload: true}" class="btn btn-block btn-default">Cancel</a></div>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-md-2">
+            <button ng-click="remove(article._id)" ng-show="article._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
+          </div>
+          <div class="col-md-2 col-md-offset-5"><a ui-sref="articles.list" ui-sref-opts="{reload: true}" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ article._id ]" class="col-md-3 text-center form-group">
+            <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{article._id ? 'Save' : 'Create'}}</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
