@@ -1,8 +1,7 @@
 'use strict';
 
-//var nodemailer = require('nodemailer');
 var Mailgun = require('mailgun-js');
-var fromWho = 'doNotReply@whichdegree.co';
+var fromWho = 'WhichDegree <do-not-reply@whichdegree.co>';
 
 module.exports = function( mailObj ) {
   var mailgun = new Mailgun({apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
@@ -10,7 +9,7 @@ module.exports = function( mailObj ) {
   var data = {
     from: fromWho,
     to: mailObj.to,
-    subject: mailObj.text,
+    subject: mailObj.subject,
     html: mailObj.html
   };
 

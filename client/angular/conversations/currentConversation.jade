@@ -1,9 +1,16 @@
 .box.box-primary.direct-chat.direct-chat-primary(ng-show="currentConversation")
     .box-header.with-border
-        h3.box-title
+        h3.box-title(ng-show="currentConversation.topic")
+            |   {{currentConversation.topic}}
+        h3.box-title(ng-show="!currentConversation.topic && !currentConversation.isPrivate")
+            |   Public Conversation
+            small
+                i.fa.fa-edit
+        h3.box-title(ng-show="currentConversation.isPrivate")
             |   Direct Chat
             small(ng-show="otherUser")
                 |   {{otherUser}}
+
         .box-tools.pull-right
             //span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")
             //    |   3
@@ -11,7 +18,7 @@
             //    i.fa.fa-minus
             //button.btn.btn-box-tool( data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle")
             //    i.fa.fa-comments
-            button.btn.btn-box-tool( data-dismiss="modal" aria-label="Close")
+            button.btn.btn-box-tool( data-dismiss="modal" aria-label="Close" ng-show="isModal")
                 i.fa.fa-times
     .box-body
         .direct-chat-messages
@@ -19,8 +26,8 @@
                 ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'left' : 'right'")
                 .direct-chat-info.clearfix
                     span.direct-chat-name(ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-left' : 'pull-right'")
-                        |   {{currentConversation.members[message._user].profile.first_name}}
-                        |   {{currentConversation.members[message._user].profile.last_name}}
+                        |   {{currentConversation.members[message._user].profile.firstName}}
+                        |   {{currentConversation.members[message._user].profile.lastName}}
                         |   <{{currentConversation.members[message._user].email}}>
                     span.direct-chat-timestamp(ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'")
                         |   {{message.created | date : 'MM-dd h:mm a' }}

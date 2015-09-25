@@ -65337,6 +65337,15 @@ if (typeof jQuery === 'undefined') {
 
 }(jQuery);
 
+/*! version : 4.17.37
+ =========================================================
+ bootstrap-datetimejs
+ https://github.com/Eonasdan/bootstrap-datetimepicker
+ Copyright (c) 2015 Jonathan Peterson
+ =========================================================
+ */
+!function(a){"use strict";if("function"==typeof define&&define.amd)define(["jquery","moment"],a);else if("object"==typeof exports)a(require("jquery"),require("moment"));else{if("undefined"==typeof jQuery)throw"bootstrap-datetimepicker requires jQuery to be loaded first";if("undefined"==typeof moment)throw"bootstrap-datetimepicker requires Moment.js to be loaded first";a(jQuery,moment)}}(function(a,b){"use strict";if(!b)throw new Error("bootstrap-datetimepicker requires Moment.js to be loaded first");var c=function(c,d){var e,f,g,h,i,j,k,l={},m=!0,n=!1,o=!1,p=0,q=[{clsName:"days",navFnc:"M",navStep:1},{clsName:"months",navFnc:"y",navStep:1},{clsName:"years",navFnc:"y",navStep:10},{clsName:"decades",navFnc:"y",navStep:100}],r=["days","months","years","decades"],s=["top","bottom","auto"],t=["left","right","auto"],u=["default","top","bottom"],v={up:38,38:"up",down:40,40:"down",left:37,37:"left",right:39,39:"right",tab:9,9:"tab",escape:27,27:"escape",enter:13,13:"enter",pageUp:33,33:"pageUp",pageDown:34,34:"pageDown",shift:16,16:"shift",control:17,17:"control",space:32,32:"space",t:84,84:"t","delete":46,46:"delete"},w={},x=function(a){var c,e,f,g,h,i=!1;return void 0!==b.tz&&void 0!==d.timeZone&&null!==d.timeZone&&""!==d.timeZone&&(i=!0),void 0===a||null===a?c=i?b().tz(d.timeZone).startOf("d"):b().startOf("d"):i?(e=b().tz(d.timeZone).utcOffset(),f=b(a,j,d.useStrict).utcOffset(),f!==e?(g=b().tz(d.timeZone).format("Z"),h=b(a,j,d.useStrict).format("YYYY-MM-DD[T]HH:mm:ss")+g,c=b(h,j,d.useStrict).tz(d.timeZone)):c=b(a,j,d.useStrict).tz(d.timeZone)):c=b(a,j,d.useStrict),c},y=function(a){if("string"!=typeof a||a.length>1)throw new TypeError("isEnabled expects a single character string parameter");switch(a){case"y":return-1!==i.indexOf("Y");case"M":return-1!==i.indexOf("M");case"d":return-1!==i.toLowerCase().indexOf("d");case"h":case"H":return-1!==i.toLowerCase().indexOf("h");case"m":return-1!==i.indexOf("m");case"s":return-1!==i.indexOf("s");default:return!1}},z=function(){return y("h")||y("m")||y("s")},A=function(){return y("y")||y("M")||y("d")},B=function(){var b=a("<thead>").append(a("<tr>").append(a("<th>").addClass("prev").attr("data-action","previous").append(a("<span>").addClass(d.icons.previous))).append(a("<th>").addClass("picker-switch").attr("data-action","pickerSwitch").attr("colspan",d.calendarWeeks?"6":"5")).append(a("<th>").addClass("next").attr("data-action","next").append(a("<span>").addClass(d.icons.next)))),c=a("<tbody>").append(a("<tr>").append(a("<td>").attr("colspan",d.calendarWeeks?"8":"7")));return[a("<div>").addClass("datepicker-days").append(a("<table>").addClass("table-condensed").append(b).append(a("<tbody>"))),a("<div>").addClass("datepicker-months").append(a("<table>").addClass("table-condensed").append(b.clone()).append(c.clone())),a("<div>").addClass("datepicker-years").append(a("<table>").addClass("table-condensed").append(b.clone()).append(c.clone())),a("<div>").addClass("datepicker-decades").append(a("<table>").addClass("table-condensed").append(b.clone()).append(c.clone()))]},C=function(){var b=a("<tr>"),c=a("<tr>"),e=a("<tr>");return y("h")&&(b.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.incrementHour}).addClass("btn").attr("data-action","incrementHours").append(a("<span>").addClass(d.icons.up)))),c.append(a("<td>").append(a("<span>").addClass("timepicker-hour").attr({"data-time-component":"hours",title:d.tooltips.pickHour}).attr("data-action","showHours"))),e.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.decrementHour}).addClass("btn").attr("data-action","decrementHours").append(a("<span>").addClass(d.icons.down))))),y("m")&&(y("h")&&(b.append(a("<td>").addClass("separator")),c.append(a("<td>").addClass("separator").html(":")),e.append(a("<td>").addClass("separator"))),b.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.incrementMinute}).addClass("btn").attr("data-action","incrementMinutes").append(a("<span>").addClass(d.icons.up)))),c.append(a("<td>").append(a("<span>").addClass("timepicker-minute").attr({"data-time-component":"minutes",title:d.tooltips.pickMinute}).attr("data-action","showMinutes"))),e.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.decrementMinute}).addClass("btn").attr("data-action","decrementMinutes").append(a("<span>").addClass(d.icons.down))))),y("s")&&(y("m")&&(b.append(a("<td>").addClass("separator")),c.append(a("<td>").addClass("separator").html(":")),e.append(a("<td>").addClass("separator"))),b.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.incrementSecond}).addClass("btn").attr("data-action","incrementSeconds").append(a("<span>").addClass(d.icons.up)))),c.append(a("<td>").append(a("<span>").addClass("timepicker-second").attr({"data-time-component":"seconds",title:d.tooltips.pickSecond}).attr("data-action","showSeconds"))),e.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.decrementSecond}).addClass("btn").attr("data-action","decrementSeconds").append(a("<span>").addClass(d.icons.down))))),h||(b.append(a("<td>").addClass("separator")),c.append(a("<td>").append(a("<button>").addClass("btn btn-primary").attr({"data-action":"togglePeriod",tabindex:"-1",title:d.tooltips.togglePeriod}))),e.append(a("<td>").addClass("separator"))),a("<div>").addClass("timepicker-picker").append(a("<table>").addClass("table-condensed").append([b,c,e]))},D=function(){var b=a("<div>").addClass("timepicker-hours").append(a("<table>").addClass("table-condensed")),c=a("<div>").addClass("timepicker-minutes").append(a("<table>").addClass("table-condensed")),d=a("<div>").addClass("timepicker-seconds").append(a("<table>").addClass("table-condensed")),e=[C()];return y("h")&&e.push(b),y("m")&&e.push(c),y("s")&&e.push(d),e},E=function(){var b=[];return d.showTodayButton&&b.push(a("<td>").append(a("<a>").attr({"data-action":"today",title:d.tooltips.today}).append(a("<span>").addClass(d.icons.today)))),!d.sideBySide&&A()&&z()&&b.push(a("<td>").append(a("<a>").attr({"data-action":"togglePicker",title:d.tooltips.selectTime}).append(a("<span>").addClass(d.icons.time)))),d.showClear&&b.push(a("<td>").append(a("<a>").attr({"data-action":"clear",title:d.tooltips.clear}).append(a("<span>").addClass(d.icons.clear)))),d.showClose&&b.push(a("<td>").append(a("<a>").attr({"data-action":"close",title:d.tooltips.close}).append(a("<span>").addClass(d.icons.close)))),a("<table>").addClass("table-condensed").append(a("<tbody>").append(a("<tr>").append(b)))},F=function(){var b=a("<div>").addClass("bootstrap-datetimepicker-widget dropdown-menu"),c=a("<div>").addClass("datepicker").append(B()),e=a("<div>").addClass("timepicker").append(D()),f=a("<ul>").addClass("list-unstyled"),g=a("<li>").addClass("picker-switch"+(d.collapse?" accordion-toggle":"")).append(E());return d.inline&&b.removeClass("dropdown-menu"),h&&b.addClass("usetwentyfour"),y("s")&&!h&&b.addClass("wider"),d.sideBySide&&A()&&z()?(b.addClass("timepicker-sbs"),"top"===d.toolbarPlacement&&b.append(g),b.append(a("<div>").addClass("row").append(c.addClass("col-md-6")).append(e.addClass("col-md-6"))),"bottom"===d.toolbarPlacement&&b.append(g),b):("top"===d.toolbarPlacement&&f.append(g),A()&&f.append(a("<li>").addClass(d.collapse&&z()?"collapse in":"").append(c)),"default"===d.toolbarPlacement&&f.append(g),z()&&f.append(a("<li>").addClass(d.collapse&&A()?"collapse":"").append(e)),"bottom"===d.toolbarPlacement&&f.append(g),b.append(f))},G=function(){var b,e={};return b=c.is("input")||d.inline?c.data():c.find("input").data(),b.dateOptions&&b.dateOptions instanceof Object&&(e=a.extend(!0,e,b.dateOptions)),a.each(d,function(a){var c="date"+a.charAt(0).toUpperCase()+a.slice(1);void 0!==b[c]&&(e[a]=b[c])}),e},H=function(){var b,e=(n||c).position(),f=(n||c).offset(),g=d.widgetPositioning.vertical,h=d.widgetPositioning.horizontal;if(d.widgetParent)b=d.widgetParent.append(o);else if(c.is("input"))b=c.after(o).parent();else{if(d.inline)return void(b=c.append(o));b=c,c.children().first().after(o)}if("auto"===g&&(g=f.top+1.5*o.height()>=a(window).height()+a(window).scrollTop()&&o.height()+c.outerHeight()<f.top?"top":"bottom"),"auto"===h&&(h=b.width()<f.left+o.outerWidth()/2&&f.left+o.outerWidth()>a(window).width()?"right":"left"),"top"===g?o.addClass("top").removeClass("bottom"):o.addClass("bottom").removeClass("top"),"right"===h?o.addClass("pull-right"):o.removeClass("pull-right"),"relative"!==b.css("position")&&(b=b.parents().filter(function(){return"relative"===a(this).css("position")}).first()),0===b.length)throw new Error("datetimepicker component should be placed within a relative positioned container");o.css({top:"top"===g?"auto":e.top+c.outerHeight(),bottom:"top"===g?e.top+c.outerHeight():"auto",left:"left"===h?b===c?0:e.left:"auto",right:"left"===h?"auto":b.outerWidth()-c.outerWidth()-(b===c?0:e.left)})},I=function(a){"dp.change"===a.type&&(a.date&&a.date.isSame(a.oldDate)||!a.date&&!a.oldDate)||c.trigger(a)},J=function(a){"y"===a&&(a="YYYY"),I({type:"dp.update",change:a,viewDate:f.clone()})},K=function(a){o&&(a&&(k=Math.max(p,Math.min(3,k+a))),o.find(".datepicker > div").hide().filter(".datepicker-"+q[k].clsName).show())},L=function(){var b=a("<tr>"),c=f.clone().startOf("w").startOf("d");for(d.calendarWeeks===!0&&b.append(a("<th>").addClass("cw").text("#"));c.isBefore(f.clone().endOf("w"));)b.append(a("<th>").addClass("dow").text(c.format("dd"))),c.add(1,"d");o.find(".datepicker-days thead").append(b)},M=function(a){return d.disabledDates[a.format("YYYY-MM-DD")]===!0},N=function(a){return d.enabledDates[a.format("YYYY-MM-DD")]===!0},O=function(a){return d.disabledHours[a.format("H")]===!0},P=function(a){return d.enabledHours[a.format("H")]===!0},Q=function(b,c){if(!b.isValid())return!1;if(d.disabledDates&&"d"===c&&M(b))return!1;if(d.enabledDates&&"d"===c&&!N(b))return!1;if(d.minDate&&b.isBefore(d.minDate,c))return!1;if(d.maxDate&&b.isAfter(d.maxDate,c))return!1;if(d.daysOfWeekDisabled&&"d"===c&&-1!==d.daysOfWeekDisabled.indexOf(b.day()))return!1;if(d.disabledHours&&("h"===c||"m"===c||"s"===c)&&O(b))return!1;if(d.enabledHours&&("h"===c||"m"===c||"s"===c)&&!P(b))return!1;if(d.disabledTimeIntervals&&("h"===c||"m"===c||"s"===c)){var e=!1;if(a.each(d.disabledTimeIntervals,function(){return b.isBetween(this[0],this[1])?(e=!0,!1):void 0}),e)return!1}return!0},R=function(){for(var b=[],c=f.clone().startOf("y").startOf("d");c.isSame(f,"y");)b.push(a("<span>").attr("data-action","selectMonth").addClass("month").text(c.format("MMM"))),c.add(1,"M");o.find(".datepicker-months td").empty().append(b)},S=function(){var b=o.find(".datepicker-months"),c=b.find("th"),g=b.find("tbody").find("span");c.eq(0).find("span").attr("title",d.tooltips.prevYear),c.eq(1).attr("title",d.tooltips.selectYear),c.eq(2).find("span").attr("title",d.tooltips.nextYear),b.find(".disabled").removeClass("disabled"),Q(f.clone().subtract(1,"y"),"y")||c.eq(0).addClass("disabled"),c.eq(1).text(f.year()),Q(f.clone().add(1,"y"),"y")||c.eq(2).addClass("disabled"),g.removeClass("active"),e.isSame(f,"y")&&!m&&g.eq(e.month()).addClass("active"),g.each(function(b){Q(f.clone().month(b),"M")||a(this).addClass("disabled")})},T=function(){var a=o.find(".datepicker-years"),b=a.find("th"),c=f.clone().subtract(5,"y"),g=f.clone().add(6,"y"),h="";for(b.eq(0).find("span").attr("title",d.tooltips.prevDecade),b.eq(1).attr("title",d.tooltips.selectDecade),b.eq(2).find("span").attr("title",d.tooltips.nextDecade),a.find(".disabled").removeClass("disabled"),d.minDate&&d.minDate.isAfter(c,"y")&&b.eq(0).addClass("disabled"),b.eq(1).text(c.year()+"-"+g.year()),d.maxDate&&d.maxDate.isBefore(g,"y")&&b.eq(2).addClass("disabled");!c.isAfter(g,"y");)h+='<span data-action="selectYear" class="year'+(c.isSame(e,"y")&&!m?" active":"")+(Q(c,"y")?"":" disabled")+'">'+c.year()+"</span>",c.add(1,"y");a.find("td").html(h)},U=function(){var a=o.find(".datepicker-decades"),c=a.find("th"),g=b({y:f.year()-f.year()%100-1}),h=g.clone().add(100,"y"),i=g.clone(),j="";for(c.eq(0).find("span").attr("title",d.tooltips.prevCentury),c.eq(2).find("span").attr("title",d.tooltips.nextCentury),a.find(".disabled").removeClass("disabled"),(g.isSame(b({y:1900}))||d.minDate&&d.minDate.isAfter(g,"y"))&&c.eq(0).addClass("disabled"),c.eq(1).text(g.year()+"-"+h.year()),(g.isSame(b({y:2e3}))||d.maxDate&&d.maxDate.isBefore(h,"y"))&&c.eq(2).addClass("disabled");!g.isAfter(h,"y");)j+='<span data-action="selectDecade" class="decade'+(g.isSame(e,"y")?" active":"")+(Q(g,"y")?"":" disabled")+'" data-selection="'+(g.year()+6)+'">'+(g.year()+1)+" - "+(g.year()+12)+"</span>",g.add(12,"y");j+="<span></span><span></span><span></span>",a.find("td").html(j),c.eq(1).text(i.year()+1+"-"+g.year())},V=function(){var b,c,g,h,i=o.find(".datepicker-days"),j=i.find("th"),k=[];if(A()){for(j.eq(0).find("span").attr("title",d.tooltips.prevMonth),j.eq(1).attr("title",d.tooltips.selectMonth),j.eq(2).find("span").attr("title",d.tooltips.nextMonth),i.find(".disabled").removeClass("disabled"),j.eq(1).text(f.format(d.dayViewHeaderFormat)),Q(f.clone().subtract(1,"M"),"M")||j.eq(0).addClass("disabled"),Q(f.clone().add(1,"M"),"M")||j.eq(2).addClass("disabled"),b=f.clone().startOf("M").startOf("w").startOf("d"),h=0;42>h;h++)0===b.weekday()&&(c=a("<tr>"),d.calendarWeeks&&c.append('<td class="cw">'+b.week()+"</td>"),k.push(c)),g="",b.isBefore(f,"M")&&(g+=" old"),b.isAfter(f,"M")&&(g+=" new"),b.isSame(e,"d")&&!m&&(g+=" active"),Q(b,"d")||(g+=" disabled"),b.isSame(x(),"d")&&(g+=" today"),(0===b.day()||6===b.day())&&(g+=" weekend"),c.append('<td data-action="selectDay" data-day="'+b.format("L")+'" class="day'+g+'">'+b.date()+"</td>"),b.add(1,"d");i.find("tbody").empty().append(k),S(),T(),U()}},W=function(){var b=o.find(".timepicker-hours table"),c=f.clone().startOf("d"),d=[],e=a("<tr>");for(f.hour()>11&&!h&&c.hour(12);c.isSame(f,"d")&&(h||f.hour()<12&&c.hour()<12||f.hour()>11);)c.hour()%4===0&&(e=a("<tr>"),d.push(e)),e.append('<td data-action="selectHour" class="hour'+(Q(c,"h")?"":" disabled")+'">'+c.format(h?"HH":"hh")+"</td>"),c.add(1,"h");b.empty().append(d)},X=function(){for(var b=o.find(".timepicker-minutes table"),c=f.clone().startOf("h"),e=[],g=a("<tr>"),h=1===d.stepping?5:d.stepping;f.isSame(c,"h");)c.minute()%(4*h)===0&&(g=a("<tr>"),e.push(g)),g.append('<td data-action="selectMinute" class="minute'+(Q(c,"m")?"":" disabled")+'">'+c.format("mm")+"</td>"),c.add(h,"m");b.empty().append(e)},Y=function(){for(var b=o.find(".timepicker-seconds table"),c=f.clone().startOf("m"),d=[],e=a("<tr>");f.isSame(c,"m");)c.second()%20===0&&(e=a("<tr>"),d.push(e)),e.append('<td data-action="selectSecond" class="second'+(Q(c,"s")?"":" disabled")+'">'+c.format("ss")+"</td>"),c.add(5,"s");b.empty().append(d)},Z=function(){var a,b,c=o.find(".timepicker span[data-time-component]");h||(a=o.find(".timepicker [data-action=togglePeriod]"),b=e.clone().add(e.hours()>=12?-12:12,"h"),a.text(e.format("A")),Q(b,"h")?a.removeClass("disabled"):a.addClass("disabled")),c.filter("[data-time-component=hours]").text(e.format(h?"HH":"hh")),c.filter("[data-time-component=minutes]").text(e.format("mm")),c.filter("[data-time-component=seconds]").text(e.format("ss")),W(),X(),Y()},$=function(){o&&(V(),Z())},_=function(a){var b=m?null:e;return a?(a=a.clone().locale(d.locale),1!==d.stepping&&a.minutes(Math.round(a.minutes()/d.stepping)*d.stepping%60).seconds(0),void(Q(a)?(e=a,f=e.clone(),g.val(e.format(i)),c.data("date",e.format(i)),m=!1,$(),I({type:"dp.change",date:e.clone(),oldDate:b})):(d.keepInvalid||g.val(m?"":e.format(i)),I({type:"dp.error",date:a})))):(m=!0,g.val(""),c.data("date",""),I({type:"dp.change",date:!1,oldDate:b}),void $())},aa=function(){var b=!1;return o?(o.find(".collapse").each(function(){var c=a(this).data("collapse");return c&&c.transitioning?(b=!0,!1):!0}),b?l:(n&&n.hasClass("btn")&&n.toggleClass("active"),o.hide(),a(window).off("resize",H),o.off("click","[data-action]"),o.off("mousedown",!1),o.remove(),o=!1,I({type:"dp.hide",date:e.clone()}),g.blur(),l)):l},ba=function(){_(null)},ca={next:function(){var a=q[k].navFnc;f.add(q[k].navStep,a),V(),J(a)},previous:function(){var a=q[k].navFnc;f.subtract(q[k].navStep,a),V(),J(a)},pickerSwitch:function(){K(1)},selectMonth:function(b){var c=a(b.target).closest("tbody").find("span").index(a(b.target));f.month(c),k===p?(_(e.clone().year(f.year()).month(f.month())),d.inline||aa()):(K(-1),V()),J("M")},selectYear:function(b){var c=parseInt(a(b.target).text(),10)||0;f.year(c),k===p?(_(e.clone().year(f.year())),d.inline||aa()):(K(-1),V()),J("YYYY")},selectDecade:function(b){var c=parseInt(a(b.target).data("selection"),10)||0;f.year(c),k===p?(_(e.clone().year(f.year())),d.inline||aa()):(K(-1),V()),J("YYYY")},selectDay:function(b){var c=f.clone();a(b.target).is(".old")&&c.subtract(1,"M"),a(b.target).is(".new")&&c.add(1,"M"),_(c.date(parseInt(a(b.target).text(),10))),z()||d.keepOpen||d.inline||aa()},incrementHours:function(){var a=e.clone().add(1,"h");Q(a,"h")&&_(a)},incrementMinutes:function(){var a=e.clone().add(d.stepping,"m");Q(a,"m")&&_(a)},incrementSeconds:function(){var a=e.clone().add(1,"s");Q(a,"s")&&_(a)},decrementHours:function(){var a=e.clone().subtract(1,"h");Q(a,"h")&&_(a)},decrementMinutes:function(){var a=e.clone().subtract(d.stepping,"m");Q(a,"m")&&_(a)},decrementSeconds:function(){var a=e.clone().subtract(1,"s");Q(a,"s")&&_(a)},togglePeriod:function(){_(e.clone().add(e.hours()>=12?-12:12,"h"))},togglePicker:function(b){var c,e=a(b.target),f=e.closest("ul"),g=f.find(".in"),h=f.find(".collapse:not(.in)");if(g&&g.length){if(c=g.data("collapse"),c&&c.transitioning)return;g.collapse?(g.collapse("hide"),h.collapse("show")):(g.removeClass("in"),h.addClass("in")),e.is("span")?e.toggleClass(d.icons.time+" "+d.icons.date):e.find("span").toggleClass(d.icons.time+" "+d.icons.date)}},showPicker:function(){o.find(".timepicker > div:not(.timepicker-picker)").hide(),o.find(".timepicker .timepicker-picker").show()},showHours:function(){o.find(".timepicker .timepicker-picker").hide(),o.find(".timepicker .timepicker-hours").show()},showMinutes:function(){o.find(".timepicker .timepicker-picker").hide(),o.find(".timepicker .timepicker-minutes").show()},showSeconds:function(){o.find(".timepicker .timepicker-picker").hide(),o.find(".timepicker .timepicker-seconds").show()},selectHour:function(b){var c=parseInt(a(b.target).text(),10);h||(e.hours()>=12?12!==c&&(c+=12):12===c&&(c=0)),_(e.clone().hours(c)),ca.showPicker.call(l)},selectMinute:function(b){_(e.clone().minutes(parseInt(a(b.target).text(),10))),ca.showPicker.call(l)},selectSecond:function(b){_(e.clone().seconds(parseInt(a(b.target).text(),10))),ca.showPicker.call(l)},clear:ba,today:function(){var a=x();Q(a,"d")&&_(a)},close:aa},da=function(b){return a(b.currentTarget).is(".disabled")?!1:(ca[a(b.currentTarget).data("action")].apply(l,arguments),!1)},ea=function(){var b,c={year:function(a){return a.month(0).date(1).hours(0).seconds(0).minutes(0)},month:function(a){return a.date(1).hours(0).seconds(0).minutes(0)},day:function(a){return a.hours(0).seconds(0).minutes(0)},hour:function(a){return a.seconds(0).minutes(0)},minute:function(a){return a.seconds(0)}};return g.prop("disabled")||!d.ignoreReadonly&&g.prop("readonly")||o?l:(void 0!==g.val()&&0!==g.val().trim().length?_(ga(g.val().trim())):d.useCurrent&&m&&(g.is("input")&&0===g.val().trim().length||d.inline)&&(b=x(),"string"==typeof d.useCurrent&&(b=c[d.useCurrent](b)),_(b)),o=F(),L(),R(),o.find(".timepicker-hours").hide(),o.find(".timepicker-minutes").hide(),o.find(".timepicker-seconds").hide(),$(),K(),a(window).on("resize",H),o.on("click","[data-action]",da),o.on("mousedown",!1),n&&n.hasClass("btn")&&n.toggleClass("active"),o.show(),H(),d.focusOnShow&&!g.is(":focus")&&g.focus(),I({type:"dp.show"}),l)},fa=function(){return o?aa():ea()},ga=function(a){return a=void 0===d.parseInputDate?b.isMoment(a)||a instanceof Date?b(a):x(a):d.parseInputDate(a),a.locale(d.locale),a},ha=function(a){var b,c,e,f,g=null,h=[],i={},j=a.which,k="p";w[j]=k;for(b in w)w.hasOwnProperty(b)&&w[b]===k&&(h.push(b),parseInt(b,10)!==j&&(i[b]=!0));for(b in d.keyBinds)if(d.keyBinds.hasOwnProperty(b)&&"function"==typeof d.keyBinds[b]&&(e=b.split(" "),e.length===h.length&&v[j]===e[e.length-1])){for(f=!0,c=e.length-2;c>=0;c--)if(!(v[e[c]]in i)){f=!1;break}if(f){g=d.keyBinds[b];break}}g&&(g.call(l,o),a.stopPropagation(),a.preventDefault())},ia=function(a){w[a.which]="r",a.stopPropagation(),a.preventDefault()},ja=function(b){var c=a(b.target).val().trim(),d=c?ga(c):null;return _(d),b.stopImmediatePropagation(),!1},ka=function(){g.on({change:ja,blur:d.debug?"":aa,keydown:ha,keyup:ia,focus:d.allowInputToggle?ea:""}),c.is("input")?g.on({focus:ea}):n&&(n.on("click",fa),n.on("mousedown",!1))},la=function(){g.off({change:ja,blur:blur,keydown:ha,keyup:ia,focus:d.allowInputToggle?aa:""}),c.is("input")?g.off({focus:ea}):n&&(n.off("click",fa),n.off("mousedown",!1))},ma=function(b){var c={};return a.each(b,function(){var a=ga(this);a.isValid()&&(c[a.format("YYYY-MM-DD")]=!0)}),Object.keys(c).length?c:!1},na=function(b){var c={};return a.each(b,function(){c[this]=!0}),Object.keys(c).length?c:!1},oa=function(){var a=d.format||"L LT";i=a.replace(/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,function(a){var b=e.localeData().longDateFormat(a)||a;return b.replace(/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,function(a){return e.localeData().longDateFormat(a)||a})}),j=d.extraFormats?d.extraFormats.slice():[],j.indexOf(a)<0&&j.indexOf(i)<0&&j.push(i),h=i.toLowerCase().indexOf("a")<1&&i.replace(/\[.*?\]/g,"").indexOf("h")<1,y("y")&&(p=2),y("M")&&(p=1),y("d")&&(p=0),k=Math.max(p,k),m||_(e)};if(l.destroy=function(){aa(),la(),c.removeData("DateTimePicker"),c.removeData("date")},l.toggle=fa,l.show=ea,l.hide=aa,l.disable=function(){return aa(),n&&n.hasClass("btn")&&n.addClass("disabled"),g.prop("disabled",!0),l},l.enable=function(){return n&&n.hasClass("btn")&&n.removeClass("disabled"),g.prop("disabled",!1),l},l.ignoreReadonly=function(a){if(0===arguments.length)return d.ignoreReadonly;if("boolean"!=typeof a)throw new TypeError("ignoreReadonly () expects a boolean parameter");return d.ignoreReadonly=a,l},l.options=function(b){if(0===arguments.length)return a.extend(!0,{},d);if(!(b instanceof Object))throw new TypeError("options() options parameter should be an object");return a.extend(!0,d,b),a.each(d,function(a,b){if(void 0===l[a])throw new TypeError("option "+a+" is not recognized!");l[a](b)}),l},l.date=function(a){if(0===arguments.length)return m?null:e.clone();if(!(null===a||"string"==typeof a||b.isMoment(a)||a instanceof Date))throw new TypeError("date() parameter must be one of [null, string, moment or Date]");return _(null===a?null:ga(a)),l},l.format=function(a){if(0===arguments.length)return d.format;if("string"!=typeof a&&("boolean"!=typeof a||a!==!1))throw new TypeError("format() expects a sting or boolean:false parameter "+a);return d.format=a,i&&oa(),l},l.timeZone=function(a){return 0===arguments.length?d.timeZone:(d.timeZone=a,l)},l.dayViewHeaderFormat=function(a){if(0===arguments.length)return d.dayViewHeaderFormat;if("string"!=typeof a)throw new TypeError("dayViewHeaderFormat() expects a string parameter");return d.dayViewHeaderFormat=a,l},l.extraFormats=function(a){if(0===arguments.length)return d.extraFormats;if(a!==!1&&!(a instanceof Array))throw new TypeError("extraFormats() expects an array or false parameter");return d.extraFormats=a,j&&oa(),l},l.disabledDates=function(b){if(0===arguments.length)return d.disabledDates?a.extend({},d.disabledDates):d.disabledDates;if(!b)return d.disabledDates=!1,$(),l;if(!(b instanceof Array))throw new TypeError("disabledDates() expects an array parameter");return d.disabledDates=ma(b),d.enabledDates=!1,$(),l},l.enabledDates=function(b){if(0===arguments.length)return d.enabledDates?a.extend({},d.enabledDates):d.enabledDates;if(!b)return d.enabledDates=!1,$(),l;if(!(b instanceof Array))throw new TypeError("enabledDates() expects an array parameter");return d.enabledDates=ma(b),d.disabledDates=!1,$(),l},l.daysOfWeekDisabled=function(a){if(0===arguments.length)return d.daysOfWeekDisabled.splice(0);if("boolean"==typeof a&&!a)return d.daysOfWeekDisabled=!1,$(),l;if(!(a instanceof Array))throw new TypeError("daysOfWeekDisabled() expects an array parameter");if(d.daysOfWeekDisabled=a.reduce(function(a,b){return b=parseInt(b,10),b>6||0>b||isNaN(b)?a:(-1===a.indexOf(b)&&a.push(b),a)},[]).sort(),d.useCurrent&&!d.keepInvalid){for(var b=0;!Q(e,"d");){if(e.add(1,"d"),7===b)throw"Tried 7 times to find a valid date";b++}_(e)}return $(),l},l.maxDate=function(a){if(0===arguments.length)return d.maxDate?d.maxDate.clone():d.maxDate;if("boolean"==typeof a&&a===!1)return d.maxDate=!1,$(),l;"string"==typeof a&&("now"===a||"moment"===a)&&(a=x());var b=ga(a);if(!b.isValid())throw new TypeError("maxDate() Could not parse date parameter: "+a);if(d.minDate&&b.isBefore(d.minDate))throw new TypeError("maxDate() date parameter is before options.minDate: "+b.format(i));return d.maxDate=b,d.useCurrent&&!d.keepInvalid&&e.isAfter(a)&&_(d.maxDate),f.isAfter(b)&&(f=b.clone().subtract(d.stepping,"m")),$(),l},l.minDate=function(a){if(0===arguments.length)return d.minDate?d.minDate.clone():d.minDate;if("boolean"==typeof a&&a===!1)return d.minDate=!1,$(),l;"string"==typeof a&&("now"===a||"moment"===a)&&(a=x());var b=ga(a);if(!b.isValid())throw new TypeError("minDate() Could not parse date parameter: "+a);if(d.maxDate&&b.isAfter(d.maxDate))throw new TypeError("minDate() date parameter is after options.maxDate: "+b.format(i));return d.minDate=b,d.useCurrent&&!d.keepInvalid&&e.isBefore(a)&&_(d.minDate),f.isBefore(b)&&(f=b.clone().add(d.stepping,"m")),$(),l},l.defaultDate=function(a){if(0===arguments.length)return d.defaultDate?d.defaultDate.clone():d.defaultDate;if(!a)return d.defaultDate=!1,l;"string"==typeof a&&("now"===a||"moment"===a)&&(a=x());var b=ga(a);if(!b.isValid())throw new TypeError("defaultDate() Could not parse date parameter: "+a);if(!Q(b))throw new TypeError("defaultDate() date passed is invalid according to component setup validations");return d.defaultDate=b,(d.defaultDate&&d.inline||""===g.val().trim())&&_(d.defaultDate),l},l.locale=function(a){if(0===arguments.length)return d.locale;if(!b.localeData(a))throw new TypeError("locale() locale "+a+" is not loaded from moment locales!");return d.locale=a,e.locale(d.locale),f.locale(d.locale),i&&oa(),o&&(aa(),ea()),l},l.stepping=function(a){return 0===arguments.length?d.stepping:(a=parseInt(a,10),(isNaN(a)||1>a)&&(a=1),d.stepping=a,l)},l.useCurrent=function(a){var b=["year","month","day","hour","minute"];if(0===arguments.length)return d.useCurrent;if("boolean"!=typeof a&&"string"!=typeof a)throw new TypeError("useCurrent() expects a boolean or string parameter");if("string"==typeof a&&-1===b.indexOf(a.toLowerCase()))throw new TypeError("useCurrent() expects a string parameter of "+b.join(", "));return d.useCurrent=a,l},l.collapse=function(a){if(0===arguments.length)return d.collapse;if("boolean"!=typeof a)throw new TypeError("collapse() expects a boolean parameter");return d.collapse===a?l:(d.collapse=a,o&&(aa(),ea()),l)},l.icons=function(b){if(0===arguments.length)return a.extend({},d.icons);if(!(b instanceof Object))throw new TypeError("icons() expects parameter to be an Object");return a.extend(d.icons,b),o&&(aa(),ea()),l},l.tooltips=function(b){if(0===arguments.length)return a.extend({},d.tooltips);if(!(b instanceof Object))throw new TypeError("tooltips() expects parameter to be an Object");return a.extend(d.tooltips,b),o&&(aa(),ea()),l},l.useStrict=function(a){if(0===arguments.length)return d.useStrict;if("boolean"!=typeof a)throw new TypeError("useStrict() expects a boolean parameter");return d.useStrict=a,l},l.sideBySide=function(a){if(0===arguments.length)return d.sideBySide;if("boolean"!=typeof a)throw new TypeError("sideBySide() expects a boolean parameter");return d.sideBySide=a,o&&(aa(),ea()),l},l.viewMode=function(a){if(0===arguments.length)return d.viewMode;if("string"!=typeof a)throw new TypeError("viewMode() expects a string parameter");if(-1===r.indexOf(a))throw new TypeError("viewMode() parameter must be one of ("+r.join(", ")+") value");return d.viewMode=a,k=Math.max(r.indexOf(a),p),K(),l},l.toolbarPlacement=function(a){if(0===arguments.length)return d.toolbarPlacement;if("string"!=typeof a)throw new TypeError("toolbarPlacement() expects a string parameter");if(-1===u.indexOf(a))throw new TypeError("toolbarPlacement() parameter must be one of ("+u.join(", ")+") value");return d.toolbarPlacement=a,o&&(aa(),ea()),l},l.widgetPositioning=function(b){if(0===arguments.length)return a.extend({},d.widgetPositioning);if("[object Object]"!=={}.toString.call(b))throw new TypeError("widgetPositioning() expects an object variable");if(b.horizontal){if("string"!=typeof b.horizontal)throw new TypeError("widgetPositioning() horizontal variable must be a string");if(b.horizontal=b.horizontal.toLowerCase(),-1===t.indexOf(b.horizontal))throw new TypeError("widgetPositioning() expects horizontal parameter to be one of ("+t.join(", ")+")");d.widgetPositioning.horizontal=b.horizontal}if(b.vertical){if("string"!=typeof b.vertical)throw new TypeError("widgetPositioning() vertical variable must be a string");if(b.vertical=b.vertical.toLowerCase(),-1===s.indexOf(b.vertical))throw new TypeError("widgetPositioning() expects vertical parameter to be one of ("+s.join(", ")+")");d.widgetPositioning.vertical=b.vertical}return $(),l},l.calendarWeeks=function(a){if(0===arguments.length)return d.calendarWeeks;if("boolean"!=typeof a)throw new TypeError("calendarWeeks() expects parameter to be a boolean value");return d.calendarWeeks=a,$(),l},l.showTodayButton=function(a){if(0===arguments.length)return d.showTodayButton;if("boolean"!=typeof a)throw new TypeError("showTodayButton() expects a boolean parameter");return d.showTodayButton=a,o&&(aa(),ea()),l},l.showClear=function(a){if(0===arguments.length)return d.showClear;if("boolean"!=typeof a)throw new TypeError("showClear() expects a boolean parameter");return d.showClear=a,o&&(aa(),ea()),l},l.widgetParent=function(b){if(0===arguments.length)return d.widgetParent;if("string"==typeof b&&(b=a(b)),null!==b&&"string"!=typeof b&&!(b instanceof a))throw new TypeError("widgetParent() expects a string or a jQuery object parameter");return d.widgetParent=b,o&&(aa(),ea()),l},l.keepOpen=function(a){if(0===arguments.length)return d.keepOpen;if("boolean"!=typeof a)throw new TypeError("keepOpen() expects a boolean parameter");return d.keepOpen=a,l},l.focusOnShow=function(a){if(0===arguments.length)return d.focusOnShow;if("boolean"!=typeof a)throw new TypeError("focusOnShow() expects a boolean parameter");return d.focusOnShow=a,l},l.inline=function(a){if(0===arguments.length)return d.inline;if("boolean"!=typeof a)throw new TypeError("inline() expects a boolean parameter");return d.inline=a,l},l.clear=function(){return ba(),l},l.keyBinds=function(a){return d.keyBinds=a,l},l.getMoment=function(a){return x(a)},l.debug=function(a){if("boolean"!=typeof a)throw new TypeError("debug() expects a boolean parameter");return d.debug=a,l},l.allowInputToggle=function(a){if(0===arguments.length)return d.allowInputToggle;if("boolean"!=typeof a)throw new TypeError("allowInputToggle() expects a boolean parameter");return d.allowInputToggle=a,l},l.showClose=function(a){if(0===arguments.length)return d.showClose;if("boolean"!=typeof a)throw new TypeError("showClose() expects a boolean parameter");return d.showClose=a,l},l.keepInvalid=function(a){if(0===arguments.length)return d.keepInvalid;if("boolean"!=typeof a)throw new TypeError("keepInvalid() expects a boolean parameter");return d.keepInvalid=a,l},l.datepickerInput=function(a){if(0===arguments.length)return d.datepickerInput;if("string"!=typeof a)throw new TypeError("datepickerInput() expects a string parameter");return d.datepickerInput=a,l},l.parseInputDate=function(a){if(0===arguments.length)return d.parseInputDate;
+if("function"!=typeof a)throw new TypeError("parseInputDate() sholud be as function");return d.parseInputDate=a,l},l.disabledTimeIntervals=function(b){if(0===arguments.length)return d.disabledTimeIntervals?a.extend({},d.disabledTimeIntervals):d.disabledTimeIntervals;if(!b)return d.disabledTimeIntervals=!1,$(),l;if(!(b instanceof Array))throw new TypeError("disabledTimeIntervals() expects an array parameter");return d.disabledTimeIntervals=b,$(),l},l.disabledHours=function(b){if(0===arguments.length)return d.disabledHours?a.extend({},d.disabledHours):d.disabledHours;if(!b)return d.disabledHours=!1,$(),l;if(!(b instanceof Array))throw new TypeError("disabledHours() expects an array parameter");if(d.disabledHours=na(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var c=0;!Q(e,"h");){if(e.add(1,"h"),24===c)throw"Tried 24 times to find a valid date";c++}_(e)}return $(),l},l.enabledHours=function(b){if(0===arguments.length)return d.enabledHours?a.extend({},d.enabledHours):d.enabledHours;if(!b)return d.enabledHours=!1,$(),l;if(!(b instanceof Array))throw new TypeError("enabledHours() expects an array parameter");if(d.enabledHours=na(b),d.disabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var c=0;!Q(e,"h");){if(e.add(1,"h"),24===c)throw"Tried 24 times to find a valid date";c++}_(e)}return $(),l},l.viewDate=function(a){if(0===arguments.length)return f.clone();if(!a)return f=e.clone(),l;if(!("string"==typeof a||b.isMoment(a)||a instanceof Date))throw new TypeError("viewDate() parameter must be one of [string, moment or Date]");return f=ga(a),J(),l},c.is("input"))g=c;else if(g=c.find(d.datepickerInput),0===g.size())g=c.find("input");else if(!g.is("input"))throw new Error('CSS class "'+d.datepickerInput+'" cannot be applied to non input element');if(c.hasClass("input-group")&&(n=0===c.find(".datepickerbutton").size()?c.find(".input-group-addon"):c.find(".datepickerbutton")),!d.inline&&!g.is("input"))throw new Error("Could not initialize DateTimePicker without an input element");return e=x(),f=e.clone(),a.extend(!0,d,G()),l.options(d),oa(),ka(),g.prop("disabled")&&l.disable(),g.is("input")&&0!==g.val().trim().length?_(ga(g.val().trim())):d.defaultDate&&void 0===g.attr("placeholder")&&_(d.defaultDate),d.inline&&ea(),l};a.fn.datetimepicker=function(b){return this.each(function(){var d=a(this);d.data("DateTimePicker")||(b=a.extend(!0,{},a.fn.datetimepicker.defaults,b),d.data("DateTimePicker",c(d,b)))})},a.fn.datetimepicker.defaults={timeZone:"Etc/UTC",format:!1,dayViewHeaderFormat:"MMMM YYYY",extraFormats:!1,stepping:1,minDate:!1,maxDate:!1,useCurrent:!0,collapse:!0,locale:b.locale(),defaultDate:!1,disabledDates:!1,enabledDates:!1,icons:{time:"glyphicon glyphicon-time",date:"glyphicon glyphicon-calendar",up:"glyphicon glyphicon-chevron-up",down:"glyphicon glyphicon-chevron-down",previous:"glyphicon glyphicon-chevron-left",next:"glyphicon glyphicon-chevron-right",today:"glyphicon glyphicon-screenshot",clear:"glyphicon glyphicon-trash",close:"glyphicon glyphicon-remove"},tooltips:{today:"Go to today",clear:"Clear selection",close:"Close the picker",selectMonth:"Select Month",prevMonth:"Previous Month",nextMonth:"Next Month",selectYear:"Select Year",prevYear:"Previous Year",nextYear:"Next Year",selectDecade:"Select Decade",prevDecade:"Previous Decade",nextDecade:"Next Decade",prevCentury:"Previous Century",nextCentury:"Next Century",pickHour:"Pick Hour",incrementHour:"Increment Hour",decrementHour:"Decrement Hour",pickMinute:"Pick Minute",incrementMinute:"Increment Minute",decrementMinute:"Decrement Minute",pickSecond:"Pick Second",incrementSecond:"Increment Second",decrementSecond:"Decrement Second",togglePeriod:"Toggle Period",selectTime:"Select Time"},useStrict:!1,sideBySide:!1,daysOfWeekDisabled:!1,calendarWeeks:!1,viewMode:"days",toolbarPlacement:"default",showTodayButton:!1,showClear:!1,showClose:!1,widgetPositioning:{horizontal:"auto",vertical:"auto"},widgetParent:null,ignoreReadonly:!1,keepOpen:!1,focusOnShow:!0,inline:!1,keepInvalid:!1,datepickerInput:".datepickerinput",keyBinds:{up:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().subtract(7,"d")):this.date(b.clone().add(this.stepping(),"m"))}},down:function(a){if(!a)return void this.show();var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().add(7,"d")):this.date(b.clone().subtract(this.stepping(),"m"))},"control up":function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().subtract(1,"y")):this.date(b.clone().add(1,"h"))}},"control down":function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().add(1,"y")):this.date(b.clone().subtract(1,"h"))}},left:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().subtract(1,"d"))}},right:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().add(1,"d"))}},pageUp:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().subtract(1,"M"))}},pageDown:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().add(1,"M"))}},enter:function(){this.hide()},escape:function(){this.hide()},"control space":function(a){a.find(".timepicker").is(":visible")&&a.find('.btn[data-action="togglePeriod"]').click()},t:function(){this.date(this.getMoment())},"delete":function(){this.clear()}},debug:!1,allowInputToggle:!1,disabledTimeIntervals:!1,disabledHours:!1,enabledHours:!1,viewDate:!1}});
 /*! Copyright (c) 2011 Piotr Rochala (http://rocha.la)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
@@ -107630,11 +107639,718 @@ $.executeTheme = function () {
 
   //Add slimscroll to navbar dropdown
   if (o.navbarMenuSlimscroll && typeof $.fn.slimscroll != 'undefined') {
-    $(".navbar .menu").slimscroll({
+    /*$(".navbar .menu").slimscroll({
       height: o.navbarMenuHeight,
       alwaysVisible: false,
       size: o.navbarMenuSlimscrollWidth
-    }).css("width", "100%");
+    }).css("width", "100%");*/
+  }
+
+  //Activate sidebar push menu
+  if (o.sidebarPushMenu) {
+    $.AdminLTE.pushMenu.activate(o.sidebarToggleSelector);
+  }
+
+  //Activate Bootstrap tooltip
+  if (o.enableBSToppltip) {
+    $('body').tooltip({
+      selector: o.BSTooltipSelector
+    });
+  }
+
+  //Activate box widget
+  if (o.enableBoxWidget) {
+    $.AdminLTE.boxWidget.activate();
+  }
+
+  //Activate fast click
+  if (o.enableFastclick && typeof FastClick != 'undefined') {
+    FastClick.attach(document.body);
+  }
+
+  //Activate direct chat widget
+  if (o.directChat.enable) {
+    $(o.directChat.contactToggleSelector).on('click', function () {
+      var box = $(this).parents('.direct-chat').first();
+      box.toggleClass('direct-chat-contacts-open');
+    });
+  }
+
+  /*
+   * INITIALIZE BUTTON TOGGLE
+   * ------------------------
+   */
+  $('.btn-group[data-toggle="btn-toggle"]').each(function () {
+    var group = $(this);
+    $(this).find(".btn").on('click', function (e) {
+      group.find(".btn.active").removeClass("active");
+      $(this).addClass("active");
+      e.preventDefault();
+    });
+
+  });
+};
+
+/* ----------------------------------
+ * - Initialize the AdminLTE Object -
+ * ----------------------------------
+ * All AdminLTE functions are implemented below.
+ */
+function _init() {
+
+  /* Layout
+   * ======
+   * Fixes the layout height in case min-height fails.
+   *
+   * @type Object
+   * @usage $.AdminLTE.layout.activate()
+   *        $.AdminLTE.layout.fix()
+   *        $.AdminLTE.layout.fixSidebar()
+   */
+  $.AdminLTE.layout = {
+    activate: function () {
+      var _this = this;
+      _this.fix();
+      _this.fixSidebar();
+      $(window, ".wrapper").resize(function () {
+        _this.fix();
+        _this.fixSidebar();
+      });
+    },
+    fix: function () {
+      //Get window height and the wrapper height
+      var neg = $('.main-header').outerHeight() + $('.main-footer').outerHeight();
+      var window_height = $(window).height();
+      var sidebar_height = $(".sidebar").height();
+      //Set the min-height of the content and sidebar based on the
+      //the height of the document.
+      if ($("body").hasClass("fixed")) {
+        $(".content-wrapper, .right-side").css('min-height', window_height - $('.main-footer').outerHeight());
+      } else {
+        var postSetWidth;
+        if (window_height >= sidebar_height) {
+          $(".content-wrapper, .right-side").css('min-height', window_height - neg);
+          postSetWidth = window_height - neg;
+        } else {
+          $(".content-wrapper, .right-side").css('min-height', sidebar_height);
+          postSetWidth = sidebar_height;
+        }
+
+        //Fix for the control sidebar height
+        var controlSidebar = $($.AdminLTE.options.controlSidebarOptions.selector);
+        if (typeof controlSidebar !== "undefined") {
+          if (controlSidebar.height() > postSetWidth)
+            $(".content-wrapper, .right-side").css('min-height', controlSidebar.height());
+        }
+
+      }
+    },
+    fixSidebar: function () {
+      //Make sure the body tag has the .fixed class
+      if (!$("body").hasClass("fixed")) {
+        if (typeof $.fn.slimScroll != 'undefined') {
+          $(".sidebar").slimScroll({destroy: true}).height("auto");
+        }
+        return;
+      } else if (typeof $.fn.slimScroll == 'undefined' && console) {
+        console.error("Error: the fixed layout requires the slimscroll plugin!");
+      }
+      //Enable slimscroll for fixed layout
+      if ($.AdminLTE.options.sidebarSlimScroll) {
+        if (typeof $.fn.slimScroll != 'undefined') {
+          //Destroy if it exists
+          $(".sidebar").slimScroll({destroy: true}).height("auto");
+          //Add slimscroll
+          $(".sidebar").slimscroll({
+            height: ($(window).height() - $(".main-header").height()) + "px",
+            color: "rgba(0,0,0,0.2)",
+            size: "3px"
+          });
+        }
+      }
+    }
+  };
+
+  /* PushMenu()
+   * ==========
+   * Adds the push menu functionality to the sidebar.
+   *
+   * @type Function
+   * @usage: $.AdminLTE.pushMenu("[data-toggle='offcanvas']")
+   */
+  $.AdminLTE.pushMenu = {
+    activate: function (toggleBtn) {
+      //Get the screen sizes
+      var screenSizes = $.AdminLTE.options.screenSizes;
+
+      //Enable sidebar toggle
+      $(toggleBtn).on('click', function (e) {
+        e.preventDefault();
+
+        //Enable sidebar push menu
+        if ($(window).width() > (screenSizes.sm - 1)) {
+          $("body").toggleClass('sidebar-collapse');
+        }
+        //Handle sidebar push menu for small screens
+        else {
+          if ($("body").hasClass('sidebar-open')) {
+            $("body").removeClass('sidebar-open');
+            $("body").removeClass('sidebar-collapse')
+          } else {
+            $("body").addClass('sidebar-open');
+          }
+        }
+      });
+
+      $(".content-wrapper").click(function () {
+        //Enable hide menu when clicking on the content-wrapper on small screens
+        if ($(window).width() <= (screenSizes.sm - 1) && $("body").hasClass("sidebar-open")) {
+          $("body").removeClass('sidebar-open');
+        }
+      });
+
+      //Enable expand on hover for sidebar mini
+      if ($.AdminLTE.options.sidebarExpandOnHover
+        || ($('body').hasClass('fixed')
+        && $('body').hasClass('sidebar-mini'))) {
+        this.expandOnHover();
+      }
+
+    },
+    expandOnHover: function () {
+      var _this = this;
+      var screenWidth = $.AdminLTE.options.screenSizes.sm - 1;
+      //Expand sidebar on hover
+      $('.main-sidebar').hover(function () {
+        if ($('body').hasClass('sidebar-mini')
+          && $("body").hasClass('sidebar-collapse')
+          && $(window).width() > screenWidth) {
+          _this.expand();
+        }
+      }, function () {
+        if ($('body').hasClass('sidebar-mini')
+          && $('body').hasClass('sidebar-expanded-on-hover')
+          && $(window).width() > screenWidth) {
+          _this.collapse();
+        }
+      });
+    },
+    expand: function () {
+      $("body").removeClass('sidebar-collapse').addClass('sidebar-expanded-on-hover');
+    },
+    collapse: function () {
+      if ($('body').hasClass('sidebar-expanded-on-hover')) {
+        $('body').removeClass('sidebar-expanded-on-hover').addClass('sidebar-collapse');
+      }
+    }
+  };
+
+  /* Tree()
+   * ======
+   * Converts the sidebar into a multilevel
+   * tree view menu.
+   *
+   * @type Function
+   * @Usage: $.AdminLTE.tree('.sidebar')
+   */
+  $.AdminLTE.tree = function (menu) {
+    var _this = this;
+    $("li a", $(menu)).off('click');
+    $("li a", $(menu)).on('click', function (e) {
+      //Get the clicked link and the next element
+      var $this = $(this);
+      var checkElement = $this.next();
+
+      //Check if the next element is a menu and is visible
+      if ((checkElement.is('.treeview-menu')) && (checkElement.is(':visible'))) {
+        //Close the menu
+        checkElement.slideUp('normal', function () {
+          checkElement.removeClass('menu-open');
+          //Fix the layout in case the sidebar stretches over the height of the window
+          //_this.layout.fix();
+        });
+        checkElement.parent("li").removeClass("active");
+      }
+      //If the menu is not visible
+      else if ((checkElement.is('.treeview-menu')) && (!checkElement.is(':visible'))) {
+        //Get the parent menu
+        var parent = $this.parents('ul').first();
+        //Close all open menus within the parent
+        var ul = parent.find('ul:visible').slideUp('normal');
+        //Remove the menu-open class from the parent
+        ul.removeClass('menu-open');
+        //Get the parent li
+        var parent_li = $this.parent("li");
+
+        //Open the target menu and add the menu-open class
+        checkElement.slideDown('normal', function () {
+          //Add the class active to the parent li
+          checkElement.addClass('menu-open');
+          parent.find('li.active').removeClass('active');
+          parent_li.addClass('active');
+          //Fix the layout in case the sidebar stretches over the height of the window
+          _this.layout.fix();
+        });
+      }
+      //if this isn't a link, prevent the page from being redirected
+      if (checkElement.is('.treeview-menu')) {
+        e.preventDefault();
+      }
+    });
+  };
+
+  /* ControlSidebar
+   * ==============
+   * Adds functionality to the right sidebar
+   *
+   * @type Object
+   * @usage $.AdminLTE.controlSidebar.activate(options)
+   */
+  $.AdminLTE.controlSidebar = {
+    //instantiate the object
+    activate: function () {
+      //Get the object
+      var _this = this;
+      //Update options
+      var o = $.AdminLTE.options.controlSidebarOptions;
+      //Get the sidebar
+      var sidebar = $(o.selector);
+      //The toggle button
+      var btn = $(o.toggleBtnSelector);
+
+      //Listen to the click event
+      btn.on('click', function (e) {
+        e.preventDefault();
+        //If the sidebar is not open
+        if (!sidebar.hasClass('control-sidebar-open')
+          && !$('body').hasClass('control-sidebar-open')) {
+          //Open the sidebar
+          _this.open(sidebar, o.slide);
+        } else {
+          _this.close(sidebar, o.slide);
+        }
+      });
+
+      //If the body has a boxed layout, fix the sidebar bg position
+      var bg = $(".control-sidebar-bg");
+      _this._fix(bg);
+
+      //If the body has a fixed layout, make the control sidebar fixed      
+      if ($('body').hasClass('fixed')) {
+        _this._fixForFixed(sidebar);
+      } else {
+        //If the content height is less than the sidebar's height, force max height
+        if ($('.content-wrapper, .right-side').height() < sidebar.height()) {
+          _this._fixForContent(sidebar);
+        }
+      }
+    },
+    //Open the control sidebar
+    open: function (sidebar, slide) {
+      var _this = this;
+      //Slide over content
+      if (slide) {
+        sidebar.addClass('control-sidebar-open');
+      } else {
+        //Push the content by adding the open class to the body instead 
+        //of the sidebar itself
+        $('body').addClass('control-sidebar-open');
+      }
+    },
+    //Close the control sidebar
+    close: function (sidebar, slide) {
+      if (slide) {
+        sidebar.removeClass('control-sidebar-open');
+      } else {
+        $('body').removeClass('control-sidebar-open');
+      }
+    },
+    _fix: function (sidebar) {
+      var _this = this;
+      if ($("body").hasClass('layout-boxed')) {
+        sidebar.css('position', 'absolute');
+        sidebar.height($(".wrapper").height());
+        $(window).resize(function () {
+          _this._fix(sidebar);
+        });
+      } else {
+        sidebar.css({
+          'position': 'fixed',
+          'height': 'auto'
+        });
+      }
+    },
+    _fixForFixed: function (sidebar) {
+      sidebar.css({
+        'position': 'fixed',
+        'max-height': '100%',
+        'overflow': 'auto',
+        'padding-bottom': '50px'
+      });
+    },
+    _fixForContent: function (sidebar) {
+      $(".content-wrapper, .right-side").css('min-height', sidebar.height());
+    }
+  };
+
+  /* BoxWidget
+   * =========
+   * BoxWidget is a plugin to handle collapsing and
+   * removing boxes from the screen.
+   *
+   * @type Object
+   * @usage $.AdminLTE.boxWidget.activate()
+   *        Set all your options in the main $.AdminLTE.options object
+   */
+  $.AdminLTE.boxWidget = {
+    selectors: $.AdminLTE.options.boxWidgetOptions.boxWidgetSelectors,
+    icons: $.AdminLTE.options.boxWidgetOptions.boxWidgetIcons,
+    activate: function () {
+      var _this = this;
+      //Listen for collapse event triggers
+      $(_this.selectors.collapse).on('click', function (e) {
+        e.preventDefault();
+        _this.collapse($(this));
+      });
+
+      //Listen for remove event triggers
+      $(_this.selectors.remove).on('click', function (e) {
+        e.preventDefault();
+        _this.remove($(this));
+      });
+    },
+    collapse: function (element) {
+      var _this = this;
+      //Find the box parent
+      var box = element.parents(".box").first();
+      //Find the body and the footer
+      var box_content = box.find("> .box-body, > .box-footer");
+      if (!box.hasClass("collapsed-box")) {
+        //Convert minus into plus
+        element.children(":first")
+          .removeClass(_this.icons.collapse)
+          .addClass(_this.icons.open);
+        //Hide the content
+        box_content.slideUp(300, function () {
+          box.addClass("collapsed-box");
+        });
+      } else {
+        //Convert plus into minus
+        element.children(":first")
+          .removeClass(_this.icons.open)
+          .addClass(_this.icons.collapse);
+        //Show the content
+        box_content.slideDown(300, function () {
+          box.removeClass("collapsed-box");
+        });
+      }
+    },
+    remove: function (element) {
+      //Find the box parent
+      var box = element.parents(".box").first();
+      box.slideUp();
+    }
+  };
+}
+
+/* ------------------
+ * - Custom Plugins -
+ * ------------------
+ * All custom plugins are defined below.
+ */
+
+/*
+ * BOX REFRESH BUTTON
+ * ------------------
+ * This is a custom plugin to use with the component BOX. It allows you to add
+ * a refresh button to the box. It converts the box's state to a loading state.
+ *
+ * @type plugin
+ * @usage $("#box-widget").boxRefresh( options );
+ */
+(function ($) {
+
+  $.fn.boxRefresh = function (options) {
+
+    // Render options
+    var settings = $.extend({
+      //Refresh button selector
+      trigger: ".refresh-btn",
+      //File source to be loaded (e.g: ajax/src.php)
+      source: "",
+      //Callbacks
+      onLoadStart: function (box) {
+      }, //Right after the button has been clicked
+      onLoadDone: function (box) {
+      } //When the source has been loaded
+
+    }, options);
+
+    //The overlay
+    var overlay = $('<div class="overlay"><div class="fa fa-refresh fa-spin"></div></div>');
+
+    return this.each(function () {
+      //if a source is specified
+      if (settings.source === "") {
+        if (console) {
+          console.log("Please specify a source first - boxRefresh()");
+        }
+        return;
+      }
+      //the box
+      var box = $(this);
+      //the button
+      var rBtn = box.find(settings.trigger).first();
+
+      //On trigger click
+      rBtn.on('click', function (e) {
+        e.preventDefault();
+        //Add loading overlay
+        start(box);
+
+        //Perform ajax call
+        box.find(".box-body").load(settings.source, function () {
+          done(box);
+        });
+      });
+    });
+
+    function start(box) {
+      //Add overlay and loading img
+      box.append(overlay);
+
+      settings.onLoadStart.call(box);
+    }
+
+    function done(box) {
+      //Remove overlay and loading img
+      box.find(overlay).remove();
+
+      settings.onLoadDone.call(box);
+    }
+
+  };
+
+})(jQuery);
+
+/*
+ * TODO LIST CUSTOM PLUGIN
+ * -----------------------
+ * This plugin depends on iCheck plugin for checkbox and radio inputs
+ *
+ * @type plugin
+ * @usage $("#todo-widget").todolist( options );
+ */
+(function ($) {
+
+  $.fn.todolist = function (options) {
+    // Render options
+    var settings = $.extend({
+      //When the user checks the input
+      onCheck: function (ele) {
+      },
+      //When the user unchecks the input
+      onUncheck: function (ele) {
+      }
+    }, options);
+
+    return this.each(function () {
+
+      if (typeof $.fn.iCheck != 'undefined') {
+        $('input', this).on('ifChecked', function (event) {
+          var ele = $(this).parents("li").first();
+          ele.toggleClass("done");
+          settings.onCheck.call(ele);
+        });
+
+        $('input', this).on('ifUnchecked', function (event) {
+          var ele = $(this).parents("li").first();
+          ele.toggleClass("done");
+          settings.onUncheck.call(ele);
+        });
+      } else {
+        $('input', this).on('change', function (event) {
+          var ele = $(this).parents("li").first();
+          ele.toggleClass("done");
+          settings.onCheck.call(ele);
+        });
+      }
+    });
+  };
+}(jQuery));
+/* jshint ignore:end */
+/*! AdminLTE app.js
+ * ================
+ * Main JS application file for AdminLTE v2. This file
+ * should be included in all pages. It controls some layout
+ * options and implements exclusive AdminLTE plugins.
+ *
+ * @Author  Almsaeed Studio
+ * @Support <http://www.almsaeedstudio.com>
+ * @Email   <support@almsaeedstudio.com>
+ * @version 2.1.0
+ * @license MIT <http://opensource.org/licenses/MIT>
+ */
+
+/* jshint ignore:start */
+// Code here will be ignored by JSHint.
+
+'use strict';
+
+//Make sure jQuery has been loaded before app.js
+if (typeof jQuery === "undefined") {
+  throw new Error("AdminLTE requires jQuery");
+}
+
+/* AdminLTE
+ *
+ * @type Object
+ * @description $.AdminLTE is the main object for the template's app.
+ *              It's used for implementing functions and options related
+ *              to the template. Keeping everything wrapped in an object
+ *              prevents conflict with other plugins and is a better
+ *              way to organize our code.
+ */
+$.AdminLTE = {};
+
+/* --------------------
+ * - AdminLTE Options -
+ * --------------------
+ * Modify these options to suit your implementation
+ */
+$.AdminLTE.options = {
+  //Add slimscroll to navbar menus
+  //This requires you to load the slimscroll plugin
+  //in every page before app.js
+  navbarMenuSlimscroll: true,
+  navbarMenuSlimscrollWidth: "3px", //The width of the scroll bar
+  navbarMenuHeight: "200px", //The height of the inner menu
+  //Sidebar push menu toggle button selector
+  sidebarToggleSelector: "[data-toggle='offcanvas']",
+  //Activate sidebar push menu
+  sidebarPushMenu: true,
+  //Activate sidebar slimscroll if the fixed layout is set (requires SlimScroll Plugin)
+  sidebarSlimScroll: true,
+  //Enable sidebar expand on hover effect for sidebar mini
+  //This option is forced to true if both the fixed layout and sidebar mini
+  //are used together
+  sidebarExpandOnHover: false,
+  //BoxRefresh Plugin
+  enableBoxRefresh: true,
+  //Bootstrap.js tooltip
+  enableBSToppltip: true,
+  BSTooltipSelector: "[data-toggle='tooltip']",
+  //Enable Fast Click. Fastclick.js creates a more
+  //native touch experience with touch devices. If you
+  //choose to enable the plugin, make sure you load the script
+  //before AdminLTE's app.js
+  enableFastclick: true,
+  //Control Sidebar Options
+  enableControlSidebar: true,
+  controlSidebarOptions: {
+    //Which button should trigger the open/close event
+    toggleBtnSelector: "[data-toggle='control-sidebar']",
+    //The sidebar selector
+    selector: ".control-sidebar",
+    //Enable slide over content
+    slide: true
+  },
+  //Box Widget Plugin. Enable this plugin
+  //to allow boxes to be collapsed and/or removed
+  enableBoxWidget: true,
+  //Box Widget plugin options
+  boxWidgetOptions: {
+    boxWidgetIcons: {
+      //Collapse icon
+      collapse: 'fa-minus',
+      //Open icon
+      open: 'fa-plus',
+      //Remove icon
+      remove: 'fa-times'
+    },
+    boxWidgetSelectors: {
+      //Remove button selector
+      remove: '[data-widget="remove"]',
+      //Collapse button selector
+      collapse: '[data-widget="collapse"]'
+    }
+  },
+  //Direct Chat plugin options
+  directChat: {
+    //Enable direct chat by default
+    enable: true,
+    //The button to open and close the chat contacts pane
+    contactToggleSelector: '[data-widget="chat-pane-toggle"]'
+  },
+  //Define the set of colors to use globally around the website
+  colors: {
+    lightBlue: "#3c8dbc",
+    red: "#f56954",
+    green: "#00a65a",
+    aqua: "#00c0ef",
+    yellow: "#f39c12",
+    blue: "#0073b7",
+    navy: "#001F3F",
+    teal: "#39CCCC",
+    olive: "#3D9970",
+    lime: "#01FF70",
+    orange: "#FF851B",
+    fuchsia: "#F012BE",
+    purple: "#8E24AA",
+    maroon: "#D81B60",
+    black: "#222222",
+    gray: "#d2d6de"
+  },
+  //The standard screen sizes that bootstrap uses.
+  //If you change these in the variables.less file, change
+  //them here too.
+  screenSizes: {
+    xs: 480,
+    sm: 768,
+    md: 992,
+    lg: 1200
+  }
+};
+
+/* ------------------
+ * - Implementation -
+ * ------------------
+ * The next block of code implements AdminLTE's
+ * functions and plugins as specified by the
+ * options above.
+ */
+$.executeTheme = function () {
+  //Extend options if external options exist
+  if (typeof AdminLTEOptions !== "undefined") {
+    $.extend(true,
+      $.AdminLTE.options,
+      AdminLTEOptions);
+  }
+
+  //Easy access to options
+  var o = $.AdminLTE.options;
+
+  //Set up the object
+  _init();
+
+  //Activate the layout maker
+  $.AdminLTE.layout.activate();
+
+  //Enable sidebar tree view controls
+  $.AdminLTE.tree('.sidebar');
+
+  //Enable control sidebar
+  if (o.enableControlSidebar) {
+    $.AdminLTE.controlSidebar.activate();
+  }
+
+  //Add slimscroll to navbar dropdown
+  if (o.navbarMenuSlimscroll && typeof $.fn.slimscroll != 'undefined') {
+    /*$(".navbar .menu").slimscroll({
+      height: o.navbarMenuHeight,
+      alwaysVisible: false,
+      size: o.navbarMenuSlimscrollWidth
+    }).css("width", "100%");*/
   }
 
   //Activate sidebar push menu
@@ -108191,8 +108907,12 @@ angular.module('baseApp', [
 ])
   .constant('_', window._);
 
-angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $locationProvider, ChartJsProvider) {
   'use strict';
+
+  ChartJsProvider.setOptions({ responsive: true });
+  ChartJsProvider.setOptions('Line', { responsive: true });
+  ChartJsProvider.setOptions('Doughnut', { responsive: true });
 
   $locationProvider.html5Mode(false);
 /*      .html5Mode({
@@ -108218,12 +108938,15 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
   $stateProvider
     .state('root', {
       url: '/',
-      templateUrl: '/assets/html/views/root'
+      templateUrl: '/assets/html/layout/page/root',
+      title: 'Dashboard'
     })
-    .state('restrooms', {
-      url: '/restrooms',
-      controller: 'RestroomController',
-      templateUrl: '/assets/html/restroom/index'
+    .state('notifications', {
+      url: '/notifications',
+      templateUrl: '/assets/html/notifications/index',
+      controller: 'NotificationsController',
+      title: 'Notifications',
+      subTitle: 'What\'s New'
     })
     .state('articles', {
       abstract: true,
@@ -108233,19 +108956,24 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('articles.new', {
       url: '/new',
-      templateUrl: '/assets/html/article/form'
+      templateUrl: '/assets/html/article/form',
+      title: 'New Article'
     })
     .state('articles.list', {
       url: '/all',
-      templateUrl: '/assets/html/article/list'
+      controller: 'ArticleController',
+      templateUrl: '/assets/html/article/list',
+      title: 'List Articles'
     })
     .state('articles.edit', {
       url: '/:id/edit',
-      templateUrl: '/assets/html/article/form'
+      templateUrl: '/assets/html/article/form',
+      title: 'Edit Article'
     })
     .state('articles.detail', {
       url: '/:id',
-      templateUrl: '/assets/html/article/detail'
+      templateUrl: '/assets/html/article/detail',
+      title: 'Article'
     })
     .state('knowledge', {
       url: '/knowledge',
@@ -108262,13 +108990,13 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       url: '/dashboard-v1',
       templateUrl: '/assets/html/views/dashboard-v1'
     })
-    .state('blankPage', {
-      url: '/blank',
-      templateUrl: '/assets/html/views/blank'
+    .state('about', {
+      url: '/about',
+      templateUrl: '/assets/html/pages/about'
     })
-    .state('userDash', {
-      url: '/feed',
-      templateUrl: '/assets/html/views/feed'
+    .state('contact', {
+      url: '/contact',
+      templateUrl: '/assets/html/pages/contact'
     })
     .state('users', {
       abstract: true,
@@ -108278,16 +109006,18 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('users.new', {
       url: '/new',
-      templateUrl: '/assets/html/user/form-register'
+      templateUrl: '/assets/html/user/form-register',
     })
     .state('users.list', {
       url: '/list',
-      templateUrl: '/assets/html/user/list'
+      templateUrl: '/assets/html/user/list',
+      title: 'List Users'
     })
     .state('users.detail', {
       url: '/profile/:id',
       controller: 'ProfileController',
-      templateUrl: '/assets/html/profile/directive-summary'
+      templateUrl: '/assets/html/profile/directive-summary',
+      title: 'User'
     })
     .state('newsletters', {
       url: '/admin/newsletter',
@@ -108300,16 +109030,23 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       controller: 'QuestionsController'
     })
     .state('conversations', {
-      abstract: true,
       url: '/conversations',
       templateUrl: '/assets/html/conversations/index',
-      controller: 'ConversationsController'
+      controller: 'ConversationsController',
+      title: 'All Conversations'
     })
     .state('conversations.public', {
-      url: '/public'
+      url: '/public',
+      title: 'Public Conversations'
     })
     .state('conversations.private', {
-      url: '/private'
+      url: '/private',
+      title: 'Private Conversations'
+    })
+    .state('conversations.view', {
+      url: '/:id',
+      controller: 'ConversationsController',
+      title: 'Conversation'
     })
     .state('login', {
       url: '/login?linkedIn',
@@ -108319,7 +109056,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('confirm', {
       url: '/confirm/:token?user=true',
       templateUrl: '/assets/html/auth/confirm',
-      controller: 'authController'
+      controller: 'UsersController'
     })
     .state('recoverpassword', {
       url: '/recoverpassword',
@@ -108334,21 +109071,36 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('calendar', {
       url: '/calendar',
       controller: 'CalendarController',
-      templateUrl: '/assets/html/calendar/index'
+      templateUrl: '/assets/html/calendar/index',
+      title: 'Calendar',
+      subTitle: 'Events'
+    })
+    .state('calendar.day', {
+      url: '/day'
+    })
+    .state('calendar.month', {
+      url: '/month'
     })
     .state('profile', {
       url: '/profile',
       controller: 'ProfileController',
-      templateUrl: '/assets/html/profile/profile-landing'
+      templateUrl: '/assets/html/profile/profile-landing',
+      title: 'My Profile'
     })
     .state('profile.info', {
-      url: '/info'
+      url: '/info',
+      title: 'My Profile',
+      subTitle: 'General'
     })
     .state('profile.contact', {
-      url: '/contact'
+      url: '/contact',
+      title: 'My Profile',
+      subTitle: 'Contact'
     })
     .state('profile.security', {
-      url: '/security'
+      url: '/security',
+      title: 'My Profile',
+      subTitle: 'Security'
     })
     .state('boards', {
       abstract: true,
@@ -108358,38 +109110,76 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('boards.new', {
       url: '/new',
-      templateUrl: '/assets/html/board/form'
+      templateUrl: '/assets/html/board/form',
+      title: 'New Board'
     })
     .state('boards.list', {
       url: '/all',
       controller: 'BoardController',
-      templateUrl: '/assets/html/board/list'
+      templateUrl: '/assets/html/board/list',
+      title: 'List Boards'
     })
     .state('boards.edit', {
       url: '/:board/edit',
-      templateUrl: '/assets/html/board/form'
+      templateUrl: '/assets/html/board/form',
+      title: 'Edit Board'
     })
     .state('boards.detail', {
       url: '/:id',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Tasks'
     })
     .state('boards.detail.backlog', {
       url: '/backlog',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Backlog'
     })
     .state('boards.detail.backlog.new', {
       url: '/new',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'New Task'
     })
     .state('boards.detail.backlog.edit', {
       url: '/:task/edit',
       controller: 'TaskController',
-      templateUrl: '/assets/html/task/index'
+      templateUrl: '/assets/html/task/index',
+      title: 'Board',
+      subTitle: 'Edit Task'
     })
-
+    .state('networks', {
+      abstract: true,
+      url: '/networks',
+      controller: 'NetworkController',
+      template: '<ui-view/>'
+    })
+    .state('networks.new', {
+      url: '/new',
+      templateUrl: '/assets/html/network/form',
+      title: 'New Network'
+    })
+    .state('networks.list', {
+      url: '/all',
+      controller: 'NetworkController',
+      templateUrl: '/assets/html/network/list',
+      title: 'List Networks'
+    })
+    .state('networks.edit', {
+      url: '/:id/edit',
+      templateUrl: '/assets/html/network/form',
+      title: 'Edit Network'
+    })
+    .state('networks.detail', {
+      url: '/:id',
+      templateUrl: '/assets/html/network/detail',
+      title: 'Network',
+      subTitle: 'View'
+    })
     //.state('tasks', {
     //  url: '/tasks',
     //  controller: 'TaskController',
@@ -108410,28 +109200,44 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('mail', {
       url: '/mail',
       controller: 'MailboxController',
-      templateUrl: '/assets/html/mail/index'
+      templateUrl: '/assets/html/mail/index',
+      title: 'Mailbox',
+      subTitle: 'Inbox'
     })
     .state('mail.inbox', {
-      url: '/inbox'
+      url: '/inbox',
+      title: 'Mailbox',
+      subTitle: 'Inbox'
     })
     .state('mail.new', {
-      url: '/new'
+      url: '/new',
+      title: 'Mailbox',
+      subTitle: 'New'
     })
     .state('mail.drafts', {
-      url: '/drafts'
+      url: '/drafts',
+      title: 'Mailbox',
+      subTitle: 'Drafts'
     })
     .state('mail.sent', {
-      url: '/sent'
+      url: '/sent',
+      title: 'Mailbox',
+      subTitle: 'Sent'
     })
     .state('mail.starred', {
-      url: '/starred'
+      url: '/starred',
+      title: 'Mailbox',
+      subTitle: 'Starred'
     })
     .state('mail.archived', {
-      url: '/archived'
+      url: '/archived',
+      title: 'Mailbox',
+      subTitle: 'Archived'
     })
     .state('mail.view', {
-      url: '/view/:id/:action'
+      url: '/view/:id/:action',
+      title: 'Mailbox',
+      subTitle: 'View'
     });
 
   $urlRouterProvider.otherwise('/');
@@ -108439,6 +109245,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
 })
   .config(['ChartJsProvider', function (ChartJsProvider) {
     // Configure all charts
+    'use strict';
     ChartJsProvider.setOptions({
       responsive: false
     });
@@ -108477,7 +109284,7 @@ angular.module('baseApp.controllers', [])
         $rootScope.access = access;
         window.localStorage.Access = access;
       };
-      $rootScope.setAccess( window.localStorage.Access || 'any' );
+      $rootScope.setAccess( window.localStorage.Access || ['any'] );
 
       $rootScope.setAuthorizationHeader = function(token){
 
@@ -108497,8 +109304,8 @@ angular.module('baseApp.controllers', [])
               }
             }, function(){
               delete window.localStorage.Authorization;
-              window.localStorage.Access = 'any';
-              $rootScope.access = 'any';
+              window.localStorage.Access = ['any'];
+              $rootScope.access = ['any'];
             });
         }
       };
@@ -108508,7 +109315,7 @@ angular.module('baseApp.controllers', [])
         return angular.isDefined( val );
       };
 
-      $rootScope.user = 'any';
+      $rootScope.access = ['any'];
 
       window.rootScope = $rootScope;
 
@@ -108562,8 +109369,8 @@ angular.module('baseApp.controllers')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_',
-    function($scope, $state, $http, currentUser, Article, _){
+  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_','Notification',
+    function($scope, $state, $http, currentUser, Article, _, Notification){
       'use strict';
 
       $scope.articles = [];
@@ -108581,15 +109388,7 @@ angular.module('baseApp.controllers')
         };
         $scope.sortSections = function( ){
           $scope.sortableOptions = {
-            disabled: false,
-            stop: function(e, ui) {
-              var logEntry = {
-                Text: ui.item.scope().section.body,
-                E: e
-              };
-              //console.log(logEntry);
-              //console.log( $scope.article.sections );
-            }
+            disabled: false
           };
           $scope.sortingSections = true;
         };
@@ -108621,7 +109420,7 @@ angular.module('baseApp.controllers')
             sections: [],
             widgets: []
           };
-          $scope.add = function(){
+          $scope.save = function(){
             _.forEach( $scope.article.sections, function(sec, key) {
               sec.order = key;
             });
@@ -108650,10 +109449,11 @@ angular.module('baseApp.controllers')
               $scope.article = res.article;
             });
           formSetup();
-          $scope.update = function( ) {
+          $scope.save = function( ) {
             Article.update( $scope.article )
               .then( function(){
-                $state.go('articles.list');
+                //$state.go('articles.list');
+                $state.go('articles.list', {}, {reload: true});
               });
           };
           break;
@@ -108662,11 +109462,18 @@ angular.module('baseApp.controllers')
       }
 
       $scope.remove = function( id ){
-        Article.remove( id )
-          .then( function(){
-            $scope.articles = _.filter( $scope.articles, function(article){ return article._id !== id; });
-            $state.go('articles.list');
-          });
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+        $scope.$watch( function(){ return Notification.confirmed; }, function(){
+          if( Notification.confirmed ) {
+            Notification.confirmed = null;
+            Article.remove( id )
+              .then( function(){
+                $scope.articles = _.filter( $scope.articles, function(article){ return article._id !== id; });
+                $state.go('articles.list', {}, {reload: true});
+              });
+          }
+        });
       };
     }]);
 angular.module('baseApp.services').factory('ArticleResource', [ '$resource', function($resource) {
@@ -108686,14 +109493,13 @@ angular.module('baseApp.services').factory('Article', [ 'ArticleResource', funct
     add: function( article ) { return ArticleResource.create( {article: article} ).$promise; },
     get: function( id ) { return ArticleResource.read( id ? {id: id} : {} ).$promise; },
     update: function( article ) { return ArticleResource.update( {id: article._id}, {article: article} ) .$promise; },
-    remove: function(id){ return BoardResource.remove( {id: id} ).$promise; }
+    remove: function(id){ return ArticleResource.remove( {id: id} ).$promise; }
   };
 }]);
 angular.module('baseApp.controllers')
   .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_',
     function($scope, $state, $http, currentUser, Board, _){
       'use strict';
-      console.log('reload board controllers');
 
       $scope.boards = [];
       var formSetup = function(){
@@ -108703,8 +109509,11 @@ angular.module('baseApp.controllers')
             selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
 
           $scope.board.members.push({
-            name: selection.firstName + ' ' + selection.lastName,
             email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            },
             _id: selection._id
           });
           $scope.$broadcast('clearInput');
@@ -108725,7 +109534,7 @@ angular.module('baseApp.controllers')
                   return user.email !== current.email && !_.find($scope.board.members, function(i){return i.email ===user.email;});
                 });
             return filteredUserList.map(function(user){
-              return (user.firstName ? user.firstName : '') + ' ' + (user.lastName ?user.lastName:'') + '&lt;'+user.email+'&gt;';
+              return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
             });
           });
         };
@@ -108746,7 +109555,6 @@ angular.module('baseApp.controllers')
           $scope.add = function(){
             Board.add( $scope.board )
               .then( function(){
-                console.log('added');
                 $state.go('boards.list',{}, { reload: true });
               });
           };
@@ -108756,14 +109564,12 @@ angular.module('baseApp.controllers')
           $scope.board = Board.get( $state.params.id );
           break;
         case 'boards.list':
-          console.log('im in here');
           Board.get()
             .then( function( res ) {
               $scope.boards = res.boards;
             });
           break;
         case 'boards.edit':
-          console.log('im in here');
           Board.get( $state.params.board )
             .then( function( res ) {
               $scope.board = res.board;
@@ -108772,7 +109578,6 @@ angular.module('baseApp.controllers')
           $scope.update = function( ) {
             Board.update( $scope.board )
               .then( function(){
-                console.log('updated');
                 $state.go('boards.list');
               });
           };
@@ -108829,7 +109634,7 @@ angular.module('baseApp.services').factory('Board', [ 'BoardResource', function(
 }]);
 
 angular.module('baseApp.controllers')
-  .controller('CalendarController', ['$scope','Calendar', function($scope, Calendar){
+  .controller('CalendarController', ['$scope', 'Calendar', function($scope,Calendar){
     'use strict';
 
     function initEvents(ele) {
@@ -108889,18 +109694,14 @@ angular.module('baseApp.controllers')
       $('#new-event').val('');
     });
 
-    $scope.actions = {
-      save: function( dataObject ){
-        return Calendar.updateEvent( dataObject.id );
-      },
-      discard: function( dataObject ){
-        return Calendar.removeEvent( dataObject._id );
-      }
+    $scope.newEvent = function(){
+      Calendar.currentEventId = null;
+      $('#modalEditEvent' ).modal().show();
     };
   }]);
 angular.module('baseApp.directives')
-  .directive('calendar', ['Calendar',
-    function( Calendar ){
+  .directive('calendar', ['Calendar','$state','_',
+    function( Calendar, $state, _ ){
       'use strict';
       return {
         restrict: 'A',
@@ -108908,20 +109709,40 @@ angular.module('baseApp.directives')
         link: function(scope, elem, attrs ) {
           var calendar;
 
-          Calendar.getEvents()
+          Calendar.get()
             .then( function(response){
               scope.events = response.events;
               initCalendar();
             });
 
           function updateEvent( event ){
-            Calendar.updateEvent( {
-              _id: event._id,
-              start: event.start._d,
-              end: event.end._d
-            });
-          }
+            var allDay;
+            if( /(\d{4})-(\d{2})-(\d{2})T/.test( event.start.format() ) ) {
+              allDay = false;
+            } else {
+              allDay = true;
+            }
+            var theEvent = _.find( scope.events, function(item){ return item._id === event._id; });
+            theEvent.start = new Date( event.start.format() ).toISOString();
+            theEvent.end = event.end ? new Date( event.end.format() ).toISOString() : null;
+            theEvent.allDay = allDay;
+            theEvent.invited = Object.keys(_.indexBy( theEvent.invited, '_id' ));
 
+            Calendar.update( theEvent );
+
+          }
+          var renderView;
+          switch( $state.current.name ) {
+            case 'calendar.month':
+              renderView = 'month';
+              break;
+            case 'calendar.day':
+              renderView = 'agendaDay';
+              break;
+            default:
+              renderView = 'agendaWeek';
+              break;
+          }
           function initCalendar(){
             calendar = $(elem).fullCalendar({
               header: {
@@ -108930,21 +109751,28 @@ angular.module('baseApp.directives')
                 right: 'month,agendaWeek,agendaDay'
               },
               height: 600,
-              timezone: 'local',
+              timezone: 'UTC',
               defaultDate: new Date(),
-              defaultView: 'agendaWeek',
+              defaultView: renderView,
               editable: true,
               eventLimit: true, // allow "more" link when too many events
               events: scope.events,
               droppable: true, // this allows things to be dropped onto the calendar !!!
               drop: function( date){
-                var originalEventObject = $(this).data('eventObject');
-                var copiedEventObject = $.extend({}, originalEventObject);
-                copiedEventObject.start = new Date( date._d );
-                copiedEventObject.end = new Date( new Date(date._d).getTime() + 7200000 );
-                copiedEventObject.allDay = false;
+                var copiedEventObject = $.extend({}, $(this).data('eventObject') );
+                copiedEventObject.start = new Date( date.format() ).toISOString();
+                if( $(elem).fullCalendar('getView').name === 'month' ) {
+                  copiedEventObject.allDay = true;
+                } else {
+                  if( /(\d{4})-(\d{2})-(\d{2})T/.test( date.format() ) ) {
+                    copiedEventObject.allDay = false;
+                    copiedEventObject.end = new Date( new Date(date.format() ).getTime() + 7200000 ).toISOString();
+                  } else {
+                    copiedEventObject.allDay = true;
+                  }
+                }
 
-                Calendar.createEvent( copiedEventObject )
+                Calendar.add( copiedEventObject )
                   .then( function(res){
                     copiedEventObject.id = res.event._id;
                     $(elem).fullCalendar('renderEvent', copiedEventObject, true);
@@ -108960,16 +109788,43 @@ angular.module('baseApp.directives')
                 console.log(view);
               },
               eventClick: function(event){
-                Calendar.currentEvent = event;
-                $('#'+attrs.modalId).modal().show();
+                Calendar.currentEventId = event._id;
+                $('#'+attrs.modalId ).modal().show();
                 scope.$apply();
                 if (event.url) {
-                  //window.open(event.url);
-                  //return false;
+
                 }
               },
               eventDrop: updateEvent,
               eventResize: updateEvent
+            });
+            var clicked = [0,0,0];
+            $('.fc-month-button', elem).on('click', function(){
+              if( clicked[0] ) {
+                return;
+              }
+              clicked = [1,0,0];
+              scope.$apply( function(){
+                $state.go('calendar.month');
+              });
+            });
+            $('.fc-agendaWeek-button', elem).on('click', function(){
+              if( clicked[1] ) {
+                return;
+              }
+              clicked = [0,1,0];
+              scope.$apply( function() {
+                $state.go('calendar');
+              });
+            });
+            $('.fc-agendaDay-button', elem).on('click', function(){
+              if( clicked[2] ) {
+                return;
+              }
+              clicked = [0,0,1];
+              scope.$apply( function() {
+                $state.go('calendar.day');
+              });
             });
           }
 
@@ -108981,28 +109836,108 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('modalEditEvent', ['Calendar',
-    function( Calendar ){
+  .directive('modalEditEvent', ['Calendar','$rootScope','$http','_','currentUser','$state',
+    function( Calendar, $rootScope, $http, _, currentUser, $state ){
       'use strict';
       return {
         restrict: 'E',
         templateUrl: '/assets/html/calendar/modalEditEvent',
         replace: true,
         link: function(scope) {
-          scope.$watch( function() { return Calendar.currentEvent; }, function(newData){
-            if( newData ) {
-              scope.event = newData;
-              scope.$parent.dataObject = scope.event;
+          var eventId = null;
+          function getData( id ) {
+            if( typeof id !== 'undefined' ) {
+              Calendar.get( id )
+                .then( function(res) {
+                  scope.event = res.event;
+                  scope.event.invited = scope.event.invited || [];
+                  scope.hasInvited = scope.event.invited ? Object.keys( scope.event.invited).length : false;
+                });
             }
+          }
+          scope.$parent.save = function(){
+            var event = _.extend( {}, scope.event );
+            if( $('#eventStart').val() ) {
+              event.start = new Date( $('#eventStart').val() + ' UTC').toISOString();
+            }
+            if( $('#eventEnd').val() ) {
+              event.end = new Date( $('#eventEnd').val() + ' UTC').toISOString();
+            }
+            event.invited = Object.keys(_.indexBy(event.invited, '_id'));
+
+            if( scope.event._id ) {
+              Calendar.update( event )
+                .then( function(){
+                  $state.reload();
+                });
+            } else {
+              Calendar.create( event )
+                .then( function(){
+                  scope.$parent.close();
+                });
+            }
+
+          };
+          scope.$parent.discard = function(){
+            Calendar.remove( eventId )
+              .then( function() {
+                $rootScope.$broadcast('event:removeSuccess', eventId );
+              });
+          };
+          scope.$watch( function() { return Calendar.currentEventId; }, function(newData){
+            if( newData ) {
+              scope.$parent.objectId = newData;
+              eventId = newData;
+              getData( eventId );
+            }
+            scope.event = {
+              invited: []
+            };
           });
+          var usersCache = [];
+          scope.selected = function($item) {
+            var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+              selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+
+            scope.event.invited.push({
+              email: selection.email,
+              _id: selection._id,
+              profile: {
+                firstName: selection.profile.firstName,
+                lastName: selection.profile.lastName
+              }
+            });
+            scope.hasInvited = scope.event.invited ? Object.keys( scope.event.invited).length : false;
+            scope.$broadcast('clearInput');
+          };
+          scope.removeMember = function( id ) {
+            delete scope.event.invited[ id ];
+          };
+          scope.getUsers = function(val) {
+            return $http.get('/api/autocomplete/users', {
+              params: {
+                q: val
+              }
+            }).then(function(response){
+              usersCache = response.data.users;
+              var current = currentUser.get(),
+                filteredUserList =  _
+                  .filter( response.data.users, function(user){
+                    return user.email !== current.email && !_.find(scope.event.invited, function(i){return i.email ===user.email;});
+                  });
+              return filteredUserList.map(function(user){
+                return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
+              });
+            });
+          };
         }
       };
     }
   ]);
 angular.module('baseApp.services').factory('CalendarResource', [ '$resource', function($resource) {
   'use strict';
-  return $resource('/api/calendar/events/:action',
-    { action: '@action' },
+  return $resource('/api/events/:id',
+    { id: '@id' },
     {
       create: {
         method: 'POST'
@@ -109021,36 +109956,24 @@ angular.module('baseApp.services').factory('CalendarResource', [ '$resource', fu
 }]);
 angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', function( CalendarResource) {
   'use strict';
-  var eventSchema = {
-    title: '',
-    start: null,
-    end: null,
-    allDay: false,
-    url: '',
-    backgroundColor: '#3c8dbc',
-    borderColor: '#3c8dbc'
-  }, currentEvent = null;
+
+  var currentEventId = null;
   return {
-    getOneEvent: function( eventId ) {
-      return CalendarResource.read( {action: eventId }).$promise;
+    add: function( obj ) {
+      return CalendarResource.create( {event: obj} ).$promise;
     },
-    getEvents: function(){
-      return CalendarResource.read( {action: 'all'}).$promise;
+    get: function( id ) {
+      return CalendarResource.read( id ? {id: id} : {} ).$promise;
     },
-    createEvent: function( eventObject ){
-      var newEvent = $.extend( angular.copy(eventSchema), eventObject );
-      return CalendarResource.create( {}, {event: newEvent}).$promise;
+    update: function( obj ) {
+      return CalendarResource.update( {id: obj._id}, {event: obj} ) .$promise;
     },
-    updateEvent: function( eventObject ) {
-      return CalendarResource.update( {action: eventObject._id}, {event: eventObject}).$promise;
+    remove: function(id){
+      return CalendarResource.remove( {id: id} ).$promise;
     },
-    removeEvent: function( eventId ) {
-      return CalendarResource.remove( {action: eventId }).$promise;
-    },
-    currentEvent: currentEvent
+    currentEventId: currentEventId
   };
 }]);
-
 angular.module('baseApp.services')
 
 .factory('ChatResource', [ '$resource', function($resource) {
@@ -109077,7 +110000,7 @@ angular.module('baseApp.services')
     }
   );
 }])
-.factory('Chat', [ 'ChatResource', function( ChatResource ) {
+.factory('Chat', [ 'ChatResource', '_', function( ChatResource, _ ) {
     'use strict';
 
     return {
@@ -109131,9 +110054,13 @@ angular.module('baseApp.services')
         // Server: get one where I am initiator, receiver, or member
         return ChatResource.get({resource: 'conversations', id: conversationId}).$promise;
       },
-      getMessagesIn: function( conversationId ) {
+      getPublicMessagesIn: function( conversationId, time ) {
         // Server: get (list) all (last 10) messages where I am a part of the conversation
-        return ChatResource.get({resource:'messages', id: conversationId}).$promise;
+        return ChatResource.get({resource:'messages', id: conversationId, time: time}).$promise;
+      },
+      getPrivateMessagesIn: function( conversationId, time ) {
+        // Server: get (list) all (last 10) messages where I am a part of the conversation
+        return ChatResource.get({resource:'messages', id: conversationId, time: time, private: true}).$promise;
       },
       getMemberships: function() {
         // Server: get (list) all (last 10) memberships that I belong to.
@@ -109157,6 +110084,11 @@ angular.module('baseApp.services')
       },
       startConversation: function( userId, message ){
         return ChatResource.post({resource: 'conversations', id: userId}, message).$promise;
+      },
+      getAllConversations: function(){
+        return ChatResource.get({
+          resource: 'conversations'
+        }).$promise;
       },
       getAllPublicConversations: function(){
         return ChatResource.get({
@@ -109185,6 +110117,9 @@ angular.module('baseApp.services')
         }).$promise;
       },
       startPrivateConversation: function( userId, conversation ) {
+        if( conversation.members && conversation.members.length ) {
+          conversation.members = Object.keys(_.indexBy( conversation.members, '_id'));
+        }
         return ChatResource.post( {
           resource: 'conversations',
           id: 'private',
@@ -109201,98 +110136,55 @@ angular.module('baseApp.services')
           conversation: conversation
         }).$promise;
       },
-      sendPrivateMessage: function( userId, message ) {
+      sendPrivateMessage: function( conversationId, message ) {
         return ChatResource.post( {
           resource: 'messages',
           id: 'private',
-          userId: userId
+          conversationId: conversationId
         },{
           message: message
         }).$promise;
       },
-      sendPublicMessage: function( message ){
+      sendPublicMessage: function( conversationId, message ){
         return ChatResource.post( {
           resource: 'messages',
-          id: 'public'
+          id: 'public',
+          conversationId: conversationId
         },{
           message: message
-        })
+        }).$promise;
       }
     };
 }]);
 angular.module('baseApp.controllers')
-  .controller('ConversationsController', ['$scope', '$state','Socket',
+  .controller('ConversationsController', ['$scope', '$state',
     function ($scope, $state) {
       'use strict';
 
       $scope.tab = [false, false];
       switch( $state.current.name ) {
         case 'conversations.public':
-          $scope.tab[0] = true;
-          break;
-        case 'conversations.private':
+          $scope.private = false;
           $scope.tab[1] = true;
           break;
+        case 'conversations.private':
+          $scope.private = true;
+          $scope.tab[2] = true;
+          break;
+        case 'conversations.view':
+          $scope.private = true;
+          $scope.type = 'all';
+          $scope.tab[0] = true;
+          break;
+        default:
+          $scope.private = true;
+          $scope.type = 'all';
+          $scope.tab[0] = true;
       }
-      //
-      //var conversations;
-      //$scope.conversationList = [];
-      //$scope.currentConversation = {};
-      //$scope.newMessage = '';
-      //
-      //Chat.getConversations()
-      //  .then( function( res ) {
-      //    var keys = Object.keys( res.conversations );
-      //    if( keys.length ){
-      //      conversations = angular.copy( res.conversations );
-      //      conversations = $scope
-      //        ._( conversations )
-      //        .groupBy( function(item){ return item._id; });
-      //
-      //      $scope.conversationList = angular.copy( res.conversations );
-      //
-      //      $scope.currentConversation = res.conversations[0];
-      //      $scope.currentConversation.currentMembers = $scope
-      //        ._( $scope.currentConversation.members )
-      //        .reduce( function(member, val) {
-      //          return member[0].email  + ', ' + val[0].email;
-      //        });
-      //
-      //      $scope.currentUser = res.currentUser;
-      //      $scope
-      //        ._( $scope.conversationList )
-      //        .map( function(item ){
-      //          var members = $scope
-      //            ._( item.members )
-      //            .reduce( function(member, val) {
-      //              return member[0].email  + ', ' + val[0].email;
-      //            });
-      //          console.log( members );
-      //          item.lastMessage = item.messages.length ? item.messages[0].content : '';
-      //          item.members = members;
-      //          delete item.messages;
-      //          return item;
-      //        });
-      //    }
-      //  });
-      //
-      //$scope.sendMessage = function(){
-      //  Chat.sendMessage( $scope.currentConversation._id, { message: $scope.newMessage } )
-      //    .then( function(res){
-      //      Socket.emit('event:ping', res.message);
-      //      $scope.currentConversation.messages.unshift(res.message);
-      //      $scope.newMessage = '';
-      //    });
-      //};
-      //
-      //$scope.loadConversation = function(id){
-      //  $scope.currentConversation = conversations[ id ][0];
-      //  $scope.currentConversation.currentMembers = $scope
-      //    ._( $scope.currentConversation.members )
-      //    .reduce( function(member, val) {
-      //      return member[0].email  + ', ' + val[0].email;
-      //    });
-      //};
+
+      $scope.composeConversation = function(){
+        $('#modalComposeConversation').modal().toggle();
+      };
     }]);
 angular.module('baseApp.directives')
   .directive('conversations', ['$rootScope',
@@ -109302,6 +110194,7 @@ angular.module('baseApp.directives')
         restrict: 'E',
         scope: {
           conversations: '=',
+          current: '=',
           load: '='
         },
         templateUrl: '/assets/html/conversations/conversations',
@@ -109311,8 +110204,77 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('currentConversation', ['currentUser','Socket','Chat','_',
-    function(currentUser, Socket, Chat, _){
+  .directive('modalCreateConversation', ['Chat','currentUser','$http','_','$state',
+    function(Chat, currentUser, $http, _, $state){
+      'use strict';
+      return {
+        restrict: 'E',
+        templateUrl: '/assets/html/conversations/form',
+        scope: {
+          private: '='
+        },
+        link: function(scope){
+          scope.private = scope.private || false;
+          scope.conversation = {
+            members: [],
+            message: {
+              content: ''
+            }
+          };
+          var usersCache = [];
+          scope.selected = function($item) {
+            var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+              selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+
+            scope.conversation.members.push({
+              name: selection.profile.firstName + ' ' + selection.profile.lastName,
+              email: selection.email,
+              _id: selection._id
+            });
+            scope.$broadcast('clearInput');
+          };
+          scope.removeMember = function( i ) {
+            scope.conversation.members.splice( i, 1);
+          };
+          scope.getAutoCompleteUserEmails = function(val) {
+            return $http.get('/api/autocomplete/users', {
+              params: {
+                q: val
+              }
+            }).then(function(response){
+              usersCache = response.data.users;
+              var current = currentUser.get(),
+                filteredUserList =  _
+                  .filter( response.data.users, function(user){
+                    return user.email !== current.email && !_.find(scope.conversation.members, function(i){return i.email ===user.email;});
+                  });
+              return filteredUserList.map(function(user){
+                return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + '&lt;'+user.email+'&gt;';
+              });
+            });
+          };
+          scope.sendMessage = function(){
+            switch( scope.private ) {
+              case false:
+                Chat.startPublicConversation( scope.conversation )
+                  .then( function(){
+                    $state.reload();
+                  });
+                break;
+              default:
+                Chat.startPrivateConversation( null, scope.conversation )
+                  .then( function(){
+                    $state.reload();
+                  });
+            }
+          };
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('currentConversation', ['currentUser','Socket','Chat','_','$state',
+    function(currentUser, Socket, Chat, _, $state){
       'use strict';
       return {
         restrict: 'E',
@@ -109321,7 +110283,7 @@ angular.module('baseApp.directives')
           private: '='
         },
         templateUrl: '/assets/html/conversations/currentConversation',
-        link: function(scope, el){
+        link: function(scope){
           scope.currentUser = currentUser.get();
           scope.currentConversations = [];
           scope.leftMessage = 'leftMessage';
@@ -109329,37 +110291,28 @@ angular.module('baseApp.directives')
           scope.$watch( 'current', function(){
             if( scope.current ) {
               scope.currentConversation = scope.current;
+              Socket.get.on('event:conversation:'+scope.currentConversation._id, function(){
+                $state.reload();
+              });
             }
           });
 
           scope.sendMessage = function(){
             if( scope.private ) {
-              var otherUser = _.find( Object.keys(scope.currentConversation.members), function(item){
-                return item !== scope.currentUser._id;
-              });
-              Chat.sendPrivateMessage( otherUser, { content: scope.newMessage } )
-                .then( function(res){
-                  scope.currentConversation.messages.push( res.message );
-                  //Socket.emit('event:ping', res.message);
-                  //$('.direct-chat-messages', el).animate({
-                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  //}, 500);
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
+                .then( function(){
+                  delete scope.newMessage;
+                });
+            } else {
+              Chat.sendPublicMessage( scope.currentConversation._id, { content: scope.newMessage } )
+                .then( function(){
+                  if( typeof scope.currentConversation.members[ currentUser.get()._id ] === 'undefined' ) {
+                    scope.currentConversation.members[ currentUser.get()._id ] = currentUser.get();
+                  }
                   delete scope.newMessage;
                 });
             }
           };
-
-
-          //Socket.on('event:pong', function(socket){
-          //  console.log( socket );
-          //  //if( conversations[ socket._conversation.id] ){
-          //  //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
-          //  //}
-          //  //if( socket._conversation.id === $scope.currentConversation.id ){
-          //  //  $scope.currentConversation.messages.unshift(socket);
-          //  //}
-          //  //console.log('message: ' + socket.content);
-          //});
         }
       };
     }
@@ -109372,45 +110325,46 @@ angular.module('baseApp.directives')
         restrict: 'E',
         templateUrl: '/assets/html/conversations/currentConversation',
         scope: {
-          open: "@"
+          open: '@'
         },
-        link: function(scope, el){
+        link: function(scope){
           scope.leftMessage = 'leftMessage';
           scope.rightMessage = 'rightMessage';
           scope.newMessage = '';
           scope.currentUser = currentUser.get();
+          scope.isModal = true;
           var existingConversation = false;
           scope.sendMessage = function(){
             if( !existingConversation ) {
               Chat.startPrivateConversation( scope.toUser._id, { message: {content: scope.newMessage }} )
                 .then( function( res ){
                   scope.currentConversation = res.conversation;
+                  existingConversation = true;
                   delete scope.newMessage;
                 });
             } else {
-              Chat.sendPrivateMessage( scope.toUser._id, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
                 .then( function(res){
-                  scope.currentConversation.messages.push( res.message );
-                  //$('.direct-chat-messages', el).animate({
-                  //  scrollTop: $('.direct-chat-messages')[0].scrollHeight
-                  //}, 500);
+                  scope.currentConversation.messages.unshift( res.message );
                   delete scope.newMessage;
                 });
             }
           };
           scope.$watch( 'open', function() {
-            if( scope.open !== "0" ) {
+            if( scope.open !== '0' ) {
               delete scope.currentConversation;
               scope.toUser = JSON.parse( scope.open );
-              scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.first_name + " " + scope.toUser.profile.last_name) : '';
-              scope.otherUser += " <"+scope.toUser.email+">";
+              scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.firstName + ' ' + scope.toUser.profile.lastName) : '';
+              scope.otherUser += ' <'+scope.toUser.email+'>';
               Chat.getPrivateConversation( scope.toUser._id )
                 .then( function(res){
                   if( res.conversation ) {
                     scope.currentConversation = res.conversation;
                     existingConversation = true;
                   } else {
-                    scope.currentConversation = true;
+                    scope.currentConversation = {
+                      isPrivate: true
+                    };
                   }
 
                 });
@@ -109424,21 +110378,33 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('publicConversations', ['Chat',
-    function(Chat){
+  .directive('publicConversations', ['Chat','_',
+    function(Chat, _){
       'use strict';
       return {
         restrict: 'E',
         replace: true,
         templateUrl: '/assets/html/conversations/directiveConversations',
         scope: {
-          active: "="
+          active: '='
         },
         link: function(scope){
           if( scope.active ){
             Chat.getAllPublicConversations().then(function (res) {
+              _.map(res.conversations, function (item) {
+                var lastMessage = item.messages[0];
+                item.lastMessage = lastMessage;
+                item.totalUsers = Object.keys( item.members).length;
+                return item;
+              });
               scope.conversations = res.conversations;
+              scope.conversation = scope.conversations.length ? scope.conversations[0] : null;
+              scope.isPrivate = false;
             });
+            scope.load = function(id){
+              scope.conversation = _.findWhere( scope.conversations, {_id: id});
+              scope.isPrivate = false;
+            };
           }
         }
       };
@@ -109452,38 +110418,100 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/conversations/directiveConversations',
         scope: {
-          active: "="
+          active: '='
         },
         link: function(scope){
           if( scope.active ) {
-          }
-          Chat.getAllPrivateConversations().then(function (res) {
-            _.map( res.conversations, function(item){
-              var lastMessage = item.messages.slice(-1);
-              item.lastMessage = lastMessage[0];
-              return item;
+            Chat.getAllPrivateConversations().then(function (res) {
+              _.map(res.conversations, function (item) {
+                var lastMessage = item.messages[0];
+                item.lastMessage = lastMessage;
+                item.totalUsers = Object.keys( item.members).length;
+                return item;
+              });
+              scope.conversations = res.conversations;
+              scope.conversation = scope.conversations.length ? scope.conversations[0] : null;
+              scope.isPrivate = true;
             });
-            scope.conversations = res.conversations;
-            scope.conversation = scope.conversations.length ? scope.conversations[0] : [];
-            scope.isPrivate = true;
-          });
-          scope.load = function(id){
-            scope.conversation = _.findWhere( scope.conversations, {_id: id});
-            scope.isPrivate = true;
-          };
+            scope.load = function (id) {
+              scope.conversation = _.findWhere(scope.conversations, {_id: id});
+              scope.isPrivate = true;
+            };
+          }
+        }
+      };
+    }
+  ])
+  .directive('allConversations', ['Chat','_','$state','currentUser',
+    function(Chat, _, $state, currentUser ){
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/conversations/directiveConversations',
+        scope: {
+          active: '='
+        },
+        link: function(scope){
+          if( scope.active ) {
+            var current = $state.params.id;
+            Chat.getAllConversations().then(function (res) {
+              if( res.conversations && res.conversations.length ) {
+                _.map(res.conversations, function (item) {
+                  var lastMessage = item.messages[0];
+                  item.lastMessage = lastMessage;
+                  item.totalUsers = Object.keys( item.members).length;
+                  return item;
+                });
+                scope.conversations = _.indexBy( res.conversations, '_id');
+                if( typeof current !== 'undefined'){
+                  if( scope.conversations.hasOwnProperty( current ) ) {
+                    scope.conversation = scope.conversations[ current ];
+                    scope.isPrivate = scope.conversation.isPrivate;
+                  } else {
+                    Chat.getConversation( current )
+                      .then( function(res){
+                        console.log( currentUser );
+                        scope.conversation = res.conversation;
+                        scope.isPrivate = scope.conversation.isPrivate;
+                      });
+                  }
+                } else {
+                  if( res.conversations.length ) {
+                    $state.go( 'conversations.view', {id: res.conversations[0]._id}, {reload: true});
+                  }
+                }
+              }
+            });
+            scope.load = function (id) {
+              scope.conversation = _.findWhere(scope.conversations, {_id: id});
+              scope.isPrivate = scope.conversation.isPrivate;
+            };
+          }
         }
       };
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('DashboardController', ['$scope','$timeout',
-    function($scope, $timeout){
+  .controller('AdminDashboardController', ['$scope',
+    function($scope){
       'use strict';
-      //alert(10);
-      $scope.line_labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
+
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
       $scope.line_series = ['Average Online Traffic'];
       $scope.line_data = [
-        [10065, 10059, 10080, 10081, 10056, 10055, 10040]
+        [65, 59, 80, 81, 56, 55, 90]
       ];
       $scope.onClick = function (points, evt) {
         console.log(points, evt);
@@ -109496,10 +110524,84 @@ angular.module('baseApp.controllers')
         }
       };
 
-      $scope.doughnut_labels = ["Chrome", "IE", "FireFox", "Safari", "Opera"];
-      $scope.doughnut_data = [300, 50, 100, 75, 40];
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
 
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+    }]);
+angular.module('baseApp.controllers')
+  .controller('AuthorizedDashboardController', ['$scope',
+    function($scope){
+      'use strict';
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
 
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
+      $scope.line_series = ['Average Online Traffic'];
+      $scope.line_data = [
+        [65, 59, 80, 81, 56, 55, 90]
+      ];
+      $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+      };
+      $scope.onHover = function (points) {
+        if (points.length > 0) {
+          console.log('Point', points[0].value);
+        } else {
+          console.log('No point');
+        }
+      };
+
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
+
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+    }]);
+angular.module('baseApp.controllers')
+  .controller('SudoDashboardController', ['$scope',
+    function($scope){
+      'use strict';
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
+
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
+      $scope.line_series = ['Average Online Traffic'];
+      $scope.line_data = [
+        [65, 59, 80, 81, 56, 55, 90]
+      ];
+      $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+      };
+      $scope.onHover = function (points) {
+        if (points.length > 0) {
+          console.log('Point', points[0].value);
+        } else {
+          console.log('No point');
+        }
+      };
+
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
+
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
     }]);
 angular.module('baseApp.directives')
   .directive('autoComplete', [ function(){
@@ -109605,7 +110707,6 @@ angular.module('baseApp.directives')
       return {
         restrict: 'A',
         link: function(scope, elem, attr){
-          console.log( attr );
           try {
             $(elem).click(function () {
               var clicks = $(this).data('clicks');
@@ -109729,6 +110830,29 @@ angular.module('baseApp.directives')
       };
     }
   ]);
+
+angular.module('baseApp.directives')
+  .directive('datepicker', ['$rootScope',
+    function( ){
+      'use strict';
+      return {
+        restrict: 'A',
+        link: function( scope, elem, attr) {
+          /* global moment */
+          var option = {
+            defaultDate: moment( new Date() ).format( 'MM/DD/YYYY' )
+          }, $date;
+          scope.$watch( function(){ return attr.datepicker;}, function(newVal){
+            if( newVal ) {
+              var t = moment( newVal );
+              t._isUTC = true;
+              $date.val( t.format('MM/DD/YYYY h:mm A'));
+            }
+          });
+          $date = $(elem).datetimepicker( option );
+        }
+      };
+    }]);
 angular.module('baseApp.directives')
   .directive('feedbackBox', [ 'FeedbackService',
     function( FeedbackService ){
@@ -109828,7 +110952,7 @@ angular.module('baseApp.directives')
     }]);
 angular.module('baseApp.directives')
   .directive('media', ['Media','User','$http',
-    function( Media, User, $http ){
+    function( ){
       'use strict';
       return {
         restrict: 'E',
@@ -109841,9 +110965,6 @@ angular.module('baseApp.directives')
         },
         link: function( scope, el ) {
           //scope.media = {};
-          scope.$watch( function(){ return scope.media; }, function(ol, nw){
-            console.log( 'MEDIA', scope.media );
-          });
           var imageObject = {}, fileInput = el.find('input');
           scope.filename = 'none';
           fileInput.bind('change', function(event) {
@@ -109892,6 +111013,10 @@ angular.module('baseApp.directives')
         restrict: 'A',
         link: function(){
           $.executeTheme();
+          $('.control-sidebar-tabs a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+          });
         }
       };
     }
@@ -109908,6 +111033,27 @@ angular.module('baseApp.directives')
       }
     };
   });
+angular.module('baseApp.directives')
+  .directive('hideOnTouchScreen', [ function(){
+    'use strict';
+    return {
+      link: function(scope, elem, attr){
+        /* global window */
+        var emulateMobile = window.location.search.split('&')[1] === 'mobile=true';
+        if ('touchstart' in document.documentElement || emulateMobile || window.navigator.msPointerEnabled) {
+          if( attr.hideOnTouchScreen === 'true' ){
+            $(elem).hide();
+          }
+          if( attr.addClass ) {
+            $(elem).addClass( attr.addClass );
+          }
+          if( attr.removeClass ) {
+            $(elem).removeClass( attr.removeClass );
+          }
+        }
+      }
+    };
+  }]);
 angular.module('baseApp.filters');
 angular.module('baseApp.filters', [])
   .filter('rawhtml', ['$sce', function($sce){
@@ -109929,14 +111075,14 @@ angular.module('baseApp.controllers')
   ]
 );
 angular.module('baseApp.directives')
-  .directive('footer', ['$rootScope',
-    function( $rootScope ){
+  .directive('footer', ['$rootScope','_',
+    function( $rootScope, _ ){
       'use strict';
       return {
         restrict: 'A',
         replace: true,
         templateUrl: function() {
-          if( $rootScope.user === 'anyUser') {
+          if( !_.contains( $rootScope.access, 'any' ) ) {
             return 'assets/html/layout/footer/index';
           } else {
             return '/assets/html/layout/footer/user';
@@ -109946,8 +111092,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket',
-    function( $rootScope, currentUser, Socket ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout',
+    function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout ){
       'use strict';
       return {
         restrict: 'A',
@@ -109958,26 +111104,83 @@ angular.module('baseApp.directives')
         link: function(scope) {
           scope.logout = $rootScope.logout;
           scope.current = currentUser.get();
+          function populateMessageNotice(res, newUser ){
+            scope.notifications = res.notifications;
+            _.each( Object.keys( scope.notifications ), function( key ) {
+              scope[ key ] = {
+                total: Object.keys( scope.notifications[key] ).length
+              };
+            });
+            Chat.getAllPrivateConversations()
+              .then( function(res){
+                var groupById = _.groupBy( res.conversations, function(conv){ return conv._id; });
+                _.each( Object.keys( groupById ), function(key){ groupById[key] = groupById[key][0]; });
+                var allConversations = {};
+                _.each( Object.keys( groupById ), function( key ) {
+                  delete groupById[key].members[newUser._id];
+                  var users = [];
+                  _.each( Object.keys( groupById[key].members ), function(k){
+                    users.push( groupById[key].members[k] );
+                  });
+                  groupById[key].members = users;
+                  groupById[key].messages.reverse();
+                  if( scope.notifications && scope.notifications.chat  ) {
+                    if( typeof scope.notifications.chat[key] === 'undefined' ) {
+                      scope.notifications.chat[key] = groupById[key];
+                      delete scope.notifications.chat[key].members[newUser._id ];
+                      var users2 = [];
+                      _.each( Object.keys( scope.notifications.chat[key].members ), function(k){
+                        users.push( scope.notifications.chat[key].members[k] );
+                      });
+                      scope.notifications.chat[key].members = users2;
+                      scope.notifications.chat[key].messages.reverse();
+                    } else {
+                      scope.notifications.chat[key].isNew = true;
+                    }
+                  } else {
+                    allConversations[key] = groupById[key];
+                  }
+                });
+                if( Object.keys( allConversations ).length ) {
+                  scope.notifications = {
+                    chat: allConversations
+                  };
+                }
+                scope.notifications.chat = _.sortBy( scope.notifications.chat, function(entry){ return new Date(entry.messages[0].created).getTime()*-1; });
+              });
+          }
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
-              newUser = {access: 'any'};
+              newUser = {access: ['any']};
+            } else {
+
+              Socket.get.on('event:notification:'+newUser._id, function(){
+
+                Notification.get()
+                  .then( function(res){
+                    populateMessageNotice(res, newUser);
+                  });
+              });
             }
-            switch( newUser.access ){
-              case 'any':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
-                break;
-              case 'admin':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
-                scope.user = newUser;
-                break;
-              case 'authorized':
-                scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
-                scope.user = newUser;
-                break;
-              default:
+
+            if( _.contains( newUser.access, 'any' ) ) {
+              scope.dynamicTemplateUrl = '/assets/html/layout/header/any';
+            } else {
+              scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
+              scope.user = newUser;
+              scope.notifications = {};
+              Notification.get()
+                .then( function(res){
+                  populateMessageNotice(res, newUser);
+                });
             }
             scope.toggleSidebar = function(){
               $rootScope.toggleSidebarCollapsed();
+              if( !_.contains(newUser.access, 'any') && $state.current.url === '/') {
+                $timeout( function(){
+                  $state.reload();
+                }, 400);
+              }
             };
           });
 
@@ -110006,41 +111209,52 @@ angular.module('baseApp.controllers')
 );
 
 angular.module('baseApp.directives')
-  .directive('heading', [ '$rootScope',
-    function( $rootScope ){
+  .directive('heading', [ '$rootScope','$state',
+    function( $rootScope, $state ){
       'use strict';
       return {
         restrict: 'E',
         replace: true,
         templateUrl: '/assets/html/layout/heading/index',
         link: function( scope ) {
-          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+          $rootScope.$on('$stateChangeStart', function(event, toState) {
             //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
-            var head, breadcrumbs = [{url: 'root',value: 'Home'}];
-            switch( toState.name ) {
-              case 'boards.list':
-                breadcrumbs.push({url:'', value: 'View Boards'});
-                head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
-                break;
-              case 'boards.new':
-                breadcrumbs.push({url:'', value: 'Create Board'});
-                head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
-                break;
-              case 'boards.detail':
-                breadcrumbs.push({url:'', value: 'Name'});
-                head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
-                break;
-              default:
-                breadcrumbs.push({url:'', value:'Undefined'});
-                head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
-                break;
-            }
-            scope.heading = head;
+            //var head, breadcrumbs = [{url: 'root',value: 'Home'}];
+            //switch( toState.name ) {
+            //  case 'boards.list':
+            //    breadcrumbs.push({url:'', value: 'View Boards'});
+            //    head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
+            //    break;
+            //  case 'boards.new':
+            //    breadcrumbs.push({url:'', value: 'Create Board'});
+            //    head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
+            //    break;
+            //  case 'boards.detail':
+            //    breadcrumbs.push({url:'', value: 'Name'});
+            //    head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
+            //    break;
+            //  default:
+            //    breadcrumbs.push({url:'', value:'Undefined'});
+            //    head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
+            //    break;
+            //}
+            scope.heading = {
+              title: toState.title,
+              subTitle: toState.subTitle,
+              breadcrumbs: [
+                {
+                  url: 'root',
+                  value: 'Home'},
+                {
+                  url: 'root',
+                  value: toState.title
+                }
+              ]
+            };
           });
-
           scope.heading = {
-            title: 'Title',
-            subTitle: 'Sub Title',
+            title: $state.current.title,
+            subTitle: $state.current.subTitle,
             breadcrumbs: [
               {
                 url: 'root',
@@ -110048,7 +111262,7 @@ angular.module('baseApp.directives')
               },
               {
                 url: 'root',
-                value: 'Blank Page'
+                value: $state.current.title
               }
             ]
           };
@@ -110057,14 +111271,60 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('pageLayout', [
-    function(){
+  .directive('pageLayout', [ 'Notification',
+    function( Notification ){
       'use strict';
       return {
         restrict: 'A',
         replace: true,
         transclude: true,
-        templateUrl: '/assets/html/layout/page/index'
+        templateUrl: '/assets/html/layout/page/index',
+        link: function(scope) {
+          scope.$watch( function(){ return Notification.confirm; }, function(newMsg){
+            if( newMsg ) {
+              scope.title = 'Confirm';
+              scope.message = newMsg;
+              $('#pageNotification').modal().show();
+            }
+          });
+          scope.close = function(){
+            Notification.confirm = null;
+          };
+          scope.confirm = function(){
+            $('#pageNotification').modal().hide();
+            Notification.confirm = null;
+            Notification.confirmed = true;
+          };
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('rootPageView', ['$rootScope','Newsletter','_',
+    function($rootScope, Newsletter, _){
+      'use strict';
+      return {
+        restrict: 'A',
+        templateUrl: function() {
+          if( _.contains( $rootScope.access, 'sudo' ) ) {
+            return '/assets/html/dashboard/sudo_view';
+          } else if ( _.contains( $rootScope.access, 'admin' ) ) {
+            return '/assets/html/dashboard/admin_view';
+          } else if ( _.contains( $rootScope.access, 'authorized' ) ) {
+            return '/assets/html/dashboard/authorized_view';
+          } else {
+            return '/assets/html/pages/home';
+          }
+        },
+        link: function( scope ){
+          scope.entry = {};
+          scope.newsletterSignup = function(){
+            Newsletter.add( scope.entry).then( function(){
+              //alert('thank you for sign up');
+              scope.entry = {};
+            });
+          };
+        }
       };
     }
   ]);
@@ -110074,12 +111334,11 @@ angular.module('baseApp.controllers')
       'use strict';
 
       $scope.user = currentUser.get();
-      console.log('in here');
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('sideBar', ['$rootScope','$state','currentUser',
-    function($rootScope, $state, currentUser){
+  .directive('sideBar', ['$rootScope','$state','_',
+    function($rootScope, $state, _ ){
       'use strict';
       return {
         restrict: 'A',
@@ -110089,19 +111348,14 @@ angular.module('baseApp.directives')
         link: function(scope, elem, attrs) {
           scope.logout = $rootScope.logout;
           scope.$watch( 'access', function(access){
-            switch( access ){
-              case 'any':
-                scope.dynamicTemplateUrl = '';
-                break;
-              case 'admin':
-              case 'authorized':
-                if( attrs.type === 'navigation' ){
-                  scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/leftMainNavigation';
-                } else {
-                  scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/rightMainSettings';
-                }
-                break;
-              default:
+            if( _.contains( access, 'sudo' ) || _.contains( access, 'admin' ) || _.contains( access, 'authorized' ) ) {
+              if( attrs.type === 'navigation' ){
+                scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/leftMainNavigation';
+              } else {
+                scope.dynamicTemplateUrl = '/assets/html/layout/sidebar/rightMainSettings';
+              }
+            } else {
+              scope.dynamicTemplateUrl = '';
             }
           });
           scope.goTo = function( state, id ) {
@@ -110169,7 +111423,6 @@ angular.module('baseApp.controllers')
         Mail.getAllSent()
           .then( function(sentMessages){
             $scope.messages = sentMessages.messages;
-            console.log( $scope.messages );
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -110184,7 +111437,6 @@ angular.module('baseApp.controllers')
         Mail.getAllStarred()
           .then( function(starredMessages){
             $scope.messages = starredMessages.messages;
-            console.log( $scope.messages );
             $scope.mailProperties = {
               inboxCount: 1,
               draftCount: 2
@@ -110231,7 +111483,6 @@ angular.module('baseApp.controllers')
               inboxCount: 1,
               draftCount: 2
             };
-            console.log( $scope.messages );
             setupPagination();
           });
         setHeader( 'Inbox' );
@@ -110249,7 +111500,6 @@ angular.module('baseApp.controllers')
         }
 
       };
-      console.log( $scope.messages );
     }
   ]
 );
@@ -110521,7 +111771,6 @@ angular.module('baseApp.directives')
           });
 
           $('#modalComposeMessage').on('hidden.bs.modal', function () {
-            console.log('i closed');
           });
 
           scope.getAutoCompleteUserEmails = function(val) {
@@ -110612,7 +111861,7 @@ angular.module('baseApp.services')
     };
   }]);
 
-angular.module('baseApp.directives')
+  angular.module('baseApp.directives')
   .directive('modalWindowView', [
     function(){
       'use strict';
@@ -110655,10 +111904,157 @@ angular.module('baseApp.directives')
                 scope.$parent.$broadcast('event:removeSuccess', scope.dataObject._id );
               });
           };
+          scope.close = function(){
+            $(elem).modal('hide');
+          };
         }
       };
     }
   ]);
+angular.module('baseApp.controllers')
+  .controller('NetworkController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_',
+    function($scope, $state, $http, currentUser, Network, _){
+      'use strict';
+
+      $scope.networks = [];
+      var formSetup = function(){
+        var usersCache = [];
+        $scope.selected = function($item) {
+          var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+            selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+
+          $scope.network.members[ selection._id ] = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
+          $scope.$broadcast('clearInput');
+        };
+        $scope.removeMember = function( id ) {
+          delete $scope.network.members[ id ];
+          $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
+        };
+        $scope.getUsers = function(val) {
+          return $http.get('/api/autocomplete/users', {
+            params: {
+              q: val
+            }
+          }).then(function(response){
+            usersCache = response.data.users;
+            var current = currentUser.get(),
+              filteredUserList =  _
+                .filter( response.data.users, function(user){
+                  return user.email !== current.email && !_.find($scope.network.members, function(i){return i.email ===user.email;});
+                });
+            return filteredUserList.map(function(user){
+              return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
+            });
+          });
+        };
+      };
+      $scope.currentUser = currentUser.get();
+      switch( $state.current.name ) {
+        case 'networks.new':
+          $scope.network = {
+            members: {}
+          };
+          $scope.add = function(){
+            $scope.network.members = Object.keys( _.indexBy( $scope.network.members, '_id') );
+            Network.add( $scope.network )
+              .then( function(){
+                $state.go('networks.list',{}, { reload: true });
+              });
+          };
+          formSetup();
+          break;
+        case 'networks.detail':
+          Network.get( $state.params.id )
+             .then( function(res){
+               $scope.network = res.network;
+             });
+          break;
+        case 'networks.list':
+          Network.get()
+            .then( function( res ) {
+              $scope.networks = res.networks;
+            });
+          break;
+        case 'networks.edit':
+          Network.get( $state.params.id )
+            .then( function( res ) {
+              $scope.network = res.network;
+              $scope.network.members = res.network.members || {};
+              $scope.hasMembers = res.network.members ? Object.keys( res.network.members).length : false;
+            });
+          formSetup();
+          $scope.update = function( ) {
+            Network.update( $scope.network )
+              .then( function(){
+                $state.go('networks.list');
+              });
+          };
+          break;
+        default:
+          break;
+      }
+
+
+      $scope.remove = function( id ){
+        Network.remove( id )
+          .then( function(){
+            $scope.networks = _.filter( $scope.networks, function(network){ return network._id !== id; });
+            $state.go('networks.list');
+          });
+      };
+    }]);
+angular.module('baseApp.services').factory('NetworkResource', [ '$resource', function($resource) {
+  'use strict';
+  return $resource('/api/networks/:id',
+    { id: '@id' },
+    {
+      create: {
+        method: 'POST'
+      },
+      read: {
+        method: 'GET'
+      },
+      update: {
+        method: 'PUT'
+      },
+      remove: {
+        method: 'DELETE'
+      }
+    }
+  );
+}]);
+angular.module('baseApp.services').factory('Network', [ 'NetworkResource', function( NetworkResource) {
+  'use strict';
+  // Caching Option here...
+  return {
+    add: function( obj ) {
+      return NetworkResource.create( {network: obj} ).$promise;
+    },
+    get: function( id ) {
+      return NetworkResource.read( id ? {id: id} : {} ).$promise;
+    },
+    update: function( obj ) {
+      return NetworkResource.update( {id: obj._id}, {network: obj} ) .$promise;
+    },
+    remove: function(id){
+      return NetworkResource.remove( {id: id} ).$promise;
+    }
+  };
+}]);
+
+angular.module('baseApp.controllers')
+  .controller('NotificationsController', ['$scope', function( $scope ) {
+    'use strict';
+    console.log( $scope );
+  }]);
 angular.module('baseApp.controllers')
   .controller('ProfileController', ['$scope', '$state', 'currentUser', function( $scope, $state, currentUser ) {
     'use strict';
@@ -110716,16 +112112,16 @@ angular.module('baseApp.directives')
           var user = currentUser.get();
           if( user.profile ) {
             scope.user = {
-              first_name: user.profile.first_name,
-              last_name: user.profile.last_name,
-              avatarImage: user.avatarImage
+              firstName: user.profile.firstName,
+              lastName: user.profile.lastName
             };
           } else {
             scope.user = {};
           }
+          scope.user.avatarImage = user.avatarImage;
 
           scope.update = function() {
-            currentUser.update( _.extendOwn( {first_name: '', last_name: ''}, scope.user) )
+            currentUser.update( _.extendOwn( {firstName: '', lastName: ''}, scope.user) )
               .then( function(res) {
                 currentUser.get().profile = _.extendOwn( currentUser.get().profile, res.profile );
                 FeedbackService.set({feedbackSuccess: 'Profile Updated!'});
@@ -110740,7 +112136,7 @@ angular.module('baseApp.directives')
               Media.getKey( mediaDetails )
                 .then( function(res) {
                   $http({
-                    url: res.signed_request,
+                    url: res.signedRequest,
                     method: 'PUT',
                     data: file,
                     transformRequest: angular.identity,
@@ -110760,22 +112156,18 @@ angular.module('baseApp.directives')
                       });
                   }, function(){
                     defer.reject();
-                  })
+                  });
                 }, function(){
                   defer.reject();
                 });
               return defer.promise;
-            },
-            send: function( task ){
-              task.description = $('#wysihtml5-content').val();
-              return Task.create( task );
             }
           };
         }
       };
     }
   ])
-  .directive( 'profileContact', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService) {
+  .directive( 'profileContact', ['User', 'FeedbackService','currentUser', function( User, FeedbackService, currentUser) {
     'use strict';
     return {
       restrict: 'E',
@@ -110797,8 +112189,9 @@ angular.module('baseApp.directives')
         });
 
         scope.update = function() {
-          currentUser.update( scope.user )
+          User.update( scope.user )
             .then( function() {
+              currentUser.get().email = scope.user.email;
               _init();
               FeedbackService.set({feedbackSuccess: 'Email Updated!'});
             }, function(){
@@ -110809,7 +112202,7 @@ angular.module('baseApp.directives')
       }
     };
   }])
-  .directive( 'profileSecurity', ['currentUser', 'FeedbackService', function( currentUser, FeedbackService ) {
+  .directive( 'profileSecurity', ['User', 'FeedbackService', function( User, FeedbackService ) {
     'use strict';
     return {
       restrict: 'E',
@@ -110836,7 +112229,7 @@ angular.module('baseApp.directives')
             scope.validationErrors = ['Passwords do not match.'];
           }
 
-          currentUser.update( scope.user )
+          User.update( scope.user )
             .then( function() {
               _init();
               FeedbackService.set({feedbackSuccess: 'Password Updated!'});
@@ -110866,7 +112259,7 @@ angular.module('baseApp.services').factory('Profile', [ 'ProfileResource', funct
   'use strict';
   return {
     get: function(){
-      ProfileResource.get().$promise;
+      return ProfileResource.get().$promise;
     },
     update: function( profile ) {
       return ProfileResource.update( {}, {profile: profile}).$promise;
@@ -110882,10 +112275,10 @@ angular.module('baseApp.controllers')
       'use strict';
 
       $scope.questionsList = [];
-      Admin.getQuestionList()
-        .then( function( res ){
-          $scope.questionsList = res.list;
-        });
+      //Admin.getQuestionList()
+      //  .then( function( res ){
+      //    $scope.questionsList = res.list;
+      //  });
 
       $scope.removeEntry = function( id, index ){
         if ( confirm('Are you sure you want to delete?') ) {
@@ -110897,38 +112290,29 @@ angular.module('baseApp.controllers')
       };
     }
   ]);
-angular.module('baseApp.controllers')
-  .controller('RestroomController', ['$scope','Socket',
-    function ($scope, Socket) {
-      'use strict';
-
-      $scope.restroom = false;
-      Socket.get.on('event:restroom', function(socket){
-        console.log( socket );
-        $scope.$apply( function(){
-          if( socket === "1") {
-            $scope.restroom = true;
-          } else {
-            $scope.restroom = false;
-          }
-        });
-
-        //if( conversations[ socket._conversation.id] ){
-        //  conversations[ socket._conversation.id ][0].messages.unshift( socket );
-        //}
-        //if( socket._conversation.id === $scope.currentConversation.id ){
-        //  $scope.currentConversation.messages.unshift(socket);
-        //}
-        //console.log('message: ' + socket.content);
+angular.module('baseApp.services')
+  .factory('NotificationResource', [ '$resource', function($resource) {
+    'use strict';
+    return $resource('/api/notifications/:id',
+      { id: '@id' },
+      {
+        read:   { method: 'GET' },
+        remove: { method: 'DELETE' }
       });
+  }])
+  .factory('Notification', [ 'NotificationResource', function( NotificationResource ) {
+    'use strict';
+    var confirmMessage = null, confirmed = null;
+    return {
+      get: function( ) { return NotificationResource.read( ).$promise; },
+      remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; },
+      confirm: confirmMessage,
+      confirmed: confirmed
+    };
+  }]);
 
-      //$scope.$on('socket:restroom', function(){
-      //  console.log('in socket');
-      //  $scope.restroom = !$scope.restroom;
-      //});
+/* global io */
 
-    }
-  ]);
 angular.module('baseApp.services').factory('Socket', [ function() {
   'use strict';
 
@@ -111044,8 +112428,8 @@ angular.module('baseApp.services')
 
     function login (user, route) {
       currentUser = user;
-      console.log( user );
-      $rootScope.setAccess( user.access || 'any' );
+
+      $rootScope.setAccess( user.access || ['any'] );
       $rootScope.$emit('userLoggedIn');
       if( route ){
         $state.transitionTo( 'root', {}, { reload: true});
@@ -111060,8 +112444,8 @@ angular.module('baseApp.services')
       var defer = $q.defer();
       Session.logout()
         .then( function(){
-          currentUser = {access: 'any'};
-          $rootScope.setAccess( 'any' );
+          currentUser = {access: ['any']};
+          $rootScope.setAccess( ['any'] );
           $state.transitionTo('root');
           defer.resolve();
         });
@@ -111189,6 +112573,26 @@ angular.module('baseApp.services').factory('Media', [ 'MediaResource', function(
   };
 }]);
 angular.module('baseApp.services')
+  .factory('NewsletterResource', [ '$resource', function($resource) {
+    'use strict';
+    return $resource('/api/contact/:action',
+      { action: '@action' },
+      {
+        add: { method: 'POST'},
+        read:   { method: 'GET' },
+        remove: { method: 'DELETE' }
+      });
+  }])
+  .factory('Newsletter', [ 'NewsletterResource', function( NewsletterResource ) {
+    'use strict';
+    return {
+      add: function( entry ) { return NewsletterResource.add( {action: 'newsletter'}, entry).$promise; },
+      get: function( ) { return NewsletterResource.read( ).$promise; },
+      remove: function( id ){ return NewsletterResource.remove( { id: id } ).$promise; }
+    };
+  }]);
+
+angular.module('baseApp.services')
   .factory('ValidatorFactory', [ function() {
     'use strict';
 
@@ -111235,8 +112639,8 @@ angular.module('baseApp.services')
     };
   }]);
 angular.module('baseApp.controllers')
-  .controller('SessionController', ['$scope','$stateParams','Session','ValidatorFactory','currentUser',
-    function($scope, $stateParams, Session, validate, currentUser ){
+  .controller('SessionController', ['$scope','$stateParams','Session','ValidatorFactory',
+    function($scope, $stateParams, Session, validate ){
       'use strict';
 
       if( $stateParams.token && !$stateParams.user ){
@@ -111256,6 +112660,7 @@ angular.module('baseApp.controllers')
               $scope.setAuthorizationHeader( res.headers('Authorization') );
               $scope.getProfile(true);
             }, function( err ){
+              $scope.user = {};
               $scope.validationErrors = [err.data.message];
 
             });
@@ -111291,9 +112696,9 @@ angular.module('baseApp.controllers')
         Session.passwordReset( {token: $stateParams.token, newPassword: $scope.user.newPassword} )
           .then( function( res ){
             $scope.setAuthorizationHeader( res.headers('Authorization') );
-            currentUser.login(res.user, true);
+            $scope.getProfile(true);
           }, function(err){
-            $scope.validationErrors = err.message;
+            $scope.validationErrors = [err.data.message];
           });
       };
     }
@@ -111625,7 +113030,8 @@ angular.module('baseApp.controllers')
                 $scope.setAuthorizationHeader( res.headers('Authorization') );
                 currentUser.login(res.user, true);
               }, function( err ){
-                $scope.validationErrors = err.message;
+                delete $scope.user.email;
+                $scope.validationErrors = [err.data.message];
               });
           };
           break;
@@ -111638,7 +113044,6 @@ angular.module('baseApp.controllers')
           User.getUsersList()
             .then( function( res ){
               $scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
-              console.log( res.list );
             });
           $scope.messageModal = function( index ){
             $('#modalNewMessage').modal().toggle();
@@ -111756,23 +113161,3 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     }
   };
 }]);
-
-angular.module('baseApp.directives')
-  .directive('rootPageView', ['$rootScope',
-    function($rootScope){
-      'use strict';
-      return {
-        restrict: 'A',
-        templateUrl: function() {
-          switch ($rootScope.access) {
-            case 'any':
-              return '/assets/html/views/home';
-            case 'authorized':
-              return '/assets/html/views/dashboard';
-            case 'admin':
-              return '/assets/html/views/dashboard';
-          }
-        }
-      };
-    }
-  ]);

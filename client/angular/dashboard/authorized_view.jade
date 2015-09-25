@@ -1,0 +1,122 @@
+.row( id="dashboard" ng-controller="AuthorizedDashboardController")
+    .col-xs-12
+        .panel-group( id="accordion" role="tablist" aria-multiselectable="true")
+            .panel.panel-default
+                .panel-heading(role="tab" id="headingOne")
+                    h4.panel-title
+                        a( role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
+                            |   Network 1: MAHRIO
+                .panel-collapse.collapse.in(id="collapseOne" role="tabpanel" aria-labelledby="headingOne")
+                    .panel-body
+                        .row
+                            .col-md-3.col-sm-6.col-xs-12
+                                .small-box.bg-aqua
+                                    .inner
+                                        h3
+                                            |   10 / 3
+                                        p
+                                            |   Tasks / Boards
+
+                                    .icon
+                                        .fa.fa-tasks
+                                    a.small-box-footer( href="#")
+                                        |   View
+                                        i.fa.fa-arrow-circle-right
+                            .col-md-3.col-sm-6.col-xs-12
+                                .small-box.bg-green
+                                    .inner
+                                        h3
+                                            |   4
+                                        p
+                                            |   Members
+
+                                    .icon
+                                        .i.fa.fa-users
+                                    a.small-box-footer( href="#")
+                                        |   View
+                                        i.fa.fa-arrow-circle-right
+                            .col-md-3.col-sm-6.col-xs-12
+                                .small-box.bg-purple
+                                    .inner
+                                        h3
+                                            |   43
+                                        p
+                                            |   Articles
+
+                                    .icon
+                                        .i.fa.fa-book
+                                    a.small-box-footer( href="#")
+                                        |   More info
+                                        i.fa.fa-arrow-circle-right
+                            .col-md-3.col-sm-6.col-xs-12
+                                .small-box.bg-yellow
+                                    .inner
+                                        h3
+                                            |   4
+                                        p
+                                            |   Conversations
+
+                                    .icon
+                                        .i.ion.ion-ios-chatboxes
+                                    a.small-box-footer( href="#")
+                                        |   View
+                                        i.fa.fa-arrow-circle-right
+                .panel-heading(role="tab" id="headingTwo")
+                    h4.panel-title
+                        a.collapsed( role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo")
+                            |   Network 2: Computer Science &amp; Engineering
+                .panel-collapse.collapse(id="collapseTwo" role="tabpanel" aria-labelledby="headingTwo")
+                    .panel-body
+                        .row
+                            .col-md-3.col-sm-6.col-xs-12
+                                .small-box.bg-aqua
+                                    .inner
+                                        h3
+                                            |   10 / 3
+                                        p
+                                            |   Tasks / Boards
+
+                                    .icon
+                                        .fa.fa-tasks
+                                    a.small-box-footer( href="#")
+                                        |   View
+                                        i.fa.fa-arrow-circle-right
+                            .col-md-3.col-sm-6.col-xs-12
+                                .small-box.bg-green
+                                    .inner
+                                        h3
+                                            |   4
+                                        p
+                                            |   Members
+
+                                    .icon
+                                        .i.fa.fa-users
+                                    a.small-box-footer( href="#")
+                                        |   View
+                                        i.fa.fa-arrow-circle-right
+                            .col-md-3.col-sm-6.col-sm-6.col-xs-12
+                                .small-box.bg-purple
+                                    .inner
+                                        h3
+                                            |   43
+                                        p
+                                            |   Articles
+
+                                    .icon
+                                        .i.fa.fa-book
+                                    a.small-box-footer( href="#")
+                                        |   More info
+                                        i.fa.fa-arrow-circle-right
+                            .col-md-3.col-sm-6.col-xs-12
+                                .small-box.bg-yellow
+                                    .inner
+                                        h3
+                                            |   4
+                                        p
+                                            |   Conversations
+
+                                    .icon
+                                        .i.ion.ion-ios-chatboxes
+                                    a.small-box-footer( href="#")
+                                        |   View
+                                        i.fa.fa-arrow-circle-right

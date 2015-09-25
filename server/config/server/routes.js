@@ -1,10 +1,7 @@
 'use strict';
 
-module.exports = function (config, server) {
-
-  server.lang = config.lang.get();
-
-  require('../../controllers/session/api')(config, server);
+function requireControllers(config, server){
+  require('../../controllers/oauth/api')(config, server);
   require('../../controllers/user/api')(config, server);
   require('../../controllers/profile/api')(config, server);
   require('../../controllers/article/api')(config, server);
@@ -12,13 +9,21 @@ module.exports = function (config, server) {
   require('../../controllers/board/api')( config, server );
   require('../../controllers/calendar/api')(config, server);
   require('../../controllers/chat/api')(config, server);
+  require('../../controllers/notification/api')(config, server);
   require('../../controllers/mail/api')(config, server);
   require('../../controllers/media/api')(config, server);
+  require('../../controllers/network/api')(config, server);
   require('../../controllers/task/api')(config, server);
-  require('../../controllers/cms')(config, server);
-  require('../../controllers/contact')(config, server);
-  require('../../controllers/knowledge')(config, server);
+  require('../../controllers/contact/newsletter')(config, server);
+  require('../../controllers/contact/knowledge')(config, server);
+}
+module.exports = function (config, server) {
 
+  server.lang = config.lang.get();
+
+  requireControllers(config, server);
+
+  /* ASSETS & TEMPLATES */
   server.route({
     method: 'GET',
     path: '/assets/{param*}',
@@ -40,6 +45,7 @@ module.exports = function (config, server) {
     }
   });
 
+  /* FAVICON */
   server.route({
     method: 'GET',
     path: '/favicon.ico',
@@ -48,7 +54,7 @@ module.exports = function (config, server) {
     }
   });
 
-  // SEO-FRIENDLY URL ROUTES
+  // MAIN ROUTER
   var notDefined;
   server.route({
     method: 'GET',
@@ -56,46 +62,18 @@ module.exports = function (config, server) {
     handler: function(request, reply){
       switch( request.params.page ){
         case notDefined:
-          reply.view('_adminLTE', {
-            page: null,
-            navigation: ['Information Technology'],
-            lang: server.lang
+          reply.view('_mahrio', {
+            develop: request.query.develop
           });
-          break;
-        case 'questions':
-          reply.view('_adminLTE', {
-            page: 'questions',
-            navigation: ['Information Technology'],
-            lang: server.lang
-          });
-          break;
-        case 'adminLTE':
-          reply.view('_adminLTE');
           break;
         default:
-          reply.view('_adminLTE', {
-            page: 'notFound',
-            navigation: ['Information Technology'],
-            lang: server.lang
-          });
+          reply.view('pages/_notFound');
           break;
       }
-
     }
   });
 
-  // WebApp - Single Page
-  server.route({
-    method: 'GET',
-    path: '/app',
-    handler: function(request, reply){
-      reply.view('_app', {
-        navigation: ['Information Technology'],
-        lang: server.lang
-      });
-    }
-  });
-
+  // ACCEPT ALL OPTIONS
   server.route({
     method: 'OPTIONS',
     path: '/{path*}',
@@ -103,7 +81,6 @@ module.exports = function (config, server) {
       reply();
     }
   });
-
 
   return server;
 };

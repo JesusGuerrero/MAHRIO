@@ -1,0 +1,35 @@
+.row
+    .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+        .panel.panel-default
+            error-message-box( validation-errors="validationErrors" )
+            .panel-body
+                h3.text-center
+                    | Add Network
+                form(novalidate ng-submit="network._id ? update() : add()")
+                    form-input-tag(
+                        model="network.name"
+                        label="Name"
+                        required="true")
+                    .form-group
+                        label
+                            |  Private Network
+                        input( type="checkbox" ng-model="network.isPrivate" i-check)
+                    .form-group(ng-show="hasMembers")
+                        label
+                            | Members
+                        div
+                            span.bg-blue( ng-repeat="member in network.members track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" )
+                                i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember(member._id)")
+                                |   {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;
+
+                    auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getUsers"
+                        selected="selected")
+
+                    hr
+                    .text-center.form-group
+                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+                            | {{network._id ? 'Save' : 'Create'}}
+
+                .col-xs-8.col-xs-offset-2.text-center.form-group
+                    a.btn.btn-block.btn-default( ui-sref="networks.list" ui-sref-opts="{reload: true}")
+                        | Cancel

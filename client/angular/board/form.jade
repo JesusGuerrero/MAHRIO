@@ -14,9 +14,9 @@
                         label
                             | Members
                         div
-                            span.bg-blue( ng-repeat="member in board.members track by $index" style="padding: 5px; margin-right: 5px;")
-                                |   {{member.email}}
-                                i.fa.fa-close(style="padding: 0 5px; cursor: pointer" ng-click="removeMember($index)")
+                            span.bg-blue( ng-repeat="member in board.members track by $index" style="margin: 1px 0 0;padding: 5px; display: block;")
+                                |   {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;
+                                i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember($index)")
                     auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getUsers"
                         selected="selected")
                     .form-group(ng-show="board.columns.length")

@@ -1,6 +1,6 @@
 
 <div id="{{modalId}}" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}" aria-hidden="true" class="modal fade">
-  <div ng-class="type=='message' ? 'modal-lg' : ''" class="modal-dialog">
+  <div ng-class="type=='message' || type=='event' ? 'modal-lg' : ''" class="modal-dialog">
     <ng-switch on="type">
       <div ng-switch-when="conversation" style="background-color: transparent" class="modal-content">
         <div ng-transclude="ng-transclude"></div>
@@ -24,7 +24,7 @@
               <button data-dismiss="modal" aria-label="Close" class="btn btn-default"><i class="fa fa-times"></i>  Cancel</button>
               <button ng-click="save()" class="btn btn-primary"><i class="fa fa-floppy-o"></i>  Save</button>
             </div>
-            <button data-dismiss="modal" aria-label="Close" ng-click="discard()" class="btn btn-danger pull-left"><i class="fa fa-trash"></i>  Delete</button>
+            <button data-dismiss="modal" aria-label="Close" ng-click="discard()" ng-show="objectId" class="btn btn-danger pull-left"><i class="fa fa-trash"></i>  Delete</button>
           </div>
           <div ng-switch-when="conversation" class="modal-footer">
             <div ng-show="messageSent" class="col-xs-12">

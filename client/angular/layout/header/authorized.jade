@@ -1,9 +1,9 @@
 header.main-header
     a.logo( ui-sref="root")
-        span.logo-mini
-            i.fa.fa-beer
-        span.logo-lg
-            |   MAHR.IO
+        span.logo-mini(style="transform: scale(-1,1); font-family: fantasy; font-size: 20px; font-weight: bold; line-height: 56px; letter-spacing:-3px;-webkit-transform: scale(-1, 1)")
+            |   3C
+        span.logo-lg(style="transform: scale(-1,1); font-family: fantasy; font-size: 40px; font-weight: bold; line-height: 58px;letter-spacing:-5px;-webkit-transform: scale(-1, 1)")
+            |   3C
     nav.navbar.navbar-static-top( role="navigation")
         a.sidebar-toggle( ng-click="toggleSidebar()" href="#" data-toggle="offcanvas" role="button")
             span.sr-only
@@ -13,41 +13,72 @@ header.main-header
             span.icon-bar
         .navbar-custom-menu
             ul.nav.navbar-nav
-                //li
-                //    a(ui-sref="boards.list" ui-sref-opts="{reload: true}")
-                //        |   Boards
                 li.dropdown.messages-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        i.fa.fa-envelope-o
-                        span.label.label-success
-                            |   4
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
+                        i.fa.fa-comments
+                        span.label.label-success(ng-show="chat && chat.total")
+                            |   {{chat.total}}
                     ul.dropdown-menu
                         li.header
-                            |   You have 4 messages
+                            b
+                                |   Conversations
+                            span( ng-show="chat && chat.total")
+                                |   ({{chat.total}})
                         li
                             ul.menu
-                                li
-                                    a( href="#")
+                                li( ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}")
+                                    a( ui-sref="conversations" ui-sref-opts="{reload: true}")
+                                        .pull-left
+                                            img.img-circle( ng-src="{{conversation.members[0].avatarImage.url}}" alt="User Image")
+                                        h4
+                                            span(ng-repeat="user in conversation.members")
+                                                |   {{user.profile.firstName}}
+                                            small
+                                                i.fa.fa-clock-o
+                                                    |   {{conversation.messages[0].created | date : 'MM-dd h:mm a' }}
+                                        p
+                                            |   {{conversation.messages[0].content}}
+                        li.footer
+                            a( ui-sref="conversations" ui-sref-opts="{reload: true}" )
+                                |   See All Conversations
+                li.dropdown.messages-menu
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
+                        i.fa.fa-envelope
+                        span.label.label-success(ng-show="notifications.mail && notifications.mail.count")
+                            |   {{notifications.mail.count}}
+                    ul.dropdown-menu
+                        li.header
+                            b
+                                |   Messages
+                            span( ng-show="notifications.mail && notifications.mail.messages && notifications.mail.messages.length")
+                                |   ( {{notification.mail.messages.length}} )
+                        li
+                            ul.menu
+                                li( ng-repeat="message in notifications.mail.messages")
+                                    a( ui-sref="mail.view({id: message._id})" ui-sref-opts="{reload: true}")
                                         .pull-left
                                             img.img-circle( src="https://almsaeedstudio.com/themes/AdminLTE/dist/img/user2-160x160.jpg" alt="User Image")
                                         h4
-                                            |   Support Team
+                                            |   {{message.heading}}
                                             small
                                                 i.fa.fa-clock-o
-                                                    |   5 mins
+                                                    |   {{message.created}}
                                         p
-                                            |   Why not buy a new aswesome theme?
+                                            |   {{message.teaser}}
                         li.footer
-                            a( href="#")
+                            a( ui-sref="mail.inbox" ui-sref-opts="{reload: true}")
                                 |   See All Messages
-                li.dropdown.notifications-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        i.fa.fa-bell-o
-                        span.label.label-warning
-                            |   10
+                li.dropdown.messages-menu
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
+                        i.fa.fa-bell
+                        span.label.label-success(ng-show="notifications.all && notifications.all.length")
+                            |   {{notifications.all.length}}
                     ul.dropdown-menu
                         li.header
-                            |   You have 10 notifications
+                            b
+                                |   Notifications
+                            span( ng-show="notifications.all && notifications.all.length")
+                                |   ( {{notification.all.length}} )
                         li
                             ul.menu
                                 li
@@ -55,16 +86,19 @@ header.main-header
                                         i.fa.fa-users.text-aqua
                                         |   5 new members joined today
                         li.footer
-                            a( href="#")
+                            a( ui-sref="notifications" )
                                 |   View All
                 li.dropdown.tasks-menu
-                    a.dropdown-toggle( href="#" data-toggle="dropdown")
-                        i.fa.fa-flag-o
-                        span.label.label-danger
-                            |   9
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
+                        i.fa.fa-tasks
+                        span.label.label-success(ng-show="notifications.tasks && notifications.tasks.length")
+                            |   {{notifications.tasks.length}}
                     ul.dropdown-menu
                         li.header
-                            |   You have 9 tasks
+                            b
+                                |   Tasks
+                            span( ng-show="notifications.tasks && notifications.tasks.length")
+                                |   ( {{notification.tasks.length}} )
                         li
                             ul.menu
                                 li
@@ -78,20 +112,20 @@ header.main-header
                                                 span.sr-only
                                                     |   20% Complete
                         li.footer
-                            a( href="#")
+                            a( ui-sref="boards.list")
                                 |   View all tasks
                 li.dropdown.user.user-menu
                     a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-user( style="font-size: 1.3em" ng-show="!user.avatarImage || !user.avatarImage.url")
                         img.user-image( src="{{user.avatarImage.url}}" ng-show="user.avatarImage && user.avatarImage.url")
                         span.hidden-xs
-                            |   {{user.profile.first_name}}
+                            |   {{user.profile.firstName}}&nbsp;
                     ul.dropdown-menu
                         li.user-header
                             i.fa.fa-user-secret.text-gray( style="font-size: 5em" ng-show="!user.avatarImage || !user.avatarImage.url")
                             img.img-circle( src="{{user.avatarImage.url}}" ng-show="user.avatarImage && user.avatarImage.url")
                             p
-                                |   {{user.profile.first_name}} {{user.profile.last_name}}
+                                |   {{user.profile.firstName}}&nbsp;{{user.profile.lastName}}
                                 br
                                 |   {{user.email}}
                                 br
@@ -116,6 +150,6 @@ header.main-header
                             .pull-right
                                 a.btn.btn-default.btn-flat( href="javascript: void(0)" ng-click="logout()" )
                                     |   Sign Out
-                li
-                    a( href="#" data-toggle="control-sidebar")
+                li.dropdown
+                    a( href="javascript:void(0)" data-toggle="control-sidebar")
                         i.fa.fa-gears

@@ -1,0 +1,55 @@
+.row
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2
+        a.btn.btn-default(ui-sref="networks.list" ui-sref-opts="{reload: true}")
+            i.fa.fa-chevron-left
+                |   Back
+    br
+    br
+    br
+    .col-xs-12
+        .form-group
+            label.pull-left
+                | Name: &nbsp;
+            |   {{network.name}}
+        .form-group
+            label.pull-left
+                |   Is Private? &nbsp;
+            |   {{network.isPrivate}}
+        .form-group
+            label
+                | Members
+            div
+                span(ng-repeat="member in network.members track by $index")
+                    | {{member.profile.firstName}} {{member.profile.lastName}}
+                    br
+        .form-group
+            label
+                | Events
+            div
+                span(ng-repeat="event in network.events track by $index")
+                    | {{event.title}} {{event.start | date:'medium' }}
+                    br
+        .form-group
+            label
+                | Boards
+            div
+                span(ng-repeat="board in network.boards track by $index")
+                    | {{board.name}}
+                    br
+        .form-group
+            label
+                | Conversations
+            div
+                span(ng-repeat="conversation in network.conversations track by $index")
+                    | {{conversation.topic}}
+                    br
+        .form-group(ng-show="network.owner === currentUser._id")
+            label
+                | Actions
+            div
+                a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()")
+                    |   Edit &nbsp;
+                    i.fa.fa-edit
+                a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()")
+                    |   Remove &nbsp;
+                    i.fa.fa-trash

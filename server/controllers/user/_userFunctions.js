@@ -1,9 +1,6 @@
 'use strict';
 
-var async = require('async'),
-    _ = require('underscore'),
-    http = require('request'),
-    mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Media = mongoose.model('Media'),
     Boom = require('boom');
@@ -14,7 +11,7 @@ function register (request, reply, config, server) {
   var newUser = new User({
     email: request.payload.email,
     password: request.payload.password,
-    access: !server.needAdmin ? 'authorized' : 'admin'
+    access: [!server.needAdmin ? 'authorized' : 'admin']
   });
 
   if( server.needAdmin ){
@@ -55,7 +52,7 @@ function addAvatar( request, reply ) {
     request.payload.media._owner = request.auth.credentials.id;
     var media = new Media( request.payload.media );
     media.save( function(err, media) {
-      if (err) return reply(Boom.badRequest(err));
+      if (err) { return reply(Boom.badRequest(err)); }
 
       User
         .findOne({_id: request.auth.credentials.id}, function (err, user) {
@@ -83,8 +80,9 @@ function currentUser (request, reply, method, selectString) {
     .exec( function (err, user) {
       if (err || !user) { return reply(Boom.badRequest(err)); }
 
+      var returnedUser;
       function completeUserSave(){
-        var returnedUser = {
+        returnedUser = {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email
@@ -100,6 +98,9 @@ function currentUser (request, reply, method, selectString) {
         case 'GET':
           delete user.salt;
           delete user.password;
+          if( typeof user.profile === 'undefined' ) {
+            user.profile = {firstName:'', lastName: ''};
+          }
           return reply( { user: user });
         case 'PUT':
           if ( request.payload.password || request.payload.email ) {
@@ -126,7 +127,7 @@ function currentUser (request, reply, method, selectString) {
                 if (err ) { return reply(Boom.badRequest(err)); }
                 // TODO : AWS REMOVE
                 copyFields();
-              })
+              });
             } else {
               copyFields();
             }

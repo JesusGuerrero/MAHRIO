@@ -1,19 +1,28 @@
 .content-wrapper
-    ng-switch( on="access")
-        div( ng-switch-when="admin")
-            //ng-include( src="'/assets/html/layout/header/secondaryTop'")
-            heading
-        div.container(ng-switch-when="authorized" ng-show="subHeader")
-            section.content-header
-                h1
-                    |    Top Navigation
-                    small
-                        |   Example 2.0
+    modal-window-view(modal-id="pageNotification" type="conversation")
+        .box.box-danger
+            .box-header.with-border
+                h3.box-title
+                    |   {{title}}
+                .box-tools.pull-right
+                    button.btn.btn-box-tool( id="closeBox" data-dismiss="modal" aria-label="Close" ng-click="close()")
+                        i.fa.fa-times
+            .box-body
+                p
+                    |   {{message}}
+            .box-footer
+                .col-xs-4
+                    button.btn.btn-block.btn-default(data-dismiss="modal" aria-label="Close" ng-click="close()")
+                        |   Cancel
+                .col-xs-4.col-xs-offset-4
+                    button.btn.btn-block.btn-danger(ng-click="confirm()")
+                        |   Confirm
 
-    ng-switch( on="access")
-        section.content(ng-switch-when="admin")
+    div(ng-show="access.indexOf('any') === -1")
+        heading
+
+    ng-switch( on="access.indexOf('any')")
+        section.content(ng-switch-when="-1")
             div( ng-transclude )
-        section.content(ng-switch-when="authorized")
-            div( ng-transclude )
-        section.content(ng-switch-when="any")
+        section.content(ng-switch-default)
             .container(ng-transclude)

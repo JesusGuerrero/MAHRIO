@@ -8,7 +8,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                     ng-show="user.avatarImage && user.avatarImage.url")
             .pull-left.info
                 p
-                    |   {{user.profile.first_name}} {{user.profile.last_name}}
+                    |   {{user.profile.firstName}} {{user.profile.lastName}}
                 a( href="#")
                     i.fa.fa-circle(ng-class="{'text-green': !offline, 'text-red':offline}" ng-click="offline = !offline")
                         |   {{!offline ? 'Online' : 'Offline'}}
@@ -27,18 +27,23 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                     span
                         |   Dashboard
             li
-                a( ui-sref="restrooms")
-                    i.fa.fa-male
+                a( ui-sref="notifications")
+                    i.fa.fa-bell
                     span
-                        |   Restrooms
+                        |   Notifications
+            li(ng-show="access.indexOf('sudo') !== -1")
+                a( ui-sref="networks.list")
+                    i.fa.fa-share-alt
+                    span
+                        |   Networks
             li
-                a( ui-sref="articles.list")
+                a( ui-sref="articles.list" ui-sref-opts="{reload: true}")
                     i.fa.fa-book
                     span
                         |   Articles
             li
                 a( ui-sref="boards.list")
-                    i.fa.fa-building
+                    i.fa.fa-tasks
                     span
                         |   Boards
             li
@@ -63,53 +68,53 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                     small.label.pull-right.bg-red
                         |   3
             li
-                a( href="#/calendar")
+                a( ui-sref="calendar" ui-sref-opts="{reload: true}" )
                     i.fa.fa-calendar
                     span
                         |   Calendar
                     small.label.pull-right.bg-red
                         |   3
             li
-                a( ui-sref="conversations.public" ui-sref-opts="{reload: true}")
+                a( ui-sref="conversations" ui-sref-opts="{reload: true}")
                     i.fa.fa-comments
                     span
                         |   Conversations
                     small.label.pull-right.bg-red
                         |   3
             li
-                a( href="#/mail")
+                a( ui-sref="mail.inbox" )
                     i.fa.fa-envelope
                     span
                         |   Mailbox
                     small.label.pull-right.bg-yellow
                         |   12
-            li.treeview
-                a( href="#")
-                    i.fa.fa-share
-                    span
-                        |   Multilevel
-                    small.fa.fa-angle-left.pull-right
-                ul.treeview-menu
-                    li
-                        a( href="#")
-                            i.fa.fa-circle-o
-                            |   Level One
-                            i.fa.fa-angle-left.pull-right
-
-                        ul.treeview-menu
-                            li
-                                a( href="#")
-                                    i.fa.fa-circle-o
-                                    |   Level Two
-                                    i.fa.fa-angle-left.pull-right
-                                ul.treeview-menu
-                                    li
-                                        a( href="#")
-                                            i.fa.fa-circle-o
-                                            |   Level Three
-                                        a( href="#")
-                                            i.fa.fa-circle-o
-                                            |   Level Three
+            //li.treeview
+            //    a( href="#")
+            //        i.fa.fa-share
+            //        span
+            //            |   Multilevel
+            //        small.fa.fa-angle-left.pull-right
+            //    ul.treeview-menu
+            //        li
+            //            a( href="#")
+            //                i.fa.fa-circle-o
+            //                |   Level One
+            //                i.fa.fa-angle-left.pull-right
+            //
+            //            ul.treeview-menu
+            //                li
+            //                    a( href="#")
+            //                        i.fa.fa-circle-o
+            //                        |   Level Two
+            //                        i.fa.fa-angle-left.pull-right
+            //                    ul.treeview-menu
+            //                        li
+            //                            a( href="#")
+            //                                i.fa.fa-circle-o
+            //                                |   Level Three
+            //                            a( href="#")
+            //                                i.fa.fa-circle-o
+            //                                |   Level Three
                     li
                         a( href="#")
                             i.fa.fa-circle-o

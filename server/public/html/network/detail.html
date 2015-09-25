@@ -1,0 +1,32 @@
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.list" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div><br/><br/><br/>
+  <div class="col-xs-12">
+    <div class="form-group">
+      <label class="pull-left">Name: &nbsp;</label>  {{network.name}}
+    </div>
+    <div class="form-group">
+      <label class="pull-left">  Is Private? &nbsp;</label>  {{network.isPrivate}}
+    </div>
+    <div class="form-group">
+      <label>Members</label>
+      <div><span ng-repeat="member in network.members track by $index">{{member.profile.firstName}} {{member.profile.lastName}}<br/></span></div>
+    </div>
+    <div class="form-group">
+      <label>Events</label>
+      <div><span ng-repeat="event in network.events track by $index">{{event.title}} {{event.start | date:'medium' }}<br/></span></div>
+    </div>
+    <div class="form-group">
+      <label>Boards</label>
+      <div><span ng-repeat="board in network.boards track by $index">{{board.name}}<br/></span></div>
+    </div>
+    <div class="form-group">
+      <label>Conversations</label>
+      <div><span ng-repeat="conversation in network.conversations track by $index">{{conversation.topic}}<br/></span></div>
+    </div>
+    <div ng-show="network.owner === currentUser._id" class="form-group">
+      <label>Actions</label>
+      <div><a ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" class="btn btn-default btn-block">  Edit &nbsp;<i class="fa fa-edit"></i></a><a ng-click="remove( network._id ); $event.stopPropagation()" class="btn btn-danger btn-block">  Remove &nbsp;<i class="fa fa-trash"></i></a></div>
+    </div>
+  </div>
+</div>

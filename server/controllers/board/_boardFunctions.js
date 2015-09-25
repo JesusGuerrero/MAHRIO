@@ -8,6 +8,26 @@ var async = require('async'),
   Task = mongoose.model('Task'),
   Column = mongoose.model('Column');
 
+function _removeColumn( columns, board, next ){
+  if( columns.length ) {
+    var tasks = _.filter( board.tasks, function(task){ return _.filter( columns, function(col) { return col.id === task._column; }).length; });
+    tasks = _.map( tasks, function(task){ return task._id; });
+    async.forEach( columns, function(item, callback){
+      Column.remove( {_id: item._id}, function(){
+        callback();
+      });
+    }, function(){
+      Task.update( {_id : {$in: tasks}}, { $set : { _column: null }}, {multi: true}, function(){
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+}
+function _createColumns( columns ) {
+  return Column.create( columns );
+}
 function _updateBoard( request, reply, board) {
   var oldColumns = _.filter( board.columns, function(col){ return !_.findWhere(request.payload.board.columns, {_id: col.id, name: col.name}); });
 
@@ -21,23 +41,7 @@ function _updateBoard( request, reply, board) {
     });
   });
 }
-function _removeColumn( columns, board, next ){
-  if( columns.length ) {
-    var tasks = _.filter( board.tasks, function(task){ return _.filter( columns, function(col) { return col.id == task._column }).length });
-    tasks = _.map( tasks, function(task){ return task._id; });
-    async.forEach( columns, function(item, callback){
-      Column.remove( {_id: item._id}, function(){
-        callback();
-      });
-    }, function(){
-      Task.update( {_id : {$in: tasks}}, { $set : { _column: null }}, {multi: true}, function(err){
-        next();
-      });
-    });
-  } else {
-    next();
-  }
-}
+
 function updateBoard( request, reply ) {
   if( request.params.id ) {
     Board
@@ -69,9 +73,7 @@ function updateBoard( request, reply ) {
     reply( Boom.badRequest('board id not found') );
   }
 }
-function _createColumns( columns ) {
-  return Column.create( columns );
-}
+
 function _createBoard( request ){
   request.payload.board._owner = request.auth.credentials.id;
   request.payload.board.members = _.map( request.payload.board.members, function(member) {return member._id;});
@@ -81,6 +83,9 @@ function _createBoard( request ){
   return new Board( request.payload.board).save();
 }
 function createBoard( request, reply ) {
+  if( !_.contains(request.auth.credentials.access, 'admin') && !_.contains(request.auth.credentials.access, 'sudo') ) {
+    return reply( Boom.forbidden() );
+  }
   if( !request.payload.board ) {
     return reply( Boom.badRequest() );
   }

@@ -1,19 +1,32 @@
-.row
+.row.hidden
     .col-xs-12.col-sm-4.col-md-3.col-lg-2
         a.btn.btn-default(ui-sref="articles.list" ui-sref-opts="{reload: true}")
             h4
                 i.fa.fa-chevron-left
                 |   Back
-.row
+.row.article-cover
+    figure
+        img(src="/assets/img/mahrio.png" ng-show="article.title==='mahrio'")
+        img(src="/assets/img/college.jpg"
+                ng-show="article.title!=='mahrio'")
+        figcaption(class="credit")
+    .article-heading
+        h1
+            |   {{article.title}}
+        p
+            |   {{article.deck}}
+    .row(style="margin-top: -50px; position: absolute; width: 100%;")
+        .col-xs-3.col-xs-offset-3
+            p.bg-green.label(style="display: block")
+                |   {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
+        .col-xs-3
+            p.bg-yellow.label.hidden-sm.hidden-xs(style="display: block")
+                |   {{article.created | date:'medium'}}
+            p.bg-yellow.label.hidden-md.hidden-lg(style="display: block")
+                |   {{article.created | date}}
+
+
     .col-sm-10.col-sm-offset-1
-        figure
-            img(src="http://cdn.theatlantic.com/assets/media/img/photo/2015/08/winners-of-the-2015-national-geogra/01%20Grand%20Prize-1/hero_wide_640.jpg?1438628037")
-            figcaption(class="credit")
-        h3
-            |{{article.title}}
-            br
-            small
-                |By {{article._creator.firstName}} {{article._creator.lastName}} &lt;{{article._creator.email}}&gt;
         div(class="article-content")
             p(ng-repeat="section in article.sections track by $index")
                 |{{section.body}}

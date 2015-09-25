@@ -91,11 +91,11 @@ function getTask( request, reply ) {
 }
 function start( request, reply ) {
   if( request.params.id ) {
-    Task.update( {_id: request.params.id}, { $set : { start : true } }, function(err,task){
-      if( err ) return Boom.badRequest(err);
+    Task.update( {_id: request.params.id}, { $set : { start : true } }, function(err){
+      if( err ) { return Boom.badRequest(err); }
 
       reply();
-    })
+    });
   } else {
     reply( Boom.badRequest() );
   }

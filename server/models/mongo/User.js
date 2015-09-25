@@ -16,26 +16,24 @@ function hashPwd (salt, pwd) {
 }
 
 schema = mongoose.Schema({
-  email: {
-    type: String,
-    trim: true,
-    lowercase: true,
-    required: true,
-    unique: true,
-    index: true
-  },
   avatarImage: { type: mongoose.Schema.Types.ObjectId, ref: 'Media' },
-  salt:     {type: String },
-  password: {type: String },
-  confirmed: {type: Boolean, default: false},
-  resetPasswordToken: {type: String},
+  email: {
+    type: String, trim: true, lowercase: true, required: true, unique: true, index: true
+  },
+  confirmed:  {type: Boolean, default: false},
+  salt:       {type: String },
+  password:   {type: String },
+  resetPasswordToken:   {type: String},
   resetPasswordExpires: {type: Date },
-  authorizationToken: {type: String},
-  membership: { type: mongoose.Schema.Types.ObjectId, ref: 'Membership' }, // ACCESS CONTROL
-  created: { type: Date, default: Date.now },
-  access: String,
-  status: {type: String},
-  profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
+  authorizationToken:   {type: String},
+
+  networks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Network' }], // ACCESS CONTROL
+  created:    { type: Date, default: Date.now },
+  access:     [{type: String}],
+  status:     {type: String},
+  notifications: [{type: mongoose.Schema.Types.ObjectId, ref: 'Notification'}],
+  profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' },
+  disabled: {type: Boolean}
 });
 
 schema.methods.authenticate = function(passwordToMatch) {

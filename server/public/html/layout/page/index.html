@@ -1,24 +1,34 @@
 
 <div class="content-wrapper">
-  <ng-switch on="access">
-    <div ng-switch-when="admin">
-      <!--ng-include( src="'/assets/html/layout/header/secondaryTop'")-->
-      <heading></heading>
+  <modal-window-view modal-id="pageNotification" type="conversation">
+    <div class="box box-danger">
+      <div class="box-header with-border">
+        <h3 class="box-title">  {{title}}</h3>
+        <div class="box-tools pull-right">
+          <button id="closeBox" data-dismiss="modal" aria-label="Close" ng-click="close()" class="btn btn-box-tool"><i class="fa fa-times"></i></button>
+        </div>
+      </div>
+      <div class="box-body">
+        <p>  {{message}}</p>
+      </div>
+      <div class="box-footer">
+        <div class="col-xs-4">
+          <button data-dismiss="modal" aria-label="Close" ng-click="close()" class="btn btn-block btn-default">  Cancel</button>
+        </div>
+        <div class="col-xs-4 col-xs-offset-4">
+          <button ng-click="confirm()" class="btn btn-block btn-danger">  Confirm</button>
+        </div>
+      </div>
     </div>
-    <div ng-switch-when="authorized" ng-show="subHeader" class="container">
-      <section class="content-header">
-        <h1>   Top Navigation<small>  Example 2.0</small></h1>
-      </section>
-    </div>
-  </ng-switch>
-  <ng-switch on="access">
-    <section ng-switch-when="admin" class="content">
+  </modal-window-view>
+  <div ng-show="access.indexOf('any') === -1">
+    <heading></heading>
+  </div>
+  <ng-switch on="access.indexOf('any')">
+    <section ng-switch-when="-1" class="content">
       <div ng-transclude="ng-transclude"></div>
     </section>
-    <section ng-switch-when="authorized" class="content">
-      <div ng-transclude="ng-transclude"></div>
-    </section>
-    <section ng-switch-when="any" class="content">
+    <section ng-switch-default="ng-switch-default" class="content">
       <div ng-transclude="ng-transclude" class="container"></div>
     </section>
   </ng-switch>

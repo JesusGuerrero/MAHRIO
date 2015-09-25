@@ -8,7 +8,13 @@ module.exports = function (grunt) {
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
-
+    newer: {
+      options: {
+        override: function(detail, include) {
+          include( false );
+        }
+      }
+    },
     jshint: {
       options: {
         jshintrc: '.jshintrc'
@@ -41,7 +47,7 @@ module.exports = function (grunt) {
         },
         files: [{
           cwd: 'client/angular/',
-          src: ['**/*.jade', '!**/_*.jade'],
+          src: ['**/*.jade'],
           dest: 'server/public/html',
           expand: true,
           ext: '.html'
@@ -63,6 +69,7 @@ module.exports = function (grunt) {
           'bower_components/moment/moment.js',
           'bower_components/fullcalendar/dist/fullcalendar.js',
           'bower_components/bootstrap/dist/js/bootstrap.js',
+          'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
           'bower_components/jquery.slimscroll/jquery.slimscroll.min.js',
           'bower_components/fastclick/lib/fastclick.js',
           'bower_components/icheck/icheck.min.js',
@@ -86,13 +93,13 @@ module.exports = function (grunt) {
           'bower_components/angular-underscore/angular-underscore.min.js',
           'bower_components/angular-socket-io/socket.js',
           'bower_components/angular-chart.js/dist/angular-chart.js',
-          'bower_components/matchHeight/jquery.matchHeight-min.js'
+          'bower_components/matchHeight/jquery.matchHeight-min.js',
+          'client/AdminLTE/AdminLTE.js'
         ],
         dest: 'server/public/js/angular.js'
       },
       utils: {
           src: [
-
               'bower_components/jquery/dist/jquery.js',
               'bower_components/jquery.videoBG/jquery.videoBG.js',
               'bower_components/bootstrap/dist/js/bootstrap.js',
@@ -146,6 +153,16 @@ module.exports = function (grunt) {
         dest: 'server/public/html',
         expand: true
       },
+      dev: {
+        cwd: 'client/angular',
+        src: ['**/*.js'],
+        dest: 'server/public/js/angular',
+        expand: true
+      },
+      devScripts: {
+        src: 'server/public/dev-scripts.jade',
+        dest: 'server/views/common/_scripts.jade'
+      },
       requireJs: {
         cwd: 'client/requirejs',
         src: ['**/*.js', '!setup.js'],
@@ -153,37 +170,67 @@ module.exports = function (grunt) {
         expand: true
       }
     },
-
     watch: {
       less: {
-        files: ['client/styles/**/*.less'],
+        files: ['client/styles/**/*.less','client/angular/**/*.less'],
         tasks: ['less']
       },
-      angular: {
+      angularJade: {
         files: ['client/angular/**/*.jade', '!**/_*.jade'],
-        tasks: ['jade']
+        tasks: ['newer:jade'],
+        options: {
+          interrupt: true
+        }
       },
-      requireJs: {
-        files: ['client/requirejs/**/_*.js'],
-        tasks: ['copy:requireJs']
-      },
-      jade: {
+      serverJade: {
         files: ['client/views/**/_*.jade'],
-        tasks: ['copy:jade']
+        tasks: ['newer:jade']
       },
-      scripts: {
+      scriptsClient: {
+        files: ['client/angular/**/*.js'],
+        tasks: ['newer:copy:dev','newer:jshint:all'],
+        options: {
+          interrupt: true
+        }
+      },
+      scriptsServer: {
         files: [
-          '*.js',
           'server/**/*.js',
           '!server/public/**/*.js',
-          'client/**/*.js',
           'test/**/*.js'
         ],
-        tasks: ['jshint:all', 'concat']
+        tasks: ['newer:jshint:all']
+      },
+      scriptsGrunt: {
+        files: [
+          '*.js'
+        ],
+        tasks: ['newer:jshint:all']
+      },
+      scriptsTests: {
+        files: [
+          'test/**/*.js'
+        ],
+        tasks: ['jshint:all']
+      }
+    },
+    tags: {
+      build: {
+        options: {
+          scriptTemplate: 'script( src="/assets/{{ path }}")',
+          openTag: '<!-- start template tags -->',
+          closeTag: '<!-- end template tags -->'
+        },
+        src: [
+          'server/public/js/angular/application.js',
+          'server/public/js/angular/**/*.js'
+        ],
+        dest: 'server/public/dev-scripts.jade'
       }
     }
   });
 
   grunt.registerTask('default', ['watch']);
   grunt.registerTask('build', ['less', 'jade', 'concat', 'copy']);
+  grunt.registerTask('build-dev', ['less', 'jade', 'tags', 'copy:dev', 'copy:devScripts', 'concat:angular']);
 };
