@@ -7,6 +7,10 @@
         <h3 class="text-center">Add Article</h3>
         <form novalidate="novalidate" id="article-form">
           <form-input-tag model="article.title" label="Title" required="true"></form-input-tag>
+          <div class="form-group">
+            <label>  Deck</label>
+            <textarea type="text" ng-model="article.deck" class="form-control form-control"></textarea>
+          </div>
           <div ng-show="article.sections.length" ng-class="{'sorting-sections': sortingSections}" class="form-group">
             <div ng-show="article.sections.length &gt; 1" class="pull-right"><i style="cursor: pointer; float: right" ng-show="!sortingSections" ng-click="sortSections('#sortable')" class="fa fa-arrows"></i><i style="cursor: pointer; float: right" ng-show="sortingSections" ng-click="stopSorting( '#sortable') " class="fa fa-check"></i></div>
             <label>Body</label>

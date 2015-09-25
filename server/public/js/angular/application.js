@@ -73,6 +73,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('articles.list', {
       url: '/all',
+      controller: 'ArticleController',
       templateUrl: '/assets/html/article/list',
       title: 'List Articles'
     })

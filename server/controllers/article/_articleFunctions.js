@@ -131,6 +131,7 @@ function updateArticle( request, reply ) {
 
       article.title = request.payload.article.title;
       article.published = request.payload.article.published;
+      article.deck = request.payload.article.deck;
 
       var newSections = _.filter(request.payload.article.sections, function (item) {
         return !item._id;

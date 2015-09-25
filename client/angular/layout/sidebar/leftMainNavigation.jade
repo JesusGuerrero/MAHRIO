@@ -37,7 +37,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                     span
                         |   Networks
             li
-                a( ui-sref="articles.list")
+                a( ui-sref="articles.list" ui-sref-opts="{reload: true}")
                     i.fa.fa-book
                     span
                         |   Articles

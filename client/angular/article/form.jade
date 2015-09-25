@@ -10,6 +10,10 @@
                         model="article.title"
                         label="Title"
                         required="true")
+                    .form-group
+                        label
+                            |   Deck
+                        textarea.form-control( type="text" class="form-control" ng-model="article.deck")
                     .form-group(ng-show="article.sections.length" ng-class="{'sorting-sections': sortingSections}")
                         div(class="pull-right" ng-show="article.sections.length > 1")
                             i.fa.fa-arrows(style="cursor: pointer; float: right"

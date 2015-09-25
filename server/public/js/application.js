@@ -108961,6 +108961,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('articles.list', {
       url: '/all',
+      controller: 'ArticleController',
       templateUrl: '/assets/html/article/list',
       title: 'List Articles'
     })
@@ -109368,8 +109369,8 @@ angular.module('baseApp.controllers')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_',
-    function($scope, $state, $http, currentUser, Article, _){
+  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_','Notification',
+    function($scope, $state, $http, currentUser, Article, _, Notification){
       'use strict';
 
       $scope.articles = [];
@@ -109419,7 +109420,7 @@ angular.module('baseApp.controllers')
             sections: [],
             widgets: []
           };
-          $scope.add = function(){
+          $scope.save = function(){
             _.forEach( $scope.article.sections, function(sec, key) {
               sec.order = key;
             });
@@ -109448,10 +109449,11 @@ angular.module('baseApp.controllers')
               $scope.article = res.article;
             });
           formSetup();
-          $scope.update = function( ) {
+          $scope.save = function( ) {
             Article.update( $scope.article )
               .then( function(){
-                $state.go('articles.list');
+                //$state.go('articles.list');
+                $state.go('articles.list', {}, {reload: true});
               });
           };
           break;
@@ -109460,11 +109462,18 @@ angular.module('baseApp.controllers')
       }
 
       $scope.remove = function( id ){
-        Article.remove( id )
-          .then( function(){
-            $scope.articles = _.filter( $scope.articles, function(article){ return article._id !== id; });
-            $state.go('articles.list');
-          });
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+        $scope.$watch( function(){ return Notification.confirmed; }, function(){
+          if( Notification.confirmed ) {
+            Notification.confirmed = null;
+            Article.remove( id )
+              .then( function(){
+                $scope.articles = _.filter( $scope.articles, function(article){ return article._id !== id; });
+                $state.go('articles.list', {}, {reload: true});
+              });
+          }
+        });
       };
     }]);
 angular.module('baseApp.services').factory('ArticleResource', [ '$resource', function($resource) {
@@ -111262,14 +111271,31 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('pageLayout', [
-    function(){
+  .directive('pageLayout', [ 'Notification',
+    function( Notification ){
       'use strict';
       return {
         restrict: 'A',
         replace: true,
         transclude: true,
-        templateUrl: '/assets/html/layout/page/index'
+        templateUrl: '/assets/html/layout/page/index',
+        link: function(scope) {
+          scope.$watch( function(){ return Notification.confirm; }, function(newMsg){
+            if( newMsg ) {
+              scope.title = 'Confirm';
+              scope.message = newMsg;
+              $('#pageNotification').modal().show();
+            }
+          });
+          scope.close = function(){
+            Notification.confirm = null;
+          };
+          scope.confirm = function(){
+            $('#pageNotification').modal().hide();
+            Notification.confirm = null;
+            Notification.confirmed = true;
+          };
+        }
       };
     }
   ]);
@@ -112276,9 +112302,12 @@ angular.module('baseApp.services')
   }])
   .factory('Notification', [ 'NotificationResource', function( NotificationResource ) {
     'use strict';
+    var confirmMessage = null, confirmed = null;
     return {
       get: function( ) { return NotificationResource.read( ).$promise; },
-      remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; }
+      remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; },
+      confirm: confirmMessage,
+      confirmed: confirmed
     };
   }]);
 
