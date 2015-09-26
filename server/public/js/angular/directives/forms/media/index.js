@@ -11,7 +11,7 @@ angular.module('baseApp.directives')
           actions: '=',
           container: '@'
         },
-        link: function( scope, el ) {
+        link: function( scope, el, attr ) {
           //scope.media = {};
           var imageObject = {}, fileInput = el.find('input');
           scope.filename = 'none';
@@ -30,7 +30,11 @@ angular.module('baseApp.directives')
           });
 
           scope.getDefault = function(){
-            return 'fa-user';
+            if( attr.icon ) {
+              return attr.icon;
+            } else {
+              return 'fa-user';
+            }
           };
           scope.setupFile = function(){
             fileInput.click();

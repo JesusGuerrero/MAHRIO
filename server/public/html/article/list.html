@@ -6,7 +6,7 @@
   <div class="col-md-10 col-md-offset-1 col-sm-12">
     <ul style="list-style-type: none; padding: 0; margin: 0">
       <li ng-repeat="article in articles track by $index"><a ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}">
-          <figure><img src="/assets/img/mahrio.png" ng-show="article.title==='mahrio'"/><img src="/assets/img/college.jpg" ng-show="article.title!=='mahrio'"/>
+          <figure><img ng-src="{{article.primaryImage.url}}"/>
             <figcaption class="credit"></figcaption>
           </figure>
           <h3>{{article.title}}</h3></a>
@@ -18,8 +18,12 @@
         </div>
         <div class="form-group"><a ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}" class="btn btn-primary btn-block form-control">  Continue Reading</a></div>
         <div ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1" class="row">
-          <div class="col-xs-6"><a ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}" class="btn btn-default btn-block"><i class="fa fa-edit"></i>  &nbsp;Edit</a></div>
-          <div class="col-xs-6"><a ng-click="remove( article._id )" class="btn btn-block btn-danger"><i class="fa fa-trash"></i>  &nbsp;Remove</a></div>
+          <div class="col-xs-10 col-xs-offset-1">
+            <div class="row">
+              <div class="col-xs-6"><a ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}" class="btn btn-default btn-block"><i class="fa fa-edit"></i>  &nbsp;Edit</a></div>
+              <div class="col-xs-6"><a ng-click="remove( article._id )" class="btn btn-block btn-danger"><i class="fa fa-trash"></i>  &nbsp;Remove</a></div>
+            </div>
+          </div>
         </div>
       </li>
     </ul>

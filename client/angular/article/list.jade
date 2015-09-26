@@ -9,9 +9,7 @@
             li( ng-repeat="article in articles track by $index")
                 a(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
                     figure
-                        img(src="/assets/img/mahrio.png" ng-show="article.title==='mahrio'")
-                        img(src="/assets/img/college.jpg"
-                            ng-show="article.title!=='mahrio'")
+                        img( ng-src='{{article.primaryImage.url}}')
                         figcaption(class="credit")
                     h3
                         |{{article.title}}
@@ -30,11 +28,13 @@
                     a.btn.btn-primary.btn-block.form-control(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
                         |   Continue Reading
                 .row(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
-                    .col-xs-6
-                        a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
-                            i.fa.fa-edit
-                            |   &nbsp;Edit
-                    .col-xs-6
-                        a.btn.btn-block.btn-danger(ng-click="remove( article._id )")
-                            i.fa.fa-trash
-                            |   &nbsp;Remove
+                    .col-xs-10.col-xs-offset-1
+                        .row
+                            .col-xs-6
+                                a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
+                                    i.fa.fa-edit
+                                    |   &nbsp;Edit
+                            .col-xs-6
+                                a.btn.btn-block.btn-danger(ng-click="remove( article._id )")
+                                    i.fa.fa-trash
+                                    |   &nbsp;Remove

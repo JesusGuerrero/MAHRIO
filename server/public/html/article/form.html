@@ -6,6 +6,12 @@
       <div class="panel-body">
         <h3 class="text-center">Add Article</h3>
         <form novalidate="novalidate" id="article-form">
+          <div class="form-group">
+            <label>  Image</label><br/><small ng-show="!article._id">  Image upload available after article created</small>
+            <div ng-show="article._id">
+              <media media="article.primaryImage" container="article" actions="mediaActions" icon="fa-photo"></media>
+            </div>
+          </div>
           <form-input-tag model="article.title" label="Title" required="true"></form-input-tag>
           <div class="form-group">
             <label>  Deck</label>

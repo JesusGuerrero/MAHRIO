@@ -1,6 +1,6 @@
 angular.module('baseApp.controllers')
-  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_','Notification',
-    function($scope, $state, $http, currentUser, Article, _, Notification){
+  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_','Notification','$q','Media',
+    function($scope, $state, $http, currentUser, Article, _, Notification, $q, Media){
       'use strict';
 
       $scope.articles = [];
@@ -43,6 +43,36 @@ angular.module('baseApp.controllers')
         $scope.removeWidget = function( index ) {
           $scope.article.widgets.splice( index, 1);
         };
+        $scope.mediaActions = {
+          upload: function( mediaDetails, file ){
+            var defer = $q.defer();
+            mediaDetails.object = 'articles';
+            Media.getKey( mediaDetails )
+              .then( function(res) {
+                $http({
+                  url: res.signedRequest,
+                  method: 'PUT',
+                  data: file,
+                  transformRequest: angular.identity,
+                  headers: { 'x-amz-acl': 'public-read', 'Authorization': undefined, 'Content-Type': undefined }
+                }).then( function(){
+                  mediaDetails.url = res.url;
+                  Article.addImage( {_id: $scope.article._id}, mediaDetails )
+                    .then( function(res){
+                      $scope.article.media.push( res.media );
+                      defer.resolve({url: res.media.url});
+                    }, function(){
+                      defer.reject();
+                    });
+                }, function(){
+                  defer.reject();
+                });
+              }, function(){
+                defer.reject();
+              });
+            return defer.promise;
+          }
+        };
       };
       switch( $state.current.name ) {
         case 'articles.new':
@@ -65,21 +95,40 @@ angular.module('baseApp.controllers')
           Article.get( $state.params.id )
             .then( function(res) {
               $scope.article = res.article;
+              if( $scope.article.media && $scope.article.media.length ) {
+                $scope.article.primaryImage = {
+                  url: $scope.article.media[0].url
+                };
+              }
             });
           break;
         case 'articles.list':
           Article.get()
             .then( function( res ) {
               $scope.articles = res.articles;
+              $scope.articles = _.indexBy( $scope.articles, '_id' );
+              _.each( $scope.articles, function(item){
+                if( item.media && item.media.length ) {
+                  item.primaryImage = {
+                    url: item.media[0].url
+                  };
+                }
+              });
             });
           break;
         case 'articles.edit':
           Article.get( $state.params.id )
             .then( function( res ) {
               $scope.article = res.article;
+              if( $scope.article.media && $scope.article.media.length ) {
+                $scope.article.primaryImage = {
+                  url: $scope.article.media[0].url
+                };
+              }
             });
           formSetup();
           $scope.save = function( ) {
+            $scope.article.media = Object.keys(_.indexBy( $scope.article.media, '_id'));
             Article.update( $scope.article )
               .then( function(){
                 //$state.go('articles.list');
@@ -91,18 +140,19 @@ angular.module('baseApp.controllers')
           break;
       }
 
+
       $scope.remove = function( id ){
+        Notification.id = id;
         Notification.confirm = 'Are you sure you want to delete?';
         Notification.confirmed = false;
-        $scope.$watch( function(){ return Notification.confirmed; }, function(){
-          if( Notification.confirmed ) {
-            Notification.confirmed = null;
-            Article.remove( id )
-              .then( function(){
-                $scope.articles = _.filter( $scope.articles, function(article){ return article._id !== id; });
-                $state.go('articles.list', {}, {reload: true});
-              });
-          }
-        });
       };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Article.remove( Notification.id )
+            .then( function(){
+              $state.go('articles.list', {}, {reload: true});
+            });
+        }
+      });
     }]);

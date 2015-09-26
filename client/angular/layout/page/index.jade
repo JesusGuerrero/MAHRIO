@@ -15,7 +15,7 @@
                     button.btn.btn-block.btn-default(data-dismiss="modal" aria-label="Close" ng-click="close()")
                         |   Cancel
                 .col-xs-4.col-xs-offset-4
-                    button.btn.btn-block.btn-danger(ng-click="confirm()")
+                    button.btn.btn-block.btn-danger( ng-click="confirm();")
                         |   Confirm
 
     div(ng-show="access.indexOf('any') === -1")

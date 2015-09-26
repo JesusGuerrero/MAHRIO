@@ -6,9 +6,7 @@
                 |   Back
 .row.article-cover
     figure
-        img(src="/assets/img/mahrio.png" ng-show="article.title==='mahrio'")
-        img(src="/assets/img/college.jpg"
-                ng-show="article.title!=='mahrio'")
+        img(ng-src='{{article.primaryImage.url}}')
         figcaption(class="credit")
     .article-heading
         h1
