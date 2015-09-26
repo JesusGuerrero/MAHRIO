@@ -13,7 +13,7 @@ angular.module('baseApp.directives')
               Calendar.get( id )
                 .then( function(res) {
                   scope.event = res.event;
-                  scope.event.invited = scope.event.invited || [];
+                  scope.event.invited = scope.event.invited || {};
                   scope.hasInvited = scope.event.invited ? Object.keys( scope.event.invited).length : false;
                 });
             }
@@ -26,7 +26,7 @@ angular.module('baseApp.directives')
             if( $('#eventEnd').val() ) {
               event.end = new Date( $('#eventEnd').val() + ' UTC').toISOString();
             }
-            event.invited = Object.keys(_.indexBy(event.invited, '_id'));
+            event.invited = Object.keys(event.invited);
 
             if( scope.event._id ) {
               Calendar.update( event )
@@ -34,9 +34,9 @@ angular.module('baseApp.directives')
                   $state.reload();
                 });
             } else {
-              Calendar.create( event )
+              Calendar.add( event )
                 .then( function(){
-                  scope.$parent.close();
+                  $state.reload();
                 });
             }
 
@@ -54,7 +54,7 @@ angular.module('baseApp.directives')
               getData( eventId );
             }
             scope.event = {
-              invited: []
+              invited: {}
             };
           });
           var usersCache = [];
@@ -62,18 +62,28 @@ angular.module('baseApp.directives')
             var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
               selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
 
-            scope.event.invited.push({
-              email: selection.email,
+            //scope.event.invited.push({
+            //  email: selection.email,
+            //  _id: selection._id,
+            //  profile: {
+            //    firstName: selection.profile.firstName,
+            //    lastName: selection.profile.lastName
+            //  }
+            //});
+            scope.event.invited[ selection._id ] = {
               _id: selection._id,
+              email: selection.email,
               profile: {
                 firstName: selection.profile.firstName,
                 lastName: selection.profile.lastName
               }
-            });
+            };
+            console.log( scope.event.invited );
             scope.hasInvited = scope.event.invited ? Object.keys( scope.event.invited).length : false;
             scope.$broadcast('clearInput');
           };
           scope.removeMember = function( id ) {
+            //delete scope.event.invited[ id ];
             delete scope.event.invited[ id ];
           };
           scope.getUsers = function(val) {
