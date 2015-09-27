@@ -3,20 +3,7 @@
   <nav role="navigation" class="navbar navbar-static-top"><a ng-click="toggleSidebar()" href="#" data-toggle="offcanvas" role="button" class="sidebar-toggle"><span class="sr-only">  Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a>
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
-        <li class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-comments"></i><span ng-show="chat &amp;&amp; chat.total" class="label label-success">  {{chat.total}}</span></a>
-          <ul class="dropdown-menu">
-            <li class="header"><b>  Conversations</b><span ng-show="chat &amp;&amp; chat.total">  ({{chat.total}})</span></li>
-            <li>
-              <ul class="menu">
-                <li ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}"><a ui-sref="conversations" ui-sref-opts="{reload: true}">
-                    <div class="pull-left"><img ng-src="{{conversation.members[0].avatarImage.url}}" alt="User Image" class="img-circle"/></div>
-                    <h4><span ng-repeat="user in conversation.members">  {{user.profile.firstName}}</span><small><i class="fa fa-clock-o">  {{conversation.messages[0].created | date : 'MM-dd h:mm a' }}</i></small></h4>
-                    <p>  {{conversation.messages[0].content}}</p></a></li>
-              </ul>
-            </li>
-            <li class="footer"><a ui-sref="conversations" ui-sref-opts="{reload: true}">  See All Conversations</a></li>
-          </ul>
-        </li>
+        <chat-widget></chat-widget>
         <li class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-envelope"></i><span ng-show="notifications.mail &amp;&amp; notifications.mail.count" class="label label-success">  {{notifications.mail.count}}</span></a>
           <ul class="dropdown-menu">
             <li class="header"><b>  Messages</b><span ng-show="notifications.mail &amp;&amp; notifications.mail.messages &amp;&amp; notifications.mail.messages.length">  ( {{notification.mail.messages.length}} )</span></li>

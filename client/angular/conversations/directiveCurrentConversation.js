@@ -25,7 +25,7 @@ angular.module('baseApp.directives')
 
           scope.sendMessage = function(){
             if( scope.private ) {
-              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage }, Object.keys(scope.currentConversation.members) )
                 .then( function(){
                   delete scope.newMessage;
                 });

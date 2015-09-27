@@ -24,7 +24,7 @@ angular.module('baseApp.directives')
                   delete scope.newMessage;
                 });
             } else {
-              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage }, [scope.toUser._id] )
                 .then( function(res){
                   scope.currentConversation.messages.unshift( res.message );
                   delete scope.newMessage;

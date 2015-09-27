@@ -42,8 +42,9 @@
 
 
     .box-footer
-        .input-group
-            input.form-control( type="text" name="message" placeholder="Type Message ..." ng-model="newMessage")
-            span.input-group-btn
-                button.btn.btn-primary.btn-flat( type="button" ng-click="sendMessage()")
-                    |   Send
+        form( ng-submit="sendMessage()")
+            .input-group
+                input.form-control( type="text" name="message" placeholder="Type Message ..." ng-model="newMessage")
+                span.input-group-btn
+                    button.btn.btn-primary.btn-flat( type="submit")
+                        |   Send

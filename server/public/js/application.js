@@ -109470,7 +109470,6 @@ angular.module('baseApp.controllers')
                   url: $scope.article.media[0].url
                 };
               }
-              console.log( $scope.article );
             });
           break;
         case 'articles.list':
@@ -109485,7 +109484,6 @@ angular.module('baseApp.controllers')
                   };
                 }
               });
-              console.log( $scope.articles );
             });
           break;
         case 'articles.edit':
@@ -109912,7 +109910,7 @@ angular.module('baseApp.directives')
               Calendar.get( id )
                 .then( function(res) {
                   scope.event = res.event;
-                  scope.event.invited = scope.event.invited || [];
+                  scope.event.invited = scope.event.invited || {};
                   scope.hasInvited = scope.event.invited ? Object.keys( scope.event.invited).length : false;
                 });
             }
@@ -109925,7 +109923,7 @@ angular.module('baseApp.directives')
             if( $('#eventEnd').val() ) {
               event.end = new Date( $('#eventEnd').val() + ' UTC').toISOString();
             }
-            event.invited = Object.keys(_.indexBy(event.invited, '_id'));
+            event.invited = Object.keys(event.invited);
 
             if( scope.event._id ) {
               Calendar.update( event )
@@ -109933,9 +109931,9 @@ angular.module('baseApp.directives')
                   $state.reload();
                 });
             } else {
-              Calendar.create( event )
+              Calendar.add( event )
                 .then( function(){
-                  scope.$parent.close();
+                  $state.reload();
                 });
             }
 
@@ -109953,7 +109951,7 @@ angular.module('baseApp.directives')
               getData( eventId );
             }
             scope.event = {
-              invited: []
+              invited: {}
             };
           });
           var usersCache = [];
@@ -109961,18 +109959,28 @@ angular.module('baseApp.directives')
             var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
               selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
 
-            scope.event.invited.push({
-              email: selection.email,
+            //scope.event.invited.push({
+            //  email: selection.email,
+            //  _id: selection._id,
+            //  profile: {
+            //    firstName: selection.profile.firstName,
+            //    lastName: selection.profile.lastName
+            //  }
+            //});
+            scope.event.invited[ selection._id ] = {
               _id: selection._id,
+              email: selection.email,
               profile: {
                 firstName: selection.profile.firstName,
                 lastName: selection.profile.lastName
               }
-            });
+            };
+            console.log( scope.event.invited );
             scope.hasInvited = scope.event.invited ? Object.keys( scope.event.invited).length : false;
             scope.$broadcast('clearInput');
           };
           scope.removeMember = function( id ) {
+            //delete scope.event.invited[ id ];
             delete scope.event.invited[ id ];
           };
           scope.getUsers = function(val) {
@@ -110198,12 +110206,13 @@ angular.module('baseApp.services')
           conversation: conversation
         }).$promise;
       },
-      sendPrivateMessage: function( conversationId, message ) {
+      sendPrivateMessage: function( conversationId, message, users ) {
         return ChatResource.post( {
           resource: 'messages',
           id: 'private',
           conversationId: conversationId
         },{
+          users: users,
           message: message
         }).$promise;
       },
@@ -110353,6 +110362,7 @@ angular.module('baseApp.directives')
           scope.$watch( 'current', function(){
             if( scope.current ) {
               scope.currentConversation = scope.current;
+              console.log( scope.currentConversation );
               Socket.get.on('event:conversation:'+scope.currentConversation._id, function(){
                 $state.reload();
               });
@@ -110361,7 +110371,8 @@ angular.module('baseApp.directives')
 
           scope.sendMessage = function(){
             if( scope.private ) {
-              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
+              console.log( scope.currentConversation.members );
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage }, Object.keys(scope.currentConversation.members) )
                 .then( function(){
                   delete scope.newMessage;
                 });
@@ -110397,6 +110408,7 @@ angular.module('baseApp.directives')
           scope.isModal = true;
           var existingConversation = false;
           scope.sendMessage = function(){
+            //$event.stopPropagation();
             if( !existingConversation ) {
               Chat.startPrivateConversation( scope.toUser._id, { message: {content: scope.newMessage }} )
                 .then( function( res ){
@@ -110405,7 +110417,7 @@ angular.module('baseApp.directives')
                   delete scope.newMessage;
                 });
             } else {
-              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage } )
+              Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage }, [scope.toUser._id] )
                 .then( function(res){
                   scope.currentConversation.messages.unshift( res.message );
                   delete scope.newMessage;
@@ -111158,6 +111170,76 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
+  .directive('chatWidget', ['_','Chat','Socket','currentUser','Notification',
+    function( _, Chat, Socket, currentUser, Notification ){
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/layout/header/_chatWidget',
+        link: function(scope) {
+          function populateMessageNotice(newConversations ){
+            Chat.getAllPrivateConversations()
+              .then( function(res){
+                var conversations = _.indexBy( res.conversations, '_id');
+
+                var newCount = 0;
+                if( typeof newConversations === 'undefined') {
+                  scope.notifications.chat = conversations;
+                } else {
+                  scope.notifications.chat = _.defaults( newConversations, conversations );
+                  newCount = Object.keys(newConversations).length;
+                }
+                console.log( scope.notifications.chat );
+                scope.chat = {
+                  total: newCount
+                };
+                console.log( scope.chat );
+              });
+          }
+          scope.$watch( currentUser.get, function(newUser){
+            if( typeof newUser === 'undefined' ) {
+              newUser = {access: ['any']};
+            } else {
+
+              Socket.get.on('event:notification:chat:'+newUser._id, function(){
+
+                Notification.get()
+                  .then( function(res){
+                    populateMessageNotice(res.notifications.chat);
+                  });
+              });
+            }
+            scope.notifications = {
+              chat: []
+            };
+            Notification.get()
+              .then( function(res){
+                populateMessageNotice(res.notifications.chat);
+              });
+          });
+          scope.toggleNotification = function( $event, id ) {
+            $event.stopPropagation();
+            if( scope.notifications.chat[id].isNew ) {
+              Notification.remove( id ).then( function(){
+                scope.notifications.chat[id].isNew = false;
+                scope.chat.total--;
+              });
+            } else {
+              Notification.addChat( id ).then( function(){
+                scope.chat.total++;
+                scope.notifications.chat[id].isNew = true;
+              });
+            }
+
+
+            console.log( id );
+          };
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
   .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout',
     function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout ){
       'use strict';
@@ -111170,63 +111252,10 @@ angular.module('baseApp.directives')
         link: function(scope) {
           scope.logout = $rootScope.logout;
           scope.current = currentUser.get();
-          function populateMessageNotice(res, newUser ){
-            scope.notifications = res.notifications;
-            _.each( Object.keys( scope.notifications ), function( key ) {
-              scope[ key ] = {
-                total: Object.keys( scope.notifications[key] ).length
-              };
-            });
-            Chat.getAllPrivateConversations()
-              .then( function(res){
-                var groupById = _.groupBy( res.conversations, function(conv){ return conv._id; });
-                _.each( Object.keys( groupById ), function(key){ groupById[key] = groupById[key][0]; });
-                var allConversations = {};
-                _.each( Object.keys( groupById ), function( key ) {
-                  delete groupById[key].members[newUser._id];
-                  var users = [];
-                  _.each( Object.keys( groupById[key].members ), function(k){
-                    users.push( groupById[key].members[k] );
-                  });
-                  groupById[key].members = users;
-                  groupById[key].messages.reverse();
-                  if( scope.notifications && scope.notifications.chat  ) {
-                    if( typeof scope.notifications.chat[key] === 'undefined' ) {
-                      scope.notifications.chat[key] = groupById[key];
-                      delete scope.notifications.chat[key].members[newUser._id ];
-                      var users2 = [];
-                      _.each( Object.keys( scope.notifications.chat[key].members ), function(k){
-                        users.push( scope.notifications.chat[key].members[k] );
-                      });
-                      scope.notifications.chat[key].members = users2;
-                      scope.notifications.chat[key].messages.reverse();
-                    } else {
-                      scope.notifications.chat[key].isNew = true;
-                    }
-                  } else {
-                    allConversations[key] = groupById[key];
-                  }
-                });
-                if( Object.keys( allConversations ).length ) {
-                  scope.notifications = {
-                    chat: allConversations
-                  };
-                }
-                scope.notifications.chat = _.sortBy( scope.notifications.chat, function(entry){ return new Date(entry.messages[0].created).getTime()*-1; });
-              });
-          }
+
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
               newUser = {access: ['any']};
-            } else {
-
-              Socket.get.on('event:notification:'+newUser._id, function(){
-
-                Notification.get()
-                  .then( function(res){
-                    populateMessageNotice(res, newUser);
-                  });
-              });
             }
 
             if( _.contains( newUser.access, 'any' ) ) {
@@ -111234,11 +111263,6 @@ angular.module('baseApp.directives')
             } else {
               scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
               scope.user = newUser;
-              scope.notifications = {};
-              Notification.get()
-                .then( function(res){
-                  populateMessageNotice(res, newUser);
-                });
             }
             scope.toggleSidebar = function(){
               $rootScope.toggleSidebarCollapsed();
@@ -112363,19 +112387,37 @@ angular.module('baseApp.controllers')
 angular.module('baseApp.services')
   .factory('NotificationResource', [ '$resource', function($resource) {
     'use strict';
-    return $resource('/api/notifications/:id',
-      { id: '@id' },
+    return $resource('/api/notifications/:resource',
+      { resource: '@resource' },
       {
         read:   { method: 'GET' },
+        add: { method: 'POST' },
         remove: { method: 'DELETE' }
       });
   }])
-  .factory('Notification', [ 'NotificationResource', function( NotificationResource ) {
+  .factory('Notification', [ 'NotificationResource', '$q', function( NotificationResource, $q ) {
     'use strict';
-    var confirmMessage = null, confirmed = null, id = null;
+    var confirmMessage = null, confirmed = null, id = null, deferred = null;
     return {
-      get: function( ) { return NotificationResource.read( ).$promise; },
-      remove: function( id ){ return NotificationResource.remove( { id: id } ).$promise; },
+      get: function( ) {
+        if (deferred) {
+          return deferred;
+        } else {
+          deferred = $q.defer();
+
+          NotificationResource.read({}, function(res){
+            deferred.resolve( res );
+            deferred = null;
+          }, function(){
+            deferred.reject( );
+            deferred = null;
+          });
+
+          return deferred.promise;
+        }
+      },
+      addChat: function( id ) { return NotificationResource.add( {id: id, resource: 'chat'}).$promise; },
+      remove: function( id ){ return NotificationResource.remove( { id: id, resource: 'chat' } ).$promise; },
       confirm: confirmMessage,
       confirmed: confirmed,
       id: id

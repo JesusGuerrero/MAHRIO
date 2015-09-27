@@ -160,12 +160,13 @@ angular.module('baseApp.services')
           conversation: conversation
         }).$promise;
       },
-      sendPrivateMessage: function( conversationId, message ) {
+      sendPrivateMessage: function( conversationId, message, users ) {
         return ChatResource.post( {
           resource: 'messages',
           id: 'private',
           conversationId: conversationId
         },{
+          users: users,
           message: message
         }).$promise;
       },

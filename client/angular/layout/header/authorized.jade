@@ -13,34 +13,7 @@ header.main-header
             span.icon-bar
         .navbar-custom-menu
             ul.nav.navbar-nav
-                li.dropdown.messages-menu
-                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
-                        i.fa.fa-comments
-                        span.label.label-success(ng-show="chat && chat.total")
-                            |   {{chat.total}}
-                    ul.dropdown-menu
-                        li.header
-                            b
-                                |   Conversations
-                            span( ng-show="chat && chat.total")
-                                |   ({{chat.total}})
-                        li
-                            ul.menu
-                                li( ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}")
-                                    a( ui-sref="conversations" ui-sref-opts="{reload: true}")
-                                        .pull-left
-                                            img.img-circle( ng-src="{{conversation.members[0].avatarImage.url}}" alt="User Image")
-                                        h4
-                                            span(ng-repeat="user in conversation.members")
-                                                |   {{user.profile.firstName}}
-                                            small
-                                                i.fa.fa-clock-o
-                                                    |   {{conversation.messages[0].created | date : 'MM-dd h:mm a' }}
-                                        p
-                                            |   {{conversation.messages[0].content}}
-                        li.footer
-                            a( ui-sref="conversations" ui-sref-opts="{reload: true}" )
-                                |   See All Conversations
+                chat-widget
                 li.dropdown.messages-menu
                     a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-envelope

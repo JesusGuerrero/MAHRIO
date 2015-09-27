@@ -29,9 +29,11 @@
     </div>
   </div>
   <div class="box-footer">
-    <div class="input-group">
-      <input type="text" name="message" placeholder="Type Message ..." ng-model="newMessage" class="form-control"/><span class="input-group-btn">
-        <button type="button" ng-click="sendMessage()" class="btn btn-primary btn-flat">  Send</button></span>
-    </div>
+    <form ng-submit="sendMessage()">
+      <div class="input-group">
+        <input type="text" name="message" placeholder="Type Message ..." ng-model="newMessage" class="form-control"/><span class="input-group-btn">
+          <button type="submit" class="btn btn-primary btn-flat">  Send</button></span>
+      </div>
+    </form>
   </div>
 </div>
