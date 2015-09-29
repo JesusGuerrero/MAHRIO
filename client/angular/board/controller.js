@@ -1,6 +1,6 @@
 angular.module('baseApp.controllers')
-  .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_',
-    function($scope, $state, $http, currentUser, Board, _){
+  .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_','Notification',
+    function($scope, $state, $http, currentUser, Board, _, Notification){
       'use strict';
 
       $scope.boards = [];
@@ -89,10 +89,17 @@ angular.module('baseApp.controllers')
       }
 
       $scope.remove = function( id ){
-        Board.remove( id )
-          .then( function(){
-            $scope.boards = _.filter( $scope.boards, function(board){ return board._id !== id; });
-            $state.go('boards.list');
-          });
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
       };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Board.remove( Notification.id )
+            .then( function(){
+              $state.go('boards.list', {}, {reload: true});
+            });
+        }
+      });
     }]);

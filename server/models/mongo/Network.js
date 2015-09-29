@@ -12,6 +12,8 @@ var mongoose = require('mongoose'),
     isPrivate: { type: Boolean, default: false },
     boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }],
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CalendarEvent' }],
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    articles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
     owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   }),
   Network = mongoose.model('Network', schema);

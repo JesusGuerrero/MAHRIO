@@ -5,7 +5,16 @@ angular.module('baseApp.controllers')
 
       $scope.user = currentUser.get();
 
-      var currColor = '#f56954'; //Red by default
+      var matches = {
+        'skin-blue': { name: 'Blue', rgb: '#3c8dbc'},
+        'skin-green': { name: 'Green', rgb: '#00a65a' },
+        'skin-yellow': { name: 'Yellow', rgb: '#f39c12' },
+        'skin-purple': { name: 'Purple', rgb: '#605ca8' },
+        'skin-red': { name: 'Red', rgb: '#dd4b39' }
+      };
+      $scope.skin = matches[ $rootScope.settings.skin] || matches[ 'skin-blue' ] ;
+
+      var currColor = matches[ $rootScope.settings.skin].rgb || '#f56954';
       //Color chooser button
       var colorChooser = $('#theme-chooser-btn');
       $('#theme-chooser > li > a').click(function(e) {

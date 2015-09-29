@@ -76,7 +76,7 @@ function currentUser (request, reply, method, selectString) {
   User
     .findOne({_id: request.auth.credentials.id})
     .select( selectString )
-    .populate( 'avatarImage profile' )
+    .populate( 'avatarImage profile networks' )
     .exec( function (err, user) {
       if (err || !user) { return reply(Boom.badRequest(err)); }
 

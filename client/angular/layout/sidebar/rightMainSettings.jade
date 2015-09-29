@@ -77,8 +77,9 @@ aside.control-sidebar.control-sidebar-dark(ng-controller="RightSettingsControlle
                 label
                     |   Theme
                 .btn-group(style="width: 100%; margin-bottom: 10px;")
-                    button.btn.btn-primary.btn-block.btn-sm.dropdown-toggle( type="button" id="theme-chooser-btn" data-toggle="dropdown")
-                        |   Color
+                    button.btn.btn-block.btn-sm.dropdown-toggle( style="background: {{skin.rgb}}"
+                        type="button" id="theme-chooser-btn" data-toggle="dropdown")
+                        |   {{skin.name}}
                         span.caret
                     ul.dropdown-menu(id="theme-chooser")
                         li

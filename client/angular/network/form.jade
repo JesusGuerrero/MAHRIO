@@ -14,6 +14,15 @@
                         label
                             |  Private Network
                         input( type="checkbox" ng-model="network.isPrivate" i-check)
+                    .form-group(ng-show="access.indexOf('sudo') !== -1")
+                        label
+                            |   Owner:&nbsp;
+                        span.bg-red.label(ng-show="hasOwner" style="padding-right: 20px; position: relative")
+                            i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeOwner( )")
+                            |   {{network.owner.profile.firstName}} {{network.owner.profile.lastName}} &lt;{{network.owner.email}}&gt;
+                        div(ng-show="!hasOwner")
+                            auto-complete(input-model="tempMember" placeholder="Add Owner" auto-complete-http="getUsers"
+                            selected="selectOwner")
                     .form-group(ng-show="hasMembers")
                         label
                             | Members

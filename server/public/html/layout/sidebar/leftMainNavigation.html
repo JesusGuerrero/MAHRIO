@@ -17,9 +17,9 @@
     </div>
     <ul class="sidebar-menu">
       <li class="header">  MAIN NAVIGATION</li>
-      <li><a href="#/"><i class="fa fa-dashboard"></i><span>  Dashboard</span></a></li>
+      <li><a ui-sref="root" ui-sref-opts="{reload: true}"><i class="fa fa-dashboard"></i><span>  Dashboard</span></a></li>
       <li><a ui-sref="notifications"><i class="fa fa-bell"></i><span>  Notifications</span></a></li>
-      <li ng-show="access.indexOf('sudo') !== -1"><a ui-sref="networks.list"><i class="fa fa-share-alt"></i><span>  Networks</span></a></li>
+      <li><a ui-sref="networks.list"><i class="fa fa-share-alt"></i><span>  Networks</span></a></li>
       <li><a ui-sref="articles.list" ui-sref-opts="{reload: true}"><i class="fa fa-book"></i><span>  Articles</span></a></li>
       <li><a ui-sref="boards.list"><i class="fa fa-tasks"></i><span>  Boards</span></a></li>
       <li><a ui-sref="users.list" ui-sref-opts="{reload: true}"><i class="fa fa-users"></i><span>  Users</span><small class="label pull-right bg-green">  New</small></a></li>

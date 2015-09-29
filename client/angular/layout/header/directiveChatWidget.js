@@ -16,8 +16,8 @@ angular.module('baseApp.directives')
                 if( typeof newConversations === 'undefined') {
                   scope.notifications.chat = conversations;
                 } else {
-                  scope.notifications.chat = _.defaults( newConversations, conversations );
                   newCount = Object.keys(newConversations).length;
+                  scope.notifications.chat = _.defaults( newConversations, conversations );
                 }
                 console.log( scope.notifications.chat );
                 scope.chat = {

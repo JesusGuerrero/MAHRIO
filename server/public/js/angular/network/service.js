@@ -1,7 +1,7 @@
 angular.module('baseApp.services').factory('NetworkResource', [ '$resource', function($resource) {
   'use strict';
-  return $resource('/api/networks/:id',
-    { id: '@id' },
+  return $resource('/api/networks/:id/:action',
+    { id: '@id', action: '@action' },
     {
       create: {
         method: 'POST'
@@ -27,6 +27,12 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
     },
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
+    },
+    join: function( obj ){
+      return NetworkResource.update( {id: obj._id, action: 'join'} ) .$promise;
+    },
+    leave: function( obj ) {
+      return NetworkResource.update( {id: obj._id, action: 'leave'} ) .$promise;
     },
     update: function( obj ) {
       return NetworkResource.update( {id: obj._id}, {network: obj} ) .$promise;

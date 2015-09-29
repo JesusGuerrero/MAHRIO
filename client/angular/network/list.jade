@@ -43,13 +43,19 @@
                     span(ng-repeat="conversation in network.conversations track by $index")
                         | {{conversation.topic}}
                         br
-                .col-md-2.col-lg-1.no-padding(ng-show="network.owner === currentUser._id")
-                    a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()")
+                .col-md-2.col-lg-1.no-padding
+                    a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()"
+                        ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1")
                         i.fa.fa-edit
-                    a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()")
+                    a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()"
+                        ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1")
                         i.fa.fa-trash
+                    a.btn.btn-success.btn-block( href-"javascript::;" ng-click="join(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 && !network.members[ currentUser._id ]")
+                        i.fa.fa-plus
+                    a.btn.btn-warning.btn-block( href-"javascript::;" ng-click="leave(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 && network.members[ currentUser._id ]")
+                        i.fa.fa-minus
                 .clearfix
-.row(style="margin-top: 50px;")
+.row(style="margin-top: 50px;" ng-show="access.indexOf('sudo') !== -1 || access.indexOf('admin') !== -1")
     .col-xs-12.col-sm-4.col-md-3.col-lg-2
         a.btn.btn-primary(ui-sref="networks.new" ui-sref-opts="{reload: true}")
             i.fa.fa-plus

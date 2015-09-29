@@ -1,14 +1,32 @@
 angular.module('baseApp.controllers')
-  .controller('NetworkController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_',
-    function($scope, $state, $http, currentUser, Network, _){
+  .controller('NetworkController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_','Notification',
+    function($scope, $state, $http, currentUser, Network, _, Notification){
       'use strict';
 
       $scope.networks = [];
       var formSetup = function(){
         var usersCache = [];
-        $scope.selected = function($item) {
+        function findUser( $item ){
           var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
             selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+          return selection;
+        }
+        $scope.selectOwner = function($item){
+          var selection = findUser( $item );
+
+          $scope.network.owner = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasOwner = true;
+          $scope.$broadcast('clearInput');
+        };
+        $scope.selected = function($item) {
+          var selection = findUser( $item );
 
           $scope.network.members[ selection._id ] = {
             _id: selection._id,
@@ -24,6 +42,9 @@ angular.module('baseApp.controllers')
         $scope.removeMember = function( id ) {
           delete $scope.network.members[ id ];
           $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
+        };
+        $scope.removeOwner = function(){
+          $scope.hasOwner = false;
         };
         $scope.getUsers = function(val) {
           return $http.get('/api/autocomplete/users', {
@@ -67,7 +88,7 @@ angular.module('baseApp.controllers')
         case 'networks.list':
           Network.get()
             .then( function( res ) {
-              $scope.networks = res.networks;
+              $scope.networks = _.indexBy( res.networks, '_id');
             });
           break;
         case 'networks.edit':
@@ -89,12 +110,33 @@ angular.module('baseApp.controllers')
           break;
       }
 
-
       $scope.remove = function( id ){
-        Network.remove( id )
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Network.remove( Notification.id )
+            .then( function(){
+              $state.go('networks.list', {}, {reload: true});
+            });
+        }
+      });
+      $scope.join = function( id ){
+        Network.join( {_id: id} )
           .then( function(){
-            $scope.networks = _.filter( $scope.networks, function(network){ return network._id !== id; });
-            $state.go('networks.list');
+            currentUser.get().networks.push( $scope.networks[id] );
+            $state.reload();
+          });
+      };
+      $scope.leave = function( id ){
+        Network.leave( {_id: id} )
+          .then( function(){
+            var id = currentUser.get().networks.indexOf( $scope.networks[id] );
+            currentUser.get().networks.splice(id, 1);
+            $state.reload();
           });
       };
     }]);

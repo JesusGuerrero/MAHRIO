@@ -20,12 +20,12 @@
         <div class="col-md-2 col-lg-2 no-padding"><span ng-repeat="board in network.boards track by $index">{{board.name}}<br/></span></div>
         <div class="col-md-2 col-lg-2 no-padding"><span ng-repeat="event in network.events track by $index">{{event.title}} {{event.start | date:'medium' }}<br/></span></div>
         <div class="col-md-2 col-lg-2 no-padding"><span ng-repeat="conversation in network.conversations track by $index">{{conversation.topic}}<br/></span></div>
-        <div ng-show="network.owner === currentUser._id" class="col-md-2 col-lg-1 no-padding"><a ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" class="btn btn-default btn-block"><i class="fa fa-edit"></i></a><a ng-click="remove( network._id ); $event.stopPropagation()" class="btn btn-danger btn-block"><i class="fa fa-trash"></i></a></div>
+        <div class="col-md-2 col-lg-1 no-padding"><a ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1" class="btn btn-default btn-block"><i class="fa fa-edit"></i></a><a ng-click="remove( network._id ); $event.stopPropagation()" ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1" class="btn btn-danger btn-block"><i class="fa fa-trash"></i></a><a href-"javascript::;="href-"javascript::;" ng-click="join(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 &amp;&amp; !network.members[ currentUser._id ]" class="btn btn-success btn-block"><i class="fa fa-plus"></i></a><a href-"javascript::;="href-"javascript::;" ng-click="leave(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 &amp;&amp; network.members[ currentUser._id ]" class="btn btn-warning btn-block"><i class="fa fa-minus"></i></a></div>
         <div class="clearfix"></div>
       </div>
     </div>
   </div>
 </div>
-<div style="margin-top: 50px;" class="row">
+<div style="margin-top: 50px;" ng-show="access.indexOf('sudo') !== -1 || access.indexOf('admin') !== -1" class="row">
   <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.new" ui-sref-opts="{reload: true}" class="btn btn-primary"><i class="fa fa-plus"></i>  Add Network</a></div>
 </div>

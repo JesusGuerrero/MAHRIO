@@ -22,7 +22,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
             li.header
                 |   MAIN NAVIGATION
             li
-                a( href="#/")
+                a( ui-sref="root" ui-sref-opts="{reload: true}")
                     i.fa.fa-dashboard
                     span
                         |   Dashboard
@@ -31,7 +31,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                     i.fa.fa-bell
                     span
                         |   Notifications
-            li(ng-show="access.indexOf('sudo') !== -1")
+            li
                 a( ui-sref="networks.list")
                     i.fa.fa-share-alt
                     span

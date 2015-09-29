@@ -8,7 +8,7 @@ var async = require('async'),
   Network = mongoose.model('Network');
 
 function createNetwork( request, reply ) {
-  if( !request.payload.network || !_.contains(request.auth.credentials.access, 'sudo') ) {
+  if( !request.payload.network || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin') ) ) {
     return reply( Boom.badRequest() );
   }
 
@@ -53,7 +53,7 @@ function _getAllNetworks( request, reply, callback ) {
     });
 }
 function getNetwork( request, reply, callback ) {
-  if( !_.contains(request.auth.credentials.access, 'sudo') ) {
+  if( !_.contains(request.auth.credentials.access, 'authorized') ) {
     return reply( Boom.badRequest() );
   }
   if( typeof request.params.id === 'undefined' ) {
@@ -87,7 +87,7 @@ function getNetwork( request, reply, callback ) {
   }
 }
 function updateNetwork( request, reply ) {
-  if( !request.payload.network || !_.contains(request.auth.credentials.access, 'sudo') || typeof request.params.id === 'undefined') {
+  if( !request.payload.network || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin')) || typeof request.params.id === 'undefined') {
     return reply( Boom.badRequest() );
   } else if( typeof request.payload.networkIds !== 'undefined' && Array.isArray( request.payload.networkIds ) ) {
     // TODO: update several networks at once
@@ -146,7 +146,32 @@ function updateNetwork( request, reply ) {
     });
   }
 }
+function joinNetwork( request, reply ) {
+  if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
+
+  getNetwork( request, reply, function(network) {
+    if( !network.isPrivate ) {
+      User.update({_id: request.auth.credentials.id}, {$push: {networks: network.id}}, {multi: false}, function(err){
+        if( err ) { return reply( Boom.badRequest(err)); }
+
+        reply( {joined: true} );
+      });
+    }
+  });
+}
+function leaveNetwork( request, reply ) {
+  if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
+
+  User.update({_id: request.auth.credentials.id}, {$pull: {networks: request.params.id}}, {multi: false}, function(err){
+    if( err ) { return reply( Boom.badRequest(err)); }
+
+    reply( {left: true} );
+  });
+}
 function removeNetwork( request, reply ){
+  if( !_.contains(request.auth.credentials.access, 'sudo') ) {
+    return reply( Boom.badRequest() );
+  }
   if( typeof request.params.id !== 'undefined' ) {
     getNetwork( request, reply, function(network) {
       var oldMembers = null;
@@ -178,5 +203,7 @@ module.exports = {
   create: createNetwork,
   read: getNetwork,
   update: updateNetwork,
+  join: joinNetwork,
+  leave: leaveNetwork,
   remove: removeNetwork
 };

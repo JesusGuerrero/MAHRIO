@@ -22,7 +22,23 @@ module.exports = function(config, server) {
     },
     {
       method: ['PUT'],
-      path: '/api/networks/{id?}',
+      path: '/api/networks/{id}/join',
+      config: {
+        handler: NetworkCtrl.join,
+        auth: 'simple'
+      }
+    },
+    {
+      method: ['PUT'],
+      path: '/api/networks/{id}/leave',
+      config: {
+        handler: NetworkCtrl.leave,
+        auth: 'simple'
+      }
+    },
+    {
+      method: ['PUT'],
+      path: '/api/networks/{id}',
       config: {
         handler: NetworkCtrl.update,
         auth: 'simple'

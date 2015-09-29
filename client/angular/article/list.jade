@@ -35,6 +35,6 @@
                                     i.fa.fa-edit
                                     |   &nbsp;Edit
                             .col-xs-6
-                                a.btn.btn-block.btn-danger(ng-click="remove( article._id )")
+                                a.btn.btn-block.btn-danger(ng-click="remove( article._id ); $event.stopPropagation()")
                                     i.fa.fa-trash
                                     |   &nbsp;Remove
