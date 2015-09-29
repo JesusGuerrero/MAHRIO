@@ -11,7 +11,7 @@ li.dropdown.messages-menu
                 |   ({{chat.total}})
         li
             ul.menu
-                li( ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}")
+                li( ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}" style="position: relative;")
                     i.text-blue.fa.pull-right(ng-click="toggleNotification($event, conversation._id)"
                         style="position: absolute; margin-top: 25px; right: 10px; cursor: pointer;"
                         ng-class="conversation.isNew ? 'fa-circle':'fa-circle-o'")

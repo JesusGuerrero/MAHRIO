@@ -108943,7 +108943,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('notifications', {
       url: '/notifications',
-      templateUrl: '/assets/html/notifications/index',
+      templateUrl: '/assets/html/notification/index',
       controller: 'NotificationsController',
       title: 'Notifications',
       subTitle: 'What\'s New'
@@ -108975,28 +108975,15 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       templateUrl: '/assets/html/article/detail',
       title: 'Article'
     })
-    .state('knowledge', {
-      url: '/knowledge',
-      templateUrl: '/assets/html/knowledge/index',
-      controller: 'KnowledgeController'
-    })
-    .state('knowledge.articles', {
-      url: '/articles?domain'
-    })
-    .state('knowledge.articles.view', {
-      url: '/view'
-    })
-    .state('adminDashV1', {
-      url: '/dashboard-v1',
-      templateUrl: '/assets/html/views/dashboard-v1'
-    })
     .state('about', {
       url: '/about',
-      templateUrl: '/assets/html/pages/about'
+      templateUrl: '/assets/html/pages/about',
+      title: 'About Us',
     })
     .state('contact', {
       url: '/contact',
-      templateUrl: '/assets/html/pages/contact'
+      templateUrl: '/assets/html/pages/contact',
+      title: 'Contact Us'
     })
     .state('users', {
       abstract: true,
@@ -109031,7 +109018,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('conversations', {
       url: '/conversations',
-      templateUrl: '/assets/html/conversations/index',
+      templateUrl: '/assets/html/chat/index',
       controller: 'ConversationsController',
       title: 'All Conversations'
     })
@@ -109316,6 +109303,10 @@ angular.module('baseApp.controllers', [])
       };
 
       $rootScope.access = ['any'];
+      $rootScope.settings = { skin: 'skin-blue' };
+      $rootScope.getThemeClass = function(){
+        return $rootScope.settings.skin;
+      };
 
       window.rootScope = $rootScope;
 
@@ -109327,24 +109318,51 @@ angular.module('baseApp.controllers', [])
           window.localStorage.isSidebarCollapsed = true;
         }
       };
+      $rootScope.setSettings = function( settings ) {
+        $rootScope.settings = settings;
+        window.localStorage.settings = JSON.stringify(settings);
+      };
     }
   ]);
 
 
-'use strict';
-
 angular.module('baseApp.controllers')
-  .controller('AdminHeaderController', ['$scope', 'Admin',
-    function ($scope, Admin) {
+  .controller('AdminDashboardController', ['$scope',
+    function($scope){
+      'use strict';
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
 
-      $scope.getSessionToCMS = function(){
-        Admin.getSessionToCMS()
-          .then( function(){
-            window.location.href = '/admin/cms';
-          });
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
+      $scope.line_series = ['Average Online Traffic'];
+      $scope.line_data = [
+        [65, 59, 80, 81, 56, 55, 90]
+      ];
+      $scope.onClick = function (points, evt) {
+        console.log(points, evt);
       };
-    }]);
+      $scope.onHover = function (points) {
+        if (points.length > 0) {
+          console.log('Point', points[0].value);
+        } else {
+          console.log('No point');
+        }
+      };
 
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
+
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+    }]);
 /* global confirm */
 
 angular.module('baseApp.controllers')
@@ -110268,7 +110286,7 @@ angular.module('baseApp.directives')
           current: '=',
           load: '='
         },
-        templateUrl: '/assets/html/conversations/conversations',
+        templateUrl: '/assets/html/chat/conversations',
         link: function(){
         }
       };
@@ -110280,7 +110298,7 @@ angular.module('baseApp.directives')
       'use strict';
       return {
         restrict: 'E',
-        templateUrl: '/assets/html/conversations/form',
+        templateUrl: '/assets/html/chat/form',
         scope: {
           private: '='
         },
@@ -110353,7 +110371,7 @@ angular.module('baseApp.directives')
           current: '=',
           private: '='
         },
-        templateUrl: '/assets/html/conversations/currentConversation',
+        templateUrl: '/assets/html/chat/currentConversation',
         link: function(scope){
           scope.currentUser = currentUser.get();
           scope.currentConversations = [];
@@ -110362,7 +110380,6 @@ angular.module('baseApp.directives')
           scope.$watch( 'current', function(){
             if( scope.current ) {
               scope.currentConversation = scope.current;
-              console.log( scope.currentConversation );
               Socket.get.on('event:conversation:'+scope.currentConversation._id, function(){
                 $state.reload();
               });
@@ -110371,7 +110388,6 @@ angular.module('baseApp.directives')
 
           scope.sendMessage = function(){
             if( scope.private ) {
-              console.log( scope.currentConversation.members );
               Chat.sendPrivateMessage( scope.currentConversation._id, { content: scope.newMessage }, Object.keys(scope.currentConversation.members) )
                 .then( function(){
                   delete scope.newMessage;
@@ -110396,7 +110412,7 @@ angular.module('baseApp.directives')
       'use strict';
       return {
         restrict: 'E',
-        templateUrl: '/assets/html/conversations/currentConversation',
+        templateUrl: '/assets/html/chat/currentConversation',
         scope: {
           open: '@'
         },
@@ -110408,7 +110424,6 @@ angular.module('baseApp.directives')
           scope.isModal = true;
           var existingConversation = false;
           scope.sendMessage = function(){
-            //$event.stopPropagation();
             if( !existingConversation ) {
               Chat.startPrivateConversation( scope.toUser._id, { message: {content: scope.newMessage }} )
                 .then( function( res ){
@@ -110458,7 +110473,7 @@ angular.module('baseApp.directives')
       return {
         restrict: 'E',
         replace: true,
-        templateUrl: '/assets/html/conversations/directiveConversations',
+        templateUrl: '/assets/html/chat/directiveConversations',
         scope: {
           active: '='
         },
@@ -110490,7 +110505,7 @@ angular.module('baseApp.directives')
       return {
         restrict: 'E',
         replace: true,
-        templateUrl: '/assets/html/conversations/directiveConversations',
+        templateUrl: '/assets/html/chat/directiveConversations',
         scope: {
           active: '='
         },
@@ -110567,43 +110582,6 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('AdminDashboardController', ['$scope',
-    function($scope){
-      'use strict';
-      /*jshint camelcase: false */
-      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
-
-      $scope.line_labels = [];
-      var today = new Date();
-      var thisMonth = today.getMonth();
-      for( var x=thisMonth-6; x <= thisMonth; x++) {
-        if( x < 0 ) {
-          $scope.line_labels.push( months[12+x] );
-        } else {
-          $scope.line_labels.push( months[x] );
-        }
-      }
-      $scope.line_series = ['Average Online Traffic'];
-      $scope.line_data = [
-        [65, 59, 80, 81, 56, 55, 90]
-      ];
-      $scope.onClick = function (points, evt) {
-        console.log(points, evt);
-      };
-      $scope.onHover = function (points) {
-        if (points.length > 0) {
-          console.log('Point', points[0].value);
-        } else {
-          console.log('No point');
-        }
-      };
-
-      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
-      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
-
-      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
-    }]);
-angular.module('baseApp.controllers')
   .controller('AuthorizedDashboardController', ['$scope',
     function($scope){
       'use strict';
@@ -110640,506 +110618,6 @@ angular.module('baseApp.controllers')
 
       setTimeout( function(){ $('.box').matchHeight(); }, 10 );
     }]);
-angular.module('baseApp.controllers')
-  .controller('SudoDashboardController', ['$scope',
-    function($scope){
-      'use strict';
-      /*jshint camelcase: false */
-      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
-
-      $scope.line_labels = [];
-      var today = new Date();
-      var thisMonth = today.getMonth();
-      for( var x=thisMonth-6; x <= thisMonth; x++) {
-        if( x < 0 ) {
-          $scope.line_labels.push( months[12+x] );
-        } else {
-          $scope.line_labels.push( months[x] );
-        }
-      }
-      $scope.line_series = ['Average Online Traffic'];
-      $scope.line_data = [
-        [65, 59, 80, 81, 56, 55, 90]
-      ];
-      $scope.onClick = function (points, evt) {
-        console.log(points, evt);
-      };
-      $scope.onHover = function (points) {
-        if (points.length > 0) {
-          console.log('Point', points[0].value);
-        } else {
-          console.log('No point');
-        }
-      };
-
-      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
-      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
-
-      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
-    }]);
-angular.module('baseApp.directives')
-  .directive('autoComplete', [ function(){
-    'use strict';
-    return {
-      restrict: 'E',
-      templateUrl: '/assets/html/directives/components/autocomplete/auto-complete-input.html',
-      scope: {
-        inputModel: '=',
-        placeholder: '@',
-        autoCompleteHttp: '=',
-        selected: '=' || function(){}
-      },
-      link: function(scope){
-        scope.$on('clearInput', function(){
-          delete scope.inputModel;
-        });
-      }
-    };
-  }]);
-angular.module('baseApp.services').factory('Autocomplete',
-  [ '$resource', function($resource) {
-    'use strict';
-    var $api = $resource('/api/autocomplete/:action', { action: '@action' });
-
-    return {
-      get: function( query ) {
-        return $api.get( {action: query}).$promise;
-      }
-    };
-}]);
-angular.module('baseApp.directives')
-  .directive('boxWidget', ['$rootScope',
-    function(){
-      'use strict';
-      return {
-        restrict: 'A',
-        link: function(){
-          try {
-            $.AdminLTE.boxWidget.activate();
-          } catch(e) {
-            console.error( 'AdminLTE not found!');
-          }
-        }
-      };
-    }
-  ]);
-angular.module('baseApp.directives')
-  .directive('iCheckBox', ['$rootScope',
-    function(){
-      'use strict';
-      return {
-        restrict: 'A',
-        link: function(scope, elem){
-          try {
-            $('input[type="checkbox"]', $(elem)).iCheck({
-              checkboxClass: 'icheckbox_flat-blue',
-              radioClass: 'iradio_flat-blue'
-            });
-          } catch(e) {
-            console.error( 'iCheck not found!');
-          }
-        }
-      };
-    }
-  ])
-  .directive('iCheck', ['$timeout', function($timeout) {
-    'use strict';
-    return {
-      require: 'ngModel',
-      link: function ($scope, element, $attrs, ngModel) {
-        return $timeout(function () {
-          var value;
-          value = $attrs.value;
-
-          $scope.$watch($attrs.ngModel, function () {
-            $(element).iCheck('update');
-          });
-
-          return $(element).iCheck({
-            checkboxClass: 'icheckbox_flat-blue',
-            radioClass: 'iradio_flat-aero'
-
-          }).on('ifChanged', function (event) {
-            if ($(element).attr('type') === 'checkbox' && $attrs.ngModel) {
-              $scope.$apply(function () {
-                return ngModel.$setViewValue(event.target.checked);
-              });
-            }
-            if ($(element).attr('type') === 'radio' && $attrs.ngModel) {
-              return $scope.$apply(function () {
-                return ngModel.$setViewValue(value);
-              });
-            }
-          });
-        });
-      }
-    };
-  }])
-  .directive('iCheckAll', ['$rootScope',
-    function(){
-      'use strict';
-      return {
-        restrict: 'A',
-        link: function(scope, elem, attr){
-          try {
-            $(elem).click(function () {
-              var clicks = $(this).data('clicks');
-              if (clicks) {
-                //Uncheck all checkboxes
-                $('.' +attr.iCheckAll+' input[type="checkbox"]').iCheck('uncheck');
-                $('.fa', this).removeClass('fa-check-square-o').addClass('fa-square-o');
-              } else {
-                //Check all checkboxes
-                $('.' +attr.iCheckAll+' input[type="checkbox"]').iCheck('check');
-                $('.fa', this).removeClass('fa-square-o').addClass('fa-check-square-o');
-              }
-              $(this).data('clicks', !clicks);
-            });
-          } catch(e) {
-            console.error( 'iCheck not found!');
-          }
-        }
-      };
-    }
-  ]);
-
-angular.module('baseApp.directives')
-  .directive('notificationsBar', ['$rootScope',
-    function($rootScope){
-      'use strict';
-      return {
-        restrict: 'E',
-        templateUrl: '/assets/html/directives/components/notificationBar',
-        link: function(scope){
-          scope.messages = $rootScope.messages;
-        }
-      };
-    }
-  ]);
-angular.module('baseApp.directives')
-  .directive('paginate', ['$rootScope',
-    function(){
-      'use strict';
-      return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: '/assets/html/directives/components/pagination',
-        scope: {
-          config: '=',
-          right: '@'
-        },
-        link: function(){
-        }
-      };
-    }
-  ]);
-angular.module('baseApp.directives')
-  .directive('popover', ['$rootScope',
-    function(){
-      'use strict';
-      return {
-        restrict: 'A',
-        link: function(scope, elem, attr){
-          try {
-            var options = {};
-            switch( attr.type ){
-              default:
-              case 'personTeaser':
-                options = {
-                  delay: 200,
-                  content: '<h1>TEST</h1>',
-                  html: true,
-                  trigger: 'manual',
-                  placement: attr.placement || 'left',
-                  title: 'Jesus Rocha'
-                };
-            }
-            $(elem).popover( options )
-              .on('mouseenter', function () {
-                var _this = this;
-                $(this).popover('show');
-                $('.popover').on('mouseleave', function () {
-                  $(_this).popover('hide');
-                });
-              }).on('mouseleave', function () {
-                var _this = this;
-                if (!$('.popover:hover').length) {
-                  $(_this).popover('hide');
-                }
-              });
-          } catch(e) {
-            console.error( 'PopOver not found!');
-          }
-        }
-      };
-    }
-  ]);
-angular.module('baseApp.directives')
-  .directive('toolTip', ['$rootScope',
-    function(){
-      'use strict';
-      return {
-        restrict: 'A',
-        link: function(scope, elem){
-          try {
-            $(elem).tooltip();
-          } catch(e) {
-            console.error( 'AdminLTE not found!');
-          }
-        }
-      };
-    }
-  ]);
-angular.module('baseApp.directives')
-  .directive('wysihtml5', ['$rootScope',
-    function( ){
-      'use strict';
-      return {
-        restrict: 'A',
-        scope: {
-        },
-        link: function( scope, elem) {
-          $(elem).wysihtml5();
-        }
-      };
-    }
-  ]);
-
-angular.module('baseApp.directives')
-  .directive('datepicker', ['$rootScope',
-    function( ){
-      'use strict';
-      return {
-        restrict: 'A',
-        link: function( scope, elem, attr) {
-          /* global moment */
-          var option = {
-            defaultDate: moment( new Date() ).format( 'MM/DD/YYYY' )
-          }, $date;
-          scope.$watch( function(){ return attr.datepicker;}, function(newVal){
-            if( newVal ) {
-              var t = moment( newVal );
-              t._isUTC = true;
-              $date.val( t.format('MM/DD/YYYY h:mm A'));
-            }
-          });
-          $date = $(elem).datetimepicker( option );
-        }
-      };
-    }]);
-angular.module('baseApp.directives')
-  .directive('feedbackBox', [ 'FeedbackService',
-    function( FeedbackService ){
-      'use strict';
-      return {
-        restrict: 'E',
-        template: '<success-message-box success-message="successMessage"></success-message-box>'+
-        '<error-message-box validation-errors="validationErrors"></error-message-box>',
-        scope: {
-          validationErrors: '=errors',
-          successMessage: '=success'
-        },
-        link: function(scope){
-          scope.$watch( FeedbackService.get, function(newMessage){
-            if( newMessage && newMessage.feedbackSuccess ) {
-              scope.successMessage = newMessage.feedbackSuccess;
-              delete scope.validationErrors;
-              FeedbackService.set({feedbackSuccess: null});
-            } else if (newMessage && newMessage.validationErrors ) {
-              scope.validationErrors = newMessage.validationErrors;
-              delete scope.successMessage;
-              FeedbackService.set({validationErrors: null});
-            }
-          });
-        }
-      };
-    }
-  ])
-  .directive('successMessageBox', [
-    function() {
-      'use strict';
-      return {
-        restrict: 'E',
-        scope: {
-          msg: '=successMessage'
-        },
-        replace: true,
-        template: '<div id="message-box-slot" ng-show="msg" style="border-radius: 0">'+
-        '<div id="message_success" class="bg-success">'+
-        '<i class="fa fa-check-square-o fa-2x text-success"></i>'+
-        '<h6 class="text-success">{{msg}}</h6>'+
-        '</div></div>'
-      };
-    }
-  ])
-  .directive('errorMessageBox', [
-    function() {
-      'use strict';
-      return {
-        restrict: 'E',
-        scope: {
-          validationErrors: '=validationErrors'
-        },
-        replace: true, // Replace with the template below
-        template: '<div id="message-box-slot" ng-show="validationErrors.length">'+
-        '<div id="message_error" class="bg-danger">'+
-        '<i class="fa fa-exclamation-triangle fa-2x text-danger"></i>'+
-        '<h6 class="text-danger">We have a few errors</h6>'+
-        '<ul><li ng-repeat="error in validationErrors">{{error}}</li></ul>'+
-        '</div></div>'
-      };
-    }
-  ]);
-
-
-
-
-angular.module('baseApp.directives')
-  .directive('formInputTag', ['$rootScope',
-    function( ){
-      'use strict';
-      return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: '/assets/html/directives/forms/input-tag.html',
-        scope: {
-          dataEntry: '=model',
-          minLength: '=',
-          required: '=',
-          regex: '=',
-          maxLength: '='
-        },
-        link: function( scope, elem, attr ) {
-          scope.placeholder = attr.placeholder || '';
-          scope.label = attr.label || false;
-          scope.id = attr.id || new Date().getTime();
-          scope.type = attr.type || 'text';
-          scope.icon = attr.icon || '';
-
-          scope.regx = typeof scope.regex !== 'undefined' ? scope.regex : { pattern: new RegExp('') };
-
-          scope.hasError = function() {
-            return scope.$parent.submitted && elem.hasClass( 'ng-invalid' );
-          };
-        }
-      };
-    }]);
-angular.module('baseApp.directives')
-  .directive('media', ['Media','User','$http',
-    function( ){
-      'use strict';
-      return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: '/assets/html/directives/forms/media/index.html',
-        scope: {
-          media: '=',
-          actions: '=',
-          container: '@'
-        },
-        link: function( scope, el, attr ) {
-          //scope.media = {};
-          var imageObject = {}, fileInput = el.find('input');
-          scope.filename = 'none';
-          fileInput.bind('change', function(event) {
-            var files = event.target.files;
-            scope.$apply(function(){
-              scope.file = files[0];
-              scope.filename = scope.file.name;
-            });
-            imageObject = {
-              filename: scope.file.name,
-              type: scope.file.type,
-              size: scope.file.size,
-              container: scope.container
-            };
-          });
-
-          scope.getDefault = function(){
-            if( attr.icon ) {
-              return attr.icon;
-            } else {
-              return 'fa-user';
-            }
-          };
-          scope.setupFile = function(){
-            fileInput.click();
-          };
-          scope.proceedUpload = function(){
-            scope.actions.upload( imageObject, scope.file )
-              .then( function( res ){
-                scope.media = {
-                  url: res.url
-                };
-                scope.readyToUpload = false;
-              });
-          };
-          scope.cancelUpload = function() {
-            fileInput.value = '';
-            scope.file = {
-              filename: ''
-            };
-          };
-        }
-      };
-    }]);
-angular.module('baseApp.directives')
-  .directive('renderAppGestures', ['$rootScope',
-    function(){
-      'use strict';
-      return {
-        restrict: 'A',
-        link: function(){
-          $.executeTheme();
-          $('.control-sidebar-tabs a').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-          });
-        }
-      };
-    }
-  ]);
-angular.module('baseApp.directives')
-  .directive('repeatEnd', function(){
-    'use strict';
-    return {
-      restrict: 'A',
-      link: function (scope, element, attrs) {
-        if (scope.$last) {
-          scope.$eval(attrs.repeatEnd);
-        }
-      }
-    };
-  });
-angular.module('baseApp.directives')
-  .directive('hideOnTouchScreen', [ function(){
-    'use strict';
-    return {
-      link: function(scope, elem, attr){
-        /* global window */
-        var emulateMobile = window.location.search.split('&')[1] === 'mobile=true';
-        if ('touchstart' in document.documentElement || emulateMobile || window.navigator.msPointerEnabled) {
-          if( attr.hideOnTouchScreen === 'true' ){
-            $(elem).hide();
-          }
-          if( attr.addClass ) {
-            $(elem).addClass( attr.addClass );
-          }
-          if( attr.removeClass ) {
-            $(elem).removeClass( attr.removeClass );
-          }
-        }
-      }
-    };
-  }]);
-angular.module('baseApp.filters');
-angular.module('baseApp.filters', [])
-  .filter('rawhtml', ['$sce', function($sce){
-    'use strict';
-    return function(val) {
-      return $sce.trustAsHtml(val);
-    };
-  }]);
 angular.module('baseApp.controllers')
   .controller('KnowledgeController', ['$scope',
     function($scope) {
@@ -111404,9 +110882,9 @@ angular.module('baseApp.directives')
         restrict: 'A',
         templateUrl: function() {
           if( _.contains( $rootScope.access, 'sudo' ) ) {
-            return '/assets/html/dashboard/sudo_view';
+            return '/assets/html/sudo_dashboard/sudo_view';
           } else if ( _.contains( $rootScope.access, 'admin' ) ) {
-            return '/assets/html/dashboard/admin_view';
+            return '/assets/html/admin_dashboard/admin_view';
           } else if ( _.contains( $rootScope.access, 'authorized' ) ) {
             return '/assets/html/dashboard/authorized_view';
           } else {
@@ -111431,6 +110909,31 @@ angular.module('baseApp.controllers')
       'use strict';
 
       $scope.user = currentUser.get();
+    }
+  ]);
+angular.module('baseApp.controllers')
+  .controller('RightSettingsController', ['$scope','currentUser','$rootScope',
+    function ($scope, currentUser, $rootScope ) {
+      'use strict';
+
+      $scope.user = currentUser.get();
+
+      var currColor = '#f56954'; //Red by default
+      //Color chooser button
+      var colorChooser = $('#theme-chooser-btn');
+      $('#theme-chooser > li > a').click(function(e) {
+        var settings = $rootScope.settings;
+        $('body').addClass( $(this).attr('data') ).removeClass( settings.skin );
+        settings.skin = $(this).attr('data');
+        $rootScope.setSettings( settings );
+        e.preventDefault();
+        //Save color
+        currColor = $(this).css('color');
+        //Add color effect to button
+        colorChooser
+          .css({'background-color': currColor, 'border-color': currColor})
+          .html($(this).text()+' <span class="caret"></span>');
+      });
     }
   ]);
 angular.module('baseApp.directives')
@@ -112144,246 +111647,469 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
   };
 }]);
 
-angular.module('baseApp.controllers')
-  .controller('NotificationsController', ['$scope', function( $scope ) {
-    'use strict';
-    console.log( $scope );
-  }]);
-angular.module('baseApp.controllers')
-  .controller('ProfileController', ['$scope', '$state', 'currentUser', function( $scope, $state, currentUser ) {
-    'use strict';
-
-    $scope.activeState = $state.current.name;
-    $scope.tab = [false, false, false, false];
-    switch( $state.current.name ) {
-      case 'profile':
-        $scope.tab[0] = true;
-        $scope.myProfile = true;
-        break;
-      case 'profile.info':
-        $scope.tab[1] = true;
-        break;
-      case 'profile.contact':
-        $scope.tab[2] = true;
-        break;
-      case 'profile.security':
-        $scope.tab[3] = true;
-        break;
-      default:
-        $scope.tab[0] = true;
-        $scope.currentUser = currentUser.get();
-        $scope.$parent.user.then( function( res ) {
-          $scope.current = res.user;
-        });
-        break;
-    }
-
-    $scope.tabSelect = function(val){
-      $scope.state = val;
-    };
-  }]);
 angular.module('baseApp.directives')
-  .directive( 'profileSummary', ['currentUser', function( currentUser) {
+  .directive('autoComplete', [ function(){
     'use strict';
     return {
       restrict: 'E',
-      replace: true,
-      templateUrl: '/assets/html/profile/directive-summary',
-      link: function(scope) {
-        scope.current = currentUser.get();
+      templateUrl: '/assets/html/directives/components/autocomplete/auto-complete-input.html',
+      scope: {
+        inputModel: '=',
+        placeholder: '@',
+        autoCompleteHttp: '=',
+        selected: '=' || function(){}
+      },
+      link: function(scope){
+        scope.$on('clearInput', function(){
+          delete scope.inputModel;
+        });
       }
     };
-  }])
-  .directive( 'profileInfo', ['currentUser', '_', 'FeedbackService', 'Media', 'User', '$q', '$http',
-    function( currentUser, _, FeedbackService, Media, User, $q, $http) {
+  }]);
+angular.module('baseApp.services').factory('Autocomplete',
+  [ '$resource', function($resource) {
+    'use strict';
+    var $api = $resource('/api/autocomplete/:action', { action: '@action' });
+
+    return {
+      get: function( query ) {
+        return $api.get( {action: query}).$promise;
+      }
+    };
+}]);
+angular.module('baseApp.directives')
+  .directive('boxWidget', ['$rootScope',
+    function(){
       'use strict';
       return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: '/assets/html/profile/directive-info',
-        scope: {},
-        link: function(scope) {
-          var user = currentUser.get();
-          if( user.profile ) {
-            scope.user = {
-              firstName: user.profile.firstName,
-              lastName: user.profile.lastName
-            };
-          } else {
-            scope.user = {};
+        restrict: 'A',
+        link: function(){
+          try {
+            $.AdminLTE.boxWidget.activate();
+          } catch(e) {
+            console.error( 'AdminLTE not found!');
           }
-          scope.user.avatarImage = user.avatarImage;
-
-          scope.update = function() {
-            currentUser.update( _.extendOwn( {firstName: '', lastName: ''}, scope.user) )
-              .then( function(res) {
-                currentUser.get().profile = _.extendOwn( currentUser.get().profile, res.profile );
-                FeedbackService.set({feedbackSuccess: 'Profile Updated!'});
-              }, function(){
-                FeedbackService.set({validationErrors: ['Error Updating']});
-              });
-          };
-          scope.avatarActions = {
-            upload: function( mediaDetails, file ){
-              var defer = $q.defer();
-              mediaDetails.object = 'users';
-              Media.getKey( mediaDetails )
-                .then( function(res) {
-                  $http({
-                    url: res.signedRequest,
-                    method: 'PUT',
-                    data: file,
-                    transformRequest: angular.identity,
-                    headers: { 'x-amz-acl': 'public-read', 'Authorization': undefined, 'Content-Type': undefined }
-                  }).then( function(){
-                    delete mediaDetails.id;
-                    delete mediaDetails.object;
-                    mediaDetails.url = res.url;
-                    User.addAvatar( mediaDetails )
-                      .then( function(){
-                        currentUser.get().avatarImage = {
-                          url: res.url
-                        };
-                        defer.resolve({url: res.url});
-                      }, function(){
-                        defer.reject();
-                      });
-                  }, function(){
-                    defer.reject();
-                  });
-                }, function(){
-                  defer.reject();
-                });
-              return defer.promise;
-            }
-          };
-        }
-      };
-    }
-  ])
-  .directive( 'profileContact', ['User', 'FeedbackService','currentUser', function( User, FeedbackService, currentUser) {
-    'use strict';
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: '/assets/html/profile/directive-contact',
-      scope: {
-        state: '='
-      },
-      link: function(scope) {
-        function _init() {
-          scope.user = {
-            email: '',
-            currentPassword: ''
-          };
-        }
-
-        scope.$watch( 'state', function(){
-          _init();
-        });
-
-        scope.update = function() {
-          User.update( scope.user )
-            .then( function() {
-              currentUser.get().email = scope.user.email;
-              _init();
-              FeedbackService.set({feedbackSuccess: 'Email Updated!'});
-            }, function(){
-              _init();
-              FeedbackService.set({validationErrors: ['Error Updating']});
-            });
-        };
-      }
-    };
-  }])
-  .directive( 'profileSecurity', ['User', 'FeedbackService', function( User, FeedbackService ) {
-    'use strict';
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: '/assets/html/profile/directive-security',
-      scope: {
-        state: '='
-      },
-      link: function(scope) {
-        function _init() {
-          scope.user = {
-            currentPassword: '',
-            password: '',
-            confirmPassword: ''
-          };
-        }
-
-        scope.$watch( 'state', function(){
-          _init();
-        });
-
-        scope.update = function(){
-          if( scope.user.password !== scope.user.confirmPassword ) {
-            scope.validationErrors = ['Passwords do not match.'];
-          }
-
-          User.update( scope.user )
-            .then( function() {
-              _init();
-              FeedbackService.set({feedbackSuccess: 'Password Updated!'});
-            }, function(){
-              _init();
-              FeedbackService.set({validationErrors: ['Error Updating']});
-            });
-        };
-      }
-    };
-  }]);
-angular.module('baseApp.services').factory('ProfileResource', [ '$resource', function($resource) {
-  'use strict';
-  return $resource('/api/profile',
-    {},
-    {
-      get: {
-        method: 'GET'
-      },
-      update: {
-        method: 'PUT'
-      }
-    }
-  );
-}]);
-angular.module('baseApp.services').factory('Profile', [ 'ProfileResource', function( ProfileResource) {
-  'use strict';
-  return {
-    get: function(){
-      return ProfileResource.get().$promise;
-    },
-    update: function( profile ) {
-      return ProfileResource.update( {}, {profile: profile}).$promise;
-    }
-  };
-}]);
-
-/* global confirm */
-
-angular.module('baseApp.controllers')
-  .controller('QuestionsController', ['$scope','Admin',
-    function ($scope, Admin) {
-      'use strict';
-
-      $scope.questionsList = [];
-      //Admin.getQuestionList()
-      //  .then( function( res ){
-      //    $scope.questionsList = res.list;
-      //  });
-
-      $scope.removeEntry = function( id, index ){
-        if ( confirm('Are you sure you want to delete?') ) {
-          Admin.deleteQuestionEntry(id)
-            .then(function () {
-              $scope.questionsList.splice(index, 1);
-            });
         }
       };
     }
   ]);
+angular.module('baseApp.directives')
+  .directive('iCheckBox', ['$rootScope',
+    function(){
+      'use strict';
+      return {
+        restrict: 'A',
+        link: function(scope, elem){
+          try {
+            $('input[type="checkbox"]', $(elem)).iCheck({
+              checkboxClass: 'icheckbox_flat-blue',
+              radioClass: 'iradio_flat-blue'
+            });
+          } catch(e) {
+            console.error( 'iCheck not found!');
+          }
+        }
+      };
+    }
+  ])
+  .directive('iCheck', ['$timeout', function($timeout) {
+    'use strict';
+    return {
+      require: 'ngModel',
+      link: function ($scope, element, $attrs, ngModel) {
+        return $timeout(function () {
+          var value;
+          value = $attrs.value;
+
+          $scope.$watch($attrs.ngModel, function () {
+            $(element).iCheck('update');
+          });
+
+          return $(element).iCheck({
+            checkboxClass: 'icheckbox_flat-blue',
+            radioClass: 'iradio_flat-aero'
+
+          }).on('ifChanged', function (event) {
+            if ($(element).attr('type') === 'checkbox' && $attrs.ngModel) {
+              $scope.$apply(function () {
+                return ngModel.$setViewValue(event.target.checked);
+              });
+            }
+            if ($(element).attr('type') === 'radio' && $attrs.ngModel) {
+              return $scope.$apply(function () {
+                return ngModel.$setViewValue(value);
+              });
+            }
+          });
+        });
+      }
+    };
+  }])
+  .directive('iCheckAll', ['$rootScope',
+    function(){
+      'use strict';
+      return {
+        restrict: 'A',
+        link: function(scope, elem, attr){
+          try {
+            $(elem).click(function () {
+              var clicks = $(this).data('clicks');
+              if (clicks) {
+                //Uncheck all checkboxes
+                $('.' +attr.iCheckAll+' input[type="checkbox"]').iCheck('uncheck');
+                $('.fa', this).removeClass('fa-check-square-o').addClass('fa-square-o');
+              } else {
+                //Check all checkboxes
+                $('.' +attr.iCheckAll+' input[type="checkbox"]').iCheck('check');
+                $('.fa', this).removeClass('fa-square-o').addClass('fa-check-square-o');
+              }
+              $(this).data('clicks', !clicks);
+            });
+          } catch(e) {
+            console.error( 'iCheck not found!');
+          }
+        }
+      };
+    }
+  ]);
+
+angular.module('baseApp.directives')
+  .directive('notificationsBar', ['$rootScope',
+    function($rootScope){
+      'use strict';
+      return {
+        restrict: 'E',
+        templateUrl: '/assets/html/directives/components/notificationBar',
+        link: function(scope){
+          scope.messages = $rootScope.messages;
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('paginate', ['$rootScope',
+    function(){
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/directives/components/pagination',
+        scope: {
+          config: '=',
+          right: '@'
+        },
+        link: function(){
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('popover', ['$rootScope',
+    function(){
+      'use strict';
+      return {
+        restrict: 'A',
+        link: function(scope, elem, attr){
+          try {
+            var options = {};
+            switch( attr.type ){
+              default:
+              case 'personTeaser':
+                options = {
+                  delay: 200,
+                  content: '<h1>TEST</h1>',
+                  html: true,
+                  trigger: 'manual',
+                  placement: attr.placement || 'left',
+                  title: 'Jesus Rocha'
+                };
+            }
+            $(elem).popover( options )
+              .on('mouseenter', function () {
+                var _this = this;
+                $(this).popover('show');
+                $('.popover').on('mouseleave', function () {
+                  $(_this).popover('hide');
+                });
+              }).on('mouseleave', function () {
+                var _this = this;
+                if (!$('.popover:hover').length) {
+                  $(_this).popover('hide');
+                }
+              });
+          } catch(e) {
+            console.error( 'PopOver not found!');
+          }
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('toolTip', ['$rootScope',
+    function(){
+      'use strict';
+      return {
+        restrict: 'A',
+        link: function(scope, elem){
+          try {
+            $(elem).tooltip();
+          } catch(e) {
+            console.error( 'AdminLTE not found!');
+          }
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('wysihtml5', ['$rootScope',
+    function( ){
+      'use strict';
+      return {
+        restrict: 'A',
+        scope: {
+        },
+        link: function( scope, elem) {
+          $(elem).wysihtml5();
+        }
+      };
+    }
+  ]);
+
+angular.module('baseApp.directives')
+  .directive('datepicker', ['$rootScope',
+    function( ){
+      'use strict';
+      return {
+        restrict: 'A',
+        link: function( scope, elem, attr) {
+          /* global moment */
+          var option = {
+            defaultDate: moment( new Date() ).format( 'MM/DD/YYYY' )
+          }, $date;
+          scope.$watch( function(){ return attr.datepicker;}, function(newVal){
+            if( newVal ) {
+              var t = moment( newVal );
+              t._isUTC = true;
+              $date.val( t.format('MM/DD/YYYY h:mm A'));
+            }
+          });
+          $date = $(elem).datetimepicker( option );
+        }
+      };
+    }]);
+angular.module('baseApp.directives')
+  .directive('feedbackBox', [ 'FeedbackService',
+    function( FeedbackService ){
+      'use strict';
+      return {
+        restrict: 'E',
+        template: '<success-message-box success-message="successMessage"></success-message-box>'+
+        '<error-message-box validation-errors="validationErrors"></error-message-box>',
+        scope: {
+          validationErrors: '=errors',
+          successMessage: '=success'
+        },
+        link: function(scope){
+          scope.$watch( FeedbackService.get, function(newMessage){
+            if( newMessage && newMessage.feedbackSuccess ) {
+              scope.successMessage = newMessage.feedbackSuccess;
+              delete scope.validationErrors;
+              FeedbackService.set({feedbackSuccess: null});
+            } else if (newMessage && newMessage.validationErrors ) {
+              scope.validationErrors = newMessage.validationErrors;
+              delete scope.successMessage;
+              FeedbackService.set({validationErrors: null});
+            }
+          });
+        }
+      };
+    }
+  ])
+  .directive('successMessageBox', [
+    function() {
+      'use strict';
+      return {
+        restrict: 'E',
+        scope: {
+          msg: '=successMessage'
+        },
+        replace: true,
+        template: '<div id="message-box-slot" ng-show="msg" style="border-radius: 0">'+
+        '<div id="message_success" class="bg-success">'+
+        '<i class="fa fa-check-square-o fa-2x text-success"></i>'+
+        '<h6 class="text-success">{{msg}}</h6>'+
+        '</div></div>'
+      };
+    }
+  ])
+  .directive('errorMessageBox', [
+    function() {
+      'use strict';
+      return {
+        restrict: 'E',
+        scope: {
+          validationErrors: '=validationErrors'
+        },
+        replace: true, // Replace with the template below
+        template: '<div id="message-box-slot" ng-show="validationErrors.length">'+
+        '<div id="message_error" class="bg-danger">'+
+        '<i class="fa fa-exclamation-triangle fa-2x text-danger"></i>'+
+        '<h6 class="text-danger">We have a few errors</h6>'+
+        '<ul><li ng-repeat="error in validationErrors">{{error}}</li></ul>'+
+        '</div></div>'
+      };
+    }
+  ]);
+
+
+
+
+angular.module('baseApp.directives')
+  .directive('formInputTag', ['$rootScope',
+    function( ){
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/directives/forms/input-tag.html',
+        scope: {
+          dataEntry: '=model',
+          minLength: '=',
+          required: '=',
+          regex: '=',
+          maxLength: '='
+        },
+        link: function( scope, elem, attr ) {
+          scope.placeholder = attr.placeholder || '';
+          scope.label = attr.label || false;
+          scope.id = attr.id || new Date().getTime();
+          scope.type = attr.type || 'text';
+          scope.icon = attr.icon || '';
+
+          scope.regx = typeof scope.regex !== 'undefined' ? scope.regex : { pattern: new RegExp('') };
+
+          scope.hasError = function() {
+            return scope.$parent.submitted && elem.hasClass( 'ng-invalid' );
+          };
+        }
+      };
+    }]);
+angular.module('baseApp.directives')
+  .directive('media', ['Media','User','$http',
+    function( ){
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/directives/forms/media/index.html',
+        scope: {
+          media: '=',
+          actions: '=',
+          container: '@'
+        },
+        link: function( scope, el, attr ) {
+          //scope.media = {};
+          var imageObject = {}, fileInput = el.find('input');
+          scope.filename = 'none';
+          fileInput.bind('change', function(event) {
+            var files = event.target.files;
+            scope.$apply(function(){
+              scope.file = files[0];
+              scope.filename = scope.file.name;
+            });
+            imageObject = {
+              filename: scope.file.name,
+              type: scope.file.type,
+              size: scope.file.size,
+              container: scope.container
+            };
+          });
+
+          scope.getDefault = function(){
+            if( attr.icon ) {
+              return attr.icon;
+            } else {
+              return 'fa-user';
+            }
+          };
+          scope.setupFile = function(){
+            fileInput.click();
+          };
+          scope.proceedUpload = function(){
+            scope.actions.upload( imageObject, scope.file )
+              .then( function( res ){
+                scope.media = {
+                  url: res.url
+                };
+                scope.readyToUpload = false;
+              });
+          };
+          scope.cancelUpload = function() {
+            fileInput.value = '';
+            scope.file = {
+              filename: ''
+            };
+          };
+        }
+      };
+    }]);
+angular.module('baseApp.directives')
+  .directive('renderAppGestures', ['$rootScope',
+    function(){
+      'use strict';
+      return {
+        restrict: 'A',
+        link: function(){
+          $.executeTheme();
+          $('.control-sidebar-tabs a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+          });
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.directives')
+  .directive('repeatEnd', function(){
+    'use strict';
+    return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+        if (scope.$last) {
+          scope.$eval(attrs.repeatEnd);
+        }
+      }
+    };
+  });
+angular.module('baseApp.directives')
+  .directive('hideOnTouchScreen', [ function(){
+    'use strict';
+    return {
+      link: function(scope, elem, attr){
+        /* global window */
+        var emulateMobile = window.location.search.split('&')[1] === 'mobile=true';
+        if ('touchstart' in document.documentElement || emulateMobile || window.navigator.msPointerEnabled) {
+          if( attr.hideOnTouchScreen === 'true' ){
+            $(elem).hide();
+          }
+          if( attr.addClass ) {
+            $(elem).addClass( attr.addClass );
+          }
+          if( attr.removeClass ) {
+            $(elem).removeClass( attr.removeClass );
+          }
+        }
+      }
+    };
+  }]);
+angular.module('baseApp.filters');
+angular.module('baseApp.filters', [])
+  .filter('rawhtml', ['$sce', function($sce){
+    'use strict';
+    return function(val) {
+      return $sce.trustAsHtml(val);
+    };
+  }]);
 angular.module('baseApp.services')
   .factory('NotificationResource', [ '$resource', function($resource) {
     'use strict';
@@ -112752,6 +112478,246 @@ angular.module('baseApp.services')
     };
   }]);
 angular.module('baseApp.controllers')
+  .controller('NotificationsController', ['$scope', function( $scope ) {
+    'use strict';
+    console.log( $scope );
+  }]);
+angular.module('baseApp.controllers')
+  .controller('ProfileController', ['$scope', '$state', 'currentUser', function( $scope, $state, currentUser ) {
+    'use strict';
+
+    $scope.activeState = $state.current.name;
+    $scope.tab = [false, false, false, false];
+    switch( $state.current.name ) {
+      case 'profile':
+        $scope.tab[0] = true;
+        $scope.myProfile = true;
+        break;
+      case 'profile.info':
+        $scope.tab[1] = true;
+        break;
+      case 'profile.contact':
+        $scope.tab[2] = true;
+        break;
+      case 'profile.security':
+        $scope.tab[3] = true;
+        break;
+      default:
+        $scope.tab[0] = true;
+        $scope.currentUser = currentUser.get();
+        $scope.$parent.user.then( function( res ) {
+          $scope.current = res.user;
+        });
+        break;
+    }
+
+    $scope.tabSelect = function(val){
+      $scope.state = val;
+    };
+  }]);
+angular.module('baseApp.directives')
+  .directive( 'profileSummary', ['currentUser', function( currentUser) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/profile/directive-summary',
+      link: function(scope) {
+        scope.current = currentUser.get();
+      }
+    };
+  }])
+  .directive( 'profileInfo', ['currentUser', '_', 'FeedbackService', 'Media', 'User', '$q', '$http',
+    function( currentUser, _, FeedbackService, Media, User, $q, $http) {
+      'use strict';
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/assets/html/profile/directive-info',
+        scope: {},
+        link: function(scope) {
+          var user = currentUser.get();
+          if( user.profile ) {
+            scope.user = {
+              firstName: user.profile.firstName,
+              lastName: user.profile.lastName
+            };
+          } else {
+            scope.user = {};
+          }
+          scope.user.avatarImage = user.avatarImage;
+
+          scope.update = function() {
+            currentUser.update( _.extendOwn( {firstName: '', lastName: ''}, scope.user) )
+              .then( function(res) {
+                currentUser.get().profile = _.extendOwn( currentUser.get().profile, res.profile );
+                FeedbackService.set({feedbackSuccess: 'Profile Updated!'});
+              }, function(){
+                FeedbackService.set({validationErrors: ['Error Updating']});
+              });
+          };
+          scope.avatarActions = {
+            upload: function( mediaDetails, file ){
+              var defer = $q.defer();
+              mediaDetails.object = 'users';
+              Media.getKey( mediaDetails )
+                .then( function(res) {
+                  $http({
+                    url: res.signedRequest,
+                    method: 'PUT',
+                    data: file,
+                    transformRequest: angular.identity,
+                    headers: { 'x-amz-acl': 'public-read', 'Authorization': undefined, 'Content-Type': undefined }
+                  }).then( function(){
+                    delete mediaDetails.id;
+                    delete mediaDetails.object;
+                    mediaDetails.url = res.url;
+                    User.addAvatar( mediaDetails )
+                      .then( function(){
+                        currentUser.get().avatarImage = {
+                          url: res.url
+                        };
+                        defer.resolve({url: res.url});
+                      }, function(){
+                        defer.reject();
+                      });
+                  }, function(){
+                    defer.reject();
+                  });
+                }, function(){
+                  defer.reject();
+                });
+              return defer.promise;
+            }
+          };
+        }
+      };
+    }
+  ])
+  .directive( 'profileContact', ['User', 'FeedbackService','currentUser', function( User, FeedbackService, currentUser) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/profile/directive-contact',
+      scope: {
+        state: '='
+      },
+      link: function(scope) {
+        function _init() {
+          scope.user = {
+            email: '',
+            currentPassword: ''
+          };
+        }
+
+        scope.$watch( 'state', function(){
+          _init();
+        });
+
+        scope.update = function() {
+          User.update( scope.user )
+            .then( function() {
+              currentUser.get().email = scope.user.email;
+              _init();
+              FeedbackService.set({feedbackSuccess: 'Email Updated!'});
+            }, function(){
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
+            });
+        };
+      }
+    };
+  }])
+  .directive( 'profileSecurity', ['User', 'FeedbackService', function( User, FeedbackService ) {
+    'use strict';
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/profile/directive-security',
+      scope: {
+        state: '='
+      },
+      link: function(scope) {
+        function _init() {
+          scope.user = {
+            currentPassword: '',
+            password: '',
+            confirmPassword: ''
+          };
+        }
+
+        scope.$watch( 'state', function(){
+          _init();
+        });
+
+        scope.update = function(){
+          if( scope.user.password !== scope.user.confirmPassword ) {
+            scope.validationErrors = ['Passwords do not match.'];
+          }
+
+          User.update( scope.user )
+            .then( function() {
+              _init();
+              FeedbackService.set({feedbackSuccess: 'Password Updated!'});
+            }, function(){
+              _init();
+              FeedbackService.set({validationErrors: ['Error Updating']});
+            });
+        };
+      }
+    };
+  }]);
+angular.module('baseApp.services').factory('ProfileResource', [ '$resource', function($resource) {
+  'use strict';
+  return $resource('/api/profile',
+    {},
+    {
+      get: {
+        method: 'GET'
+      },
+      update: {
+        method: 'PUT'
+      }
+    }
+  );
+}]);
+angular.module('baseApp.services').factory('Profile', [ 'ProfileResource', function( ProfileResource) {
+  'use strict';
+  return {
+    get: function(){
+      return ProfileResource.get().$promise;
+    },
+    update: function( profile ) {
+      return ProfileResource.update( {}, {profile: profile}).$promise;
+    }
+  };
+}]);
+
+/* global confirm */
+
+angular.module('baseApp.controllers')
+  .controller('QuestionsController', ['$scope','Admin',
+    function ($scope, Admin) {
+      'use strict';
+
+      $scope.questionsList = [];
+      //Admin.getQuestionList()
+      //  .then( function( res ){
+      //    $scope.questionsList = res.list;
+      //  });
+
+      $scope.removeEntry = function( id, index ){
+        if ( confirm('Are you sure you want to delete?') ) {
+          Admin.deleteQuestionEntry(id)
+            .then(function () {
+              $scope.questionsList.splice(index, 1);
+            });
+        }
+      };
+    }
+  ]);
+angular.module('baseApp.controllers')
   .controller('SessionController', ['$scope','$stateParams','Session','ValidatorFactory',
     function($scope, $stateParams, Session, validate ){
       'use strict';
@@ -112857,6 +112823,43 @@ angular.module('baseApp.services').factory('Session', [ 'SessionResource', '$q',
     }
   };
 }]);
+angular.module('baseApp.controllers')
+  .controller('SudoDashboardController', ['$scope',
+    function($scope){
+      'use strict';
+      /*jshint camelcase: false */
+      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
+
+      $scope.line_labels = [];
+      var today = new Date();
+      var thisMonth = today.getMonth();
+      for( var x=thisMonth-6; x <= thisMonth; x++) {
+        if( x < 0 ) {
+          $scope.line_labels.push( months[12+x] );
+        } else {
+          $scope.line_labels.push( months[x] );
+        }
+      }
+      $scope.line_series = ['Average Online Traffic'];
+      $scope.line_data = [
+        [65, 59, 80, 81, 56, 55, 90]
+      ];
+      $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+      };
+      $scope.onHover = function (points) {
+        if (points.length > 0) {
+          console.log('Point', points[0].value);
+        } else {
+          console.log('No point');
+        }
+      };
+
+      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
+      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
+
+      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+    }]);
 // jshint maxstatements:60
 angular.module('baseApp.controllers')
   .controller('TaskController', ['$scope','$state', 'Task',

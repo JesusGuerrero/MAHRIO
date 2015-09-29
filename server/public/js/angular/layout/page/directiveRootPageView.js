@@ -6,9 +6,9 @@ angular.module('baseApp.directives')
         restrict: 'A',
         templateUrl: function() {
           if( _.contains( $rootScope.access, 'sudo' ) ) {
-            return '/assets/html/dashboard/sudo_view';
+            return '/assets/html/sudo_dashboard/sudo_view';
           } else if ( _.contains( $rootScope.access, 'admin' ) ) {
-            return '/assets/html/dashboard/admin_view';
+            return '/assets/html/admin_dashboard/admin_view';
           } else if ( _.contains( $rootScope.access, 'authorized' ) ) {
             return '/assets/html/dashboard/authorized_view';
           } else {

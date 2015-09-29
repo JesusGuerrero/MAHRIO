@@ -55,7 +55,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('notifications', {
       url: '/notifications',
-      templateUrl: '/assets/html/notifications/index',
+      templateUrl: '/assets/html/notification/index',
       controller: 'NotificationsController',
       title: 'Notifications',
       subTitle: 'What\'s New'
@@ -87,28 +87,15 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       templateUrl: '/assets/html/article/detail',
       title: 'Article'
     })
-    .state('knowledge', {
-      url: '/knowledge',
-      templateUrl: '/assets/html/knowledge/index',
-      controller: 'KnowledgeController'
-    })
-    .state('knowledge.articles', {
-      url: '/articles?domain'
-    })
-    .state('knowledge.articles.view', {
-      url: '/view'
-    })
-    .state('adminDashV1', {
-      url: '/dashboard-v1',
-      templateUrl: '/assets/html/views/dashboard-v1'
-    })
     .state('about', {
       url: '/about',
-      templateUrl: '/assets/html/pages/about'
+      templateUrl: '/assets/html/pages/about',
+      title: 'About Us',
     })
     .state('contact', {
       url: '/contact',
-      templateUrl: '/assets/html/pages/contact'
+      templateUrl: '/assets/html/pages/contact',
+      title: 'Contact Us'
     })
     .state('users', {
       abstract: true,
@@ -133,7 +120,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('newsletters', {
       url: '/admin/newsletter',
-      templateUrl: '/assets/html/admin/newsletters',
+      templateUrl: '/assets/html/admin_newsletter/newsletters',
       controller: 'adminNewslettersController'
     })
     .state('questions', {
@@ -143,7 +130,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('conversations', {
       url: '/conversations',
-      templateUrl: '/assets/html/conversations/index',
+      templateUrl: '/assets/html/chat/index',
       controller: 'ConversationsController',
       title: 'All Conversations'
     })
@@ -428,6 +415,10 @@ angular.module('baseApp.controllers', [])
       };
 
       $rootScope.access = ['any'];
+      $rootScope.settings = { skin: 'skin-blue' };
+      $rootScope.getThemeClass = function(){
+        return $rootScope.settings.skin;
+      };
 
       window.rootScope = $rootScope;
 
@@ -438,6 +429,10 @@ angular.module('baseApp.controllers', [])
         } else {
           window.localStorage.isSidebarCollapsed = true;
         }
+      };
+      $rootScope.setSettings = function( settings ) {
+        $rootScope.settings = settings;
+        window.localStorage.settings = JSON.stringify(settings);
       };
     }
   ]);

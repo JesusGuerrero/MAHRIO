@@ -1,4 +1,4 @@
-aside.control-sidebar.control-sidebar-dark
+aside.control-sidebar.control-sidebar-dark(ng-controller="RightSettingsController")
     ul.nav.nav-tabs.nav-justified.control-sidebar-tabs
         li.active
             a( href="#control-sidebar-home-tab" data-toggle="tab")
@@ -73,6 +73,34 @@ aside.control-sidebar.control-sidebar-dark
         .tab-pane( id="control-sidebar-settings-tab")
             h3.control-sidebar-heading
                 |   General Settings
+            .form-group
+                label
+                    |   Theme
+                .btn-group(style="width: 100%; margin-bottom: 10px;")
+                    button.btn.btn-primary.btn-block.btn-sm.dropdown-toggle( type="button" id="theme-chooser-btn" data-toggle="dropdown")
+                        |   Color
+                        span.caret
+                    ul.dropdown-menu(id="theme-chooser")
+                        li
+                            a( href="javascript::;" style="color: #3c8dbc" data="skin-blue")
+                                i.fa.fa-square
+                                    |   Blue
+                        li
+                            a( href="javascript::;" style="color: #00a65a" data="skin-green")
+                                i.fa.fa-square
+                                    |   Green
+                        li
+                            a( href="javascript::;" style="color: #f39c12" data="skin-yellow")
+                                i.fa.fa-square
+                                    |   Yellow
+                        li
+                            a.text-purple( href="javascript::;" style="color: #605ca8" data="skin-purple")
+                                i.fa.fa-square
+                                    |   Purple
+                        li
+                            a.text-red( href="javascript::;" style="color: #dd4b39" data="skin-red")
+                                i.fa.fa-square
+                                    |   Red
             .form-group
                 label.control-sidebar-subheading
                     |   Report pane usage
