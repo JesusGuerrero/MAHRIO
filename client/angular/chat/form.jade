@@ -1,35 +1,39 @@
 .box.box-primary
-   .box-header.with-border
-      h3.box-title
-         |   Start New {{private ? 'Private' : 'Public'}} Conversation
-      .box-tools.pull-right
-         button.btn.btn-box-tool( id="closeBox" data-dismiss="modal" aria-label="Close")
-            i.fa.fa-times
-   .box-body
-      form(novalidate)
-         form-input-tag(
+    .box-header.with-border
+        h3.box-title
+            |   Start New {{private ? 'Private' : 'Public'}} Conversation
+        .box-tools.pull-right
+            button.btn.btn-box-tool( id="closeBox" data-dismiss="modal" aria-label="Close")
+                i.fa.fa-times
+    .box-body
+        form(novalidate)
+            form-input-tag(
             model="conversation.topic"
             label="Topic (optional)"
             required="true")
-         .form-group
-            label
-               |  Private
-            input( type="checkbox" ng-model="private" i-check)
-         .form-group(ng-show="conversation.members.length && private")
-            label
-               | Members
-            div
-               span.bg-blue( ng-repeat="member in conversation.members track by $index" style="padding: 5px; margin-right: 5px;")
-                  span(ng-if="member.name")
-                     |  {{member.name}}
-                  span(ng-if="!member.name")
-                     |  {{member.email}}
+            .form-group
+                label
+                    |  Private
+                input( type="checkbox" ng-model="private" i-check)
+            .form-group(ng-show="conversation.members.length && private")
+                label
+                    | Members
+                div
+                    span.bg-blue( ng-repeat="member in conversation.members track by $index" style="padding: 5px; margin-right: 5px;")
+                        span(ng-if="member.name")
+                            |  {{member.name}}
+                        span(ng-if="!member.name")
+                            |  {{member.email}}
 
-                  i.fa.fa-close(style="padding: 0 5px; cursor: pointer" ng-click="removeMember($index)")
-         div(ng-if="private")
-            auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getAutoCompleteUserEmails" selected="selected")
-         .input-group
-            input.form-control( type="text" placeholder="Type Message ..." ng-model="conversation.message.content")
-            span.input-group-btn
-               button.btn.btn-primary.btn-flat( type="button" ng-click="sendMessage()")
-                  |   Send
+                        i.fa.fa-close(style="padding: 0 5px; cursor: pointer" ng-click="removeMember($index)")
+            div(ng-if="private")
+                auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getAutoCompleteUserEmails" selected="selected")
+            .form-group
+                input.form-control( type="text" placeholder="Type Message ..." ng-model="conversation.message.content")
+            .text-center.form-group
+                button.btn.btn-block.btn-primary.btn-lg( ng-click="sendMessage()")
+                    |   Send
+
+        .col-xs-8.col-xs-offset-2.text-center.form-group
+            a.btn.btn-block.btn-default( data-dismiss="modal" aria-label="Close")
+                | Cancel

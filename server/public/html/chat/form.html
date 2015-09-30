@@ -20,10 +20,13 @@
       <div ng-if="private">
         <auto-complete input-model="tempMember" placeholder="Members" auto-complete-http="getAutoCompleteUserEmails" selected="selected"></auto-complete>
       </div>
-      <div class="input-group">
-        <input type="text" placeholder="Type Message ..." ng-model="conversation.message.content" class="form-control"/><span class="input-group-btn">
-          <button type="button" ng-click="sendMessage()" class="btn btn-primary btn-flat">  Send</button></span>
+      <div class="form-group">
+        <input type="text" placeholder="Type Message ..." ng-model="conversation.message.content" class="form-control"/>
+      </div>
+      <div class="text-center form-group">
+        <button ng-click="sendMessage()" class="btn btn-block btn-primary btn-lg">  Send</button>
       </div>
     </form>
+    <div class="col-xs-8 col-xs-offset-2 text-center form-group"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default">Cancel</a></div>
   </div>
 </div>
