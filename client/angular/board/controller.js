@@ -41,7 +41,9 @@ angular.module('baseApp.controllers')
           });
         };
         $scope.addColumn = function(name){
-          $scope.board.columns.push( {name: name});
+          if( name ) {
+            $scope.board.columns.push( {name: name});
+          }
         };
         $scope.removeColumn = function( i ) {
           $scope.board.columns.splice( i, 1);
