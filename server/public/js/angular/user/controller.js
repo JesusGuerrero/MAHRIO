@@ -8,7 +8,9 @@ angular.module('baseApp.controllers')
 
       switch( $state.current.name ) {
         case 'users.new':
-          $scope.user = {};
+          $scope.user = {
+            profile: {}
+          };
           $scope.$watch( function(){ return $scope.user.password; }, function(nw){
             if( typeof nw === 'undefined'){
               validate.confirmPass.pattern = /.+/i;

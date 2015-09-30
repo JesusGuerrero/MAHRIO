@@ -90,12 +90,27 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('about', {
       url: '/about',
       templateUrl: '/assets/html/pages/about',
-      title: 'About Us',
+      title: 'About Us'
     })
     .state('contact', {
       url: '/contact',
       templateUrl: '/assets/html/pages/contact',
       title: 'Contact Us'
+    })
+    .state('terms', {
+      url: '/terms',
+      templateUrl: '/assets/html/pages/terms',
+      title: 'Terms and Conditions'
+    })
+    .state('policy', {
+      url: '/policy',
+      templateUrl: '/assets/html/pages/policy',
+      title: 'Privacy Policy'
+    })
+    .state('cookies', {
+      url: '/cookies',
+      templateUrl: '/assets/html/pages/cookies',
+      title: 'Cookie Policy'
     })
     .state('users', {
       abstract: true,

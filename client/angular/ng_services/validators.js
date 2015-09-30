@@ -15,7 +15,7 @@ angular.module('baseApp.services')
         register: function( user, validation ){
           switch( true ){
             case !angular.isDefined( user.email ) || !angular.isDefined( user.password ):
-            case user.password !== user.confirmPassword:
+            case !angular.isDefined( user.profile.firstName ) || !angular.isDefined( user.profile.lastName ):
               validation.errors = ['Unable to register'];
               return true;
             default:

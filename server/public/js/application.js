@@ -108978,12 +108978,27 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     .state('about', {
       url: '/about',
       templateUrl: '/assets/html/pages/about',
-      title: 'About Us',
+      title: 'About Us'
     })
     .state('contact', {
       url: '/contact',
       templateUrl: '/assets/html/pages/contact',
       title: 'Contact Us'
+    })
+    .state('terms', {
+      url: '/terms',
+      templateUrl: '/assets/html/pages/terms',
+      title: 'Terms and Conditions'
+    })
+    .state('policy', {
+      url: '/policy',
+      templateUrl: '/assets/html/pages/policy',
+      title: 'Privacy Policy'
+    })
+    .state('cookies', {
+      url: '/cookies',
+      templateUrl: '/assets/html/pages/cookies',
+      title: 'Cookie Policy'
     })
     .state('users', {
       abstract: true,
@@ -109008,7 +109023,7 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
     })
     .state('newsletters', {
       url: '/admin/newsletter',
-      templateUrl: '/assets/html/admin/newsletters',
+      templateUrl: '/assets/html/admin_newsletter/newsletters',
       controller: 'adminNewslettersController'
     })
     .state('questions', {
@@ -109303,7 +109318,7 @@ angular.module('baseApp.controllers', [])
       };
 
       $rootScope.access = ['any'];
-      $rootScope.settings = { skin: 'skin-blue' };
+      $rootScope.settings = { skin: window.localStorage.skin || 'skin-blue' };
       $rootScope.getThemeClass = function(){
         return $rootScope.settings.skin;
       };
@@ -109320,48 +109335,18 @@ angular.module('baseApp.controllers', [])
       };
       $rootScope.setSettings = function( settings ) {
         $rootScope.settings = settings;
-        window.localStorage.settings = JSON.stringify(settings);
+        window.localStorage.skin = settings.skin;
       };
     }
   ]);
 
 
 angular.module('baseApp.controllers')
-  .controller('AdminDashboardController', ['$scope',
-    function($scope){
+  .controller('AdminDashboardController', ['$scope','currentUser',
+    function($scope, currentUser){
       'use strict';
-      /*jshint camelcase: false */
-      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
 
-      $scope.line_labels = [];
-      var today = new Date();
-      var thisMonth = today.getMonth();
-      for( var x=thisMonth-6; x <= thisMonth; x++) {
-        if( x < 0 ) {
-          $scope.line_labels.push( months[12+x] );
-        } else {
-          $scope.line_labels.push( months[x] );
-        }
-      }
-      $scope.line_series = ['Average Online Traffic'];
-      $scope.line_data = [
-        [65, 59, 80, 81, 56, 55, 90]
-      ];
-      $scope.onClick = function (points, evt) {
-        console.log(points, evt);
-      };
-      $scope.onHover = function (points) {
-        if (points.length > 0) {
-          console.log('Point', points[0].value);
-        } else {
-          console.log('No point');
-        }
-      };
-
-      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
-      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
-
-      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+      $scope.networks = currentUser.get().networks;
     }]);
 /* global confirm */
 
@@ -109575,8 +109560,8 @@ angular.module('baseApp.services').factory('Article', [ 'ArticleResource', funct
   };
 }]);
 angular.module('baseApp.controllers')
-  .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_',
-    function($scope, $state, $http, currentUser, Board, _){
+  .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_','Notification',
+    function($scope, $state, $http, currentUser, Board, _, Notification){
       'use strict';
 
       $scope.boards = [];
@@ -109665,12 +109650,19 @@ angular.module('baseApp.controllers')
       }
 
       $scope.remove = function( id ){
-        Board.remove( id )
-          .then( function(){
-            $scope.boards = _.filter( $scope.boards, function(board){ return board._id !== id; });
-            $state.go('boards.list');
-          });
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
       };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Board.remove( Notification.id )
+            .then( function(){
+              $state.go('boards.list', {}, {reload: true});
+            });
+        }
+      });
     }]);
 angular.module('baseApp.services').factory('BoardResource', [ '$resource', function($resource) {
   'use strict';
@@ -110537,7 +110529,7 @@ angular.module('baseApp.directives')
       return {
         restrict: 'E',
         replace: true,
-        templateUrl: '/assets/html/conversations/directiveConversations',
+        templateUrl: '/assets/html/chat/directiveConversations',
         scope: {
           active: '='
         },
@@ -110582,41 +110574,12 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('AuthorizedDashboardController', ['$scope',
-    function($scope){
+  .controller('AuthorizedDashboardController', ['$scope','currentUser',
+    function($scope, currentUser){
       'use strict';
-      /*jshint camelcase: false */
-      var months = ['January','February','March','April','May','June','July','August','September','October','Novermber','December'];
 
-      $scope.line_labels = [];
-      var today = new Date();
-      var thisMonth = today.getMonth();
-      for( var x=thisMonth-6; x <= thisMonth; x++) {
-        if( x < 0 ) {
-          $scope.line_labels.push( months[12+x] );
-        } else {
-          $scope.line_labels.push( months[x] );
-        }
-      }
-      $scope.line_series = ['Average Online Traffic'];
-      $scope.line_data = [
-        [65, 59, 80, 81, 56, 55, 90]
-      ];
-      $scope.onClick = function (points, evt) {
-        console.log(points, evt);
-      };
-      $scope.onHover = function (points) {
-        if (points.length > 0) {
-          console.log('Point', points[0].value);
-        } else {
-          console.log('No point');
-        }
-      };
-
-      $scope.doughnut_labels = ['MongoDB', 'Angular', 'Hapi', 'Raspberry Pi', 'Ionic', 'Oauth'];
-      $scope.doughnut_data = [3, 6, 4, 4, 5, 2];
-
-      setTimeout( function(){ $('.box').matchHeight(); }, 10 );
+      $scope.networks = currentUser.get().networks;
+      console.log( $scope.networks );
     }]);
 angular.module('baseApp.controllers')
   .controller('KnowledgeController', ['$scope',
@@ -110665,8 +110628,8 @@ angular.module('baseApp.directives')
                 if( typeof newConversations === 'undefined') {
                   scope.notifications.chat = conversations;
                 } else {
-                  scope.notifications.chat = _.defaults( newConversations, conversations );
                   newCount = Object.keys(newConversations).length;
+                  scope.notifications.chat = _.defaults( newConversations, conversations );
                 }
                 console.log( scope.notifications.chat );
                 scope.chat = {
@@ -110918,7 +110881,16 @@ angular.module('baseApp.controllers')
 
       $scope.user = currentUser.get();
 
-      var currColor = '#f56954'; //Red by default
+      var matches = {
+        'skin-blue': { name: 'Blue', rgb: '#3c8dbc'},
+        'skin-green': { name: 'Green', rgb: '#00a65a' },
+        'skin-yellow': { name: 'Yellow', rgb: '#f39c12' },
+        'skin-purple': { name: 'Purple', rgb: '#605ca8' },
+        'skin-red': { name: 'Red', rgb: '#dd4b39' }
+      };
+      $scope.skin = matches[ $rootScope.settings.skin] || matches[ 'skin-blue' ] ;
+
+      var currColor = matches[ $rootScope.settings.skin].rgb || '#f56954';
       //Color chooser button
       var colorChooser = $('#theme-chooser-btn');
       $('#theme-chooser > li > a').click(function(e) {
@@ -111509,16 +111481,34 @@ angular.module('baseApp.services')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('NetworkController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_',
-    function($scope, $state, $http, currentUser, Network, _){
+  .controller('NetworkController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_','Notification',
+    function($scope, $state, $http, currentUser, Network, _, Notification){
       'use strict';
 
       $scope.networks = [];
       var formSetup = function(){
         var usersCache = [];
-        $scope.selected = function($item) {
+        function findUser( $item ){
           var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
             selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+          return selection;
+        }
+        $scope.selectOwner = function($item){
+          var selection = findUser( $item );
+
+          $scope.network.owner = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasOwner = true;
+          $scope.$broadcast('clearInput');
+        };
+        $scope.selected = function($item) {
+          var selection = findUser( $item );
 
           $scope.network.members[ selection._id ] = {
             _id: selection._id,
@@ -111531,9 +111521,30 @@ angular.module('baseApp.controllers')
           $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
           $scope.$broadcast('clearInput');
         };
+        $scope.selectedModerator = function($item){
+          var selection = findUser( $item );
+
+          $scope.network.admins[ selection._id ] = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
+          $scope.$broadcast('clearInput');
+        };
         $scope.removeMember = function( id ) {
           delete $scope.network.members[ id ];
           $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
+        };
+        $scope.removeOwner = function(){
+          $scope.hasOwner = false;
+        };
+        $scope.removeModerator = function( id ) {
+          delete $scope.network.admins[ id ];
+          $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
         };
         $scope.getUsers = function(val) {
           return $http.get('/api/autocomplete/users', {
@@ -111557,7 +111568,8 @@ angular.module('baseApp.controllers')
       switch( $state.current.name ) {
         case 'networks.new':
           $scope.network = {
-            members: {}
+            members: {},
+            admins: {}
           };
           $scope.add = function(){
             $scope.network.members = Object.keys( _.indexBy( $scope.network.members, '_id') );
@@ -111577,7 +111589,7 @@ angular.module('baseApp.controllers')
         case 'networks.list':
           Network.get()
             .then( function( res ) {
-              $scope.networks = res.networks;
+              $scope.networks = _.indexBy( res.networks, '_id');
             });
           break;
         case 'networks.edit':
@@ -111599,19 +111611,47 @@ angular.module('baseApp.controllers')
           break;
       }
 
-
       $scope.remove = function( id ){
-        Network.remove( id )
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Network.remove( Notification.id )
+            .then( function(){
+              $state.go('networks.list', {}, {reload: true});
+            });
+        }
+      });
+      $scope.requestAdmin = function( id ) {
+        Network.requestAdmin( {_id: id})
           .then( function(){
-            $scope.networks = _.filter( $scope.networks, function(network){ return network._id !== id; });
-            $state.go('networks.list');
+            /* global alert */
+            alert('Your submission was requested');
+          });
+      };
+      $scope.join = function( id ){
+        Network.join( {_id: id} )
+          .then( function(){
+            currentUser.get().networks.push( $scope.networks[id] );
+            $state.reload();
+          });
+      };
+      $scope.leave = function( id ){
+        Network.leave( {_id: id} )
+          .then( function(){
+            var id = currentUser.get().networks.indexOf( $scope.networks[id] );
+            currentUser.get().networks.splice(id, 1);
+            $state.reload();
           });
       };
     }]);
 angular.module('baseApp.services').factory('NetworkResource', [ '$resource', function($resource) {
   'use strict';
-  return $resource('/api/networks/:id',
-    { id: '@id' },
+  return $resource('/api/networks/:id/:action',
+    { id: '@id', action: '@action' },
     {
       create: {
         method: 'POST'
@@ -111638,6 +111678,15 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
     },
+    requestAdmin: function( obj ){
+      return NetworkResource.update( {id: obj._id, action: 'admin'} ) .$promise;
+    },
+    join: function( obj ){
+      return NetworkResource.update( {id: obj._id, action: 'join'} ) .$promise;
+    },
+    leave: function( obj ) {
+      return NetworkResource.update( {id: obj._id, action: 'leave'} ) .$promise;
+    },
     update: function( obj ) {
       return NetworkResource.update( {id: obj._id}, {network: obj} ) .$promise;
     },
@@ -111652,7 +111701,7 @@ angular.module('baseApp.directives')
     'use strict';
     return {
       restrict: 'E',
-      templateUrl: '/assets/html/directives/components/autocomplete/auto-complete-input.html',
+      templateUrl: '/assets/html/ng_directives/components/autocomplete/auto-complete-input.html',
       scope: {
         inputModel: '=',
         placeholder: '@',
@@ -111779,7 +111828,7 @@ angular.module('baseApp.directives')
       'use strict';
       return {
         restrict: 'E',
-        templateUrl: '/assets/html/directives/components/notificationBar',
+        templateUrl: '/assets/html/ng_directives/components/notificationBar',
         link: function(scope){
           scope.messages = $rootScope.messages;
         }
@@ -111793,7 +111842,7 @@ angular.module('baseApp.directives')
       return {
         restrict: 'E',
         replace: true,
-        templateUrl: '/assets/html/directives/components/pagination',
+        templateUrl: '/assets/html/ng_directives/components/pagination',
         scope: {
           config: '=',
           right: '@'
@@ -111971,7 +112020,7 @@ angular.module('baseApp.directives')
       return {
         restrict: 'E',
         replace: true,
-        templateUrl: '/assets/html/directives/forms/input-tag.html',
+        templateUrl: '/assets/html/ng_directives/forms/input-tag.html',
         scope: {
           dataEntry: '=model',
           minLength: '=',
@@ -112001,7 +112050,7 @@ angular.module('baseApp.directives')
       return {
         restrict: 'E',
         replace: true,
-        templateUrl: '/assets/html/directives/forms/media/index.html',
+        templateUrl: '/assets/html/ng_directives/forms/media/index.html',
         scope: {
           media: '=',
           actions: '=',
@@ -112103,6 +112152,13 @@ angular.module('baseApp.directives')
     };
   }]);
 angular.module('baseApp.filters');
+angular.module('baseApp.filters', [])
+  .filter('membership', ['currentUser', function(currentUser){
+    'use strict';
+    return function(val) {
+      return val.members[ currentUser.get()._id ];
+    };
+  }]);
 angular.module('baseApp.filters', [])
   .filter('rawhtml', ['$sce', function($sce){
     'use strict';
@@ -112448,7 +112504,7 @@ angular.module('baseApp.services')
         register: function( user, validation ){
           switch( true ){
             case !angular.isDefined( user.email ) || !angular.isDefined( user.password ):
-            case user.password !== user.confirmPassword:
+            case !angular.isDefined( user.profile.firstName ) || !angular.isDefined( user.profile.lastName ):
               validation.errors = ['Unable to register'];
               return true;
             default:
@@ -113123,7 +113179,9 @@ angular.module('baseApp.controllers')
 
       switch( $state.current.name ) {
         case 'users.new':
-          $scope.user = {};
+          $scope.user = {
+            profile: {}
+          };
           $scope.$watch( function(){ return $scope.user.password; }, function(nw){
             if( typeof nw === 'undefined'){
               validate.confirmPass.pattern = /.+/i;
