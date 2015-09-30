@@ -28,6 +28,9 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
     },
+    requestAdmin: function( obj ){
+      return NetworkResource.update( {id: obj._id, action: 'admin'} ) .$promise;
+    },
     join: function( obj ){
       return NetworkResource.update( {id: obj._id, action: 'join'} ) .$promise;
     },

@@ -60,7 +60,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                         |   Newsletters
                     small.label.pull-right.bg-red
                         |   3
-            li
+            li(ng-if="access.indexOf('sudo') !== -1")
                 a( href="#/questions")
                     i.fa.fa-question
                     span

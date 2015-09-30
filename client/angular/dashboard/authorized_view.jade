@@ -13,8 +13,10 @@
                 .panel-heading(role="tab" id="heading{{$index}}" ng-repeat-start="network in networks track by $index")
                     h4.panel-title
                         a( role="button" data-toggle="collapse" data-parent="#accordion" href="#{{network._id}}" aria-expanded="{{!$index ? 'true':'false'}}" aria-controls="{{network._id}}")
+                            i.fa.fa-lock.text-danger( ng-if="network.isPrivate")
+                            i.fa.fa-lock.text-warning( ng-if="network.isProtected")
                             |   {{network.name}}
-                .panel-collapse.collapse.in(id="{{network._id}}" role="tabpanel" aria-labelledby="heading{{$index}}" ng-repeat-end="")
+                .panel-collapse.collapse(id="{{network._id}}" role="tabpanel" aria-labelledby="heading{{$index}}" ng-repeat-end="" ng-class="{in: !$index}")
                     .panel-body
                         .row
                             .col-md-3.col-sm-6.col-xs-12

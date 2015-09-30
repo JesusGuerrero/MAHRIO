@@ -28,6 +28,7 @@ schema = mongoose.Schema({
   authorizationToken:   {type: String},
 
   networks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Network' }], // ACCESS CONTROL
+  pending: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Network' }], // ACCESS CONTROL
   created:    { type: Date, default: Date.now },
   access:     [{type: String}],
   status:     {type: String},

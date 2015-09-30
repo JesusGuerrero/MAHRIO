@@ -25,7 +25,8 @@
             .list-group-item( ng-repeat="network in networks track by $index" ui-sref="networks.detail({id: network._id})" ui-sref-opts="{reload: true}" style="cursor:pointer")
                 .col-md-2.col-lg-2.no-padding
                     strong
-                        i.fa.fa-lock(ng-show="network.isPrivate")
+                        i.fa.fa-lock.text-danger(ng-if="network.isPrivate")
+                        i.fa.fa-lock.text-warning(ng-if="network.isProtected")
                         | {{network.name}}
                 .col-md-2.col-lg-3.no-padding
                     span(ng-repeat="member in network.members track by $index")
@@ -40,20 +41,23 @@
                         | {{event.title}} {{event.start | date:'medium' }}
                         br
                 .col-md-2.col-lg-2.no-padding
-                    span(ng-repeat="conversation in network.conversations track by $index")
-                        | {{conversation.topic}}
+                    span(ng-repeat="articles in network.articles track by $index")
+                        | {{article.title}}
                         br
                 .col-md-2.col-lg-1.no-padding
-                    a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()"
-                        ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1")
-                        i.fa.fa-edit
-                    a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()"
-                        ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1")
-                        i.fa.fa-trash
+                    a.btn.btn-primary.btn-block( href-"javascript::;" ng-click="requestAdmin(network._id); $event.stopPropagation(); " ng-if="access.indexOf('admin') !== -1 && network.members[ currentUser._id ]")
+                        i.fa.fa-mortar-board
                     a.btn.btn-success.btn-block( href-"javascript::;" ng-click="join(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 && !network.members[ currentUser._id ]")
                         i.fa.fa-plus
                     a.btn.btn-warning.btn-block( href-"javascript::;" ng-click="leave(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 && network.members[ currentUser._id ]")
                         i.fa.fa-minus
+                    a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()"
+                        ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1")
+                        i.fa.fa-edit
+                    a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()"
+                        ng-if="access.indexOf('sudo') !== -1")
+                        i.fa.fa-trash
+
                 .clearfix
 .row(style="margin-top: 50px;" ng-show="access.indexOf('sudo') !== -1 || access.indexOf('admin') !== -1")
     .col-xs-12.col-sm-4.col-md-3.col-lg-2

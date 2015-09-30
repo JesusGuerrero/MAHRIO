@@ -9,9 +9,9 @@
     <div id="accordion" role="tablist" aria-multiselectable="true" ng-if="networks.length" class="panel-group">
       <div class="panel panel-default">
         <div role="tab" id="heading{{$index}}" ng-repeat-start="network in networks track by $index" class="panel-heading">
-          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{network._id}}" aria-expanded="{{!$index ? 'true':'false'}}" aria-controls="{{network._id}}">  {{network.name}}</a></h4>
+          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{network._id}}" aria-expanded="{{!$index ? 'true':'false'}}" aria-controls="{{network._id}}"><i ng-if="network.isPrivate" class="fa fa-lock text-danger"></i><i ng-if="network.isProtected" class="fa fa-lock text-warning"></i>  {{network.name}}</a></h4>
         </div>
-        <div id="{{network._id}}" role="tabpanel" aria-labelledby="heading{{$index}}" ng-repeat-end="" class="panel-collapse collapse in">
+        <div id="{{network._id}}" role="tabpanel" aria-labelledby="heading{{$index}}" ng-repeat-end="" ng-class="{in: !$index}" class="panel-collapse collapse">
           <div class="panel-body">
             <div class="row">
               <div class="col-md-3 col-sm-6 col-xs-12">

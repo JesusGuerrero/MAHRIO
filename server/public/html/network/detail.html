@@ -9,6 +9,9 @@
       <label class="pull-left">  Is Private? &nbsp;</label>  {{network.isPrivate}}
     </div>
     <div class="form-group">
+      <label class="pull-left">  Is Protected? &nbsp;</label>  {{network.isProtected}}
+    </div>
+    <div class="form-group">
       <label>Members</label>
       <div><span ng-repeat="member in network.members track by $index">{{member.profile.firstName}} {{member.profile.lastName}}<br/></span></div>
     </div>

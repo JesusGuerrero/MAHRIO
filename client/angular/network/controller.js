@@ -39,12 +39,30 @@ angular.module('baseApp.controllers')
           $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
           $scope.$broadcast('clearInput');
         };
+        $scope.selectedModerator = function($item){
+          var selection = findUser( $item );
+
+          $scope.network.admins[ selection._id ] = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
+          $scope.$broadcast('clearInput');
+        };
         $scope.removeMember = function( id ) {
           delete $scope.network.members[ id ];
           $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
         };
         $scope.removeOwner = function(){
           $scope.hasOwner = false;
+        };
+        $scope.removeModerator = function( id ) {
+          delete $scope.network.admins[ id ];
+          $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
         };
         $scope.getUsers = function(val) {
           return $http.get('/api/autocomplete/users', {
@@ -68,7 +86,8 @@ angular.module('baseApp.controllers')
       switch( $state.current.name ) {
         case 'networks.new':
           $scope.network = {
-            members: {}
+            members: {},
+            admins: {}
           };
           $scope.add = function(){
             $scope.network.members = Object.keys( _.indexBy( $scope.network.members, '_id') );
@@ -124,6 +143,13 @@ angular.module('baseApp.controllers')
             });
         }
       });
+      $scope.requestAdmin = function( id ) {
+        Network.requestAdmin( {_id: id})
+          .then( function(){
+            /* global alert */
+            alert('Your submission was requested');
+          });
+      };
       $scope.join = function( id ){
         Network.join( {_id: id} )
           .then( function(){

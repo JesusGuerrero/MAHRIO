@@ -10,10 +10,17 @@
                         model="network.name"
                         label="Name"
                         required="true")
-                    .form-group
-                        label
-                            |  Private Network
-                        input( type="checkbox" ng-model="network.isPrivate" i-check)
+                    .row
+                        .col-xs-6
+                            .form-group
+                                label
+                                    |  Private Network
+                                input( type="checkbox" ng-model="network.isPrivate" i-check)
+                        .col-xs-6
+                            .form-group
+                                label
+                                    |  Protected Network
+                                input( type="checkbox" ng-model="network.isProtected" i-check)
                     .form-group(ng-show="access.indexOf('sudo') !== -1")
                         label
                             |   Owner:&nbsp;
@@ -21,8 +28,8 @@
                             i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeOwner( )")
                             |   {{network.owner.profile.firstName}} {{network.owner.profile.lastName}} &lt;{{network.owner.email}}&gt;
                         div(ng-show="!hasOwner")
-                            auto-complete(input-model="tempMember" placeholder="Add Owner" auto-complete-http="getUsers"
-                            selected="selectOwner")
+                            auto-complete(input-model="tempOwner" placeholder="Add Owner" auto-complete-http="getUsers"
+                                selected="selectOwner")
                     .form-group(ng-show="hasMembers")
                         label
                             | Members
@@ -33,6 +40,16 @@
 
                     auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getUsers"
                         selected="selected")
+                    .form-group(ng-show="hasModerators")
+                        label
+                            | Moderators
+                        div
+                            span.bg-blue( ng-repeat="admin in network.admins track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" )
+                                i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeModerator(admin._id)")
+                                |   {{admin.profile.firstName}} {{admin.profile.lastName}} &lt;{{admin.email}}&gt;
+
+                    auto-complete(input-model="tempAdmin" placeholder="Moderators" auto-complete-http="getUsers"
+                        selected="selectedModerator")
 
                     hr
                     .text-center.form-group
