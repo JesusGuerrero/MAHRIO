@@ -53,7 +53,7 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                         |   Users
                     small.label.pull-right.bg-green
                         |   New
-            li
+            li(ng-if="access.indexOf('sudo') !== -1")
                 a( href="#/admin/newsletter")
                     i.fa.fa-newspaper-o
                     span
