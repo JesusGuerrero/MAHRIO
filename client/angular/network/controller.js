@@ -91,6 +91,8 @@ angular.module('baseApp.controllers')
           };
           $scope.add = function(){
             $scope.network.members = Object.keys( _.indexBy( $scope.network.members, '_id') );
+            $scope.network.admins = Object.keys( _.indexBy( $scope.network.admins, '_id') );
+
             Network.add( $scope.network )
               .then( function(){
                 $state.go('networks.list',{}, { reload: true });
@@ -115,7 +117,9 @@ angular.module('baseApp.controllers')
             .then( function( res ) {
               $scope.network = res.network;
               $scope.network.members = res.network.members || {};
+              $scope.network.admins = res.network.admins || {};
               $scope.hasMembers = res.network.members ? Object.keys( res.network.members).length : false;
+              $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
             });
           formSetup();
           $scope.update = function( ) {

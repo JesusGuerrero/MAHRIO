@@ -109567,22 +109567,46 @@ angular.module('baseApp.controllers')
       $scope.boards = [];
       var formSetup = function(){
         var usersCache = [];
-        $scope.selected = function($item) {
+        function findUser( $item ){
           var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
             selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+          return selection;
+        }
+        $scope.selectOwner = function($item){
+          var selection = findUser( $item );
 
-          $scope.board.members.push({
+          $scope.board._owner = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasOwner = true;
+          $scope.$broadcast('clearInput');
+        };
+        $scope.selected = function($item) {
+          var selection = findUser( $item );
+
+          $scope.board.members[ selection._id]  = {
             email: selection.email,
             profile: {
               firstName: selection.profile.firstName,
               lastName: selection.profile.lastName
             },
             _id: selection._id
-          });
+          };
+          $scope.hasMembers = $scope.board.members ? Object.keys($scope.board.members).length : 0;
           $scope.$broadcast('clearInput');
         };
-        $scope.removeMember = function( i ) {
-          $scope.board.members.splice( i, 1);
+        $scope.removeOwner = function(){
+          delete $scope.board._owner;
+          $scope.hasOwner = false;
+        };
+        $scope.removeMember = function( id ) {
+          delete $scope.board.members[ id ];
+          $scope.hasMembers = $scope.board.members ? Object.keys($scope.board.members).length : 0;
         };
         $scope.getUsers = function(val) {
           return $http.get('/api/autocomplete/users', {
@@ -109591,10 +109615,9 @@ angular.module('baseApp.controllers')
             }
           }).then(function(response){
             usersCache = response.data.users;
-            var current = currentUser.get(),
-              filteredUserList =  _
+            var filteredUserList =  _
                 .filter( response.data.users, function(user){
-                  return user.email !== current.email && !_.find($scope.board.members, function(i){return i.email ===user.email;});
+                  return !_.find($scope.board.members, function(i){return i.email ===user.email;});
                 });
             return filteredUserList.map(function(user){
               return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
@@ -109602,7 +109625,9 @@ angular.module('baseApp.controllers')
           });
         };
         $scope.addColumn = function(name){
-          $scope.board.columns.push( {name: name});
+          if( name ) {
+            $scope.board.columns.push( {name: name});
+          }
         };
         $scope.removeColumn = function( i ) {
           $scope.board.columns.splice( i, 1);
@@ -109636,6 +109661,7 @@ angular.module('baseApp.controllers')
           Board.get( $state.params.board )
             .then( function( res ) {
               $scope.board = res.board;
+              $scope.hasMembers = $scope.board.members ? Object.keys($scope.board.members).length : 0;
             });
           formSetup();
           $scope.update = function( ) {
@@ -110681,8 +110707,8 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout',
-    function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout','$http',
+    function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout, $http ){
       'use strict';
       return {
         restrict: 'A',
@@ -110714,6 +110740,34 @@ angular.module('baseApp.directives')
               }
             };
           });
+
+          var usersCache = [];
+          scope.selected = function($item) {
+            var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+              selection = _.find(usersCache, function (user) {
+                return user.email === extracted[2];
+              });
+
+              $state.go( 'users.detail', {id: selection._id}, {reload: true});
+              scope.$broadcast('clearInput');
+          };
+          scope.getUsers = function(val) {
+            return $http.get('/api/autocomplete/users', {
+              params: {
+                q: val
+              }
+            }).then(function(response){
+              usersCache = response.data.users;
+              var current = currentUser.get(),
+                filteredUserList =  _
+                  .filter( response.data.users, function(user){
+                    return user.email !== current.email;
+                  });
+              return filteredUserList.map(function(user){
+                return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
+              });
+            });
+          };
 
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'
@@ -111573,6 +111627,8 @@ angular.module('baseApp.controllers')
           };
           $scope.add = function(){
             $scope.network.members = Object.keys( _.indexBy( $scope.network.members, '_id') );
+            $scope.network.admins = Object.keys( _.indexBy( $scope.network.admins, '_id') );
+
             Network.add( $scope.network )
               .then( function(){
                 $state.go('networks.list',{}, { reload: true });
@@ -111597,7 +111653,9 @@ angular.module('baseApp.controllers')
             .then( function( res ) {
               $scope.network = res.network;
               $scope.network.members = res.network.members || {};
+              $scope.network.admins = res.network.admins || {};
               $scope.hasMembers = res.network.members ? Object.keys( res.network.members).length : false;
+              $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
             });
           formSetup();
           $scope.update = function( ) {
@@ -112153,13 +112211,6 @@ angular.module('baseApp.directives')
   }]);
 angular.module('baseApp.filters');
 angular.module('baseApp.filters', [])
-  .filter('membership', ['currentUser', function(currentUser){
-    'use strict';
-    return function(val) {
-      return val.members[ currentUser.get()._id ];
-    };
-  }]);
-angular.module('baseApp.filters', [])
   .filter('rawhtml', ['$sce', function($sce){
     'use strict';
     return function(val) {
@@ -112270,14 +112321,17 @@ angular.module('baseApp.services')
 angular.module('baseApp.services')
   .factory('AdminResource', [ '$resource', function($resource) {
     'use strict';
-    return $resource('/admin/:action/:id',
-      { action: '@action' },
+    return $resource('/api/admin/:action/:id',
+      { action: '@action', id: '@id' },
       {
         get: {
           method: 'GET'
         },
         post: {
           method: 'POST'
+        },
+        put: {
+          method: 'PUT'
         },
         delete: {
           method: 'DELETE'
@@ -112306,11 +112360,14 @@ angular.module('baseApp.services')
       deleteUserEntry: function(id){
         return AdminResource.delete({action:'users', id: id}).$promise;
       },
-      makeAdmin: function(email){
-        return AdminResource.post( {action: 'user', id: 'profile'}, {email: email, access: 'admin'}).$promise;
-      },
       getSessionToCMS: function(){
         return AdminResource.get( {action: 'cms', id: 'session'}).$promise;
+      },
+      makeAdmin: function(id){
+        return AdminResource.put( {action: 'users', id: id}).$promise;
+      },
+      removeAdmin: function(id){
+        return AdminResource.delete( {action: 'users', id: id}).$promise;
       }
     };
   }]);
@@ -112572,7 +112629,7 @@ angular.module('baseApp.controllers')
     };
   }]);
 angular.module('baseApp.directives')
-  .directive( 'profileSummary', ['currentUser', function( currentUser) {
+  .directive( 'profileSummary', ['currentUser', 'Admin','$state',function( currentUser, Admin,$state) {
     'use strict';
     return {
       restrict: 'E',
@@ -112580,6 +112637,19 @@ angular.module('baseApp.directives')
       templateUrl: '/assets/html/profile/directive-summary',
       link: function(scope) {
         scope.current = currentUser.get();
+
+        scope.makeAdmin = function(id){
+          Admin.makeAdmin( id )
+            .then( function(){
+              $state.reload();
+            });
+        };
+        scope.removeAdmin = function(id){
+          Admin.removeAdmin( id )
+            .then( function(){
+              $state.reload();
+            });
+        };
       }
     };
   }])
@@ -113246,17 +113316,16 @@ angular.module('baseApp.controllers')
         }
       };
 
-      $scope.makeAdmin = function(){
-        User.makeAdmin( $scope.email )
+      $scope.makeAdmin = function( id ){
+        Admin.makeAdmin( id )
           .then( function(){
-            $.grep( $scope.usersList, function(e){
-              if( e.email === $scope.email ){
-                e.access='admin';
-                return true;
-              }
-            });
-            $scope.madeAdmin = $scope.email;
-            $scope.email = '';
+            $state.reload();
+          });
+      };
+      $scope.removeAdmin = function(id){
+        Admin.removeAdmin( id )
+          .then( function(){
+            $state.reload();
           });
       };
 

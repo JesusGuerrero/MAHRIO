@@ -11,6 +11,9 @@ header.main-header
             span.icon-bar
             span.icon-bar
             span.icon-bar
+        .pull-left(style="height: 40px; margin-top: 10px;width: 350px;")
+            auto-complete(input-model="tempMember" placeholder="Search users..." auto-complete-http="getUsers"
+            selected="selected")
         .navbar-custom-menu
             ul.nav.navbar-nav
                 li.dropdown.messages-menu

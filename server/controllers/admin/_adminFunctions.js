@@ -26,7 +26,37 @@ function disable( request, reply ) {
     return reply( {disabled: true} );
   });
 }
+function makeAdmin( request, reply ) {
+  if( !_.contains(request.auth.credentials.access, 'sudo')  ){
+    return reply( Boom.unauthorized('unauthorized'));
+  }
+  if( typeof request.params.id === 'undefined' ){
+    return reply( Boom.badRequest() );
+  }
+
+  User.update( {_id: request.params.id}, {$push: {access: 'admin'}}, {multi: false}, function(err){
+    if( err ) { return reply( Boom.badRequest(err)); }
+
+    return reply( {admin: true} );
+  });
+}
+function removeAdmin( request, reply ) {
+  if( !_.contains(request.auth.credentials.access, 'sudo')  ){
+    return reply( Boom.unauthorized('unauthorized'));
+  }
+  if( typeof request.params.id === 'undefined' ){
+    return reply( Boom.badRequest() );
+  }
+
+  User.update( {_id: request.params.id}, {$pull: {access: 'admin'}}, {multi: false}, function(err){
+    if( err ) { return reply( Boom.badRequest(err)); }
+
+    return reply( {admin: false} );
+  });
+}
 module.exports = {
   removeUser: remove,
-  disableUser: disable
+  disableUser: disable,
+  makeAdmin: makeAdmin,
+  removeAdmin: removeAdmin
 };

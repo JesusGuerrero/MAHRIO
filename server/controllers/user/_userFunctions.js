@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Media = mongoose.model('Media'),
     Boom = require('boom'),
+    _ = require('underscore'),
     Profile = mongoose.model('Profile');
 
 function register (request, reply, config, server) {
@@ -156,9 +157,13 @@ function currentUser (request, reply, method, selectString) {
 }
 
 function getUsers( request, reply ){
+  var queryString = 'email profile avatarImage';
+  if( _.contains(request.auth.credentials.access, 'sudo') ) {
+    queryString += ' access';
+  }
   User
     .find()
-    .select('email profile avatarImage')
+    .select( queryString )
     .populate('profile avatarImage')
     .exec( function (err, users) {
       if (err || !users) {
@@ -171,9 +176,14 @@ function getUsers( request, reply ){
     });
 }
 
-function getUser( id, reply ){
+function getUser( request, reply ){
+  var id = request.params.action;
+  var queryString = 'email profile avatarImage';
+  if( _.contains(request.auth.credentials.access, 'sudo') ) {
+    queryString += ' access';
+  }
   User.findOne({_id: id})
-    .select('email avatarImage profile')
+    .select(queryString)
     .populate('avatarImage profile')
     .exec( function (err, user) {
       if (err) { return reply(Boom.badRequest(err)); }

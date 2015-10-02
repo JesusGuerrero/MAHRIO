@@ -75,17 +75,16 @@ angular.module('baseApp.controllers')
         }
       };
 
-      $scope.makeAdmin = function(){
-        User.makeAdmin( $scope.email )
+      $scope.makeAdmin = function( id ){
+        Admin.makeAdmin( id )
           .then( function(){
-            $.grep( $scope.usersList, function(e){
-              if( e.email === $scope.email ){
-                e.access='admin';
-                return true;
-              }
-            });
-            $scope.madeAdmin = $scope.email;
-            $scope.email = '';
+            $state.reload();
+          });
+      };
+      $scope.removeAdmin = function(id){
+        Admin.removeAdmin( id )
+          .then( function(){
+            $state.reload();
           });
       };
 

@@ -26,6 +26,19 @@ function createNetwork( request, reply ) {
       });
   });
 }
+function _getNetworkAdmins( network, callback ) {
+  User
+    .find( {_id: {$in: network.admins}})
+    .select('email profile avatarImage')
+    .populate('profile avatarImage')
+    .exec( function(err, users){
+      if( err ) { callback(err); }
+
+      network._doc.admins = _.indexBy( users, '_id');
+
+      callback( false );
+    });
+}
 function _getNetworkMembers( network, callback ) {
   User
     .find( {networks: {$in: [network.id]}})
@@ -36,7 +49,9 @@ function _getNetworkMembers( network, callback ) {
 
       network._doc.members = _.indexBy( users, '_id');
 
-      callback( false );
+      _getNetworkAdmins( network, function(){
+        callback( false );
+      });
     });
 }
 function _getAllNetworks( request, reply, callback ) {

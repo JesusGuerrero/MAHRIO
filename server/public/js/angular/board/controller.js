@@ -6,22 +6,46 @@ angular.module('baseApp.controllers')
       $scope.boards = [];
       var formSetup = function(){
         var usersCache = [];
-        $scope.selected = function($item) {
+        function findUser( $item ){
           var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
             selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+          return selection;
+        }
+        $scope.selectOwner = function($item){
+          var selection = findUser( $item );
 
-          $scope.board.members.push({
+          $scope.board._owner = {
+            _id: selection._id,
+            email: selection.email,
+            profile: {
+              firstName: selection.profile.firstName,
+              lastName: selection.profile.lastName
+            }
+          };
+          $scope.hasOwner = true;
+          $scope.$broadcast('clearInput');
+        };
+        $scope.selected = function($item) {
+          var selection = findUser( $item );
+
+          $scope.board.members[ selection._id]  = {
             email: selection.email,
             profile: {
               firstName: selection.profile.firstName,
               lastName: selection.profile.lastName
             },
             _id: selection._id
-          });
+          };
+          $scope.hasMembers = $scope.board.members ? Object.keys($scope.board.members).length : 0;
           $scope.$broadcast('clearInput');
         };
-        $scope.removeMember = function( i ) {
-          $scope.board.members.splice( i, 1);
+        $scope.removeOwner = function(){
+          delete $scope.board._owner;
+          $scope.hasOwner = false;
+        };
+        $scope.removeMember = function( id ) {
+          delete $scope.board.members[ id ];
+          $scope.hasMembers = $scope.board.members ? Object.keys($scope.board.members).length : 0;
         };
         $scope.getUsers = function(val) {
           return $http.get('/api/autocomplete/users', {
@@ -30,10 +54,9 @@ angular.module('baseApp.controllers')
             }
           }).then(function(response){
             usersCache = response.data.users;
-            var current = currentUser.get(),
-              filteredUserList =  _
+            var filteredUserList =  _
                 .filter( response.data.users, function(user){
-                  return user.email !== current.email && !_.find($scope.board.members, function(i){return i.email ===user.email;});
+                  return !_.find($scope.board.members, function(i){return i.email ===user.email;});
                 });
             return filteredUserList.map(function(user){
               return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
@@ -77,6 +100,7 @@ angular.module('baseApp.controllers')
           Board.get( $state.params.board )
             .then( function( res ) {
               $scope.board = res.board;
+              $scope.hasMembers = $scope.board.members ? Object.keys($scope.board.members).length : 0;
             });
           formSetup();
           $scope.update = function( ) {

@@ -16,8 +16,7 @@ module.exports = function ( config, server ) {
             case 'all':
               return UserCtrl.getUsers( request, reply );
             default:
-              var idInActionParameter = request.params.action;
-              return UserCtrl.getUser( idInActionParameter, reply );
+              return UserCtrl.getUser( request, reply );
           }
         },
         auth: {

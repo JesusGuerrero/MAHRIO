@@ -6,7 +6,8 @@ var async = require('async'),
   mongoose = require('mongoose'),
   Board = mongoose.model('Board'),
   Task = mongoose.model('Task'),
-  Column = mongoose.model('Column');
+  Column = mongoose.model('Column'),
+  User = mongoose.model('User');
 
 function _removeColumn( columns, board, next ){
   if( columns.length ) {
@@ -103,6 +104,19 @@ function createBoard( request, reply ) {
     });
 
 }
+function _getBoardMembers( board, callback ) {
+  User
+    .find( {_id: {$in: board.members}})
+    .select('email profile avatarImage')
+    .populate('profile avatarImage')
+    .exec( function(err, users){
+      if( err ) { callback(err); }
+
+      board._doc.members = _.indexBy( users, '_id');
+
+      callback( false );
+    });
+}
 function getBoard( request, reply ) {
   var query;
   if( request.params.id ) {
@@ -123,18 +137,19 @@ function getBoard( request, reply ) {
         }])
       .select('name created members columns tasks _owner startColumn')
       .populate([{
-        path: 'members',
-        select: 'firstName lastName email'
-      },{
         path: 'columns',
         select: 'name'
       }, {
         path: 'tasks'
       }])
       .exec( function(err, board){
-        if( err ) { return reply( Boom.badRequest() ); }
+        if( err ) { return reply( Boom.badRequest(err) ); }
 
-        reply( {board: board} );
+        _getBoardMembers( board, function(err){
+          if( err ) { return reply( Boom.badRequest(err) ); }
+
+          return reply( {board: board} );
+        });
       });
   } else {
     query = Board.find({});
@@ -152,16 +167,21 @@ function getBoard( request, reply ) {
         }])
       .select('name created members columns _owner')
       .populate([{
-        path: 'members',
-        select: 'firstName lastName email'
-      },{
         path: 'columns',
         select: 'name'
       }])
       .exec( function(err, boards){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
-        reply( {boards: boards} );
+        async.each( boards, function(board, callback){
+          _getBoardMembers( board, function(err){
+            if( err ) { return reply( Boom.badRequest() ); }
+
+            callback();
+          });
+        }, function(){
+          return reply( {boards: boards} );
+        });
       });
   }
 }

@@ -7,9 +7,15 @@
         <h3 class="text-center">Add Board</h3>
         <form novalidate="novalidate" ng-submit="board._id ? update() : add()">
           <form-input-tag model="board.name" label="Name" required="true"></form-input-tag>
-          <div ng-show="board.members.length" class="form-group">
+          <div ng-show="access.indexOf('sudo') !== -1" class="form-group">
+            <label>  Owner:&nbsp;</label><span ng-show="hasOwner" style="padding-right: 20px; position: relative" class="bg-red label"><i style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeOwner( )" class="fa fa-close pull-right"></i>  {{board._owner.profile.firstName}} {{board._owner.profile.lastName}} &lt;{{board._owner.email}}&gt;</span>
+            <div ng-show="!hasOwner">
+              <auto-complete input-model="tempOwner" placeholder="Add Owner" auto-complete-http="getUsers" selected="selectOwner"></auto-complete>
+            </div>
+          </div>
+          <div ng-show="hasMembers" class="form-group">
             <label>Members</label>
-            <div><span ng-repeat="member in board.members track by $index" style="margin: 1px 0 0;padding: 5px; display: block;" class="bg-blue">  {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;<i style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember($index)" class="fa fa-close pull-right"></i></span></div>
+            <div><span ng-repeat="member in board.members track by $index" style="margin: 1px 0 0;padding: 5px; display: block;" class="bg-blue">  {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;<i style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember(member._id)" class="fa fa-close pull-right"></i></span></div>
           </div>
           <auto-complete input-model="tempMember" placeholder="Members" auto-complete-http="getUsers" selected="selected"></auto-complete>
           <div ng-show="board.columns.length" class="form-group">

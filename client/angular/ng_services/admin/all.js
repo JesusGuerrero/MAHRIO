@@ -1,14 +1,17 @@
 angular.module('baseApp.services')
   .factory('AdminResource', [ '$resource', function($resource) {
     'use strict';
-    return $resource('/admin/:action/:id',
-      { action: '@action' },
+    return $resource('/api/admin/:action/:id',
+      { action: '@action', id: '@id' },
       {
         get: {
           method: 'GET'
         },
         post: {
           method: 'POST'
+        },
+        put: {
+          method: 'PUT'
         },
         delete: {
           method: 'DELETE'
@@ -37,11 +40,14 @@ angular.module('baseApp.services')
       deleteUserEntry: function(id){
         return AdminResource.delete({action:'users', id: id}).$promise;
       },
-      makeAdmin: function(email){
-        return AdminResource.post( {action: 'user', id: 'profile'}, {email: email, access: 'admin'}).$promise;
-      },
       getSessionToCMS: function(){
         return AdminResource.get( {action: 'cms', id: 'session'}).$promise;
+      },
+      makeAdmin: function(id){
+        return AdminResource.put( {action: 'users', id: id}).$promise;
+      },
+      removeAdmin: function(id){
+        return AdminResource.delete( {action: 'users', id: id}).$promise;
       }
     };
   }]);
