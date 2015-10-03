@@ -64,7 +64,7 @@ header.main-header
                         li.footer
                             a( ui-sref="notifications" )
                                 |   View All
-                li.dropdown.tasks-menu
+                li.dropdown.tasks-menu(ng-if="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1 ")
                     a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-tasks
                         span.label.label-success(ng-show="notifications.tasks && notifications.tasks.length")
