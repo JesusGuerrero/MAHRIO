@@ -259,10 +259,10 @@ angular.module('baseApp', [
       })
       .state('networks.new', {
         url: '/new',
-        controller: 'NetworksController',
+        controller: 'NetworkController',
         templateUrl: '/assets/html/network/form',
         title: 'New Network',
-        resolve: { networks: function(){ return []; } }
+        resolve: { network: function(){ return null; } }
       })
       .state('networks.list', {
         url: '',

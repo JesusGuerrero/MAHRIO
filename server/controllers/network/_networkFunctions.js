@@ -148,7 +148,7 @@ function updateNetwork( request, reply ) {
       network.isPrivate = request.payload.network.isPrivate;
       network.admins = request.payload.network.admins;
       network.owner = undefined;
-      if( request.payload.network.owner._id ) {
+      if( request.payload.network.owner && request.payload.network.owner._id ) {
         network.owner = request.payload.network.owner._id;
       }
 
