@@ -8,6 +8,8 @@ angular.module('baseApp.directives')
         inputModel: '=',
         placeholder: '@',
         autoCompleteHttp: '=',
+        hash: '@',
+        single: '@',
         selected: '=' || function(){}
       },
       link: function(scope){

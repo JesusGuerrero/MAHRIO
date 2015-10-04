@@ -45,6 +45,10 @@ angular.module('baseApp.directives')
                 return ngModel.$setViewValue(value);
               });
             }
+          }).on( 'ifToggled', function( ) {
+            if( typeof $attrs.ngClick !== 'undefined' ) {
+              $scope.$eval( $attrs.ngClick );
+            }
           });
         });
       }

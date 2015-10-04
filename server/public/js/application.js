@@ -108921,22 +108921,6 @@ angular.module('baseApp', [
           enabled: true,
           requireBase: true
         });*/
-
-    /*$routeProvider
-        .when('/login', {
-          templateUrl: '/assets/html/auth/login'
-        })
-        .when('/register',    {
-          templateUrl: '/assets/html/auth/register'
-        })
-        .when('/recover',    {
-          templateUrl: '/assets/html/auth/recover'
-        })
-        .when('/', {
-          templateUrl: '/assets/html/landingPages/dashboard',
-          controller: null
-        })
-        .otherwise({redirectTo: '/'});*/
     $stateProvider
       .state('root', {
         url: '/',
@@ -109161,6 +109145,13 @@ angular.module('baseApp', [
         url: '/networks',
         template: '<ui-view/>'
       })
+      .state('networks.new', {
+        url: '/new',
+        controller: 'NetworksController',
+        templateUrl: '/assets/html/network/form',
+        title: 'New Network',
+        resolve: { networks: function(){ return []; } }
+      })
       .state('networks.list', {
         url: '',
         controller: 'NetworksController',
@@ -109184,15 +109175,16 @@ angular.module('baseApp', [
           }
         }
       })
-      .state('networks.new', {
-        url: '/new',
-        templateUrl: '/assets/html/network/form',
-        title: 'New Network'
-      })
       .state('networks.edit', {
         url: '/:id/edit',
+        controller: 'NetworkController',
         templateUrl: '/assets/html/network/form',
-        title: 'Edit Network'
+        title: 'Edit Network',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
       })
 
       .state('networks.detail.boards', {
@@ -111570,142 +111562,33 @@ angular.module('baseApp.controllers')
     };
   }]);
 angular.module('baseApp.controllers')
-  .controller('NetworksController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_','Notification',
-    function($scope, $state, $http, currentUser, Network, _, Notification){
+  .controller('NetworksController', ['$scope', '$state', 'currentUser', 'Network', 'networks', '_','Notification','FormHelper',
+    function($scope, $state, currentUser, Network, networks, _, Notification, FormHelper){
       'use strict';
-      console.log( 'in networks');
-      $scope.networks = [];
-      var formSetup = function(){
-        var usersCache = [];
-        function findUser( $item ){
-          var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
-            selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
-          return selection;
-        }
-        $scope.selectOwner = function($item){
-          var selection = findUser( $item );
 
-          $scope.network.owner = {
-            _id: selection._id,
-            email: selection.email,
-            profile: {
-              firstName: selection.profile.firstName,
-              lastName: selection.profile.lastName
-            }
-          };
-          $scope.hasOwner = true;
-          $scope.$broadcast('clearInput');
-        };
-        $scope.selected = function($item) {
-          var selection = findUser( $item );
-
-          $scope.network.members[ selection._id ] = {
-            _id: selection._id,
-            email: selection.email,
-            profile: {
-              firstName: selection.profile.firstName,
-              lastName: selection.profile.lastName
-            }
-          };
-          $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
-          $scope.$broadcast('clearInput');
-        };
-        $scope.selectedModerator = function($item){
-          var selection = findUser( $item );
-
-          $scope.network.admins[ selection._id ] = {
-            _id: selection._id,
-            email: selection.email,
-            profile: {
-              firstName: selection.profile.firstName,
-              lastName: selection.profile.lastName
-            }
-          };
-          $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
-          $scope.$broadcast('clearInput');
-        };
-        $scope.removeMember = function( id ) {
-          delete $scope.network.members[ id ];
-          $scope.hasMembers = $scope.network.members ? Object.keys( $scope.network.members).length : false;
-        };
-        $scope.removeOwner = function(){
-          $scope.hasOwner = false;
-        };
-        $scope.removeModerator = function( id ) {
-          delete $scope.network.admins[ id ];
-          $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
-        };
-        $scope.getUsers = function(val) {
-          return $http.get('/api/autocomplete/users', {
-            params: {
-              q: val
-            }
-          }).then(function(response){
-            usersCache = response.data.users;
-            var current = currentUser.get(),
-              filteredUserList =  _
-                .filter( response.data.users, function(user){
-                  return user.email !== current.email && !_.find($scope.network.members, function(i){return i.email ===user.email;});
-                });
-            return filteredUserList.map(function(user){
-              return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
-            });
-          });
-        };
-      };
-      $scope.currentUser = currentUser.get();
       switch( $state.current.name ) {
         case 'networks.new':
-          $scope.network = {
-            members: {},
-            admins: {}
-          };
+          $scope.network = { members: {}, admins: {}, owner: {} };
+          $scope.has = { members: false, admins: false, owner: false };
           $scope.add = function(){
-            $scope.network.members = Object.keys( _.indexBy( $scope.network.members, '_id') );
-            $scope.network.admins = Object.keys( _.indexBy( $scope.network.admins, '_id') );
+            $scope.network.members = Object.keys( $scope.network.members );
+            $scope.network.admins = Object.keys( $scope.network.admins );
 
             Network.add( $scope.network )
               .then( function(){
                 $state.go('networks.list',{}, { reload: true });
               });
           };
-          formSetup();
-          break;
-        case 'networks.detail.boards':
-        case 'networks.detail':
-          console.log('in detail');
-          Network.get( $state.params.id )
-             .then( function(res){
-               $scope.network = res.network;
-             });
+          FormHelper.setupFormHelper( $scope, 'network' );
           break;
         case 'networks.list':
-          Network.get()
-            .then( function( res ) {
-              $scope.networks = _.indexBy( res.networks, '_id');
-            });
-          break;
-        case 'networks.edit':
-          Network.get( $state.params.id )
-            .then( function( res ) {
-              $scope.network = res.network;
-              $scope.network.members = res.network.members || {};
-              $scope.network.admins = res.network.admins || {};
-              $scope.hasMembers = res.network.members ? Object.keys( res.network.members).length : false;
-              $scope.hasModerators = $scope.network.admins ? Object.keys( $scope.network.admins).length : false;
-            });
-          formSetup();
-          $scope.update = function( ) {
-            Network.update( $scope.network )
-              .then( function(){
-                $state.go('networks.list');
-              });
-          };
+          $scope.networks = networks ? _.indexBy( networks, '_id') : {};
           break;
         default:
           break;
       }
 
+      $scope.currentUser = currentUser.get();
       $scope.remove = function( id ){
         Notification.id = id;
         Notification.confirm = 'Are you sure you want to delete?';
@@ -111743,10 +111626,27 @@ angular.module('baseApp.controllers')
           });
       };
     }])
-  .controller('NetworkController', ['$scope', 'network',
-    function($scope, network){
+  .controller('NetworkController', ['$scope', 'network','$state','FormHelper','Network','_',
+    function($scope, network, $state, FormHelper, Network, _ ){
       'use strict';
       $scope.network = network;
+      if( $state.current.name === 'networks.edit' ) {
+        $scope.has = {
+          admins: $scope.network.admins ? Object.keys( $scope.network.admins).length : 0,
+          members: $scope.network.members ? Object.keys( $scope.network.members).length : 0,
+          owner: $scope.network.owner ? true : false
+        };
+        $scope.network.members = $scope.network.members || {};
+        $scope.network.admins = $scope.network.admins || {};
+        FormHelper.setupFormHelper( $scope, 'network' );
+        $scope.update = function( ) {
+          $scope.network.admins = Object.keys( _.indexBy( $scope.network.admins, '_id') );
+          Network.update( $scope.network )
+            .then( function(){
+              $state.go('networks.list');
+            });
+        };
+      }
     }]);
 angular.module('baseApp.services').factory('NetworkResource', [ '$resource', function($resource) {
   'use strict';
@@ -111806,6 +111706,8 @@ angular.module('baseApp.directives')
         inputModel: '=',
         placeholder: '@',
         autoCompleteHttp: '=',
+        hash: '@',
+        single: '@',
         selected: '=' || function(){}
       },
       link: function(scope){
@@ -111888,6 +111790,10 @@ angular.module('baseApp.directives')
               return $scope.$apply(function () {
                 return ngModel.$setViewValue(value);
               });
+            }
+          }).on( 'ifToggled', function( ) {
+            if( typeof $attrs.ngClick !== 'undefined' ) {
+              $scope.$eval( $attrs.ngClick );
             }
           });
         });
@@ -112259,6 +112165,83 @@ angular.module('baseApp.filters', [])
       return $sce.trustAsHtml(val);
     };
   }]);
+angular.module('baseApp.services')
+  .service('FormHelper', ['$http', 'currentUser', '_',
+    function($http, currentUser, _) {
+      'use strict';
+
+
+      var usersCache = [],
+        current = currentUser.get(),
+        findUser = function ( $item ){
+          var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+            selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
+          return selection;
+        };
+
+      var getUsers = function(val) {
+        return $http.get('/api/autocomplete/users', {
+          params: {
+            q: val
+          }
+        }).then(function(response){
+          usersCache = response.data.users;
+          var filteredUserList =  _
+              .filter( response.data.users, function(user){
+                return user.email !== current.email;
+              });
+          return filteredUserList.map(function(user){
+            return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
+          });
+        });
+      };
+      var selectedItem = function( $item, EntityObject, oneOnly ) {
+        var selection;
+        if( typeof $item === 'undefined' || $item === null ) {
+          selection = current;
+        } else {
+          selection = findUser( $item );
+        }
+        var addObject = {
+          _id: selection._id,
+          email: selection.email,
+          profile: {
+            firstName: selection.profile.firstName,
+            lastName: selection.profile.lastName
+          }
+        };
+        if( oneOnly ) {
+          EntityObject = addObject;
+        } else {
+          EntityObject[ selection._id ] = addObject;
+        }
+
+        return EntityObject;
+      };
+      var remove = function( id, entity, hash ) {
+        if( id === null ) {
+          entity[ hash ] = {};
+          return 0;
+        } else {
+          delete entity[ hash ][ id ];
+          return Object.keys( entity[ hash ]).length;
+        }
+      };
+
+      this.setupFormHelper = function( $scope, resource ) {
+        $scope.selectUser = function($item, hash, single ) {
+          $scope[resource][ hash ] = selectedItem( $item, $scope[resource][ hash ], single );
+          $scope.has[ hash ] = true;
+          $scope.$broadcast('clearInput');
+        };
+        $scope.removeUser = function( id, entity ) {
+          $scope.has[entity] = remove( id, $scope[resource], entity );
+        };
+        $scope.getUsers = getUsers;
+      };
+
+      return this;
+    }]);
 angular.module('baseApp.services')
   .factory('NotificationResource', [ '$resource', function($resource) {
     'use strict';

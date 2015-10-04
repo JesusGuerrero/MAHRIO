@@ -33,22 +33,6 @@ angular.module('baseApp', [
           enabled: true,
           requireBase: true
         });*/
-
-    /*$routeProvider
-        .when('/login', {
-          templateUrl: '/assets/html/auth/login'
-        })
-        .when('/register',    {
-          templateUrl: '/assets/html/auth/register'
-        })
-        .when('/recover',    {
-          templateUrl: '/assets/html/auth/recover'
-        })
-        .when('/', {
-          templateUrl: '/assets/html/landingPages/dashboard',
-          controller: null
-        })
-        .otherwise({redirectTo: '/'});*/
     $stateProvider
       .state('root', {
         url: '/',
@@ -273,6 +257,13 @@ angular.module('baseApp', [
         url: '/networks',
         template: '<ui-view/>'
       })
+      .state('networks.new', {
+        url: '/new',
+        controller: 'NetworksController',
+        templateUrl: '/assets/html/network/form',
+        title: 'New Network',
+        resolve: { networks: function(){ return []; } }
+      })
       .state('networks.list', {
         url: '',
         controller: 'NetworksController',
@@ -296,15 +287,16 @@ angular.module('baseApp', [
           }
         }
       })
-      .state('networks.new', {
-        url: '/new',
-        templateUrl: '/assets/html/network/form',
-        title: 'New Network'
-      })
       .state('networks.edit', {
         url: '/:id/edit',
+        controller: 'NetworkController',
         templateUrl: '/assets/html/network/form',
-        title: 'Edit Network'
+        title: 'Edit Network',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
       })
 
       .state('networks.detail.boards', {

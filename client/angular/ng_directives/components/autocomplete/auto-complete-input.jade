@@ -1,3 +1,4 @@
 .form-group( style="position: relative;" )
     input.form-control( class='auto' type="text" ng-model="inputModel" placeholder="{{placeholder}}"
-        typeahead="email for email in autoCompleteHttp($viewValue)" typeahead-on-select='selected($item)')
+        typeahead="email for email in autoCompleteHttp($viewValue)"
+        typeahead-on-select="selected($item, '{{hash}}', '{{single}}')")

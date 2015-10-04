@@ -14,7 +14,9 @@ function createNetwork( request, reply ) {
 
   var members = request.payload.network.members;
   delete request.payload.network.members;
-  request.payload.network.owner = request.auth.credentials.id;
+  if( typeof request.payload.network.owner._id === 'undefined' ) {
+    request.payload.network.owner = request.auth.credentials.id;
+  }
   Network.create( request.payload.network, function(err, network){
     if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -22,9 +24,26 @@ function createNetwork( request, reply ) {
       function(err){
         if( err ) { return Boom.badRequest(err); }
 
-        reply({network: network});
+        return reply({network: network});
       });
   });
+}
+function _getNetworkOwner( network, callback ) {
+  if( network.owner ) {
+    User
+      .findOne( {_id: network.owner})
+      .select('email profile avatarImage')
+      .populate('profile avatarImage')
+      .exec( function(err, user){
+        if( err ) { callback(err); }
+
+        network._doc.owner = user;
+
+        callback( false );
+      });
+  } else {
+    callback( false );
+  }
 }
 function _getNetworkAdmins( network, callback ) {
   User
@@ -50,7 +69,9 @@ function _getNetworkMembers( network, callback ) {
       network._doc.members = _.indexBy( users, '_id');
 
       _getNetworkAdmins( network, function(){
-        callback( false );
+        _getNetworkOwner( network, function(){
+          callback( false );
+        });
       });
     });
 }
@@ -125,6 +146,11 @@ function updateNetwork( request, reply ) {
 
       network.name = request.payload.network.name;
       network.isPrivate = request.payload.network.isPrivate;
+      network.admins = request.payload.network.admins;
+      network.owner = undefined;
+      if( request.payload.network.owner._id ) {
+        network.owner = request.payload.network.owner._id;
+      }
 
       network.save( function(err, network){
         if( err ) { return reply( Boom.badRequest() ); }
