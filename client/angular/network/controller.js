@@ -100,7 +100,9 @@ angular.module('baseApp.controllers')
           };
           formSetup();
           break;
+        case 'networks.detail.boards':
         case 'networks.detail':
+          console.log('in detail');
           Network.get( $state.params.id )
              .then( function(res){
                $scope.network = res.network;

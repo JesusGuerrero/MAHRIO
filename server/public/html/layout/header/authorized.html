@@ -32,7 +32,7 @@
             <li class="footer"><a ui-sref="notifications">  View All</a></li>
           </ul>
         </li>
-        <li class="dropdown tasks-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-tasks"></i><span ng-show="notifications.tasks &amp;&amp; notifications.tasks.length" class="label label-success">  {{notifications.tasks.length}}</span></a>
+        <li ng-if="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1 " class="dropdown tasks-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-tasks"></i><span ng-show="notifications.tasks &amp;&amp; notifications.tasks.length" class="label label-success">  {{notifications.tasks.length}}</span></a>
           <ul class="dropdown-menu">
             <li class="header"><b>  Tasks</b><span ng-show="notifications.tasks &amp;&amp; notifications.tasks.length">  ( {{notification.tasks.length}} )</span></li>
             <li>

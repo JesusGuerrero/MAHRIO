@@ -294,6 +294,13 @@ angular.module('baseApp').config(function ($stateProvider, $urlRouterProvider, $
       title: 'Network',
       subTitle: 'View'
     })
+    .state('networks.detail.boards', {
+      url: '/boards',
+      controller: 'NetworkBoardsCtrl',
+      templateUrl: '/assets/html/task/index',
+      title: 'Network',
+      subTitle: 'View'
+    })
     //.state('tasks', {
     //  url: '/tasks',
     //  controller: 'TaskController',

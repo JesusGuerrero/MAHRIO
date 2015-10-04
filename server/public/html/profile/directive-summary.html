@@ -9,7 +9,8 @@
   </div>
   <div class="row">
     <div class="col-md-6"><b>  Email:</b><br/>  {{current.email}}</div>
-    <div ng-if="access.indexOf('sudo') !== -1" class="col-md-6"><b>  Access:</b><br/>  {{current.access}}
+    <div ng-if="isOwn" class="col-md-6"><b>  Access:</b><br/>  {{current.access}}</div>
+    <div ng-if="currentUser.access.indexOf('sudo') !== -1 &amp;&amp; !isOwn" class="col-md-6"><b>  Access:</b><br/>  {{current.access}}
       <div ng-if="current.access.indexOf('admin') === -1" ng-click="makeAdmin(current._id)" class="btn btn-default btn-block">  Make Admin</div>
       <div ng-if="current.access.indexOf('admin') !== -1" ng-click="removeAdmin(current._id)" class="btn btn-warning btn-block">  Remove Admin</div>
     </div>

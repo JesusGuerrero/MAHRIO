@@ -21,7 +21,7 @@
     </div>
     <div class="form-group">
       <label>Boards</label>
-      <div><span ng-repeat="board in network.boards track by $index">{{board.name}}<br/></span></div>
+      <div><span ng-repeat="board in network.boards track by $index">{{board.name}}<br/></span></div><a ui-sref="networks.detail.boards" class="btn btn-block">  Manage Boards</a>
     </div>
     <div class="form-group">
       <label>Conversations</label>

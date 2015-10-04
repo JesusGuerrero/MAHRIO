@@ -19,11 +19,11 @@ angular.module('baseApp.directives')
                   newCount = Object.keys(newConversations).length;
                   scope.notifications.chat = _.defaults( newConversations, conversations );
                 }
-                console.log( scope.notifications.chat );
+                //console.log( scope.notifications.chat );
                 scope.chat = {
                   total: newCount
                 };
-                console.log( scope.chat );
+                //console.log( scope.chat );
               });
           }
           scope.$watch( currentUser.get, function(newUser){

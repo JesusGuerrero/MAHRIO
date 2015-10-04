@@ -40,6 +40,8 @@
                 span(ng-repeat="board in network.boards track by $index")
                     | {{board.name}}
                     br
+            a.btn.btn-block(ui-sref="networks.detail.boards")
+                |   Manage Boards
         .form-group
             label
                 | Conversations
