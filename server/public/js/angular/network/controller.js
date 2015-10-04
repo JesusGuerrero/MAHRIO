@@ -1,8 +1,8 @@
 angular.module('baseApp.controllers')
-  .controller('NetworkController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_','Notification',
+  .controller('NetworksController', ['$scope', '$state', '$http', 'currentUser', 'Network', '_','Notification',
     function($scope, $state, $http, currentUser, Network, _, Notification){
       'use strict';
-
+      console.log( 'in networks');
       $scope.networks = [];
       var formSetup = function(){
         var usersCache = [];
@@ -171,4 +171,9 @@ angular.module('baseApp.controllers')
             $state.reload();
           });
       };
+    }])
+  .controller('NetworkController', ['$scope', 'network',
+    function($scope, network){
+      'use strict';
+      $scope.network = network;
     }]);

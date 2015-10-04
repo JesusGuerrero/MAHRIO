@@ -32,7 +32,7 @@ angular.module('baseApp.directives')
             }
           };
           scope.$watch( 'open', function() {
-            if( scope.open !== '0' ) {
+            if( scope.open !== '0' && scope.open !== '') {
               delete scope.currentConversation;
               scope.toUser = JSON.parse( scope.open );
               scope.otherUser = scope.toUser.profile ? (scope.toUser.profile.firstName + ' ' + scope.toUser.profile.lastName) : '';
