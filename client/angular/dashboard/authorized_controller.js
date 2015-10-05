@@ -4,5 +4,5 @@ angular.module('baseApp.controllers')
       'use strict';
 
       $scope.networks = currentUser.get().networks;
-      console.log( $scope.networks );
+      //console.log( $scope.networks );
     }]);

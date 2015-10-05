@@ -1,5 +1,5 @@
 angular.module('baseApp.controllers')
-  .controller('NotificationsController', ['$scope', function( $scope ) {
+  .controller('NotificationsController', [ function( ) {
     'use strict';
-    console.log( $scope );
+
   }]);

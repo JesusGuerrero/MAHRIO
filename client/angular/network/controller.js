@@ -43,8 +43,8 @@ angular.module('baseApp.controllers')
           });
       };
     }])
-  .controller('NetworkController', ['$scope', 'network','$state','FormHelper','Network','_',
-    function($scope, network, $state, FormHelper, Network, _ ){
+  .controller('NetworkController', ['$scope', 'network','$state','FormHelper','Network','_','currentUser',
+    function($scope, network, $state, FormHelper, Network, _, currentUser ){
       'use strict';
 
       $scope.network = { members: {}, admins: {} };
@@ -58,6 +58,8 @@ angular.module('baseApp.controllers')
           members: $scope.network.members ? Object.keys( $scope.network.members).length : 0,
           owner: $scope.network.owner ? true : false
         };
+      } else if( $state.current.name === 'networks.detail' ) {
+        currentUser.currentNetwork = $scope.network._id;
       }
       $scope.add = function () {
         $scope.network.members = Object.keys($scope.network.members);

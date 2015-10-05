@@ -299,8 +299,29 @@ angular.module('baseApp', [
         }
       })
 
+      .state('networks.detail.articles', {
+        url: '/articles',
+        controller: 'NetworkBoardsCtrl',
+        templateUrl: '/assets/html/task/index',
+        title: 'Network',
+        subTitle: 'View'
+      })
       .state('networks.detail.boards', {
         url: '/boards',
+        controller: 'NetworkBoardsCtrl',
+        templateUrl: '/assets/html/task/index',
+        title: 'Network',
+        subTitle: 'View'
+      })
+      .state('networks.detail.events', {
+        url: '/events',
+        controller: 'NetworkBoardsCtrl',
+        templateUrl: '/assets/html/task/index',
+        title: 'Network',
+        subTitle: 'View'
+      })
+      .state('networks.detail.members', {
+        url: '/members',
         controller: 'NetworkBoardsCtrl',
         templateUrl: '/assets/html/task/index',
         title: 'Network',

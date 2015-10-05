@@ -3,7 +3,7 @@ angular.module('baseApp.services')
     function ($state, $location, $rootScope, $q, User, Profile, Session) {
     'use strict';
 
-    var currentUser;
+    var currentUser, currentNetwork = null;
 
     function login (user, route) {
       currentUser = user;
@@ -42,6 +42,7 @@ angular.module('baseApp.services')
       set: function( currUser ) {
         currentUser = currUser;
       },
+      currentNetwork: currentNetwork,
       login: login,
       isLoggedIn: isLoggedIn,
       logout: logout,

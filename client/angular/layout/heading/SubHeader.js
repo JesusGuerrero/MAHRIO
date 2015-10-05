@@ -18,35 +18,19 @@ angular.module('baseApp.controllers')
 );
 
 angular.module('baseApp.directives')
-  .directive('heading', [ '$rootScope','$state',
-    function( $rootScope, $state ){
+  .directive('heading', [ '$rootScope','$state', 'currentUser',
+    function( $rootScope, $state, currentUser ){
       'use strict';
       return {
         restrict: 'E',
         replace: true,
         templateUrl: '/assets/html/layout/heading/index',
         link: function( scope ) {
-          $rootScope.$on('$stateChangeStart', function(event, toState) {
-            //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
-            //var head, breadcrumbs = [{url: 'root',value: 'Home'}];
-            //switch( toState.name ) {
-            //  case 'boards.list':
-            //    breadcrumbs.push({url:'', value: 'View Boards'});
-            //    head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
-            //    break;
-            //  case 'boards.new':
-            //    breadcrumbs.push({url:'', value: 'Create Board'});
-            //    head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
-            //    break;
-            //  case 'boards.detail':
-            //    breadcrumbs.push({url:'', value: 'Name'});
-            //    head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
-            //    break;
-            //  default:
-            //    breadcrumbs.push({url:'', value:'Undefined'});
-            //    head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
-            //    break;
-            //}
+          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState ) {
+
+            if( /networks\.detail/.test( fromState.name ) || !fromState.name   ) {
+              currentUser.currentNetwork = null;
+            }
             scope.heading = {
               title: toState.title,
               subTitle: toState.subTitle,

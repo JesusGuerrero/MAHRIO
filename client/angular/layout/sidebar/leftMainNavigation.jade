@@ -21,32 +21,54 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
         ul.sidebar-menu
             li.header
                 |   MAIN NAVIGATION
-            li
+            li(ng-class="{active: state==='root'}")
                 a( ui-sref="root" ui-sref-opts="{reload: true}")
                     i.fa.fa-dashboard
                     span
                         |   Dashboard
-            li
+            li(ng-class="{active: state==='notifications'}")
                 a( ui-sref="notifications")
                     i.fa.fa-bell
                     span
                         |   Notifications
-            li
-                a( ui-sref="networks.list")
+            li.treeview( ui-sref="networks.list" ng-class="{active: state==='networks'}")
+                a
                     i.fa.fa-share-alt
                     span
                         |   Networks
-            li
+                ul.treeview-menu(ng-if="currentNetwork" ng-class="{'menu-open': currentNetwork}")
+                    li
+                        a( ui-sref="networks.detail.articles({id: currentNetwork})" )
+                            i.fa.fa-book
+                            span
+                                |   Articles
+                    li
+                        a( ui-sref="networks.detail.boards({id: currentNetwork})" )
+                            i.fa.fa-tasks
+                            span
+                                |   Boards
+                    li
+                        a( ui-sref="networks.detail.Members({id: currentNetwork})" )
+                            i.fa.fa-users
+                            span
+                                |   Members
+                    li
+                        a( ui-sref="networks.detail.events({id: currentNetwork})" )
+                            i.fa.fa-calendar
+                            span
+                                |   Events
+
+            li(ng-if="access.indexOf('admin')!==-1")
                 a( ui-sref="articles.list" ui-sref-opts="{reload: true}")
                     i.fa.fa-book
                     span
                         |   Articles
-            li
+            li(ng-if="access.indexOf('admin')!==-1")
                 a( ui-sref="boards.list")
                     i.fa.fa-tasks
                     span
                         |   Boards
-            li
+            li(ng-if="access.indexOf('admin')!==-1")
                 a( ui-sref="users.list" ui-sref-opts="{reload: true}")
                     i.fa.fa-users
                     span
@@ -67,27 +89,32 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                         |   Questions
                     small.label.pull-right.bg-red
                         |   3
-            li
+            li(ng-if="access.indexOf('admin')!==-1")
                 a( ui-sref="calendar" ui-sref-opts="{reload: true}" )
                     i.fa.fa-calendar
                     span
                         |   Calendar
                     small.label.pull-right.bg-red
                         |   3
-            li
+            li(ng-class="{active: state==='conversations'}")
                 a( ui-sref="conversations" ui-sref-opts="{reload: true}")
                     i.fa.fa-comments
                     span
                         |   Conversations
                     small.label.pull-right.bg-red
                         |   3
-            li
+            li(ng-if="access.indexOf('admin')!==-1")
                 a( ui-sref="mail.inbox" )
                     i.fa.fa-envelope
                     span
                         |   Mailbox
                     small.label.pull-right.bg-yellow
                         |   12
+            //li(ng-show="currentNetwork")
+            //    a( ui-sref="networks.detail.boards({id: currentNetwork})" )
+            //        i.fa.fa-book
+            //        span
+            //            |   Articles
             //li.treeview
             //    a( href="#")
             //        i.fa.fa-share
