@@ -25,6 +25,16 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
     add: function( obj ) {
       return NetworkResource.create( {network: obj} ).$promise;
     },
+    addCoverImage: function( network, media ){
+      return NetworkResource.update(
+        {
+          id: network._id
+        },{
+          network: {
+            mediaInsert: media
+          }
+        }).$promise;
+    },
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
     },

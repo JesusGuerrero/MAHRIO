@@ -35,7 +35,10 @@ angular.module('baseApp.directives')
               scope.heading.title = newVal;
             }
           });
-          $rootScope.$on('$stateChangeStart', function(event, toState ) {
+          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState ) {
+            if( toState.name === fromState.name ) {
+              return;
+            }
 
             if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
               currentUser.currentNetwork = null;
@@ -44,6 +47,7 @@ angular.module('baseApp.directives')
             if( /networks/.test( toState.name )  ) {
               toState.title = currentUser.currentNetworkName;
             }
+            console.log( fromState );
             scope.heading = {
               title: toState.title,
               subTitle: toState.subTitle,
@@ -64,7 +68,7 @@ angular.module('baseApp.directives')
             }, function(newVal){
               if( newVal ) {
                 scope.heading.title = newVal;
-                listener()
+                listener();
               }
             });
           }

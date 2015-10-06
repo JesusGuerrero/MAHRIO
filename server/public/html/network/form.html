@@ -4,8 +4,13 @@
     <div class="panel panel-default">
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
-        <h3 class="text-center">Add Network</h3>
         <form novalidate="novalidate" ng-submit="network._id ? update() : add()">
+          <div class="form-group">
+            <label>  Cover Image</label><br/><small ng-show="!network._id">  Image upload available after article created</small>
+            <div ng-show="network._id">
+              <media media="network.coverImage" container="network" actions="mediaActions" icon="fa-photo"></media>
+            </div>
+          </div>
           <form-input-tag model="network.name" label="Name" required="true"></form-input-tag>
           <div class="row">
             <div class="col-xs-6">

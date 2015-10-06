@@ -5,7 +5,8 @@ var async = require('async'),
   Boom = require('boom'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-  Network = mongoose.model('Network');
+  Network = mongoose.model('Network'),
+  Media = mongoose.model('Media');
 
 function createNetwork( request, reply ) {
   if( !request.payload.network || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin') ) ) {
@@ -121,6 +122,7 @@ function getNetwork( request, reply, callback ) {
     request.payload.access._id = request.params.id;
     Network
       .findOne( request.payload.access  )
+      .populate('coverImage')
       .exec( function(err,network){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -136,9 +138,24 @@ function getNetwork( request, reply, callback ) {
       });
   }
 }
+function _updateImage( request, reply ) {
+  Media
+    .create( request.payload.network.mediaInsert, function(err, media){
+      if( err ) { return reply( Boom.badRequest(err) ); }
+
+      Network.update({_id: request.params.id}, {$set: {coverImage: media.id}}, {multi: false},
+        function(err, network){
+          if( err || !network ){ return reply( Boom.badRequest('failed to update article with image'+err)); }
+
+          return reply({media: media});
+        });
+    });
+}
 function updateNetwork( request, reply ) {
   if( !request.payload.network || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin')) || typeof request.params.id === 'undefined') {
     return reply( Boom.badRequest() );
+  } else if( request.payload.network.mediaInsert ) {
+    _updateImage(request, reply);
   } else if( typeof request.payload.networkIds !== 'undefined' && Array.isArray( request.payload.networkIds ) ) {
     // TODO: update several networks at once
   } else {
@@ -237,6 +254,16 @@ function joinNetwork( request, reply ) {
     }
   });
 }
+function addMediaNetwork( request, reply ) {
+  if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
+  if( !_.contains(request.auth.credentials.access, 'sudo') ) { return reply( Boom.badRequest() ); }
+
+  Network.update({_id: request.params.id}, {$set: {cover: request.params.id}}, {multi: false}, function(err){
+    if( err ) { return reply( Boom.badRequest(err)); }
+
+    reply( {media: true} );
+  });
+}
 function leaveNetwork( request, reply ) {
   if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
 
@@ -284,5 +311,6 @@ module.exports = {
   admin: adminNetwork,
   join: joinNetwork,
   leave: leaveNetwork,
+  media: addMediaNetwork,
   remove: removeNetwork
 };

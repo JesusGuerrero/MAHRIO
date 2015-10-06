@@ -1,6 +1,6 @@
 angular.module('baseApp.services')
-  .service('FormHelper', ['$http', 'currentUser', '_',
-    function($http, currentUser, _) {
+  .service('FormHelper', ['$http', 'currentUser', '_','$q','Media',
+    function($http, currentUser, _, $q, Media) {
       'use strict';
 
 
@@ -61,7 +61,7 @@ angular.module('baseApp.services')
         }
       };
 
-      this.setupFormHelper = function( $scope, resource ) {
+      this.setupFormHelper = function( $scope, resource, media ) {
         $scope.selectUser = function($item, hash, single ) {
           $scope[resource][ hash ] = selectedItem( $item, $scope[resource][ hash ], single );
           $scope.has[ hash ] = true;
@@ -71,6 +71,39 @@ angular.module('baseApp.services')
           $scope.has[entity] = remove( id, $scope[resource], entity );
         };
         $scope.getUsers = getUsers;
+
+        if( media ) {
+          $scope.mediaActions = {
+            upload: function( mediaDetails, file ){
+              var defer = $q.defer();
+              mediaDetails.object = 'articles';
+              Media.getKey( mediaDetails )
+                .then( function(res) {
+                  $http({
+                    url: res.signedRequest,
+                    method: 'PUT',
+                    data: file,
+                    transformRequest: angular.identity,
+                    headers: { 'x-amz-acl': 'public-read', 'Authorization': undefined, 'Content-Type': undefined }
+                  }).then( function(){
+                    mediaDetails.url = res.url;
+                    media.addCoverImage( {_id: $scope[resource]._id}, mediaDetails )
+                      .then( function(res){
+                        $scope[resource].media.push( res.media );
+                        defer.resolve({url: res.media.url});
+                      }, function(){
+                        defer.reject();
+                      });
+                  }, function(){
+                    defer.reject();
+                  });
+                }, function(){
+                  defer.reject();
+                });
+              return defer.promise;
+            }
+          };
+        }
       };
 
       return this;

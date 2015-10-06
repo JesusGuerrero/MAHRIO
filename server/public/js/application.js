@@ -109147,8 +109147,7 @@ angular.module('baseApp', [
         abstract: true,
         url: '/networks',
         template: '<ui-view/>',
-        title: 'Networks',
-        name: 'HELLO'
+        title: 'Networks'
       })
       .state('networks.new', {
         url: '/new',
@@ -110876,7 +110875,10 @@ angular.module('baseApp.directives')
               scope.heading.title = newVal;
             }
           });
-          $rootScope.$on('$stateChangeStart', function(event, toState ) {
+          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState ) {
+            if( toState.name === fromState.name ) {
+              return;
+            }
 
             if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
               currentUser.currentNetwork = null;
@@ -110885,6 +110887,7 @@ angular.module('baseApp.directives')
             if( /networks/.test( toState.name )  ) {
               toState.title = currentUser.currentNetworkName;
             }
+            console.log( fromState );
             scope.heading = {
               title: toState.title,
               subTitle: toState.subTitle,
@@ -110905,7 +110908,7 @@ angular.module('baseApp.directives')
             }, function(newVal){
               if( newVal ) {
                 scope.heading.title = newVal;
-                listener()
+                listener();
               }
             });
           }
@@ -111679,7 +111682,7 @@ angular.module('baseApp.controllers')
       $scope.network = { members: {}, admins: {} };
       $scope.has = {members: false, admins: false, owner: false};
       $scope.network = _.extend( $scope.network, network);
-      FormHelper.setupFormHelper($scope, 'network');
+      FormHelper.setupFormHelper($scope, 'network', Network );
 
       if( $state.current.name === 'networks.edit' ) {
         $scope.has = {
@@ -111755,6 +111758,16 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
   return {
     add: function( obj ) {
       return NetworkResource.create( {network: obj} ).$promise;
+    },
+    addCoverImage: function( network, media ){
+      return NetworkResource.update(
+        {
+          id: network._id
+        },{
+          network: {
+            mediaInsert: media
+          }
+        }).$promise;
     },
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
@@ -112248,8 +112261,8 @@ angular.module('baseApp.filters', [])
     };
   }]);
 angular.module('baseApp.services')
-  .service('FormHelper', ['$http', 'currentUser', '_',
-    function($http, currentUser, _) {
+  .service('FormHelper', ['$http', 'currentUser', '_','$q','Media',
+    function($http, currentUser, _, $q, Media) {
       'use strict';
 
 
@@ -112310,7 +112323,7 @@ angular.module('baseApp.services')
         }
       };
 
-      this.setupFormHelper = function( $scope, resource ) {
+      this.setupFormHelper = function( $scope, resource, media ) {
         $scope.selectUser = function($item, hash, single ) {
           $scope[resource][ hash ] = selectedItem( $item, $scope[resource][ hash ], single );
           $scope.has[ hash ] = true;
@@ -112320,6 +112333,39 @@ angular.module('baseApp.services')
           $scope.has[entity] = remove( id, $scope[resource], entity );
         };
         $scope.getUsers = getUsers;
+
+        if( media ) {
+          $scope.mediaActions = {
+            upload: function( mediaDetails, file ){
+              var defer = $q.defer();
+              mediaDetails.object = 'articles';
+              Media.getKey( mediaDetails )
+                .then( function(res) {
+                  $http({
+                    url: res.signedRequest,
+                    method: 'PUT',
+                    data: file,
+                    transformRequest: angular.identity,
+                    headers: { 'x-amz-acl': 'public-read', 'Authorization': undefined, 'Content-Type': undefined }
+                  }).then( function(){
+                    mediaDetails.url = res.url;
+                    media.addCoverImage( {_id: $scope[resource]._id}, mediaDetails )
+                      .then( function(res){
+                        $scope[resource].media.push( res.media );
+                        defer.resolve({url: res.media.url});
+                      }, function(){
+                        defer.reject();
+                      });
+                  }, function(){
+                    defer.reject();
+                  });
+                }, function(){
+                  defer.reject();
+                });
+              return defer.promise;
+            }
+          };
+        }
       };
 
       return this;

@@ -3,9 +3,15 @@
         .panel.panel-default
             error-message-box( validation-errors="validationErrors" )
             .panel-body
-                h3.text-center
-                    | Add Network
                 form(novalidate ng-submit="network._id ? update() : add()")
+                    .form-group
+                        label
+                            |   Cover Image
+                        br
+                        small(ng-show="!network._id")
+                            |   Image upload available after article created
+                        div(ng-show="network._id")
+                            media( media="network.coverImage" container='network' actions="mediaActions" icon="fa-photo")
                     form-input-tag(
                         model="network.name"
                         label="Name"

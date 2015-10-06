@@ -52,7 +52,7 @@ angular.module('baseApp.controllers')
       $scope.network = { members: {}, admins: {} };
       $scope.has = {members: false, admins: false, owner: false};
       $scope.network = _.extend( $scope.network, network);
-      FormHelper.setupFormHelper($scope, 'network');
+      FormHelper.setupFormHelper($scope, 'network', Network );
 
       if( $state.current.name === 'networks.edit' ) {
         $scope.has = {

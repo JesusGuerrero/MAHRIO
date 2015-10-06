@@ -259,8 +259,7 @@ angular.module('baseApp', [
         abstract: true,
         url: '/networks',
         template: '<ui-view/>',
-        title: 'Networks',
-        name: 'HELLO'
+        title: 'Networks'
       })
       .state('networks.new', {
         url: '/new',

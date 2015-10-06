@@ -124,7 +124,7 @@ function _updateImage( request, reply ) {
     .create( request.payload.article.mediaInsert, function(err, media){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
-      Article.update({_id: request.params.id}, {$push: {media: media.id}}, {multi: false},
+      Article.update({_id: request.params.id}, {$set: {coverImage: media.id}}, {multi: false},
         function(err, article){
           if( err || !article ){ return reply( Boom.badRequest('failed to update article with image'+err)); }
 
