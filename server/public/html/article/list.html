@@ -1,14 +1,14 @@
 
 <div ng-if="networkId" id="network-detail" class="row">
   <div style="position: absolute; margin-top: -64px; right: 0px" class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a ui-sref="articles.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId &amp;&amp; (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="btn btn-primary btn-block pull-right"><i class="fa fa-plus"></i>  Article</a></div>
-  <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
+  <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.list" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
   <div id="tab-sections" class="col-xs-12">
     <tabset vertical="false" type="pills">
       <tab heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
       <tab heading="Articles" active="true">  &nbsp;</tab>
-      <tab heading="Boards" ui-sref="profile.info" ui-sref-opts="{reload: true}">  &nbsp;</tab>
-      <tab heading="Events" ui-sref="profile.contact" ui-sref-opts="{reload: true}">  &nbsp;</tab>
-      <tab heading="Members" ui-sref="profile.security" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Boards" ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
     </tabset>
   </div>
 </div>
@@ -19,11 +19,11 @@
   <div class="col-md-10 col-md-offset-1 col-sm-12">
     <ul style="list-style-type: none; padding: 0; margin: 0">
       <li ng-repeat="article in articles track by $index"><a ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}">
-          <figure><img ng-src="{{article.primaryImage.url}}"/>
+          <figure><img ng-src="{{article.coverImage.url}}"/>
             <figcaption class="credit"></figcaption>
           </figure>
           <h3>{{article.title}}</h3></a><a ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}">
-          <figure><img ng-src="{{article.primaryImage.url}}"/>
+          <figure><img ng-src="{{article.coverImage.url}}"/>
             <figcaption class="credit"></figcaption>
           </figure>
           <h3>{{article.title}}</h3></a>

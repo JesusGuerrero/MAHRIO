@@ -1,3 +1,25 @@
+.row(ng-if='networkId' id="network-detail")
+    .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
+        a.btn.btn-primary.btn-block.pull-right(ui-sref="users.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+            i.fa.fa-plus
+            |   User
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
+        a.btn.btn-default(ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}")
+            i.fa.fa-chevron-left
+                |   Back
+    .col-xs-12(id="tab-sections")
+        tabset( vertical="false" type="pills")
+            tab( heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Articles" ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Boards" ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Members" active="true")
+                |   &nbsp;
+
 div
     .row
         .col-lg-3.col-sm-6.col-xs-12(ng-repeat="user in usersList track by $index")

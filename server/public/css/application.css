@@ -19500,11 +19500,17 @@ table tr td div.icheckbox_flat-blue {
   width: 100%;
   margin-top: -230px;
 }
-#network-detail #tab-sections div.row div {
+#network-detail #tab-sections div.row div.tabs-nav {
   text-align: center;
 }
-#network-detail #tab-sections div.row div ul {
+#network-detail #tab-sections div.row div.tabs-nav ul.nav-pills {
   display: inline-block;
+}
+#network-detail #tab-sections div.row div.tabs-nav ul.nav-pills div {
+  text-align: left;
+}
+#network-detail #tab-sections div.row div.box-body {
+  min-height: 300px;
 }
 @media only screen and (max-width: 800px) {
   .fc-toolbar .fc-center h2 {

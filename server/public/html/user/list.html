@@ -1,4 +1,17 @@
 
+<div ng-if="networkId" id="network-detail" class="row">
+  <div style="position: absolute; margin-top: -64px; right: 0px" class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a ui-sref="users.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId &amp;&amp; (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="btn btn-primary btn-block pull-right"><i class="fa fa-plus"></i>  User</a></div>
+  <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
+  <div id="tab-sections" class="col-xs-12">
+    <tabset vertical="false" type="pills">
+      <tab heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Articles" ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Boards" ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Members" active="true">  &nbsp;</tab>
+    </tabset>
+  </div>
+</div>
 <div>
   <div class="row">
     <div ng-repeat="user in usersList track by $index" class="col-lg-3 col-sm-6 col-xs-12">

@@ -5,15 +5,15 @@
                 |   Back
     .col-xs-12(id="tab-sections")
         tabset( vertical="false" type="pills")
-            tab( heading="Summary")
+            tab( heading="Summary" active="true")
                 |   &nbsp;
-            tab( heading="Articles" ui-sref="networks.articles({id: network._id})" ui-sref-opts="{reload: true}" active="tab[0]" select="tabSelect(0)")
+            tab( heading="Articles" ui-sref="networks.articles({id: network._id})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
-            tab( heading="Boards" ui-sref="profile.info" ui-sref-opts="{reload: true}" active="tab[1]" select="tabSelect(1)")
+            tab( heading="Boards" ui-sref="networks.boards({id: network._id})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
-            tab( heading="Events" ui-sref="profile.contact" ui-sref-opts="{reload: true}" active="tab[2]" select="tabSelect(2)")
+            tab( heading="Events" ui-sref="networks.events({id: network._id})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
-            tab( heading="Members" ui-sref="profile.security" ui-sref-opts="{reload: true}" active="tab[3]" select="tabSelect(3)")
+            tab( heading="Members" ui-sref="networks.members({id: network._id})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
     .col-xs-12(id="cover-photo")
         img(ng-src="{{network.coverImage.url}}")

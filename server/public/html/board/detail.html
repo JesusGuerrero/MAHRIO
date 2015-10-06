@@ -1,8 +1,22 @@
 
-<div class="row">
-  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="boards.list" ui-sref-opts="{reload: true}" class="btn btn-default">
-      <h4><i class="fa fa-chevron-left"></i>  Back</h4></a></div>
-  <div class="col-xs-12">  Board Name: {{board.name}}</div>
-  <div class="col-xs-12">  Board Members:<span ng-repeat="member in board.members track by $index">  {{member.email}}</span></div>
-  <div class="col-xs-12">  Board Columns:<span ng-repeat="column in board.columns track by $index">  {{column.name}}</span></div>
+<div id="network-detail" class="row">
+  <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
+  <div id="tab-sections" class="col-xs-12">
+    <tabset vertical="false" type="pills">
+      <tab heading="Scrum" ui-sref="networks.board({tab: 'scrum'})" active="tab.scrum">
+        <tasks-current board="board"></tasks-current>
+      </tab>
+      <tab heading="Backlog" ui-sref="networks.board({tab: 'backlog'})" active="tab.backlog">
+        <tasks-backlog id="board.id"></tasks-backlog>
+      </tab>
+      <tab heading="New Task" ui-sref="networks.board({tab: 'newTask'})" active="tab.newTask">
+        <div class="col-xs-12">
+          <tasks-new id="board.id"></tasks-new>
+        </div>
+      </tab>
+      <tab heading="Edit Task" ng-show="false" active="tab[3]">
+        <tasks-new id="board.id"></tasks-new>
+      </tab>
+    </tabset>
+  </div>
 </div>

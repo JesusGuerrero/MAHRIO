@@ -4,20 +4,22 @@
     <div class="panel panel-default">
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
-        <h3 class="text-center">Add Board</h3>
         <form novalidate="novalidate" ng-submit="board._id ? update() : add()">
           <form-input-tag model="board.name" label="Name" required="true"></form-input-tag>
-          <div ng-show="access.indexOf('sudo') !== -1" class="form-group">
-            <label>  Owner:&nbsp;</label><span ng-show="hasOwner" style="padding-right: 20px; position: relative" class="bg-red label"><i style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeOwner( )" class="fa fa-close pull-right"></i>  {{board._owner.profile.firstName}} {{board._owner.profile.lastName}} &lt;{{board._owner.email}}&gt;</span>
-            <div ng-show="!hasOwner">
-              <auto-complete input-model="tempOwner" placeholder="Add Owner" auto-complete-http="getUsers" selected="selectOwner"></auto-complete>
+          <div ng-if="access.indexOf('sudo') !== -1" class="form-group">
+            <label>  Owner:&nbsp;</label>
+            <div ng-show="!has['owner']" class="pull-right">  me ?
+              <input type="checkbox" ng-model="has['owner']" ng-click="selectUser(null, 'owner', 1)" i-check="i-check"/>
+            </div><span ng-show="has['owner']" style="padding-right: 20px; position: relative" class="bg-red label"><i style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeUser( null , 'owner' )" class="fa fa-close pull-right"></i>  {{board.owner.profile.firstName}} {{board.owner.profile.lastName}} &lt;{{board.owner.email}}&gt;</span>
+            <div ng-show="!has['owner']">
+              <auto-complete input-model="tempOwner" placeholder="Add Owner" auto-complete-http="getUsers" selected="selectUser" hash="owner" single="1"></auto-complete>
             </div>
           </div>
-          <div ng-show="hasMembers" class="form-group">
+          <div ng-show="has['members']" class="form-group">
             <label>Members</label>
-            <div><span ng-repeat="member in board.members track by $index" style="margin: 1px 0 0;padding: 5px; display: block;" class="bg-blue">  {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;<i style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember(member._id)" class="fa fa-close pull-right"></i></span></div>
+            <div><span ng-repeat="member in board.members track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" class="bg-blue"><i style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeUser(member._id, 'members')" class="fa fa-close pull-right"></i>  {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;</span></div>
           </div>
-          <auto-complete input-model="tempMember" placeholder="Members" auto-complete-http="getUsers" selected="selected"></auto-complete>
+          <auto-complete input-model="tempMember" placeholder="Members" auto-complete-http="getUsers" selected="selectUser" hash="members"></auto-complete>
           <div ng-show="board.columns.length" class="form-group">
             <label>Columns</label>
             <div><span ng-repeat="column in board.columns track by $index" style="padding: 5px; margin-right: 5px;" class="bg-aqua">  {{column.name}}<i style="padding: 0 5px; cursor: pointer" ng-click="removeColumn($index)" class="fa fa-close"></i></span></div>

@@ -1,3 +1,24 @@
+.row(ng-if='networkId' id="network-detail")
+    .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
+        a.btn.btn-primary.btn-block.pull-right(ui-sref="boards.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+            i.fa.fa-plus
+            |   Board
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
+        a.btn.btn-default(ui-sref="networks.list" ui-sref-opts="{reload: true}")
+            i.fa.fa-chevron-left
+                |   Back
+    .col-xs-12(id="tab-sections")
+        tabset( vertical="false" type="pills")
+            tab( heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Articles" ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Boards" active="true")
+                |   &nbsp;
+            tab( heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
 .col-xs-12
     .row
         .col-xs-12
@@ -12,18 +33,18 @@
                     |Columns
             .col-xs-12.col-sm-4.col-md-3.col-lg-3.text-center
                 strong
-                    |Actions
+                    |Tasks
 .row
     .col-xs-12
         .list-group
-            .list-group-item( ng-repeat="board in boards track by $index" ui-sref="boards.detail({id: board._id})" ui-sref-opts="{reload: true}" style="cursor:pointer")
+            .list-group-item( ng-repeat="board in boards track by $index" ui-sref="networks.board({id: networkId, boardId: board._id})" ui-sref-opts="{reload: true}")
                 .col-xs-12.col-sm-4.col-md-3.col-lg-3.no-padding
                     strong
                         i.fa.fa-server
                         |{{board.name}}
                 .col-xs-12.col-sm-4.col-md-3.col-lg-3
                     span(ng-repeat="member in board.members track by $index")
-                        |{{member.email}}
+                        |{{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;
                         br
                 .col-xs-12.col-sm-4.col-md-3.col-lg-3
                     span(ng-repeat="column in board.columns track by $index")
@@ -39,7 +60,7 @@
 
 
 
-.row(style="margin-top: 50px;")
+.row(style="margin-top: 50px; display: none")
     .col-xs-12.col-sm-4.col-md-3.col-lg-2
         a.btn.btn-primary(ui-sref="boards.new" ui-sref-opts="{reload: true}")
             i.fa.fa-plus

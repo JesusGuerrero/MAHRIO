@@ -3,31 +3,32 @@
         .panel.panel-default
             error-message-box( validation-errors="validationErrors" )
             .panel-body
-                h3.text-center
-                    | Add Board
                 form(novalidate ng-submit="board._id ? update() : add()")
                     form-input-tag(
                         model="board.name"
                         label="Name"
                         required="true")
-                    .form-group(ng-show="access.indexOf('sudo') !== -1")
+                    .form-group(ng-if="access.indexOf('sudo') !== -1")
                         label
                             |   Owner:&nbsp;
-                        span.bg-red.label(ng-show="hasOwner" style="padding-right: 20px; position: relative")
-                            i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeOwner( )")
-                            |   {{board._owner.profile.firstName}} {{board._owner.profile.lastName}} &lt;{{board._owner.email}}&gt;
-                        div(ng-show="!hasOwner")
+                        .pull-right(ng-show="!has['owner']")
+                            |   me ?
+                            input( type="checkbox" ng-model="has['owner']" ng-click="selectUser(null, 'owner', 1)" i-check)
+                        span.bg-red.label(ng-show="has['owner']" style="padding-right: 20px; position: relative")
+                            i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeUser( null , 'owner' )")
+                            |   {{board.owner.profile.firstName}} {{board.owner.profile.lastName}} &lt;{{board.owner.email}}&gt;
+                        div(ng-show="!has['owner']")
                             auto-complete(input-model="tempOwner" placeholder="Add Owner" auto-complete-http="getUsers"
-                            selected="selectOwner")
-                    .form-group(ng-show="hasMembers")
+                            selected="selectUser" hash="owner" single="1" )
+                    .form-group(ng-show="has['members']")
                         label
                             | Members
                         div
-                            span.bg-blue( ng-repeat="member in board.members track by $index" style="margin: 1px 0 0;padding: 5px; display: block;")
+                            span.bg-blue( ng-repeat="member in board.members track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" )
+                                i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeUser(member._id, 'members')")
                                 |   {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;
-                                i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember(member._id)")
-                    auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getUsers"
-                        selected="selected")
+
+                    auto-complete(input-model="tempMember" placeholder="Members" auto-complete-http="getUsers" selected="selectUser" hash="members")
                     .form-group(ng-show="board.columns.length")
                         label
                             | Columns

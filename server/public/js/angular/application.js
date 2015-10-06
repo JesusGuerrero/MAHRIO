@@ -178,6 +178,12 @@ angular.module('baseApp', [
         title: 'Calendar',
         subTitle: 'Events'
       })
+      .state('Calendar.new', {
+        url: '/new',
+        controller: 'EventController',
+        templateUrl: '/assets/html/calendar/new',
+        title: 'New Event'
+      })
       .state('calendar.day', {
         url: '/day'
       })
@@ -212,7 +218,7 @@ angular.module('baseApp', [
         template: '<ui-view/>'
       })
       .state('boards.new', {
-        url: '/new',
+        url: '/new?networkId',
         templateUrl: '/assets/html/board/form',
         title: 'New Board'
       })
@@ -306,7 +312,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/article/list',
         resolve: {
           articles: function($stateParams, Article, $q ) {
-            return resource.articles( $stateParams.id, Article, $q.defer() );
+            return resource.articles( null, Article, $q.defer() );
           }
         }
       })
@@ -315,57 +321,68 @@ angular.module('baseApp', [
         controller: 'NetworkArticleController',
         templateUrl: '/assets/html/article/detail',
         resolve: {
-          articles: function($stateParams, Article, $q) {
-            var defer = $q.defer();
-            Article.get( $stateParams.articleId )
-              .then( function( res ) {
-                var article = res.article;
-                if( article.media && article.media.length ) {
-                  article.primaryImage = {
-                    url: article.media[0].url
-                  };
-                }
-                defer.resolve( article );
-              }, function(){
-                defer.resolve( null );
-              });
-            return defer.promise;
+          articles: function($stateParams, Article, $q ) {
+            return resource.articles( $stateParams.articleId, Article, $q.defer() );
           }
         }
       })
       .state('networks.boards', {
         url: '/:id/boards',
-        controller: 'NetworkController',
-        templateUrl: '/assets/html/network/boards',
-        title: 'Network',
-        subTitle: 'View',
+        controller: 'NetworkBoardController',
+        templateUrl: '/assets/html/board/list',
         resolve: {
-          network: function($stateParams, Network, $q) {
-            return resource.network( $stateParams.id, Network, $q.defer() );
+          boards: function($stateParams, Board, $q) {
+            return resource.boards( null, Board, $q.defer() );
+          }
+        }
+      })
+      .state('networks.board', {
+        url: '/:id/board/:boardId?tab',
+        controller: 'NetworkBoardController',
+        templateUrl: '/assets/html/board/detail',
+        resolve: {
+          boards: function($stateParams, Board, $q) {
+            return resource.boards( $stateParams.boardId, Board, $q.defer() );
           }
         }
       })
       .state('networks.events', {
         url: '/:id/events',
-        controller: 'NetworkController',
-        templateUrl: '/assets/html/network/events',
-        title: 'Network',
-        subTitle: 'View',
+        controller: 'NetworkEventController',
+        templateUrl: '/assets/html/calendar/list',
         resolve: {
-          network: function($stateParams, Network, $q) {
-            return resource.network( $stateParams.id, Network, $q.defer() );
+          events: function($stateParams, Calendar, $q) {
+            return resource.events( null, Calendar, $q.defer() );
+          }
+        }
+      })
+      .state('networks.event', {
+        url: '/:id/event/:eventId',
+        controller: 'NetworkEventController',
+        templateUrl: '/assets/html/calendar/detail',
+        resolve: {
+          events: function($stateParams, Calendar, $q) {
+            return resource.events( $stateParams.eventId, Calendar, $q.defer() );
           }
         }
       })
       .state('networks.members', {
         url: '/:id/members',
-        controller: 'NetworkController',
-        templateUrl: '/assets/html/network/members',
-        title: 'Network',
-        subTitle: 'View',
+        controller: 'NetworkMemberController',
+        templateUrl: '/assets/html/user/list',
         resolve: {
-          network: function($stateParams, Network, $q) {
-            return resource.network( $stateParams.id, Network, $q.defer() );
+          users: function($stateParams, User, $q) {
+            return resource.users( null, User, $q.defer() );
+          }
+        }
+      })
+      .state('networks.member', {
+        url: '/:id/members/:userId',
+        controller: 'NetworkMemberController',
+        templateUrl: '/assets/html/user/detail',
+        resolve: {
+          users: function($stateParams, User, $q) {
+            return resource.users( $stateParams.userId, User, $q.defer() );
           }
         }
       })

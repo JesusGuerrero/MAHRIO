@@ -1,6 +1,6 @@
 angular.module('baseApp.controllers')
-  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_','Notification','$q','Media',
-    function($scope, $state, $http, currentUser, Article, _, Notification, $q, Media){
+  .controller('ArticleController', ['$scope', '$state', '$http', 'currentUser', 'Article', '_','Notification','FormHelper',
+    function($scope, $state, $http, currentUser, Article, _, Notification, FormHelper){
       'use strict';
 
       $scope.articles = [];
@@ -43,36 +43,7 @@ angular.module('baseApp.controllers')
         $scope.removeWidget = function( index ) {
           $scope.article.widgets.splice( index, 1);
         };
-        $scope.mediaActions = {
-          upload: function( mediaDetails, file ){
-            var defer = $q.defer();
-            mediaDetails.object = 'articles';
-            Media.getKey( mediaDetails )
-              .then( function(res) {
-                $http({
-                  url: res.signedRequest,
-                  method: 'PUT',
-                  data: file,
-                  transformRequest: angular.identity,
-                  headers: { 'x-amz-acl': 'public-read', 'Authorization': undefined, 'Content-Type': undefined }
-                }).then( function(){
-                  mediaDetails.url = res.url;
-                  Article.addImage( {_id: $scope.article._id}, mediaDetails )
-                    .then( function(res){
-                      $scope.article.media.push( res.media );
-                      defer.resolve({url: res.media.url});
-                    }, function(){
-                      defer.reject();
-                    });
-                }, function(){
-                  defer.reject();
-                });
-              }, function(){
-                defer.reject();
-              });
-            return defer.promise;
-          }
-        };
+        FormHelper.setupFormHelper( $scope, 'article', Article );
       };
       switch( $state.current.name ) {
         case 'articles.new':
@@ -120,11 +91,6 @@ angular.module('baseApp.controllers')
           Article.get( $state.params.id )
             .then( function( res ) {
               $scope.article = res.article;
-              if( $scope.article.media && $scope.article.media.length ) {
-                $scope.article.primaryImage = {
-                  url: $scope.article.media[0].url
-                };
-              }
             });
           formSetup();
           $scope.save = function( ) {

@@ -85,7 +85,7 @@ angular.module('baseApp.controllers')
   .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser',
     function($scope, $state, articles, currentUser){
       'use strict';
-
+      console.log( articles );
       if( $state.current.name === 'networks.articles' ) {
         $scope.networkId = $state.params.id;
         $scope.articles = articles;
@@ -100,5 +100,72 @@ angular.module('baseApp.controllers')
       }
       if( $scope.article ) {
         currentUser.currentNetworkName = $scope.article.title;
+      }
+    }])
+  .controller('NetworkBoardController', ['$scope', '$state', 'boards','currentUser',
+    function($scope, $state, boards, currentUser){
+      'use strict';
+
+      if( $state.current.name === 'networks.boards' ) {
+        $scope.networkId = $state.params.id;
+        $scope.boards = boards;
+        console.log( $scope.boards );
+      } else if( $state.current.name === 'networks.board' ) {
+        $scope.networkId = $state.params.id;
+        $scope.board = boards;
+      }
+      if( currentUser.currentNetwork === null ) {
+        currentUser.currentNetwork = $scope.networkId;
+      }
+      if( $scope.board ) {
+        currentUser.currentNetworkName = $scope.board.title;
+      }
+      $scope.tab = {
+        scrum: false,
+        backlog: false,
+        newTask: false,
+        editTask: false
+      };
+      if( ['scrum','backlog','newTask','editTask'].indexOf( $state.params.tab ) === -1 ) {
+        $scope.tab.scrum = true;
+      } else {
+        $scope.tab[ $state.params.tab ] = true;
+      }
+    }])
+  .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser',
+    function($scope, $state, events, currentUser){
+      'use strict';
+
+      if( $state.current.name === 'networks.events' ) {
+        $scope.networkId = $state.params.id;
+        $scope.events = events;
+      } else if( $state.current.name === 'networks.event' ) {
+        $scope.networkId = $state.params.id;
+        $scope.event = events;
+      }
+      if( currentUser.currentNetwork === null ) {
+        currentUser.currentNetwork = $scope.networkId;
+      }
+      if( $scope.event ) {
+        currentUser.currentNetworkName = $scope.event.title;
+      }
+    }])
+  .controller('NetworkMemberController', ['$scope', '$state', 'users','currentUser',
+    function($scope, $state, users, currentUser){
+      'use strict';
+
+      if( $state.current.name === 'networks.members' ) {
+        $scope.networkId = $state.params.id;
+        $scope.users = users;
+        console.log( $scope.boards );
+      } else if( $state.current.name === 'networks.member' ) {
+        $scope.networkId = $state.params.id;
+        $scope.user = users;
+      }
+      if( currentUser.currentNetwork === null ) {
+        currentUser.currentNetwork = $scope.networkId;
+      }
+      if( $scope.user ) {
+        currentUser.currentNetworkName = $scope.user.title;
       }
     }]);

@@ -13,7 +13,7 @@ angular.module('baseApp.services').factory('Article', [ 'ArticleResource', funct
   'use strict';
   return {
     add: function( article ) { return ArticleResource.create( {article: article} ).$promise; },
-    addImage: function( article, media ){
+    addCoverImage: function( article, media ){
       return ArticleResource.update(
         {
           id: article._id

@@ -42,7 +42,7 @@ function _getArticleOwner( article, callback ) {
 function _getAllArticles( request, reply, callback ) {
   Article
     .find( )
-    .populate('widgets sections media')
+    .populate('widgets sections media coverImage')
     .exec( function(err, articles){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -69,7 +69,7 @@ function getArticle( request, reply, callback ) {
   } else {
     Article
       .findOne( {_id: request.params.id} )
-      .populate('widgets sections media')
+      .populate('widgets sections media coverImage')
       .exec( function(err, article){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
