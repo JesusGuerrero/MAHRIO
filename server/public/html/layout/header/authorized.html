@@ -7,7 +7,7 @@
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
         <chat-widget></chat-widget>
-        <li class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-envelope"></i><span ng-show="notifications.mail &amp;&amp; notifications.mail.count" class="label label-success">  {{notifications.mail.count}}</span></a>
+        <li ng-if="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1" class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-envelope"></i><span ng-show="notifications.mail &amp;&amp; notifications.mail.count" class="label label-success">  {{notifications.mail.count}}</span></a>
           <ul class="dropdown-menu">
             <li class="header"><b>  Messages</b><span ng-show="notifications.mail &amp;&amp; notifications.mail.messages &amp;&amp; notifications.mail.messages.length">  ( {{notification.mail.messages.length}} )</span></li>
             <li>

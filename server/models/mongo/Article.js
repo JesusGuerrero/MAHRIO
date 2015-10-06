@@ -9,7 +9,8 @@ var mongoose = require('mongoose'),
     widgets: [{type: mongoose.Schema.Types.ObjectId, ref: 'Widget'}],
     created: { type: Date, default: Date.now },
     published: {type: Boolean},
-    creator: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+    creator: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    network: {type: mongoose.Schema.Types.ObjectId, ref: 'Network'}
   }),
   Article = mongoose.model('Article', schema);
 

@@ -20,6 +20,7 @@ angular.module('baseApp.directives')
             scope.$apply(function(){
               scope.file = files[0];
               scope.filename = scope.file.name;
+              scope.readyToUpload = true;
             });
             imageObject = {
               filename: scope.file.name,

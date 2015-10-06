@@ -1,4 +1,6 @@
-.col-xs-12
+.col-xs-12(ng-if="!hasNetworks")
+    |   No Networks
+.col-xs-12(ng-if="hasNetworks")
     .row
         .col-xs-12
             .col-md-2.col-lg-2.no-padding

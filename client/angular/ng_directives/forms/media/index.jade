@@ -2,8 +2,8 @@
     i.fa( style="font-size: 7em;" ng-show="!media.url" ng-class="getDefault()")
     img( id="preview" ng-show="media.url" src="{{media.url}}" width="100")
     br
-    input( type="file" style="display: none" id="file")
-    button.btn.btn-primary(ng-click="setupFile(); readyToUpload = true;" ng-show="!readyToUpload")
+    input( type="file" id="file" style="width: 80px")
+    //button.btn.btn-primary(ng-click="setupFile(); readyToUpload = true;" ng-show="!readyToUpload")
         |   {{media.url ? 'Change' : 'Upload'}}
     p(ng-show="readyToUpload")
         |   New File: {{filename}}

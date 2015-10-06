@@ -1,8 +1,24 @@
-.row
-    .col-xs-12.col-sm-4.col-md-3.col-lg-2
+.row(id="network-detail")
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
         a.btn.btn-default(ui-sref="networks.list" ui-sref-opts="{reload: true}")
             i.fa.fa-chevron-left
                 |   Back
+    .col-xs-12(id="tab-sections")
+        tabset( vertical="false" type="pills")
+            tab( heading="Summary")
+                |   &nbsp;
+            tab( heading="Articles" ui-sref="networks.articles({id: network._id})" ui-sref-opts="{reload: true}" active="tab[0]" select="tabSelect(0)")
+                |   &nbsp;
+            tab( heading="Boards" ui-sref="profile.info" ui-sref-opts="{reload: true}" active="tab[1]" select="tabSelect(1)")
+                |   &nbsp;
+            tab( heading="Events" ui-sref="profile.contact" ui-sref-opts="{reload: true}" active="tab[2]" select="tabSelect(2)")
+                |   &nbsp;
+            tab( heading="Members" ui-sref="profile.security" ui-sref-opts="{reload: true}" active="tab[3]" select="tabSelect(3)")
+                |   &nbsp;
+    .col-xs-12(id="cover-photo")
+        img(src='https://scontent-lax3-1.xx.fbcdn.net/hphotos-xpt1/v/t1.0-9/1395151_520392098100518_7305180315505749998_n.jpg?oh=53976cbcb0bb1a4ffdc1ba1a597cf092&oe=56CE89C0')
+
+//
     br
     br
     br

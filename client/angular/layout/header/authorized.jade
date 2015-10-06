@@ -17,7 +17,7 @@ header.main-header
         .navbar-custom-menu
             ul.nav.navbar-nav
                 chat-widget
-                li.dropdown.messages-menu
+                li.dropdown.messages-menu(ng-if="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
                     a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-envelope
                         span.label.label-success(ng-show="notifications.mail && notifications.mail.count")

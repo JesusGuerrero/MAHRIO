@@ -1,7 +1,8 @@
 
 <div class="col-xs-12"><i style="font-size: 7em;" ng-show="!media.url" ng-class="getDefault()" class="fa"></i><img id="preview" ng-show="media.url" src="{{media.url}}" width="100"/><br/>
-  <input type="file" style="display: none" id="file"/>
-  <button ng-click="setupFile(); readyToUpload = true;" ng-show="!readyToUpload" class="btn btn-primary">  {{media.url ? 'Change' : 'Upload'}}</button>
+  <input type="file" id="file" style="width: 80px"/>
+  <!--button.btn.btn-primary(ng-click="setupFile(); readyToUpload = true;" ng-show="!readyToUpload")|   {{media.url ? 'Change' : 'Upload'}}
+  -->
   <p ng-show="readyToUpload">  New File: {{filename}}</p>
   <button ng-click="cancelUpload(); readyToUpload = false;" ng-show="readyToUpload" class="btn btn-danger"><i class="fa fa-close"></i></button>
   <button ng-click="proceedUpload();" ng-show="readyToUpload" class="btn btn-success"><i class="fa fa-check"></i></button><br/><br/>

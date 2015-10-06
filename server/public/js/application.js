@@ -108941,9 +108941,10 @@ angular.module('baseApp', [
         template: '<ui-view/>'
       })
       .state('articles.new', {
-        url: '/new',
+        url: '/new?networkId',
         templateUrl: '/assets/html/article/form',
-        title: 'New Article'
+        title: 'New Article',
+        resolve: { articles: function(){ return 1; } }
       })
       .state('articles.list', {
         url: '/all',
@@ -108954,12 +108955,14 @@ angular.module('baseApp', [
       .state('articles.edit', {
         url: '/:id/edit',
         templateUrl: '/assets/html/article/form',
-        title: 'Edit Article'
+        title: 'Edit Article',
+        resolve: { articles: function(){ return null; } }
       })
       .state('articles.detail', {
         url: '/:id',
         templateUrl: '/assets/html/article/detail',
-        title: 'Article'
+        title: 'Article',
+        resolve: { articles: function(){ return null; } }
       })
       .state('about', {
         url: '/about',
@@ -108994,7 +108997,7 @@ angular.module('baseApp', [
       })
       .state('users.new', {
         url: '/new',
-        templateUrl: '/assets/html/user/form-register',
+        templateUrl: '/assets/html/user/form-register'
       })
       .state('users.list', {
         url: '/list',
@@ -109143,7 +109146,9 @@ angular.module('baseApp', [
       .state('networks', {
         abstract: true,
         url: '/networks',
-        template: '<ui-view/>'
+        template: '<ui-view/>',
+        title: 'Networks',
+        name: 'HELLO'
       })
       .state('networks.new', {
         url: '/new',
@@ -109156,7 +109161,7 @@ angular.module('baseApp', [
         url: '',
         controller: 'NetworksController',
         templateUrl: '/assets/html/network/list',
-        title: 'List Networks',
+        title: 'Networks',
         resolve: {
           networks: function($stateParams, Network, $q) {
             return resource.network( $stateParams.id, Network, $q.defer() );
@@ -109167,8 +109172,6 @@ angular.module('baseApp', [
         url: '/:id',
         controller: 'NetworkController',
         templateUrl: '/assets/html/network/detail',
-        title: 'Network',
-        subTitle: 'View',
         resolve: {
           network: function($stateParams, Network, $q) {
             return resource.network( $stateParams.id, Network, $q.defer() );
@@ -109186,31 +109189,75 @@ angular.module('baseApp', [
           }
         }
       })
-
-      .state('networks.detail.boards', {
-        url: '/boards',
-        controller: 'NetworkBoardsCtrl',
-        templateUrl: '/assets/html/task/index',
-        title: 'Network',
-        subTitle: 'View'
+      .state('networks.articles', {
+        url: '/:id/articles',
+        controller: 'NetworkArticleController',
+        templateUrl: '/assets/html/article/list',
+        resolve: {
+          articles: function($stateParams, Article, $q ) {
+            return resource.articles( $stateParams.id, Article, $q.defer() );
+          }
+        }
       })
-      //.state('tasks', {
-      //  url: '/tasks',
-      //  controller: 'TaskController',
-      //  templateUrl: '/assets/html/task/index'
-      //})
-      //.state('tasks.current',{
-      //  url: '/current'
-      //})
-      //.state('tasks.new',{
-      //  url: '/new'
-      //})
-      //.state('tasks.view', {
-      //  url: '/:id'
-      //})
-      //.state('tasks.edit',{
-      //  url: '/:id/edit'
-      //})
+      .state('networks.article', {
+        url: '/:id/article/:articleId',
+        controller: 'NetworkArticleController',
+        templateUrl: '/assets/html/article/detail',
+        resolve: {
+          articles: function($stateParams, Article, $q) {
+            var defer = $q.defer();
+            Article.get( $stateParams.articleId )
+              .then( function( res ) {
+                var article = res.article;
+                if( article.media && article.media.length ) {
+                  article.primaryImage = {
+                    url: article.media[0].url
+                  };
+                }
+                defer.resolve( article );
+              }, function(){
+                defer.resolve( null );
+              });
+            return defer.promise;
+          }
+        }
+      })
+      .state('networks.boards', {
+        url: '/:id/boards',
+        controller: 'NetworkController',
+        templateUrl: '/assets/html/network/boards',
+        title: 'Network',
+        subTitle: 'View',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
+      })
+      .state('networks.events', {
+        url: '/:id/events',
+        controller: 'NetworkController',
+        templateUrl: '/assets/html/network/events',
+        title: 'Network',
+        subTitle: 'View',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
+      })
+      .state('networks.members', {
+        url: '/:id/members',
+        controller: 'NetworkController',
+        templateUrl: '/assets/html/network/members',
+        title: 'Network',
+        subTitle: 'View',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
+      })
       .state('mail', {
         url: '/mail',
         controller: 'MailboxController',
@@ -110583,6 +110630,12 @@ angular.module('baseApp.directives')
                   return item;
                 });
                 scope.conversations = _.indexBy( res.conversations, '_id');
+                if( scope.conversations ) {
+                  scope.hasConversations = Object.keys( scope.conversations).length;
+                } else {
+                  scope.hasConversations = false;
+                }
+
                 if( typeof current !== 'undefined'){
                   if( scope.conversations.hasOwnProperty( current ) ) {
                     scope.conversation = scope.conversations[ current ];
@@ -110617,7 +110670,7 @@ angular.module('baseApp.controllers')
       'use strict';
 
       $scope.networks = currentUser.get().networks;
-      console.log( $scope.networks );
+      //console.log( $scope.networks );
     }]);
 angular.module('baseApp.controllers')
   .controller('KnowledgeController', ['$scope',
@@ -110806,35 +110859,32 @@ angular.module('baseApp.controllers')
 );
 
 angular.module('baseApp.directives')
-  .directive('heading', [ '$rootScope','$state',
-    function( $rootScope, $state ){
+  .directive('heading', [ '$rootScope','$state', 'currentUser',
+    function( $rootScope, $state, currentUser ){
       'use strict';
       return {
         restrict: 'E',
         replace: true,
         templateUrl: '/assets/html/layout/heading/index',
         link: function( scope ) {
-          $rootScope.$on('$stateChangeStart', function(event, toState) {
-            //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
-            //var head, breadcrumbs = [{url: 'root',value: 'Home'}];
-            //switch( toState.name ) {
-            //  case 'boards.list':
-            //    breadcrumbs.push({url:'', value: 'View Boards'});
-            //    head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
-            //    break;
-            //  case 'boards.new':
-            //    breadcrumbs.push({url:'', value: 'Create Board'});
-            //    head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
-            //    break;
-            //  case 'boards.detail':
-            //    breadcrumbs.push({url:'', value: 'Name'});
-            //    head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
-            //    break;
-            //  default:
-            //    breadcrumbs.push({url:'', value:'Undefined'});
-            //    head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
-            //    break;
-            //}
+          scope.$watch( function(){
+            return currentUser.currentNetworkName;
+          }, function(newVal){
+
+            if( newVal ) {
+              console.log('i ');
+              scope.heading.title = newVal;
+            }
+          });
+          $rootScope.$on('$stateChangeStart', function(event, toState ) {
+
+            if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
+              currentUser.currentNetwork = null;
+              currentUser.currentNetworkName = '';
+            }
+            if( /networks/.test( toState.name )  ) {
+              toState.title = currentUser.currentNetworkName;
+            }
             scope.heading = {
               title: toState.title,
               subTitle: toState.subTitle,
@@ -110849,6 +110899,17 @@ angular.module('baseApp.directives')
               ]
             };
           });
+          if( typeof $state.current.title === 'undefined' ) {
+            var listener = scope.$watch( function(){
+              return $state.current.title;
+            }, function(newVal){
+              if( newVal ) {
+                scope.heading.title = newVal;
+                listener()
+              }
+            });
+          }
+
           scope.heading = {
             title: $state.current.title,
             subTitle: $state.current.subTitle,
@@ -110933,11 +110994,29 @@ angular.module('baseApp.directives')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('LeftNavigationController', ['$scope','currentUser',
-    function ($scope, currentUser) {
+  .controller('LeftNavigationController', ['$scope','currentUser','$state',
+    function ($scope, currentUser, $state ) {
       'use strict';
 
       $scope.user = currentUser.get();
+
+      $scope.$watch( function(){
+        return $state.current.name;
+      }, function(newVal) {
+        if( newVal ) {
+          $scope.state = newVal.split('.')[0];
+        }
+      });
+
+      $scope.$watch( function(){
+        return currentUser.currentNetwork;
+      }, function(newVal) {
+        if( newVal ) {
+          $scope.currentNetwork = newVal;
+        } else {
+          $scope.currentNetwork = null;
+        }
+      });
     }
   ]);
 angular.module('baseApp.controllers')
@@ -111547,27 +111626,12 @@ angular.module('baseApp.services')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('NetworkBoardsCtrl', ['$scope', 'Board', function( $scope, Board ) {
-    'use strict';
-    console.log('in NetworkBoard');
-    $scope.boards = []; // parent.networks.boards;
-
-    $scope.networkId = 0; // parent.currentNetworkId
-
-    $scope.createNetworkBoard = function(){
-      Board.add( $scope.network )
-        .then( function() {
-
-        });
-    };
-  }]);
-angular.module('baseApp.controllers')
   .controller('NetworksController', ['$scope', '$state', 'currentUser', 'Network', 'networks', '_','Notification',
     function($scope, $state, currentUser, Network, networks, _, Notification){
       'use strict';
 
       $scope.networks = networks ? _.indexBy( networks, '_id') : {};
-
+      $scope.hasNetworks = Object.keys( $scope.networks).length ? true : false;
       $scope.currentUser = currentUser.get();
       $scope.remove = function( id ){
         Notification.id = id;
@@ -111606,9 +111670,11 @@ angular.module('baseApp.controllers')
           });
       };
     }])
-  .controller('NetworkController', ['$scope', 'network','$state','FormHelper','Network','_',
-    function($scope, network, $state, FormHelper, Network, _ ){
+  .controller('NetworkController', ['$scope', 'network','$state','FormHelper','Network','_','currentUser',
+    function($scope, network, $state, FormHelper, Network, _, currentUser ){
       'use strict';
+
+      console.log( 'inside network controller', $state.current.name );
 
       $scope.network = { members: {}, admins: {} };
       $scope.has = {members: false, admins: false, owner: false};
@@ -111621,10 +111687,15 @@ angular.module('baseApp.controllers')
           members: $scope.network.members ? Object.keys( $scope.network.members).length : 0,
           owner: $scope.network.owner ? true : false
         };
+      } else if( /networks\.detail/.test( $state.current.name ) ) {
+        currentUser.currentNetwork = $scope.network._id;
+        currentUser.currentNetworkName = $scope.network.name;
+        console.log('set name');
       }
       $scope.add = function () {
         $scope.network.members = Object.keys($scope.network.members);
         $scope.network.admins = Object.keys($scope.network.admins);
+        $scope.network.owner = $scope.network.owner || {};
         Network.add($scope.network)
           .then(function () {
             $state.go('networks.list', {}, {reload: true});
@@ -111637,6 +111708,26 @@ angular.module('baseApp.controllers')
             $state.go('networks.list');
           });
       };
+    }])
+  .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser',
+    function($scope, $state, articles, currentUser){
+      'use strict';
+
+      if( $state.current.name === 'networks.articles' ) {
+        $scope.networkId = $state.params.id;
+        $scope.articles = articles;
+        console.log( $scope.articles );
+      } else if( $state.current.name === 'networks.article' ) {
+        $scope.networkId = $state.params.id;
+        $scope.article = articles;
+        console.log( $scope.article );
+      }
+      if( currentUser.currentNetwork === null ) {
+        currentUser.currentNetwork = $scope.networkId;
+      }
+      if( $scope.article ) {
+        currentUser.currentNetworkName = $scope.article.title;
+      }
     }]);
 angular.module('baseApp.services').factory('NetworkResource', [ '$resource', function($resource) {
   'use strict';
@@ -112061,6 +112152,7 @@ angular.module('baseApp.directives')
             scope.$apply(function(){
               scope.file = files[0];
               scope.filename = scope.file.name;
+              scope.readyToUpload = true;
             });
             imageObject = {
               filename: scope.file.name,
@@ -112273,7 +112365,7 @@ angular.module('baseApp.services')
   }]);
 
 angular.module('baseApp')
-  .provider('Res',[function() {
+  .provider('Res',['_', function( _ ) {
 
     'use strict';
     this.$get = function () {
@@ -112288,6 +112380,28 @@ angular.module('baseApp')
               }
             }, function () {
               defer.reject(null);
+            });
+          return defer.promise;
+        },
+        chats: function( id, Chat, defer) {
+          console.log( id, Chat, defer );
+        },
+        articles: function( id, Article, defer ) {
+          Article.get()
+            .then( function( res ) {
+              var articles = res.articles;
+              articles = _.indexBy( articles, '_id' );
+              _.each( articles, function(item){
+                if( item.media && item.media.length ) {
+                  item.primaryImage = {
+                    url: item.media[0].url
+                  };
+                }
+              });
+
+              defer.resolve( articles );
+            }, function(){
+              defer.resolve([]);
             });
           return defer.promise;
         }
@@ -112413,7 +112527,7 @@ angular.module('baseApp.services')
     function ($state, $location, $rootScope, $q, User, Profile, Session) {
     'use strict';
 
-    var currentUser;
+    var currentUser, currentNetwork = null, currentNetworkName = '';
 
     function login (user, route) {
       currentUser = user;
@@ -112452,6 +112566,8 @@ angular.module('baseApp.services')
       set: function( currUser ) {
         currentUser = currUser;
       },
+      currentNetwork: currentNetwork,
+      currentNetworkName: currentNetworkName,
       login: login,
       isLoggedIn: isLoggedIn,
       logout: logout,
@@ -112628,9 +112744,9 @@ angular.module('baseApp.services')
     };
   }]);
 angular.module('baseApp.controllers')
-  .controller('NotificationsController', ['$scope', function( $scope ) {
+  .controller('NotificationsController', [ function( ) {
     'use strict';
-    console.log( $scope );
+
   }]);
 angular.module('baseApp.controllers')
   .controller('ProfileController', ['$scope', '$state', 'currentUser', function( $scope, $state, currentUser ) {

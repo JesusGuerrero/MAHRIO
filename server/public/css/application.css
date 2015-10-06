@@ -19334,7 +19334,8 @@ be a descendant of the grid when it is being dragged.
   background: linear-gradient(transparent 15px, #ecf0f5);
 }
 .article-cover {
-  margin-top: -125px;
+  margin-top: -75px;
+  overflow: hidden;
 }
 .article-cover figure {
   max-height: 100vh;
@@ -19345,9 +19346,7 @@ be a descendant of the grid when it is being dragged.
   margin-left: -10vw;
 }
 .article-cover .article-heading {
-  position: absolute;
-  margin-top: -30vh;
-  width: 100%;
+  margin-top: -40vh;
   text-align: center;
   color: #fff;
   background: linear-gradient(transparent 15px, rgba(0, 0, 0, 0.5));
@@ -19494,6 +19493,19 @@ table tr td div.icheckbox_flat-blue {
   border: 10px dashed #666;
   padding: 0;
 }
+#network-detail #cover-photo {
+  overflow: hidden;
+}
+#network-detail #cover-photo img {
+  width: 100%;
+  margin-top: -230px;
+}
+#network-detail #tab-sections div.row div {
+  text-align: center;
+}
+#network-detail #tab-sections div.row div ul {
+  display: inline-block;
+}
 @media only screen and (max-width: 800px) {
   .fc-toolbar .fc-center h2 {
     font-size: 22px;
@@ -19521,6 +19533,20 @@ table tr td div.icheckbox_flat-blue {
   #calendarForm .input-group-addon i {
     width: 25px;
   }
+}
+.skin-green .nav-pills > li.active > a {
+  border-top-color: #008d4c;
+  background: #00a65a;
+}
+.skin-green .nav-stacked > li.active > a {
+  border-left-color: #008d4c;
+}
+.skin-red .nav-pills > li.active > a {
+  border-top-color: #d73925;
+  background: #dd4b39;
+}
+.skin-red .nav-stacked > li.active > a {
+  border-left-color: #d73925;
 }
 .external-event {
   margin: 10px 0;

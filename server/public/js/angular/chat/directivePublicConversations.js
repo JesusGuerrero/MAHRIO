@@ -85,6 +85,12 @@ angular.module('baseApp.directives')
                   return item;
                 });
                 scope.conversations = _.indexBy( res.conversations, '_id');
+                if( scope.conversations ) {
+                  scope.hasConversations = Object.keys( scope.conversations).length;
+                } else {
+                  scope.hasConversations = false;
+                }
+
                 if( typeof current !== 'undefined'){
                   if( scope.conversations.hasOwnProperty( current ) ) {
                     scope.conversation = scope.conversations[ current ];

@@ -26,10 +26,23 @@ angular.module('baseApp.directives')
         replace: true,
         templateUrl: '/assets/html/layout/heading/index',
         link: function( scope ) {
-          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState ) {
+          scope.$watch( function(){
+            return currentUser.currentNetworkName;
+          }, function(newVal){
 
-            if( /networks\.detail/.test( fromState.name ) || !fromState.name   ) {
+            if( newVal ) {
+              console.log('i ');
+              scope.heading.title = newVal;
+            }
+          });
+          $rootScope.$on('$stateChangeStart', function(event, toState ) {
+
+            if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
               currentUser.currentNetwork = null;
+              currentUser.currentNetworkName = '';
+            }
+            if( /networks/.test( toState.name )  ) {
+              toState.title = currentUser.currentNetworkName;
             }
             scope.heading = {
               title: toState.title,
@@ -45,6 +58,17 @@ angular.module('baseApp.directives')
               ]
             };
           });
+          if( typeof $state.current.title === 'undefined' ) {
+            var listener = scope.$watch( function(){
+              return $state.current.title;
+            }, function(newVal){
+              if( newVal ) {
+                scope.heading.title = newVal;
+                listener()
+              }
+            });
+          }
+
           scope.heading = {
             title: $state.current.title,
             subTitle: $state.current.subTitle,

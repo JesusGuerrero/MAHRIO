@@ -53,9 +53,10 @@ angular.module('baseApp', [
         template: '<ui-view/>'
       })
       .state('articles.new', {
-        url: '/new',
+        url: '/new?networkId',
         templateUrl: '/assets/html/article/form',
-        title: 'New Article'
+        title: 'New Article',
+        resolve: { articles: function(){ return 1; } }
       })
       .state('articles.list', {
         url: '/all',
@@ -66,12 +67,14 @@ angular.module('baseApp', [
       .state('articles.edit', {
         url: '/:id/edit',
         templateUrl: '/assets/html/article/form',
-        title: 'Edit Article'
+        title: 'Edit Article',
+        resolve: { articles: function(){ return null; } }
       })
       .state('articles.detail', {
         url: '/:id',
         templateUrl: '/assets/html/article/detail',
-        title: 'Article'
+        title: 'Article',
+        resolve: { articles: function(){ return null; } }
       })
       .state('about', {
         url: '/about',
@@ -106,7 +109,7 @@ angular.module('baseApp', [
       })
       .state('users.new', {
         url: '/new',
-        templateUrl: '/assets/html/user/form-register',
+        templateUrl: '/assets/html/user/form-register'
       })
       .state('users.list', {
         url: '/list',
@@ -255,7 +258,9 @@ angular.module('baseApp', [
       .state('networks', {
         abstract: true,
         url: '/networks',
-        template: '<ui-view/>'
+        template: '<ui-view/>',
+        title: 'Networks',
+        name: 'HELLO'
       })
       .state('networks.new', {
         url: '/new',
@@ -268,7 +273,7 @@ angular.module('baseApp', [
         url: '',
         controller: 'NetworksController',
         templateUrl: '/assets/html/network/list',
-        title: 'List Networks',
+        title: 'Networks',
         resolve: {
           networks: function($stateParams, Network, $q) {
             return resource.network( $stateParams.id, Network, $q.defer() );
@@ -279,8 +284,6 @@ angular.module('baseApp', [
         url: '/:id',
         controller: 'NetworkController',
         templateUrl: '/assets/html/network/detail',
-        title: 'Network',
-        subTitle: 'View',
         resolve: {
           network: function($stateParams, Network, $q) {
             return resource.network( $stateParams.id, Network, $q.defer() );
@@ -298,52 +301,75 @@ angular.module('baseApp', [
           }
         }
       })
-
-      .state('networks.detail.articles', {
-        url: '/articles',
-        controller: 'NetworkBoardsCtrl',
-        templateUrl: '/assets/html/task/index',
-        title: 'Network',
-        subTitle: 'View'
+      .state('networks.articles', {
+        url: '/:id/articles',
+        controller: 'NetworkArticleController',
+        templateUrl: '/assets/html/article/list',
+        resolve: {
+          articles: function($stateParams, Article, $q ) {
+            return resource.articles( $stateParams.id, Article, $q.defer() );
+          }
+        }
       })
-      .state('networks.detail.boards', {
-        url: '/boards',
-        controller: 'NetworkBoardsCtrl',
-        templateUrl: '/assets/html/task/index',
-        title: 'Network',
-        subTitle: 'View'
+      .state('networks.article', {
+        url: '/:id/article/:articleId',
+        controller: 'NetworkArticleController',
+        templateUrl: '/assets/html/article/detail',
+        resolve: {
+          articles: function($stateParams, Article, $q) {
+            var defer = $q.defer();
+            Article.get( $stateParams.articleId )
+              .then( function( res ) {
+                var article = res.article;
+                if( article.media && article.media.length ) {
+                  article.primaryImage = {
+                    url: article.media[0].url
+                  };
+                }
+                defer.resolve( article );
+              }, function(){
+                defer.resolve( null );
+              });
+            return defer.promise;
+          }
+        }
       })
-      .state('networks.detail.events', {
-        url: '/events',
-        controller: 'NetworkBoardsCtrl',
-        templateUrl: '/assets/html/task/index',
+      .state('networks.boards', {
+        url: '/:id/boards',
+        controller: 'NetworkController',
+        templateUrl: '/assets/html/network/boards',
         title: 'Network',
-        subTitle: 'View'
+        subTitle: 'View',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
       })
-      .state('networks.detail.members', {
-        url: '/members',
-        controller: 'NetworkBoardsCtrl',
-        templateUrl: '/assets/html/task/index',
+      .state('networks.events', {
+        url: '/:id/events',
+        controller: 'NetworkController',
+        templateUrl: '/assets/html/network/events',
         title: 'Network',
-        subTitle: 'View'
+        subTitle: 'View',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
       })
-      //.state('tasks', {
-      //  url: '/tasks',
-      //  controller: 'TaskController',
-      //  templateUrl: '/assets/html/task/index'
-      //})
-      //.state('tasks.current',{
-      //  url: '/current'
-      //})
-      //.state('tasks.new',{
-      //  url: '/new'
-      //})
-      //.state('tasks.view', {
-      //  url: '/:id'
-      //})
-      //.state('tasks.edit',{
-      //  url: '/:id/edit'
-      //})
+      .state('networks.members', {
+        url: '/:id/members',
+        controller: 'NetworkController',
+        templateUrl: '/assets/html/network/members',
+        title: 'Network',
+        subTitle: 'View',
+        resolve: {
+          network: function($stateParams, Network, $q) {
+            return resource.network( $stateParams.id, Network, $q.defer() );
+          }
+        }
+      })
       .state('mail', {
         url: '/mail',
         controller: 'MailboxController',
