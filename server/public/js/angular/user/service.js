@@ -55,11 +55,11 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     profile: function(){
       return UserResource.profile( {action: 'me'}).$promise;
     },
-    getUsersList: function(){
-      return UserResource.get( {action: 'all'}).$promise;
-    },
+    //getUsersList: function(){
+    //  return UserResource.get( {action: 'all'}).$promise;
+    //},
     get: function( id ){
-      return UserResource.get( {action: id}).$promise;
+      return UserResource.get( {action: id ? id : 'all'}).$promise;
     },
     makeAdmin: function(email){
       return UserResource.put( {action: 'other'}, {email: email, access: 'admin'}).$promise;

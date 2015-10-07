@@ -93,6 +93,7 @@ module.exports = function (grunt) {
           'bower_components/angular-underscore/angular-underscore.min.js',
           'bower_components/angular-socket-io/socket.js',
           'bower_components/angular-chart.js/dist/angular-chart.js',
+          'bower_components/angular-moment/angular-moment.min.js',
           'bower_components/matchHeight/jquery.matchHeight-min.js',
           'client/AdminLTE/AdminLTE.js'
         ],

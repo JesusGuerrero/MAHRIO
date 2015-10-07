@@ -88,7 +88,7 @@ angular.module('baseApp.controllers')
       console.log( articles );
       if( $state.current.name === 'networks.articles' ) {
         $scope.networkId = $state.params.id;
-        $scope.articles = articles;
+        $scope.articles = articles.length ? articles : null;
         console.log( $scope.articles );
       } else if( $state.current.name === 'networks.article' ) {
         $scope.networkId = $state.params.id;
@@ -108,7 +108,7 @@ angular.module('baseApp.controllers')
 
       if( $state.current.name === 'networks.boards' ) {
         $scope.networkId = $state.params.id;
-        $scope.boards = boards;
+        $scope.boards = boards.length ? boards : null;
         console.log( $scope.boards );
       } else if( $state.current.name === 'networks.board' ) {
         $scope.networkId = $state.params.id;
@@ -138,7 +138,7 @@ angular.module('baseApp.controllers')
 
       if( $state.current.name === 'networks.events' ) {
         $scope.networkId = $state.params.id;
-        $scope.events = events;
+        $scope.events = events.length ? events : null;
       } else if( $state.current.name === 'networks.event' ) {
         $scope.networkId = $state.params.id;
         $scope.event = events;
@@ -156,7 +156,7 @@ angular.module('baseApp.controllers')
 
       if( $state.current.name === 'networks.members' ) {
         $scope.networkId = $state.params.id;
-        $scope.users = users;
+        $scope.users = users.length ? users : null;
         console.log( $scope.boards );
       } else if( $state.current.name === 'networks.member' ) {
         $scope.networkId = $state.params.id;

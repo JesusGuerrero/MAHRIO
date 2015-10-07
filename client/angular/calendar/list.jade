@@ -19,3 +19,15 @@
             |   &nbsp;
          tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
             |   &nbsp;
+.col-xs-12(ng-if="!events && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+   .col-xs-12
+      .callout.callout-info.text-center
+         h4
+            i.fa.fa-calendar
+            i.fa.fa-info-circle.pull-right
+            |   Events: empty!
+         p
+
+            |   Add a new event by choosing '+ Event' button on the top right corner.
+            |   Events are helpful when organizing a meet up because
+            |   they help keep track of agenda and attendees.

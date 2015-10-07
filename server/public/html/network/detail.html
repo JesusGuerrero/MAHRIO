@@ -12,61 +12,61 @@
   </div>
   <div id="cover-photo" class="col-xs-12"><img ng-src="{{network.coverImage.url}}"/></div>
 </div>
-<!--
-br
-br
-br
-.col-xs-12
-    .form-group
-        label.pull-left
-            | Name: &nbsp;
-        |   {{network.name}}
-    .form-group
-        label.pull-left
-            |   Is Private? &nbsp;
-        |   {{network.isPrivate}}
-    .form-group
-        label.pull-left
-            |   Is Protected? &nbsp;
-        |   {{network.isProtected}}
-    .form-group
-        label
-            | Members
-        div
-            span(ng-repeat="member in network.members track by $index")
-                | {{member.profile.firstName}} {{member.profile.lastName}}
-                br
-    .form-group
-        label
-            | Events
-        div
-            span(ng-repeat="event in network.events track by $index")
-                | {{event.title}} {{event.start | date:'medium' }}
-                br
-    .form-group
-        label
-            | Boards
-        div
-            span(ng-repeat="board in network.boards track by $index")
-                | {{board.name}}
-                br
-        a.btn.btn-block(ui-sref="networks.detail.boards")
-            |   Manage Boards
-    .form-group
-        label
-            | Conversations
-        div
-            span(ng-repeat="conversation in network.conversations track by $index")
-                | {{conversation.topic}}
-                br
-    .form-group(ng-show="network.owner === currentUser._id")
-        label
-            | Actions
-        div
-            a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()")
-                |   Edit &nbsp;
-                i.fa.fa-edit
-            a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()")
-                |   Remove &nbsp;
-                i.fa.fa-trash
--->
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="timeline">
+      <li class="time-label"><span class="bg-red">  Present</span></li>
+      <li><i class="fa fa-book bg-blue"></i>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(2,0,0)}}"></span></i></span>
+          <h3 class="timeline-header"><a href="#">  Jesus Rocha</a>  published an article</h3>
+          <div class="timeline-body">
+              Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+              weebly ning heekya handango imeem plugg dopplr jibjab, movity
+              jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+              quora plaxo ideeli hulu weebly balihoo...
+          </div>
+          <div class="timeline-footer"><a class="btn btn-primary btn-xs">  Read more</a></div>
+        </div>
+      </li>
+      <li><i class="fa fa-user bg-aqua"></i>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(5,0,0)}}"></span></i></span>
+          <h3 class="timeline-header no-border"><a href="#">  Sarah Young</a>  joined the network</h3>
+        </div>
+      </li>
+      <li><i class="fa fa-comments bg-yelow"></i>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(27,0,0)}}"></span></i></span>
+          <h3 class="timeline-header"><a href="#">  Jay White</a>  chatted on<a href="#">  Events</a>  channel</h3>
+          <div class="timeline-body">
+              Take me to your leader!
+              Switzerland is small and neutral!
+              We are more like Germany, ambitious and misunderstood!
+          </div>
+          <div class="timeline-footer"><a class="btn btn-warning btn-flat btn-xs">  View Chat</a></div>
+        </div>
+      </li>
+      <li class="time-label"><span class="bg-green">  3 Jan. 2014</span></li>
+      <li><i class="fa fa-tasks bg-green"></i>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(0,1,0)}}"></span></i></span>
+          <h3 class="timeline-header no-border"><a href="#">  Jesus Rocha</a>  moved task to<i>  Done</i>  in board<i>  MAHRIO</i></h3>
+        </div>
+      </li>
+      <li><i class="fa fa-camera bg-purple"></i>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(0,2,0)}}"></span></i></span>
+          <h3 class="timeline-header"><a href="#">  Mina lee</a>  uploaded photos to<a href="#">  Finance Workshop</a>  event</h3>
+          <div class="timeline-body"><img src="http://placehold.it/150x100" class="margin"/><img src="http://placehold.it/150x100" class="margin"/><img src="http://placehold.it/150x100" class="margin"/><img src="http://placehold.it/150x100" class="margin"/></div>
+        </div>
+      </li>
+      <li><i class="fa fa-video-camera bg-maroon"></i>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(0,5,0)}}"></span></i></span>
+          <h3 class="timeline-header"><a href="#">  Mr. Doe</a>  published a video</h3>
+          <div class="timeline-body">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe src="https://www.youtube.com/embed/tMWkeBIohBs" frameborder="0" allowfullscreen="" class="embed-responsive-item"></iframe>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li><i class="fa fa-clock-o bg-gray"></i></li>
+    </ul>
+  </div>
+</div>

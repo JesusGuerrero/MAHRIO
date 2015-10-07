@@ -10,6 +10,7 @@ angular.module('baseApp', [
   'ngResource',
   'btford.socket-io',
   'angular-loading-bar',
+  'angularMoment',
   'chart.js',
   'baseApp.services',
   'baseApp.directives',
@@ -18,8 +19,7 @@ angular.module('baseApp', [
   'angular-underscore'
 ])
   .constant('_', window._)
-  .config(
-  function ($stateProvider, $urlRouterProvider, $locationProvider, ChartJsProvider, ResProvider) {
+  .config( function ($stateProvider, $urlRouterProvider, $locationProvider, ChartJsProvider, ResProvider) {
     'use strict';
 
     var resource = ResProvider.$get();
@@ -524,6 +524,19 @@ angular.module('baseApp.controllers', [])
         $rootScope.settings = settings;
         window.localStorage.skin = settings.skin;
       };
+      $rootScope.getDate = function( minutes, hours, days ) {
+        var date = new Date();
+        if( days ) {
+          date.setDate(date.getDate() - days);
+        }
+        if( hours ) {
+          date.setHours(date.getHours() - hours);
+        }
+        if( minutes ) {
+          date.setMinutes(date.getMinutes() - minutes);
+        }
+        return date;
+      }
     }
   ]);
 

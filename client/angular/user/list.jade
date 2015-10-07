@@ -20,21 +20,51 @@
             tab( heading="Members" active="true")
                 |   &nbsp;
 
+.col-xs-12(ng-if="!users && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+    .col-xs-12
+        .callout.callout-info.text-center
+            h4
+                i.fa.fa-users
+                i.fa.fa-info-circle.pull-right
+                |   Users: empty!
+            p
+
+                |   Add a new user by choosing '+ User' button on the top right corner.
+                |   Users are the people whom will be joining on this network and
+                |   they are a valuable asset towards successful collaboration.
 div
     .row
-        .col-lg-3.col-sm-6.col-xs-12(ng-repeat="user in usersList track by $index")
-            .info-box(style="cursor: pointer;" ui-sref="users.detail( {id: user._id} )" ui-sref-opts="{reload: true}")
-                span.info-box-icon(style="overflow: hidden; float: none; width: 100%")
+        .col-sm-6.col-xs-12(ng-repeat="user in users track by $index")
+            .info-box
+                span.info-box-icon.bg-aqua
                     i.fa.fa-user-secret(ng-show="!user.avatarImage")
                     img( src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -40px auto 0")
-                .info-box-content(style="margin: 0 auto")
-                    span.info-box-text.text-center
-                        |   {{user.profile.first_name}} {{user.profile.last_name}}
-                    span.info-box-text.text-center
-                        small
-                            |   {{user.email}}
-            button.btn.btn-block.btn-primary(ng-click="messageModal($index);")
-                |   Message
+                .info-box-content
+                    span.info-box-text
+                        |   {{user.profile.firstName}} {{user.profile.lastName}}
+                    span.info-box-number
+                        |   Web Architect
+                    .progress
+                        .progress-bar.bg-aqua(style="width: 20%")
+                    .btn-group.dropup.pull-right
+                        button.btn.btn-primary.btn-xs.dropdown-toggle( type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                            |   Action&nbsp;
+                            span.caret
+                        ul.dropdown-menu
+                            li
+                                a(ng-click="messageModal($index);" href="javascript:void(0)")
+                                    |   Message
+                            //li.divider(role="separator")
+                            //li
+                                a(href="javascript:void(0)")
+                                    |   Another action
+                    span.progress-description
+                        i.fa.fa-caret-up.text-green
+                            |   20%
+                        |   last
+                        b
+                            |   30 Days
+
     .row
         modal-window-view( modal-id="modalNewMessage" actions='actions' title="New Message" type="conversation")
             modal-private-conversation( open="{{open}}" )

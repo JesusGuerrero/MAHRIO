@@ -19495,6 +19495,7 @@ table tr td div.icheckbox_flat-blue {
 }
 #network-detail #cover-photo {
   overflow: hidden;
+  margin-bottom: 20px;
 }
 #network-detail #cover-photo img {
   width: 100%;
@@ -19553,6 +19554,13 @@ table tr td div.icheckbox_flat-blue {
 }
 .skin-red .nav-stacked > li.active > a {
   border-left-color: #d73925;
+}
+.skin-purple .nav-pills > li.active > a {
+  border-top-color: #555299;
+  background: #605ca8;
+}
+.skin-purple .nav-stacked > li.active > a {
+  border-left-color: #555299;
 }
 .external-event {
   margin: 10px 0;

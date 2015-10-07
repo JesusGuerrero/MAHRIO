@@ -20,6 +20,19 @@
             tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
 
+.col-xs-12(ng-if="!articles && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+    .col-xs-12
+        .callout.callout-info.text-center
+            h4
+                i.fa.fa-book
+                i.fa.fa-info-circle.pull-right
+                |   Articles: empty!
+            p
+                |   Add a new article by choosing '+ Article' button on the top right corner.
+                |   Articles are helpful when communicating on to large audiences because
+                |   they help organize your thoughts.
+
+
 .row
     .form-group.col-xs-12.col-sm-4.col-sm-offset-4.col-md-6.col-md-offset-3.col-lg-2.col-lg-offset-5(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
         a.btn.btn-primary.btn-block(ui-sref="articles.new" ui-sref-opts="{reload: true}" ng-if="!networkId")

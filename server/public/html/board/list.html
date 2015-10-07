@@ -12,13 +12,24 @@
     </tabset>
   </div>
 </div>
-<div class="col-xs-12">
+<div ng-if="boards" class="col-xs-12">
   <div class="row">
     <div class="col-xs-12">
-      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 no-padding"><strong>Name</strong></div>
-      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><strong>Members</strong></div>
-      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><strong>Columns</strong></div>
-      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 text-center"><strong>Tasks</strong></div>
+      <div class="col-xs-12 col-sm-4 no-padding"><strong>Name</strong></div>
+      <div class="col-xs-12 col-sm-4"><strong>Members</strong></div>
+      <div class="col-xs-12 col-sm-4"><strong>Tasks</strong></div>
+    </div>
+  </div>
+</div>
+<div ng-if="!boards &amp;&amp; (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="col-xs-12">
+  <div class="col-xs-12">
+    <div class="callout callout-info text-center">
+      <h4><i class="fa fa-tasks"></i><i class="fa fa-info-circle pull-right"></i>  Boards: empty!</h4>
+      <p>
+          Add a new board by choosing '+ Board' button on the top right corner.
+          Boards are helpful when working on large projects because
+          they help prevent losing track of progress.
+      </p>
     </div>
   </div>
 </div>
@@ -26,10 +37,9 @@
   <div class="col-xs-12">
     <div class="list-group">
       <div ng-repeat="board in boards track by $index" ui-sref="networks.board({id: networkId, boardId: board._id})" ui-sref-opts="{reload: true}" class="list-group-item">
-        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 no-padding"><strong><i class="fa fa-server"></i>{{board.name}}</strong></div>
-        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><span ng-repeat="member in board.members track by $index">{{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;<br/></span></div>
-        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><span ng-repeat="column in board.columns track by $index">{{column.name}}<br/></span></div>
-        <div ng-show="board._owner === currentUser._id" class="col-xs-12 col-sm-4 col-md-3 col-lg-3"><a ui-sref="boards.edit({board: board._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" class="btn btn-default btn-block">EDIT</a><a ng-click="remove( board._id ); $event.stopPropagation()" class="btn btn-danger btn-block">DELETE</a></div>
+        <div class="col-xs-12 col-sm-4 no-padding"><strong><i class="fa fa-server"></i>{{board.name}}</strong></div>
+        <div class="col-xs-12 col-sm-4"><span ng-repeat="member in board.members track by $index">&mdash;{{member.profile.firstName}} {{member.profile.lastName}}<br/></span></div>
+        <div ng-show="board._owner === currentUser._id" class="col-xs-12 col-sm-4"><a ui-sref="boards.edit({board: board._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" class="btn btn-default btn-block">EDIT</a><a ng-click="remove( board._id ); $event.stopPropagation()" class="btn btn-danger btn-block">DELETE</a></div>
         <div class="clearfix"></div>
       </div>
     </div>

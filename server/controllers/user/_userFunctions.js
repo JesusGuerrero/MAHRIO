@@ -171,7 +171,7 @@ function getUsers( request, reply ){
       }
 
       return reply({
-        list: users
+        users: users
       });
     });
 }
