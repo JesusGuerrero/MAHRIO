@@ -7,15 +7,15 @@
         <tasks-current board="board"></tasks-current>
       </tab>
       <tab heading="Backlog" ui-sref="networks.board({tab: 'backlog'})" active="tab.backlog">
-        <tasks-backlog id="board.id"></tasks-backlog>
+        <tasks-backlog id="board._id"></tasks-backlog>
       </tab>
       <tab heading="New Task" ui-sref="networks.board({tab: 'newTask'})" active="tab.newTask">
         <div class="col-xs-12">
-          <tasks-new id="board.id"></tasks-new>
+          <tasks-new id="board._id"></tasks-new>
         </div>
       </tab>
       <tab heading="Edit Task" ng-show="false" active="tab[3]">
-        <tasks-new id="board.id"></tasks-new>
+        <tasks-new id="board._id"></tasks-new>
       </tab>
     </tabset>
   </div>

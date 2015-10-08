@@ -8,9 +8,9 @@
             tab( heading="Scrum" ui-sref="networks.board({tab: 'scrum'})" active="tab.scrum")
                 tasks-current( board="board")
             tab( heading="Backlog" ui-sref="networks.board({tab: 'backlog'})" active="tab.backlog")
-                tasks-backlog( id="board.id")
+                tasks-backlog( id="board._id")
             tab( heading="New Task" ui-sref="networks.board({tab: 'newTask'})" active="tab.newTask")
                 .col-xs-12
-                    tasks-new( id="board.id")
+                    tasks-new( id="board._id")
             tab( heading="Edit Task" ng-show="false" active="tab[3]")
-                tasks-new( id="board.id")
+                tasks-new( id="board._id")
