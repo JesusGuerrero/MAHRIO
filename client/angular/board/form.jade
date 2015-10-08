@@ -1,8 +1,10 @@
 .row
-    .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
-        .panel.panel-default
+    .col-xs-12.xs-no-padding
+        .panel.panel-default.no-margin
             error-message-box( validation-errors="validationErrors" )
             .panel-body
+                h3.text-center
+                    | New Board
                 form(novalidate ng-submit="board._id ? update() : add()")
                     form-input-tag(
                         model="board.name"
@@ -42,11 +44,14 @@
                             span.btn.btn-primary.input-group-addon(style="background: #3C8DDD; color: #fff" ng-click="addColumn(tempColumn); tempColumn = '';")
                                 i( class="fa fa-plus" style="width: 30px")
 
-                    hr
-                    .text-center.form-group
-                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
-                            | {{board._id ? 'Save' : 'Create'}}
-
-                .col-xs-8.col-xs-offset-2.text-center.form-group
-                    a.btn.btn-block.btn-default( ui-sref="boards.list" ui-sref-opts="{reload: true}")
-                        | Cancel
+            .panel-footer
+                .row
+                    .col-md-2
+                        button.btn.btn-block.btn-danger.btn-lg(ng-click="remove(board._id)" ng-show="board._id")
+                            |   Remove
+                    .col-md-3.col-md-offset-4
+                        a.btn.btn-block.btn-default.btn-lg(data-dismiss="modal" aria-label="Close")
+                            |   Cancel
+                    .col-md-3.text-center(ng-class="{true: 'col-md-offset-3'}[ board._id ]")
+                        button.btn.btn-block.btn-primary.btn-lg(ng-click="save()")
+                            |   {{board._id ? 'Save' : 'Create'}}

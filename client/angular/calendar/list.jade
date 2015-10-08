@@ -1,6 +1,6 @@
 .row(ng-if='networkId' id="network-detail")
    .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
-      a.btn.btn-primary.btn-block.pull-right(ui-sref="calendar.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+      a.btn.btn-primary.btn-block.pull-right(ng-click="newEvent()" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
          i.fa.fa-plus
          |   Event
    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
@@ -31,3 +31,6 @@
             |   Add a new event by choosing '+ Event' button on the top right corner.
             |   Events are helpful when organizing a meet up because
             |   they help keep track of agenda and attendees.
+
+modal-window-view( modal-id="modalEventForm" title="Event")
+   modal-event-form

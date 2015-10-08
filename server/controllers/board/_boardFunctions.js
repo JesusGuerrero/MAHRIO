@@ -46,7 +46,7 @@ function _updateBoard( request, reply, board) {
 function updateBoard( request, reply ) {
   if( request.params.id ) {
     Board
-      .findOne( { _id: request.params.id, _owner: request.auth.credentials.id })
+      .findOne( { _id: request.params.id, owner: request.auth.credentials.id })
       .select('name columns members tasks')
       .populate([{
         path: 'columns',
@@ -76,7 +76,7 @@ function updateBoard( request, reply ) {
 }
 
 function _createBoard( request ){
-  request.payload.board._owner = request.auth.credentials.id;
+  request.payload.board.owner = request.auth.credentials.id;
   request.payload.board.members = _.map( request.payload.board.members, function(member) {return member._id;});
   request.payload.board.columns = _.map( request.payload.board.columns, function(column){ return column.id;});
   request.payload.board.tasks = [];
@@ -129,13 +129,13 @@ function getBoard( request, reply ) {
           $or: [{
             members: {$in: [request.auth.credentials.id]}
           },{
-            _owner: request.auth.credentials.id
+            owner: request.auth.credentials.id
           }]
         },
         {
           _removed: false
         }])
-      .select('name created members columns tasks _owner startColumn')
+      .select('name created members columns tasks owner startColumn')
       .populate([{
         path: 'columns',
         select: 'name'
@@ -159,13 +159,13 @@ function getBoard( request, reply ) {
           $or: [{
             members: {$in: [request.auth.credentials.id]}
           },{
-            _owner: request.auth.credentials.id
+            owner: request.auth.credentials.id
           }]
         },
         {
           _removed: false
         }])
-      .select('name created members columns _owner')
+      .select('name created members columns owner')
       .populate([{
         path: 'columns',
         select: 'name'
@@ -188,7 +188,7 @@ function getBoard( request, reply ) {
 function removeBoard(request, reply){
   if( request.params.id ) {
     Board
-      .findOne( { _id: request.params.id, _owner: request.auth.credentials.id })
+      .findOne( { _id: request.params.id, owner: request.auth.credentials.id })
       .select('_removed ')
       .exec( function(err, board){
         if( err ) { return Boom.badRequest(err); }

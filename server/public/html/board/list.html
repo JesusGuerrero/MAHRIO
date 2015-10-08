@@ -1,6 +1,6 @@
 
 <div ng-if="networkId" id="network-detail" class="row">
-  <div style="position: absolute; margin-top: -64px; right: 0px" class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a ui-sref="boards.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId &amp;&amp; (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="btn btn-primary btn-block pull-right"><i class="fa fa-plus"></i>  Board</a></div>
+  <div style="position: absolute; margin-top: -64px; right: 0px" class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a ng-click="newBoard()" ng-if="networkId &amp;&amp; (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="btn btn-primary btn-block pull-right"><i class="fa fa-plus"></i>  Board</a></div>
   <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.list" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
   <div id="tab-sections" class="col-xs-12">
     <tabset vertical="false" type="pills">
@@ -45,6 +45,6 @@
     </div>
   </div>
 </div>
-<div style="margin-top: 50px; display: none" class="row">
-  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="boards.new" ui-sref-opts="{reload: true}" class="btn btn-primary"><i class="fa fa-plus"></i>  Add Board</a></div>
-</div>
+<modal-window-view modal-id="modalBoardForm" title="Board">
+  <modal-board-form></modal-board-form>
+</modal-window-view>

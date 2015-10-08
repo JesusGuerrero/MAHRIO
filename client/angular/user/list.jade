@@ -1,6 +1,6 @@
 .row(ng-if='networkId' id="network-detail")
     .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
-        a.btn.btn-primary.btn-block.pull-right(ui-sref="users.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+        a.btn.btn-primary.btn-block.pull-right(ng-click="newUser()" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
             i.fa.fa-plus
             |   User
     .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
@@ -68,3 +68,6 @@ div
     .row
         modal-window-view( modal-id="modalNewMessage" actions='actions' title="New Message" type="conversation")
             modal-private-conversation( open="{{open}}" )
+
+modal-window-view( modal-id="modalUserForm" title="User")
+    modal-user-form

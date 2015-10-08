@@ -1,10 +1,10 @@
 
 <div class="row">
-  <div class="col-sm-10 col-sm-offset-1 col-xs-12">
-    <div class="panel panel-default">
+  <div class="col-xs-12">
+    <div class="panel panel-default no-margin">
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
-        <h3 class="text-center">Add Article</h3>
+        <h3 class="text-center">New Article</h3>
         <form novalidate="novalidate" id="article-form">
           <div class="form-group">
             <label>  Image</label><br/><small ng-show="!article._id">  Image upload available after article created</small>
@@ -41,8 +41,8 @@
           <div class="col-md-2">
             <button ng-click="remove(article._id)" ng-show="article._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
           </div>
-          <div class="col-md-2 col-md-offset-5"><a ui-sref="articles.list" ui-sref-opts="{reload: true}" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
-          <div ng-class="{true: 'col-md-offset-3'}[ article._id ]" class="col-md-3 text-center form-group">
+          <div class="col-md-3 col-md-offset-4"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ article._id ]" class="col-md-3 text-center">
             <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{article._id ? 'Save' : 'Create'}}</button>
           </div>
         </div>

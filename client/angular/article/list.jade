@@ -1,6 +1,6 @@
 .row(ng-if='networkId' id="network-detail")
     .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
-        a.btn.btn-primary.btn-block.pull-right(ui-sref="articles.new({networkId: networkId})" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+        a.btn.btn-primary.btn-block.pull-right(ng-click="newArticle()" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
             i.fa.fa-plus
             |   Article
     .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
@@ -81,3 +81,5 @@
                                 a.btn.btn-block.btn-danger(ng-click="remove( article._id ); $event.stopPropagation()")
                                     i.fa.fa-trash
                                     |   &nbsp;Remove
+modal-window-view( modal-id="modalArticleForm" title="Article")
+    modal-article-form

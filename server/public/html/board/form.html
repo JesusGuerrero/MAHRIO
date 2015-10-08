@@ -1,9 +1,10 @@
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
-    <div class="panel panel-default">
+  <div class="col-xs-12 xs-no-padding">
+    <div class="panel panel-default no-margin">
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
+        <h3 class="text-center">New Board</h3>
         <form novalidate="novalidate" ng-submit="board._id ? update() : add()">
           <form-input-tag model="board.name" label="Name" required="true"></form-input-tag>
           <div ng-if="access.indexOf('sudo') !== -1" class="form-group">
@@ -29,12 +30,18 @@
               <input type="text" ng-model="tempColumn" placeholder="Columns (e.g InProgress, Testing, Done)" class="form-control"/><span style="background: #3C8DDD; color: #fff" ng-click="addColumn(tempColumn); tempColumn = '';" class="btn btn-primary input-group-addon"><i style="width: 30px" class="fa fa-plus"></i></span>
             </div>
           </div>
-          <hr/>
-          <div class="text-center form-group">
-            <button type="submit" class="btn btn-block btn-primary btn-lg">{{board._id ? 'Save' : 'Create'}}</button>
-          </div>
         </form>
-        <div class="col-xs-8 col-xs-offset-2 text-center form-group"><a ui-sref="boards.list" ui-sref-opts="{reload: true}" class="btn btn-block btn-default">Cancel</a></div>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-md-2">
+            <button ng-click="remove(board._id)" ng-show="board._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
+          </div>
+          <div class="col-md-3 col-md-offset-4"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ board._id ]" class="col-md-3 text-center">
+            <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{board._id ? 'Save' : 'Create'}}</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

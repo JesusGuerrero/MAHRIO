@@ -1,0 +1,45 @@
+.row
+   .col-xs-12.xs-no-padding
+      .panel.panel-default.no-margin
+         error-message-box( validation-errors="validationErrors" )
+         .panel-body
+            h3.text-center
+               | New Member
+            form(novalidate ng-submit="register()")
+               .row
+                  .col-sm-6.col-xs-12
+                     form-input-tag(
+                     model="user.profile.firstName"
+                     label="First Name"
+                     required="true")
+                  .col-sm-6.col-xs-12
+                     form-input-tag(
+                     model="user.profile.lastName"
+                     label="Last Name"
+                     required="true")
+               .row
+                  .col-sm-6.col-xs-12
+                     form-input-tag(
+                     model="user.email"
+                     label="{{locale['form'].label['shared'].email}}"
+                     required="true"
+                     icon="envelope"
+                     regex="validate['email']")
+                  .col-sm-6.col-xs-12
+                     form-input-tag(
+                     model="user.password"
+                     type="password"
+                     label="{{locale['form'].label['shared'].password}}"
+                     required="true" icon="lock")
+
+         .panel-footer
+            .row
+               .col-md-2
+                  button.btn.btn-block.btn-danger.btn-lg(ng-click="remove(user._id)" ng-show="user._id")
+                     |   Remove
+               .col-md-3.col-md-offset-4
+                  a.btn.btn-block.btn-default.btn-lg(data-dismiss="modal" aria-label="Close")
+                     |   Cancel
+               .col-md-3.text-center(ng-class="{true: 'col-md-offset-3'}[ user._id ]")
+                  button.btn.btn-block.btn-primary.btn-lg(ng-click="save()")
+                     |   {{user._id ? 'Save' : 'Add'}}

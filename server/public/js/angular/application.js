@@ -536,7 +536,7 @@ angular.module('baseApp.controllers', [])
           date.setMinutes(date.getMinutes() - minutes);
         }
         return date;
-      }
+      };
     }
   ]);
 

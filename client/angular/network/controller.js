@@ -82,14 +82,17 @@ angular.module('baseApp.controllers')
           });
       };
     }])
-  .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser',
-    function($scope, $state, articles, currentUser){
+  .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser','Notification','Article',
+    function($scope, $state, articles, currentUser, Notification, Article){
       'use strict';
       console.log( articles );
       if( $state.current.name === 'networks.articles' ) {
         $scope.networkId = $state.params.id;
         $scope.articles = articles.length ? articles : null;
         console.log( $scope.articles );
+        $scope.newArticle = function(){
+          $('#modalArticleForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.article' ) {
         $scope.networkId = $state.params.id;
         $scope.article = articles;
@@ -101,15 +104,34 @@ angular.module('baseApp.controllers')
       if( $scope.article ) {
         currentUser.currentNetworkName = $scope.article.title;
       }
+
+      $scope.remove = function( id ){
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Article.remove( Notification.id )
+            .then( function(){
+              $state.reload();
+            });
+        }
+      });
+
     }])
-  .controller('NetworkBoardController', ['$scope', '$state', 'boards','currentUser',
-    function($scope, $state, boards, currentUser){
+  .controller('NetworkBoardController', ['$scope', '$state', 'boards','currentUser','Notification','Board',
+    function($scope, $state, boards, currentUser, Notification, Board){
       'use strict';
 
       if( $state.current.name === 'networks.boards' ) {
         $scope.networkId = $state.params.id;
         $scope.boards = boards.length ? boards : null;
         console.log( $scope.boards );
+        $scope.newBoard = function(){
+          $('#modalBoardForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.board' ) {
         $scope.networkId = $state.params.id;
         $scope.board = boards;
@@ -131,6 +153,21 @@ angular.module('baseApp.controllers')
       } else {
         $scope.tab[ $state.params.tab ] = true;
       }
+
+      $scope.remove = function( id ){
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Board.remove( Notification.id )
+            .then( function(){
+              $state.reload();
+            });
+        }
+      });
     }])
   .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser',
     function($scope, $state, events, currentUser){
@@ -139,6 +176,9 @@ angular.module('baseApp.controllers')
       if( $state.current.name === 'networks.events' ) {
         $scope.networkId = $state.params.id;
         $scope.events = events.length ? events : null;
+        $scope.newEvent = function(){
+          $('#modalEventForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.event' ) {
         $scope.networkId = $state.params.id;
         $scope.event = events;
@@ -158,6 +198,9 @@ angular.module('baseApp.controllers')
         $scope.networkId = $state.params.id;
         $scope.users = users.length ? users : null;
         console.log( $scope.boards );
+        $scope.newUser = function(){
+          $('#modalUserForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.member' ) {
         $scope.networkId = $state.params.id;
         $scope.user = users;
