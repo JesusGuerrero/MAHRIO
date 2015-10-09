@@ -24,6 +24,27 @@
     </div>
   </div>
 </div>
+<div id="articlesList" class="row">
+  <div class="col-md-10 col-md-offset-1 col-sm-12">
+    <ul style="list-style-type: none; padding: 0; margin: 0">
+      <li ng-repeat="event in events track by $index"><a ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}">
+          <figure>
+            <!--img( ng-src='{{article.coverImage.url}}')-->
+            <!--figcaption(class="credit")-->
+          </figure>
+          <h3>{{event.title}}</h3></a><a ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}">
+          <figure>
+            <!--img( ng-src='{{article.coverImage.url}}')-->
+            <!--figcaption(class="credit")-->
+          </figure>
+          <h3>{{event.title}}</h3></a>
+        <p class="bg-yellow label pull-left">  {{event.start | date:'medium'}}</p>
+        <p class="bg-yellow label pull-right">  {{event.end | date:'medium'}}</p><br/><br class="hidden-xs hidden-sm"/>
+        <div class="article-content"> {{event.description}}</div>
+      </li>
+    </ul>
+  </div>
+</div>
 <modal-window-view modal-id="modalEventForm" title="Event">
   <modal-event-form></modal-event-form>
 </modal-window-view>
