@@ -59,7 +59,7 @@ angular.module('baseApp.directives')
           });
           Article.add( scope.article )
             .then( function(){
-              scope.$emit('closeModal');
+              scope.$directiveemit('closeModal');
             });
         };
         formSetup();

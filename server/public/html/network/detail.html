@@ -3,7 +3,7 @@
   <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.list" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
   <div id="tab-sections" class="col-xs-12">
     <tabset vertical="false" type="pills">
-      <tab heading="Summary" active="true">  &nbsp;</tab>
+      <tab heading="Summary" active="active">  &nbsp;</tab>
       <tab heading="Articles" ui-sref="networks.articles({id: network._id})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
       <tab heading="Boards" ui-sref="networks.boards({id: network._id})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
       <tab heading="Events" ui-sref="networks.events({id: network._id})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
@@ -17,7 +17,8 @@
     <ul class="timeline">
       <li class="time-label"><span class="bg-red">  Present</span></li>
       <li><i class="fa fa-book bg-blue"></i>
-        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(2,0,0)}}"></span></i></span>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span>
+                <!--(am-time-ago="{{::getDate(2,0,0)}}")-->  2 minutes ago</span></i></span>
           <h3 class="timeline-header"><a href="#">  Jesus Rocha</a>  published an article</h3>
           <div class="timeline-body">
               Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
@@ -29,12 +30,14 @@
         </div>
       </li>
       <li><i class="fa fa-user bg-aqua"></i>
-        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(5,0,0)}}"></span></i></span>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span>
+                <!--(am-time-ago="{{::getDate(2,0,0)}}")-->  5 minutes ago</span></i></span>
           <h3 class="timeline-header no-border"><a href="#">  Sarah Young</a>  joined the network</h3>
         </div>
       </li>
       <li><i class="fa fa-comments bg-yelow"></i>
-        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(27,0,0)}}"></span></i></span>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span>
+                <!--(am-time-ago="{{::getDate(2,0,0)}}")-->  27 minutes ago</span></i></span>
           <h3 class="timeline-header"><a href="#">  Jay White</a>  chatted on<a href="#">  Events</a>  channel</h3>
           <div class="timeline-body">
               Take me to your leader!
@@ -46,18 +49,21 @@
       </li>
       <li class="time-label"><span class="bg-green">  3 Jan. 2014</span></li>
       <li><i class="fa fa-tasks bg-green"></i>
-        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(0,1,0)}}"></span></i></span>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span>
+                <!--(am-time-ago="{{::getDate(2,0,0)}}")-->  1 hour ago</span></i></span>
           <h3 class="timeline-header no-border"><a href="#">  Jesus Rocha</a>  moved task to<i>  Done</i>  in board<i>  MAHRIO</i></h3>
         </div>
       </li>
       <li><i class="fa fa-camera bg-purple"></i>
-        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(0,2,0)}}"></span></i></span>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span>
+                <!--(am-time-ago="{{::getDate(2,0,0)}}")-->  2 hours ago</span></i></span>
           <h3 class="timeline-header"><a href="#">  Mina lee</a>  uploaded photos to<a href="#">  Finance Workshop</a>  event</h3>
           <div class="timeline-body"><img src="http://placehold.it/150x100" class="margin"/><img src="http://placehold.it/150x100" class="margin"/><img src="http://placehold.it/150x100" class="margin"/><img src="http://placehold.it/150x100" class="margin"/></div>
         </div>
       </li>
       <li><i class="fa fa-video-camera bg-maroon"></i>
-        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span am-time-ago="{{::getDate(0,5,0)}}"></span></i></span>
+        <div class="timeline-item"><span class="time"><i class="fa fa-clock-o">  &nbsp;<span>
+                <!--(am-time-ago="{{::getDate(2,0,0)}}")-->  5 hours ago</span></i></span>
           <h3 class="timeline-header"><a href="#">  Mr. Doe</a>  published a video</h3>
           <div class="timeline-body">
             <div class="embed-responsive embed-responsive-16by9">

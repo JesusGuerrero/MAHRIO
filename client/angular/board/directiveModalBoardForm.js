@@ -6,6 +6,9 @@ angular.module('baseApp.directives')
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/board/form',
+      scope: {
+        edit: '='
+      },
       link: function(scope){
         var formSetup = function(){
           FormHelper.setupFormHelper(scope, 'board', Board );
@@ -22,11 +25,24 @@ angular.module('baseApp.directives')
           members: {},
           columns: []
         };
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            console.log( newVal );
+            scope.board = newVal;
+          }
+        });
         scope.save = function(){
-          Board.add( scope.board )
-            .then( function(){
-              $state.reload();
-            });
+          if( scope.board._id ) {
+            Board.update( scope.board )
+              .then( function(){
+                $state.reload();
+              });
+          } else {
+            Board.add( scope.board )
+              .then( function(){
+                $state.reload();
+              });
+          }
         };
         formSetup();
       }

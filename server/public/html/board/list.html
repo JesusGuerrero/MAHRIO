@@ -6,7 +6,7 @@
     <tabset vertical="false" type="pills">
       <tab heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
       <tab heading="Articles" ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
-      <tab heading="Boards" active="true">  &nbsp;</tab>
+      <tab heading="Boards" active="active">  &nbsp;</tab>
       <tab heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
       <tab heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
     </tabset>
@@ -39,12 +39,12 @@
       <div ng-repeat="board in boards track by $index" ui-sref="networks.board({id: networkId, boardId: board._id})" ui-sref-opts="{reload: true}" class="list-group-item">
         <div class="col-xs-12 col-sm-4 no-padding"><strong><i class="fa fa-server"></i>{{board.name}}</strong></div>
         <div class="col-xs-12 col-sm-4"><span ng-repeat="member in board.members track by $index">&mdash;{{member.profile.firstName}} {{member.profile.lastName}}<br/></span></div>
-        <div ng-show="board._owner === currentUser._id" class="col-xs-12 col-sm-4"><a ui-sref="boards.edit({board: board._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" class="btn btn-default btn-block">EDIT</a><a ng-click="remove( board._id ); $event.stopPropagation()" class="btn btn-danger btn-block">DELETE</a></div>
+        <div ng-show="board._owner === currentUser._id" class="col-xs-12 col-sm-4"><a ng-click="editBoard( board ); $event.stopPropagation()" ng-if="networkId &amp;&amp; (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="btn btn-default btn-block">  EDIT</a><a ng-click="remove( board._id ); $event.stopPropagation()" class="btn btn-danger btn-block">  DELETE</a></div>
         <div class="clearfix"></div>
       </div>
     </div>
   </div>
 </div>
 <modal-window-view modal-id="modalBoardForm" title="Board">
-  <modal-board-form></modal-board-form>
+  <modal-board-form edit="edit"></modal-board-form>
 </modal-window-view>

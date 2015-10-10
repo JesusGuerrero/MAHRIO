@@ -13,7 +13,7 @@
                 |   &nbsp;
             tab( heading="Articles" ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
-            tab( heading="Boards" active="true")
+            tab( heading="Boards" active="active")
                 |   &nbsp;
             tab( heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
@@ -56,11 +56,11 @@
                         |&mdash;{{member.profile.firstName}} {{member.profile.lastName}}
                         br
                 .col-xs-12.col-sm-4(ng-show="board._owner === currentUser._id")
-                    a.btn.btn-default.btn-block( ui-sref="boards.edit({board: board._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()")
-                        |EDIT
+                    a.btn.btn-default.btn-block(ng-click="editBoard( board ); $event.stopPropagation()" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+                        |   EDIT
                     a.btn.btn-danger.btn-block( ng-click="remove( board._id ); $event.stopPropagation()")
-                        |DELETE
+                        |   DELETE
                 .clearfix
 
 modal-window-view( modal-id="modalBoardForm" title="Board")
-    modal-board-form
+    modal-board-form( edit="edit")

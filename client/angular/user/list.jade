@@ -17,7 +17,7 @@
                 |   &nbsp;
             tab( heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
-            tab( heading="Members" active="true")
+            tab( heading="Members" active="active")
                 |   &nbsp;
 
 .col-xs-12(ng-if="!users && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")

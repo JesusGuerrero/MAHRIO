@@ -5,7 +5,7 @@
                 |   Back
     .col-xs-12(id="tab-sections")
         tabset( vertical="false" type="pills")
-            tab( heading="Summary" active="true")
+            tab( heading="Summary" active="active")
                 |   &nbsp;
             tab( heading="Articles" ui-sref="networks.articles({id: network._id})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
@@ -29,7 +29,9 @@
                     span.time
                         i.fa.fa-clock-o
                             |   &nbsp;
-                            span(am-time-ago="{{::getDate(2,0,0)}}")
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   2 minutes ago
                     h3.timeline-header
                         a(href="#")
                             |   Jesus Rocha
@@ -49,7 +51,9 @@
                     span.time
                         i.fa.fa-clock-o
                             |   &nbsp;
-                            span(am-time-ago="{{::getDate(5,0,0)}}")
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   5 minutes ago
                     h3.timeline-header.no-border
                         a(href="#")
                             |   Sarah Young
@@ -60,7 +64,9 @@
                     span.time
                         i.fa.fa-clock-o
                             |   &nbsp;
-                            span(am-time-ago="{{::getDate(27,0,0)}}")
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   27 minutes ago
                     h3.timeline-header
                         a(href="#")
                             |   Jay White
@@ -85,7 +91,9 @@
                     span.time
                         i.fa.fa-clock-o
                             |   &nbsp;
-                            span(am-time-ago="{{::getDate(0,1,0)}}")
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   1 hour ago
                     h3.timeline-header.no-border
                         a(href="#")
                             |   Jesus Rocha
@@ -101,7 +109,9 @@
                     span.time
                         i.fa.fa-clock-o
                             |   &nbsp;
-                            span(am-time-ago="{{::getDate(0,2,0)}}")
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   2 hours ago
                     h3.timeline-header
                         a(href="#")
                             |   Mina lee
@@ -121,7 +131,9 @@
                     span.time
                         i.fa.fa-clock-o
                             |   &nbsp;
-                            span(am-time-ago="{{::getDate(0,5,0)}}")
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   5 hours ago
                     h3.timeline-header
                         a(href="#")
                             |   Mr. Doe

@@ -1,5 +1,5 @@
 angular.module('baseApp.directives')
-  .directive('modalEventForm', [ 'Calendar', 'FormHelper', '$state', function(Calendar, FormHelper, $state) {
+  .directive('modalEventForm', [ 'Calendar', 'FormHelper', '$state', '_', function(Calendar, FormHelper, $state, _) {
     'use strict';
 
     return {

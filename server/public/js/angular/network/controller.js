@@ -81,6 +81,7 @@ angular.module('baseApp.controllers')
             $state.go('networks.list');
           });
       };
+      $scope.active = true;
     }])
   .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser','Notification','Article',
     function($scope, $state, articles, currentUser, Notification, Article){
@@ -120,6 +121,8 @@ angular.module('baseApp.controllers')
         }
       });
 
+      $scope.active = true;
+
     }])
   .controller('NetworkBoardController', ['$scope', '$state', 'boards','currentUser','Notification','Board',
     function($scope, $state, boards, currentUser, Notification, Board){
@@ -130,6 +133,10 @@ angular.module('baseApp.controllers')
         $scope.boards = boards.length ? boards : null;
         console.log( $scope.boards );
         $scope.newBoard = function(){
+          $('#modalBoardForm' ).modal().show();
+        };
+        $scope.editBoard = function( board ){
+          $scope.edit = board;
           $('#modalBoardForm' ).modal().show();
         };
       } else if( $state.current.name === 'networks.board' ) {
@@ -168,6 +175,7 @@ angular.module('baseApp.controllers')
             });
         }
       });
+      $scope.active = true;
     }])
   .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser',
     function($scope, $state, events, currentUser){
@@ -189,6 +197,7 @@ angular.module('baseApp.controllers')
       if( $scope.event ) {
         currentUser.currentNetworkName = $scope.event.title;
       }
+      $scope.active = true;
     }])
   .controller('NetworkMemberController', ['$scope', '$state', 'users','currentUser',
     function($scope, $state, users, currentUser){
@@ -211,4 +220,5 @@ angular.module('baseApp.controllers')
       if( $scope.user ) {
         currentUser.currentNetworkName = $scope.user.title;
       }
+      $scope.active = true;
     }]);
