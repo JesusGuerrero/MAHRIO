@@ -1,0 +1,63 @@
+.row(ng-if='networkId' id="network-detail")
+   .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
+      a.btn.btn-primary.btn-block.pull-right(ng-click="newEvent()" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+         i.fa.fa-plus
+         |   Event
+   .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
+      a.btn.btn-default(ui-sref="networks.list" ui-sref-opts="{reload: true}")
+         i.fa.fa-chevron-left
+            |   Back
+   .col-xs-12(id="tab-sections")
+      tabset( vertical="false" type="pills")
+         tab( heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}")
+            |   &nbsp;
+         tab( heading="Articles" ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}")
+            |   &nbsp;
+         tab( heading="Boards" ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}")
+            |   &nbsp;
+         tab( heading="Events" active="active")
+            |   &nbsp;
+         tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
+            |   &nbsp;
+.col-xs-12(ng-if="!events && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+   .col-xs-12
+      .callout.callout-info.text-center
+         h4
+            i.fa.fa-calendar
+            i.fa.fa-info-circle.pull-right
+            |   Events: empty!
+         p
+
+            |   Add a new event by choosing '+ Event' button on the top right corner.
+            |   Events are helpful when organizing a meet up because
+            |   they help keep track of agenda and attendees.
+
+
+.row(id="articlesList")
+   .col-md-10.col-md-offset-1.col-sm-12
+      ul(style="list-style-type: none; padding: 0; margin: 0")
+         li( ng-repeat="event in events track by $index")
+            a(ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
+               figure
+                  //img( ng-src='{{article.coverImage.url}}')
+                  //figcaption(class="credit")
+               h3
+                  |{{event.title}}
+            a(ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+               figure
+                  //img( ng-src='{{article.coverImage.url}}')
+                  //figcaption(class="credit")
+               h3
+                  |{{event.title}}
+            p.bg-yellow.label.pull-left
+               |   {{event.start | date:'medium'}}
+            p.bg-yellow.label.pull-right
+               |   {{event.end | date:'medium'}}
+            br
+            br.hidden-xs.hidden-sm
+            div(class="article-content")
+               |  {{event.description}}
+
+
+modal-window-view( modal-id="modalEventForm" title="Event")
+   modal-event-form

@@ -93,6 +93,7 @@ module.exports = function (grunt) {
           'bower_components/angular-underscore/angular-underscore.min.js',
           'bower_components/angular-socket-io/socket.js',
           'bower_components/angular-chart.js/dist/angular-chart.js',
+          'bower_components/angular-moment/angular-moment.min.js',
           'bower_components/matchHeight/jquery.matchHeight-min.js',
           'client/AdminLTE/AdminLTE.js'
         ],
@@ -176,7 +177,7 @@ module.exports = function (grunt) {
         tasks: ['less']
       },
       angularJade: {
-        files: ['client/angular/**/*.jade', '!**/_*.jade'],
+        files: ['client/angular/**/*.jade'],
         tasks: ['newer:jade'],
         options: {
           interrupt: true

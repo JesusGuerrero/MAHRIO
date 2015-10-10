@@ -12,12 +12,11 @@ module.exports = function ( config, server ) {
         handler: function( request, reply ){
           switch( request.params.action ){
             case 'me':
-              return UserCtrl.currentUser( request, reply, 'GET', 'email access created avatarImage profile' );
+              return UserCtrl.currentUser( request, reply, 'GET', 'email access created avatarImage profile networks' );
             case 'all':
               return UserCtrl.getUsers( request, reply );
             default:
-              var idInActionParameter = request.params.action;
-              return UserCtrl.getUser( idInActionParameter, reply );
+              return UserCtrl.getUser( request, reply );
           }
         },
         auth: {

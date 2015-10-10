@@ -1,0 +1,115 @@
+.row( id="dashboard" ng-controller="AdminDashboardController")
+    .col-xs-12
+        .h3.text-center(ng-if="!networks.length")
+            |   You have not seen assigned
+            br
+            br
+            .row
+                .col-xs-6.col-xs-offset-3
+                    a.btn.btn-success.btn-block(ui-sref="networks.list" ui-sref-opts="{reload: true}")
+                        |   Networks
+        .panel-group( id="accordion" role="tablist" aria-multiselectable="true" ng-if="networks.length")
+            .panel.panel-default
+                .panel-heading(role="tab" id="heading{{$index}}" ng-repeat-start="network in networks track by $index" style="padding: 0")
+                    h4.panel-title
+                        i.fa.fa-mortar-board.pull-right(style="padding: 10px 15px")
+                        a.btn-block( role="button" data-toggle="collapse" data-parent="#accordion" href="#{{network._id}}"
+                            aria-expanded="{{!$index ? 'true':'false'}}" aria-controls="{{network._id}}" style="padding: 10px 15px;")
+                            i.fa.fa-lock.text-danger( ng-if="network.isPrivate")
+                            i.fa.fa-lock.text-warning( ng-if="network.isProtected")
+                            |   {{network.name}}
+                .panel-collapse.collapse(id="{{network._id}}" role="tabpanel" aria-labelledby="heading{{$index}}" ng-repeat-end="" ng-class="{in: !$index}")
+                    .panel-body
+                        .col-md-4.col-xs-12
+                            .info-box
+                                span.info-box-icon.bg-fuchsia
+                                    i.fa.fa-line-chart
+                                .info-box-content
+                                    span.info-box-text
+                                        |   Logins
+                                    span.info-box-number
+                                        |   90
+                                    .progress
+                                        .progress-bar.bg-aqua(style="width: 20%")
+                                    span.progress-description
+                                        i.fa.fa-caret-up.text-green
+                                            |   20%
+                                        |   last
+                                        b
+                                            |   30 Days
+                        .col-md-4.col-xs-12
+                            .info-box
+                                span.info-box-icon.bg-red
+                                    i.ion.ion-clock
+                                .info-box-content
+                                    span.info-box-text
+                                        |   Bounce Rate
+                                    span.info-box-number
+                                        |   10
+                                        small
+                                            |%
+                                    .progress
+                                        .progress-bar.bg-green(style="width: 4%")
+                                    span.progress-description
+                                        i.fa.fa-caret-down.text-red
+                                            |   4%
+                                        |   last
+                                        b
+                                            |   30 Days
+                        .col-md-4.col-xs-12
+                            .info-box
+                                span.info-box-icon.bg-purple
+                                    i.fa.fa-book
+                                .info-box-content
+                                    span.info-box-text
+                                        |   Articles
+                                    span.info-box-number
+                                        |   14
+                                    .progress
+                                        .progress-bar.bg-red(style="width: 10%")
+                                    span.progress-description
+                                        i.fa.fa-caret-up.text-green
+                                            |   10%
+                                        |   last
+                                        b
+                                            |   30 Days
+                        .col-md-4.col-xs-12
+                            .small-box.bg-aqua
+                                .inner
+                                    h3
+                                        |   10 / 3
+                                    p
+                                        |   Tasks / Boards
+
+                                .icon
+                                    .fa.fa-tasks
+                                a.small-box-footer( href="#")
+                                    |   View
+                                    i.fa.fa-arrow-circle-right
+                        .col-md-4.col-xs-12
+                            .small-box.bg-green
+                                .inner
+                                    h3
+                                        |   4
+                                    p
+                                        |   Members
+
+                                .icon
+                                    .i.fa.fa-users
+                                a.small-box-footer( href="#")
+                                    |   View
+                                    i.fa.fa-arrow-circle-right
+                        .col-md-4.col-xs-12
+                            .small-box.bg-yellow
+                                .inner
+                                    h3
+                                        |   4
+                                    p
+                                        |   Events
+
+                                .icon
+                                    .fa.fa-calendar
+                                a.small-box-footer( href="#")
+                                    |   View
+                                    i.fa.fa-arrow-circle-right
+

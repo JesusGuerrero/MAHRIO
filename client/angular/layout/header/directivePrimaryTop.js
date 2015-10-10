@@ -1,6 +1,6 @@
 angular.module('baseApp.directives')
-  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout',
-    function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout ){
+  .directive('headerNavigationTop', ['$rootScope','currentUser','Socket','Notification','_','Chat','$state','$timeout','$http',
+    function( $rootScope, currentUser, Socket, Notification, _, Chat, $state, $timeout, $http ){
       'use strict';
       return {
         restrict: 'A',
@@ -11,63 +11,10 @@ angular.module('baseApp.directives')
         link: function(scope) {
           scope.logout = $rootScope.logout;
           scope.current = currentUser.get();
-          function populateMessageNotice(res, newUser ){
-            scope.notifications = res.notifications;
-            _.each( Object.keys( scope.notifications ), function( key ) {
-              scope[ key ] = {
-                total: Object.keys( scope.notifications[key] ).length
-              };
-            });
-            Chat.getAllPrivateConversations()
-              .then( function(res){
-                var groupById = _.groupBy( res.conversations, function(conv){ return conv._id; });
-                _.each( Object.keys( groupById ), function(key){ groupById[key] = groupById[key][0]; });
-                var allConversations = {};
-                _.each( Object.keys( groupById ), function( key ) {
-                  delete groupById[key].members[newUser._id];
-                  var users = [];
-                  _.each( Object.keys( groupById[key].members ), function(k){
-                    users.push( groupById[key].members[k] );
-                  });
-                  groupById[key].members = users;
-                  groupById[key].messages.reverse();
-                  if( scope.notifications && scope.notifications.chat  ) {
-                    if( typeof scope.notifications.chat[key] === 'undefined' ) {
-                      scope.notifications.chat[key] = groupById[key];
-                      delete scope.notifications.chat[key].members[newUser._id ];
-                      var users2 = [];
-                      _.each( Object.keys( scope.notifications.chat[key].members ), function(k){
-                        users.push( scope.notifications.chat[key].members[k] );
-                      });
-                      scope.notifications.chat[key].members = users2;
-                      scope.notifications.chat[key].messages.reverse();
-                    } else {
-                      scope.notifications.chat[key].isNew = true;
-                    }
-                  } else {
-                    allConversations[key] = groupById[key];
-                  }
-                });
-                if( Object.keys( allConversations ).length ) {
-                  scope.notifications = {
-                    chat: allConversations
-                  };
-                }
-                scope.notifications.chat = _.sortBy( scope.notifications.chat, function(entry){ return new Date(entry.messages[0].created).getTime()*-1; });
-              });
-          }
+
           scope.$watch( currentUser.get, function(newUser){
             if( typeof newUser === 'undefined' ) {
               newUser = {access: ['any']};
-            } else {
-
-              Socket.get.on('event:notification:'+newUser._id, function(){
-
-                Notification.get()
-                  .then( function(res){
-                    populateMessageNotice(res, newUser);
-                  });
-              });
             }
 
             if( _.contains( newUser.access, 'any' ) ) {
@@ -75,11 +22,6 @@ angular.module('baseApp.directives')
             } else {
               scope.dynamicTemplateUrl = '/assets/html/layout/header/authorized';
               scope.user = newUser;
-              scope.notifications = {};
-              Notification.get()
-                .then( function(res){
-                  populateMessageNotice(res, newUser);
-                });
             }
             scope.toggleSidebar = function(){
               $rootScope.toggleSidebarCollapsed();
@@ -90,6 +32,34 @@ angular.module('baseApp.directives')
               }
             };
           });
+
+          var usersCache = [];
+          scope.selected = function($item) {
+            var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
+              selection = _.find(usersCache, function (user) {
+                return user.email === extracted[2];
+              });
+
+              $state.go( 'users.detail', {id: selection._id}, {reload: true});
+              scope.$broadcast('clearInput');
+          };
+          scope.getUsers = function(val) {
+            return $http.get('/api/autocomplete/users', {
+              params: {
+                q: val
+              }
+            }).then(function(response){
+              usersCache = response.data.users;
+              var current = currentUser.get(),
+                filteredUserList =  _
+                  .filter( response.data.users, function(user){
+                    return user.email !== current.email;
+                  });
+              return filteredUserList.map(function(user){
+                return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
+              });
+            });
+          };
 
         },
         template: '<ng-include src="dynamicTemplateUrl" render-app-gestures></ng-include>'

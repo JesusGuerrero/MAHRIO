@@ -41,9 +41,9 @@
                 scope.$parent.$broadcast('event:removeSuccess', scope.dataObject._id );
               });
           };
-          scope.close = function(){
+          scope.$on('closeModal', function(){
             $(elem).modal('hide');
-          };
+          });
         }
       };
     }

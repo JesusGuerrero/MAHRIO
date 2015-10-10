@@ -3,7 +3,9 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Media = mongoose.model('Media'),
-    Boom = require('boom');
+    Boom = require('boom'),
+    _ = require('underscore'),
+    Profile = mongoose.model('Profile');
 
 function register (request, reply, config, server) {
   if (request.auth.isAuthenticated) { return reply(Boom.badRequest('You Logged In')); }
@@ -11,30 +13,43 @@ function register (request, reply, config, server) {
   var newUser = new User({
     email: request.payload.email,
     password: request.payload.password,
-    access: [!server.needAdmin ? 'authorized' : 'admin']
+    access: !server.needAdmin ? ['authorized'] : ['authorized','sudo']
   });
 
   if( server.needAdmin ){
     server.needAdmin = false;
   }
 
-  newUser.save(function (err, user) {
-    if (err) { return reply(Boom.badRequest(err)); }
+  Profile.create({firstName: request.payload.profile.firstName, lastName: request.payload.profile.lastName},
+    function( err, profile ){
+      if( err ) { return reply( Boom.badRequest(err)); }
 
-    var confirmAccountLink = config.DOMAIN + '/#/confirm/';
-    confirmAccountLink += user.resetPasswordToken+'?user=true';
-    server.mailer( {to: user.email, subject: 'Activate Account', html: confirmAccountLink});
-    console.log( confirmAccountLink );
+      newUser.profile = profile.id;
+      newUser.save(function (err, user) {
+        if (err) { return reply(Boom.badRequest(err)); }
 
-    delete user.authorizationToken;
-    delete user.password;
-    delete user.resetPasswordToken;
-    delete user.salt;
+        var confirmAccountLink = config.DOMAIN + '/#/confirm/';
+        confirmAccountLink += user.resetPasswordToken+'?user=true';
+        server.mailer( {to: user.email, subject: 'Activate Account', html: confirmAccountLink});
+        console.log( confirmAccountLink );
 
-    reply(user)
-      .header('Authorization', 'Bearer ' + user.authorizationToken)
-      .header('Access-Control-Expose-Headers', 'authorization');
+        delete user.authorizationToken;
+        delete user.password;
+        delete user.resetPasswordToken;
+        delete user.salt;
+
+        profile._owner = user.id;
+        profile.save( function(err){
+          if( err ) { return reply( Boom.badRequest(err)); }
+
+          reply({created: user.created, email: user.email, profile: {firstName: profile.firstName, lastName: profile.lastName}, access: user.access })
+            .header('Authorization', 'Bearer ' + user.authorizationToken)
+            .header('Access-Control-Expose-Headers', 'authorization');
+        });
+      });
+
   });
+
 }
 function activateUser( request, reply ){
   User.findOne( { resetPasswordToken: request.payload.token}, function(err, user){
@@ -76,7 +91,7 @@ function currentUser (request, reply, method, selectString) {
   User
     .findOne({_id: request.auth.credentials.id})
     .select( selectString )
-    .populate( 'avatarImage profile' )
+    .populate( 'avatarImage profile networks' )
     .exec( function (err, user) {
       if (err || !user) { return reply(Boom.badRequest(err)); }
 
@@ -142,9 +157,13 @@ function currentUser (request, reply, method, selectString) {
 }
 
 function getUsers( request, reply ){
+  var queryString = 'email profile avatarImage';
+  if( _.contains(request.auth.credentials.access, 'sudo') ) {
+    queryString += ' access';
+  }
   User
     .find()
-    .select('email profile avatarImage')
+    .select( queryString )
     .populate('profile avatarImage')
     .exec( function (err, users) {
       if (err || !users) {
@@ -152,14 +171,19 @@ function getUsers( request, reply ){
       }
 
       return reply({
-        list: users
+        users: users
       });
     });
 }
 
-function getUser( id, reply ){
+function getUser( request, reply ){
+  var id = request.params.action;
+  var queryString = 'email profile avatarImage';
+  if( _.contains(request.auth.credentials.access, 'sudo') ) {
+    queryString += ' access';
+  }
   User.findOne({_id: id})
-    .select('email avatarImage profile')
+    .select(queryString)
     .populate('avatarImage profile')
     .exec( function (err, user) {
       if (err) { return reply(Boom.badRequest(err)); }

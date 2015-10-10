@@ -1,17 +1,56 @@
+.row(ng-if='networkId' id="network-detail")
+    .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
+        a.btn.btn-primary.btn-block.pull-right(ng-click="newArticle()" ui-sref-opts="{reload: true}" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+            i.fa.fa-plus
+            |   Article
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
+        a.btn.btn-default(ui-sref="networks.list" ui-sref-opts="{reload: true}")
+            i.fa.fa-chevron-left
+                |   Back
+    .col-xs-12(id="tab-sections")
+        tabset( vertical="false" type="pills")
+            tab( heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Articles" active="active")
+                |   &nbsp;
+            tab( heading="Boards" ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+
+.col-xs-12(ng-if="!articles && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+    .col-xs-12
+        .callout.callout-info.text-center
+            h4
+                i.fa.fa-book
+                i.fa.fa-info-circle.pull-right
+                |   Articles: empty!
+            p
+                |   Add a new article by choosing '+ Article' button on the top right corner.
+                |   Articles are helpful when communicating on to large audiences because
+                |   they help organize your thoughts.
+
+
 .row
     .form-group.col-xs-12.col-sm-4.col-sm-offset-4.col-md-6.col-md-offset-3.col-lg-2.col-lg-offset-5(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
-        a.btn.btn-primary.btn-block(ui-sref="articles.new" ui-sref-opts="{reload: true}")
+        a.btn.btn-primary.btn-block(ui-sref="articles.new" ui-sref-opts="{reload: true}" ng-if="!networkId")
             i.fa.fa-plus
             |   Add Article
 .row(id="articlesList")
     .col-md-10.col-md-offset-1.col-sm-12
         ul(style="list-style-type: none; padding: 0; margin: 0")
             li( ng-repeat="article in articles track by $index")
-                a(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                a(ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
                     figure
-                        img(src="/assets/img/mahrio.png" ng-show="article.title==='mahrio'")
-                        img(src="/assets/img/college.jpg"
-                            ng-show="article.title!=='mahrio'")
+                        img( ng-src='{{article.coverImage.url}}')
+                        figcaption(class="credit")
+                    h3
+                        |{{article.title}}
+                a(ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                    figure
+                        img( ng-src='{{article.coverImage.url}}')
                         figcaption(class="credit")
                     h3
                         |{{article.title}}
@@ -27,14 +66,20 @@
                     p(ng-repeat="section in article.sections track by $index")
                         |{{section.body}}
                 .form-group
-                    a.btn.btn-primary.btn-block.form-control(ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                    a.btn.btn-primary.btn-block.form-control(ng-if='networkId' ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
+                        |   Continue Reading
+                    a.btn.btn-primary.btn-block.form-control(ng-if='!networkId' ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
                         |   Continue Reading
                 .row(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
-                    .col-xs-6
-                        a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
-                            i.fa.fa-edit
-                            |   &nbsp;Edit
-                    .col-xs-6
-                        a.btn.btn-block.btn-danger(ng-click="remove( article._id )")
-                            i.fa.fa-trash
-                            |   &nbsp;Remove
+                    .col-xs-10.col-xs-offset-1
+                        .row
+                            .col-xs-6
+                                a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
+                                    i.fa.fa-edit
+                                    |   &nbsp;Edit
+                            .col-xs-6
+                                a.btn.btn-block.btn-danger(ng-click="remove( article._id ); $event.stopPropagation()")
+                                    i.fa.fa-trash
+                                    |   &nbsp;Remove
+modal-window-view( modal-id="modalArticleForm" title="Article")
+    modal-article-form

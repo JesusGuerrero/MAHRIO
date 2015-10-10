@@ -5,16 +5,19 @@ var async = require('async'),
   Boom = require('boom'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-  Network = mongoose.model('Network');
+  Network = mongoose.model('Network'),
+  Media = mongoose.model('Media');
 
 function createNetwork( request, reply ) {
-  if( !request.payload.network || !_.contains(request.auth.credentials.access, 'sudo') ) {
+  if( !request.payload.network || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin') ) ) {
     return reply( Boom.badRequest() );
   }
 
   var members = request.payload.network.members;
   delete request.payload.network.members;
-  request.payload.network.owner = request.auth.credentials.id;
+  if( typeof request.payload.network.owner._id === 'undefined' ) {
+    request.payload.network.owner = request.auth.credentials.id;
+  }
   Network.create( request.payload.network, function(err, network){
     if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -22,9 +25,39 @@ function createNetwork( request, reply ) {
       function(err){
         if( err ) { return Boom.badRequest(err); }
 
-        reply({network: network});
+        return reply({network: network});
       });
   });
+}
+function _getNetworkOwner( network, callback ) {
+  if( network.owner ) {
+    User
+      .findOne( {_id: network.owner})
+      .select('email profile avatarImage')
+      .populate('profile avatarImage')
+      .exec( function(err, user){
+        if( err ) { callback(err); }
+
+        network._doc.owner = user;
+
+        callback( false );
+      });
+  } else {
+    callback( false );
+  }
+}
+function _getNetworkAdmins( network, callback ) {
+  User
+    .find( {_id: {$in: network.admins}})
+    .select('email profile avatarImage')
+    .populate('profile avatarImage')
+    .exec( function(err, users){
+      if( err ) { callback(err); }
+
+      network._doc.admins = _.indexBy( users, '_id');
+
+      callback( false );
+    });
 }
 function _getNetworkMembers( network, callback ) {
   User
@@ -36,12 +69,16 @@ function _getNetworkMembers( network, callback ) {
 
       network._doc.members = _.indexBy( users, '_id');
 
-      callback( false );
+      _getNetworkAdmins( network, function(){
+        _getNetworkOwner( network, function(){
+          callback( false );
+        });
+      });
     });
 }
 function _getAllNetworks( request, reply, callback ) {
   Network
-    .find( )
+    .find( request.payload.access )
     .exec( function(err, networks){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -53,8 +90,21 @@ function _getAllNetworks( request, reply, callback ) {
     });
 }
 function getNetwork( request, reply, callback ) {
-  if( !_.contains(request.auth.credentials.access, 'sudo') ) {
+  if( !_.contains(request.auth.credentials.access, 'authorized') ) {
     return reply( Boom.badRequest() );
+  }
+  if( !_.contains(request.auth.credentials.access, 'sudo') ) {
+    if( !request.payload ) {
+      request.payload = { access: { isPrivate: false } };
+    } else {
+      request.payload.access = { isPrivate: false };
+    }
+  } else {
+    if( !request.payload ) {
+      request.payload = {access: {}};
+    } else {
+      request.payload.access = { };
+    }
   }
   if( typeof request.params.id === 'undefined' ) {
     _getAllNetworks( request, reply, function(networks){
@@ -69,8 +119,10 @@ function getNetwork( request, reply, callback ) {
       });
     });
   } else {
+    request.payload.access._id = request.params.id;
     Network
-      .findOne( {_id: request.params.id} )
+      .findOne( request.payload.access  )
+      .populate('coverImage')
       .exec( function(err,network){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -86,9 +138,24 @@ function getNetwork( request, reply, callback ) {
       });
   }
 }
+function _updateImage( request, reply ) {
+  Media
+    .create( request.payload.network.mediaInsert, function(err, media){
+      if( err ) { return reply( Boom.badRequest(err) ); }
+
+      Network.update({_id: request.params.id}, {$set: {coverImage: media.id}}, {multi: false},
+        function(err, network){
+          if( err || !network ){ return reply( Boom.badRequest('failed to update article with image'+err)); }
+
+          return reply({media: media});
+        });
+    });
+}
 function updateNetwork( request, reply ) {
-  if( !request.payload.network || !_.contains(request.auth.credentials.access, 'sudo') || typeof request.params.id === 'undefined') {
+  if( !request.payload.network || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin')) || typeof request.params.id === 'undefined') {
     return reply( Boom.badRequest() );
+  } else if( request.payload.network.mediaInsert ) {
+    _updateImage(request, reply);
   } else if( typeof request.payload.networkIds !== 'undefined' && Array.isArray( request.payload.networkIds ) ) {
     // TODO: update several networks at once
   } else {
@@ -96,6 +163,11 @@ function updateNetwork( request, reply ) {
 
       network.name = request.payload.network.name;
       network.isPrivate = request.payload.network.isPrivate;
+      network.admins = request.payload.network.admins;
+      network.owner = undefined;
+      if( request.payload.network.owner && request.payload.network.owner._id ) {
+        network.owner = request.payload.network.owner._id;
+      }
 
       network.save( function(err, network){
         if( err ) { return reply( Boom.badRequest() ); }
@@ -146,7 +218,65 @@ function updateNetwork( request, reply ) {
     });
   }
 }
+function adminNetwork( request, reply ) {
+  if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
+
+  getNetwork( request, reply, function(network) {
+    if( !network.isPrivate ) {
+      User.update({_id: request.auth.credentials.id}, {$push: {pending: network.id}}, {multi: false}, function(err){
+        if( err ) { return reply( Boom.badRequest(err)); }
+
+        reply( {requested: true} );
+      });
+    } else {
+      reply( Boom.badRequest() );
+    }
+  });
+}
+function joinNetwork( request, reply ) {
+  if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
+
+  getNetwork( request, reply, function(network) {
+    if( !network.isPrivate && !network.isProtected ) {
+      User.update({_id: request.auth.credentials.id}, {$push: {networks: network.id}}, {multi: false}, function(err){
+        if( err ) { return reply( Boom.badRequest(err)); }
+
+        reply( {joined: true} );
+      });
+    } else if( network.isProtected ) {
+      User.update({_id: request.auth.credentials.id}, {$push: {pending: network.id}}, {multi: false}, function(err){
+        if( err ) { return reply( Boom.badRequest(err)); }
+
+        reply( {pending: true} );
+      });
+    } else {
+      reply( Boom.badRequest() );
+    }
+  });
+}
+function addMediaNetwork( request, reply ) {
+  if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
+  if( !_.contains(request.auth.credentials.access, 'sudo') ) { return reply( Boom.badRequest() ); }
+
+  Network.update({_id: request.params.id}, {$set: {cover: request.params.id}}, {multi: false}, function(err){
+    if( err ) { return reply( Boom.badRequest(err)); }
+
+    reply( {media: true} );
+  });
+}
+function leaveNetwork( request, reply ) {
+  if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
+
+  User.update({_id: request.auth.credentials.id}, {$pull: {networks: request.params.id}}, {multi: false}, function(err){
+    if( err ) { return reply( Boom.badRequest(err)); }
+
+    reply( {left: true} );
+  });
+}
 function removeNetwork( request, reply ){
+  if( !_.contains(request.auth.credentials.access, 'sudo') ) {
+    return reply( Boom.badRequest() );
+  }
   if( typeof request.params.id !== 'undefined' ) {
     getNetwork( request, reply, function(network) {
       var oldMembers = null;
@@ -178,5 +308,9 @@ module.exports = {
   create: createNetwork,
   read: getNetwork,
   update: updateNetwork,
+  admin: adminNetwork,
+  join: joinNetwork,
+  leave: leaveNetwork,
+  media: addMediaNetwork,
   remove: removeNetwork
 };

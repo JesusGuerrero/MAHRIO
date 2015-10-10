@@ -9,9 +9,23 @@ module.exports = function ( config, server ) {
       path: '/api/users/disable/{id?}',
       config: {
         handler: adminUserMethods.disableUser,
-        auth: {
-          strategy: 'simple'
-        }
+        auth: 'simple'
+      }
+    },
+    {
+      method: ['PUT'],
+      path: '/api/admin/users/{id?}',
+      config: {
+        handler: adminUserMethods.makeAdmin,
+        auth: 'simple'
+      }
+    },
+    {
+      method: ['DELETE'],
+      path: '/api/admin/users/{id?}',
+      config: {
+        handler: adminUserMethods.removeAdmin,
+        auth: 'simple'
       }
     },
     {
@@ -19,9 +33,7 @@ module.exports = function ( config, server ) {
       path: '/api/users/{id?}',
       config: {
         handler: adminUserMethods.removeUser,
-        auth: {
-          strategy: 'simple'
-        }
+        auth: 'simple'
       }
     }
   ]

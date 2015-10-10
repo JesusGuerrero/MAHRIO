@@ -1,5 +1,5 @@
 
-<aside class="control-sidebar control-sidebar-dark">
+<aside ng-controller="RightSettingsController" class="control-sidebar control-sidebar-dark">
   <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
     <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
     <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
@@ -50,6 +50,19 @@
     </div>
     <div id="control-sidebar-settings-tab" class="tab-pane">
       <h3 class="control-sidebar-heading">  General Settings</h3>
+      <div class="form-group">
+        <label>  Theme</label>
+        <div style="width: 100%; margin-bottom: 10px;" class="btn-group">
+          <button style="background: {{skin.rgb}}" type="button" id="theme-chooser-btn" data-toggle="dropdown" class="btn btn-block btn-sm dropdown-toggle">  {{skin.name}}<span class="caret"></span></button>
+          <ul id="theme-chooser" class="dropdown-menu">
+            <li><a href="javascript::;" style="color: #3c8dbc" data="skin-blue"><i class="fa fa-square">  Blue</i></a></li>
+            <li><a href="javascript::;" style="color: #00a65a" data="skin-green"><i class="fa fa-square">  Green</i></a></li>
+            <li><a href="javascript::;" style="color: #f39c12" data="skin-yellow"><i class="fa fa-square">  Yellow</i></a></li>
+            <li><a href="javascript::;" style="color: #605ca8" data="skin-purple" class="text-purple"><i class="fa fa-square">  Purple</i></a></li>
+            <li><a href="javascript::;" style="color: #dd4b39" data="skin-red" class="text-red"><i class="fa fa-square">  Red</i></a></li>
+          </ul>
+        </div>
+      </div>
       <div class="form-group">
         <label class="control-sidebar-subheading">  Report pane usage
           <input type="checkbox" class="pull-right"/>

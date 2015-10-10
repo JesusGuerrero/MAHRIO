@@ -1,0 +1,40 @@
+
+<div class="row">
+  <div class="col-xs-12 xs-no-padding">
+    <div class="panel panel-default no-margin">
+      <error-message-box validation-errors="validationErrors"></error-message-box>
+      <div class="panel-body">
+        <h3 class="text-center">New Member</h3>
+        <form novalidate="novalidate" ng-submit="register()">
+          <div class="row">
+            <div class="col-sm-6 col-xs-12">
+              <form-input-tag model="user.profile.firstName" label="First Name" required="true"></form-input-tag>
+            </div>
+            <div class="col-sm-6 col-xs-12">
+              <form-input-tag model="user.profile.lastName" label="Last Name" required="true"></form-input-tag>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 col-xs-12">
+              <form-input-tag model="user.email" label="{{locale['form'].label['shared'].email}}" required="true" icon="envelope" regex="validate['email']"></form-input-tag>
+            </div>
+            <div class="col-sm-6 col-xs-12">
+              <form-input-tag model="user.password" type="password" label="{{locale['form'].label['shared'].password}}" required="true" icon="lock"></form-input-tag>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-md-2">
+            <button ng-click="remove(user._id)" ng-show="user._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
+          </div>
+          <div class="col-md-3 col-md-offset-4"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ user._id ]" class="col-md-3 text-center">
+            <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{user._id ? 'Save' : 'Add'}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,47 +1,16 @@
 angular.module('baseApp.controllers')
-  .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_',
-    function($scope, $state, $http, currentUser, Board, _){
+  .controller('BoardController', ['$scope', '$state', '$http', 'currentUser', 'Board', '_','Notification','FormHelper',
+    function($scope, $state, $http, currentUser, Board, _, Notification, FormHelper ){
       'use strict';
 
       $scope.boards = [];
+      $scope.has = {members: false, admins: false, owner: false};
       var formSetup = function(){
-        var usersCache = [];
-        $scope.selected = function($item) {
-          var extracted = $item.match(/(.*?)&lt;(.*?)&gt;/),
-            selection = _.find( usersCache, function(user){ return user.email === extracted[2]; });
-
-          $scope.board.members.push({
-            email: selection.email,
-            profile: {
-              firstName: selection.profile.firstName,
-              lastName: selection.profile.lastName
-            },
-            _id: selection._id
-          });
-          $scope.$broadcast('clearInput');
-        };
-        $scope.removeMember = function( i ) {
-          $scope.board.members.splice( i, 1);
-        };
-        $scope.getUsers = function(val) {
-          return $http.get('/api/autocomplete/users', {
-            params: {
-              q: val
-            }
-          }).then(function(response){
-            usersCache = response.data.users;
-            var current = currentUser.get(),
-              filteredUserList =  _
-                .filter( response.data.users, function(user){
-                  return user.email !== current.email && !_.find($scope.board.members, function(i){return i.email ===user.email;});
-                });
-            return filteredUserList.map(function(user){
-              return (user.profile.firstName ? user.profile.firstName : '') + ' ' + (user.profile.lastName ?user.profile.lastName:'') + ' &lt;'+user.email+'&gt;';
-            });
-          });
-        };
+        FormHelper.setupFormHelper($scope, 'board', Board );
         $scope.addColumn = function(name){
-          $scope.board.columns.push( {name: name});
+          if( name ) {
+            $scope.board.columns.push( {name: name});
+          }
         };
         $scope.removeColumn = function( i ) {
           $scope.board.columns.splice( i, 1);
@@ -51,7 +20,7 @@ angular.module('baseApp.controllers')
       switch( $state.current.name ) {
         case 'boards.new':
           $scope.board = {
-            members: [],
+            members: {},
             columns: []
           };
           $scope.add = function(){
@@ -75,6 +44,7 @@ angular.module('baseApp.controllers')
           Board.get( $state.params.board )
             .then( function( res ) {
               $scope.board = res.board;
+              $scope.hasMembers = $scope.board.members ? Object.keys($scope.board.members).length : 0;
             });
           formSetup();
           $scope.update = function( ) {
@@ -89,10 +59,17 @@ angular.module('baseApp.controllers')
       }
 
       $scope.remove = function( id ){
-        Board.remove( id )
-          .then( function(){
-            $scope.boards = _.filter( $scope.boards, function(board){ return board._id !== id; });
-            $state.go('boards.list');
-          });
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
       };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Board.remove( Notification.id )
+            .then( function(){
+              $state.go('boards.list', {}, {reload: true});
+            });
+        }
+      });
     }]);

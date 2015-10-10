@@ -1,21 +1,31 @@
 .row( id="dashboard" ng-controller="AuthorizedDashboardController")
     .col-xs-12
-        .panel-group( id="accordion" role="tablist" aria-multiselectable="true")
+        .h3.text-center(ng-if="!networks.length")
+            |   You have not joined any network. Proceed to discover networks on the left menu or the following link
+            br
+            br
+            .row
+                .col-xs-6.col-xs-offset-3
+                    a.btn.btn-success.btn-block(ui-sref="networks.list" ui-sref-opts="{reload: true}")
+                        |   Networks
+        .panel-group( id="accordion" role="tablist" aria-multiselectable="true" ng-if="networks.length")
             .panel.panel-default
-                .panel-heading(role="tab" id="headingOne")
+                .panel-heading(role="tab" id="heading{{$index}}" ng-repeat-start="network in networks track by $index")
                     h4.panel-title
-                        a( role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
-                            |   Network 1: MAHRIO
-                .panel-collapse.collapse.in(id="collapseOne" role="tabpanel" aria-labelledby="headingOne")
+                        a( role="button" data-toggle="collapse" data-parent="#accordion" href="#{{network._id}}" aria-expanded="{{!$index ? 'true':'false'}}" aria-controls="{{network._id}}")
+                            i.fa.fa-lock.text-danger( ng-if="network.isPrivate")
+                            i.fa.fa-lock.text-warning( ng-if="network.isProtected")
+                            |   {{network.name}}
+                .panel-collapse.collapse(id="{{network._id}}" role="tabpanel" aria-labelledby="heading{{$index}}" ng-repeat-end="" ng-class="{in: !$index}")
                     .panel-body
                         .row
                             .col-md-3.col-sm-6.col-xs-12
                                 .small-box.bg-aqua
                                     .inner
                                         h3
-                                            |   10 / 3
+                                            |   {{::network.boards.length || 0}}&nbsp;
                                         p
-                                            |   Tasks / Boards
+                                            |   Boards
 
                                     .icon
                                         .fa.fa-tasks
@@ -26,10 +36,9 @@
                                 .small-box.bg-green
                                     .inner
                                         h3
-                                            |   4
+                                            |   {{::network.members.length || 0}}&nbsp;
                                         p
                                             |   Members
-
                                     .icon
                                         .i.fa.fa-users
                                     a.small-box-footer( href="#")
@@ -39,7 +48,7 @@
                                 .small-box.bg-purple
                                     .inner
                                         h3
-                                            |   43
+                                            |   {{::network.articles.length || 0}}&nbsp;
                                         p
                                             |   Articles
 
@@ -52,71 +61,12 @@
                                 .small-box.bg-yellow
                                     .inner
                                         h3
-                                            |   4
+                                            |   {{::network.events.length || 0}}&nbsp;
                                         p
-                                            |   Conversations
+                                            |   Events
 
                                     .icon
-                                        .i.ion.ion-ios-chatboxes
-                                    a.small-box-footer( href="#")
-                                        |   View
-                                        i.fa.fa-arrow-circle-right
-                .panel-heading(role="tab" id="headingTwo")
-                    h4.panel-title
-                        a.collapsed( role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo")
-                            |   Network 2: Computer Science &amp; Engineering
-                .panel-collapse.collapse(id="collapseTwo" role="tabpanel" aria-labelledby="headingTwo")
-                    .panel-body
-                        .row
-                            .col-md-3.col-sm-6.col-xs-12
-                                .small-box.bg-aqua
-                                    .inner
-                                        h3
-                                            |   10 / 3
-                                        p
-                                            |   Tasks / Boards
-
-                                    .icon
-                                        .fa.fa-tasks
-                                    a.small-box-footer( href="#")
-                                        |   View
-                                        i.fa.fa-arrow-circle-right
-                            .col-md-3.col-sm-6.col-xs-12
-                                .small-box.bg-green
-                                    .inner
-                                        h3
-                                            |   4
-                                        p
-                                            |   Members
-
-                                    .icon
-                                        .i.fa.fa-users
-                                    a.small-box-footer( href="#")
-                                        |   View
-                                        i.fa.fa-arrow-circle-right
-                            .col-md-3.col-sm-6.col-sm-6.col-xs-12
-                                .small-box.bg-purple
-                                    .inner
-                                        h3
-                                            |   43
-                                        p
-                                            |   Articles
-
-                                    .icon
-                                        .i.fa.fa-book
-                                    a.small-box-footer( href="#")
-                                        |   More info
-                                        i.fa.fa-arrow-circle-right
-                            .col-md-3.col-sm-6.col-xs-12
-                                .small-box.bg-yellow
-                                    .inner
-                                        h3
-                                            |   4
-                                        p
-                                            |   Conversations
-
-                                    .icon
-                                        .i.ion.ion-ios-chatboxes
+                                        .fa.fa-calendar
                                     a.small-box-footer( href="#")
                                         |   View
                                         i.fa.fa-arrow-circle-right

@@ -18,35 +18,36 @@ angular.module('baseApp.controllers')
 );
 
 angular.module('baseApp.directives')
-  .directive('heading', [ '$rootScope','$state',
-    function( $rootScope, $state ){
+  .directive('heading', [ '$rootScope','$state', 'currentUser',
+    function( $rootScope, $state, currentUser ){
       'use strict';
       return {
         restrict: 'E',
         replace: true,
         templateUrl: '/assets/html/layout/heading/index',
         link: function( scope ) {
-          $rootScope.$on('$stateChangeStart', function(event, toState) {
-            //console.log( event, 2, toState, 3, toParams, 4, fromState, 5, fromParams );
-            //var head, breadcrumbs = [{url: 'root',value: 'Home'}];
-            //switch( toState.name ) {
-            //  case 'boards.list':
-            //    breadcrumbs.push({url:'', value: 'View Boards'});
-            //    head = {title: 'Boards', subTitle: 'Listing all', breadcrumbs: breadcrumbs};
-            //    break;
-            //  case 'boards.new':
-            //    breadcrumbs.push({url:'', value: 'Create Board'});
-            //    head = {title: 'Boards', subTitle: 'Create new', breadcrumbs: breadcrumbs};
-            //    break;
-            //  case 'boards.detail':
-            //    breadcrumbs.push({url:'', value: 'Name'});
-            //    head = {title: 'Board:', subTitle: 'Name', breadcrumbs: breadcrumbs};
-            //    break;
-            //  default:
-            //    breadcrumbs.push({url:'', value:'Undefined'});
-            //    head = {title: 'Undefined', subTitle: 'Undefined', breadcrumbs: breadcrumbs};
-            //    break;
-            //}
+          scope.$watch( function(){
+            return currentUser.currentNetworkName;
+          }, function(newVal){
+
+            if( newVal ) {
+              console.log('i ');
+              scope.heading.title = newVal;
+            }
+          });
+          $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState ) {
+            if( toState.name === fromState.name ) {
+              return;
+            }
+
+            if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
+              currentUser.currentNetwork = null;
+              currentUser.currentNetworkName = '';
+            }
+            if( /networks/.test( toState.name )  ) {
+              toState.title = currentUser.currentNetworkName;
+            }
+            console.log( fromState );
             scope.heading = {
               title: toState.title,
               subTitle: toState.subTitle,
@@ -61,6 +62,17 @@ angular.module('baseApp.directives')
               ]
             };
           });
+          if( typeof $state.current.title === 'undefined' ) {
+            var listener = scope.$watch( function(){
+              return $state.current.title;
+            }, function(newVal){
+              if( newVal ) {
+                scope.heading.title = newVal;
+                listener();
+              }
+            });
+          }
+
           scope.heading = {
             title: $state.current.title,
             subTitle: $state.current.subTitle,

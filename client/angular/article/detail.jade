@@ -1,3 +1,8 @@
+.row(ng-if='networkId')
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
+        a.btn.btn-default(ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}")
+            i.fa.fa-chevron-left
+                |   Back
 .row.hidden
     .col-xs-12.col-sm-4.col-md-3.col-lg-2
         a.btn.btn-default(ui-sref="articles.list" ui-sref-opts="{reload: true}")
@@ -6,16 +11,13 @@
                 |   Back
 .row.article-cover
     figure
-        img(src="/assets/img/mahrio.png" ng-show="article.title==='mahrio'")
-        img(src="/assets/img/college.jpg"
-                ng-show="article.title!=='mahrio'")
+        img(ng-src='{{article.coverImage.url}}')
         figcaption(class="credit")
     .article-heading
         h1
             |   {{article.title}}
         p
             |   {{article.deck}}
-    .row(style="margin-top: -50px; position: absolute; width: 100%;")
         .col-xs-3.col-xs-offset-3
             p.bg-green.label(style="display: block")
                 |   {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
@@ -24,8 +26,7 @@
                 |   {{article.created | date:'medium'}}
             p.bg-yellow.label.hidden-md.hidden-lg(style="display: block")
                 |   {{article.created | date}}
-
-
+.row(style="margin-top: 30px")
     .col-sm-10.col-sm-offset-1
         div(class="article-content")
             p(ng-repeat="section in article.sections track by $index")

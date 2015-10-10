@@ -13,6 +13,16 @@ angular.module('baseApp.services').factory('Article', [ 'ArticleResource', funct
   'use strict';
   return {
     add: function( article ) { return ArticleResource.create( {article: article} ).$promise; },
+    addCoverImage: function( article, media ){
+      return ArticleResource.update(
+        {
+          id: article._id
+        },{
+          article: {
+            mediaInsert: media
+          }
+        }).$promise;
+    },
     get: function( id ) { return ArticleResource.read( id ? {id: id} : {} ).$promise; },
     update: function( article ) { return ArticleResource.update( {id: article._id}, {article: article} ) .$promise; },
     remove: function(id){ return ArticleResource.remove( {id: id} ).$promise; }

@@ -6,7 +6,8 @@ var async = require('async'),
   mongoose = require('mongoose'),
   Board = mongoose.model('Board'),
   Task = mongoose.model('Task'),
-  Column = mongoose.model('Column');
+  Column = mongoose.model('Column'),
+  User = mongoose.model('User');
 
 function _removeColumn( columns, board, next ){
   if( columns.length ) {
@@ -45,7 +46,7 @@ function _updateBoard( request, reply, board) {
 function updateBoard( request, reply ) {
   if( request.params.id ) {
     Board
-      .findOne( { _id: request.params.id, _owner: request.auth.credentials.id })
+      .findOne( { _id: request.params.id, owner: request.auth.credentials.id })
       .select('name columns members tasks')
       .populate([{
         path: 'columns',
@@ -75,7 +76,7 @@ function updateBoard( request, reply ) {
 }
 
 function _createBoard( request ){
-  request.payload.board._owner = request.auth.credentials.id;
+  request.payload.board.owner = request.auth.credentials.id;
   request.payload.board.members = _.map( request.payload.board.members, function(member) {return member._id;});
   request.payload.board.columns = _.map( request.payload.board.columns, function(column){ return column.id;});
   request.payload.board.tasks = [];
@@ -103,6 +104,19 @@ function createBoard( request, reply ) {
     });
 
 }
+function _getBoardMembers( board, callback ) {
+  User
+    .find( {_id: {$in: board.members}})
+    .select('email profile avatarImage')
+    .populate('profile avatarImage')
+    .exec( function(err, users){
+      if( err ) { callback(err); }
+
+      board._doc.members = _.indexBy( users, '_id');
+
+      callback( false );
+    });
+}
 function getBoard( request, reply ) {
   var query;
   if( request.params.id ) {
@@ -115,26 +129,27 @@ function getBoard( request, reply ) {
           $or: [{
             members: {$in: [request.auth.credentials.id]}
           },{
-            _owner: request.auth.credentials.id
+            owner: request.auth.credentials.id
           }]
         },
         {
           _removed: false
         }])
-      .select('name created members columns tasks _owner startColumn')
+      .select('name created members columns tasks owner startColumn')
       .populate([{
-        path: 'members',
-        select: 'firstName lastName email'
-      },{
         path: 'columns',
         select: 'name'
       }, {
         path: 'tasks'
       }])
       .exec( function(err, board){
-        if( err ) { return reply( Boom.badRequest() ); }
+        if( err ) { return reply( Boom.badRequest(err) ); }
 
-        reply( {board: board} );
+        _getBoardMembers( board, function(err){
+          if( err ) { return reply( Boom.badRequest(err) ); }
+
+          return reply( {board: board} );
+        });
       });
   } else {
     query = Board.find({});
@@ -144,31 +159,36 @@ function getBoard( request, reply ) {
           $or: [{
             members: {$in: [request.auth.credentials.id]}
           },{
-            _owner: request.auth.credentials.id
+            owner: request.auth.credentials.id
           }]
         },
         {
           _removed: false
         }])
-      .select('name created members columns _owner')
+      .select('name created members columns owner')
       .populate([{
-        path: 'members',
-        select: 'firstName lastName email'
-      },{
         path: 'columns',
         select: 'name'
       }])
       .exec( function(err, boards){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
-        reply( {boards: boards} );
+        async.each( boards, function(board, callback){
+          _getBoardMembers( board, function(err){
+            if( err ) { return reply( Boom.badRequest() ); }
+
+            callback();
+          });
+        }, function(){
+          return reply( {boards: boards} );
+        });
       });
   }
 }
 function removeBoard(request, reply){
   if( request.params.id ) {
     Board
-      .findOne( { _id: request.params.id, _owner: request.auth.credentials.id })
+      .findOne( { _id: request.params.id, owner: request.auth.credentials.id })
       .select('_removed ')
       .exec( function(err, board){
         if( err ) { return Boom.badRequest(err); }

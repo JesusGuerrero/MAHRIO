@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose'),
   schema = mongoose.Schema({
-    name: { type: String },
+    name: { type: String, required: true },
     type: { type: String },   // internal, external
     domain: { type: String }, // finance, technology, etc
     location: { type: String }, // greater area, country, city, high school, etc.
@@ -10,9 +10,15 @@ var mongoose = require('mongoose'),
     start: { type: Date },
     end: { type: Date },
     isPrivate: { type: Boolean, default: false },
+    isProtected: { type: Boolean, default: false },
+    coverImage: { type: mongoose.Schema.Types.ObjectId , ref: 'Media' },
     boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }],
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CalendarEvent' }],
-    owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    articles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
+    chats: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }],
+    owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    admins: [{type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
   }),
   Network = mongoose.model('Network', schema);
 

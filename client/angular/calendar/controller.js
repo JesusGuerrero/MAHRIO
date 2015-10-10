@@ -63,4 +63,9 @@ angular.module('baseApp.controllers')
       Calendar.currentEventId = null;
       $('#modalEditEvent' ).modal().show();
     };
+  }])
+  .controller('EventsController', [function(){
+    'use strict';
+
+
   }]);

@@ -212,12 +212,10 @@ function postPrivateConversation( request, reply ) {
               if( err ) { return reply( Boom.badRequest(err));}
               conv.messages = [msg];
 
-              emitMessage( 'event:notification:'+request.query.userId );
+              emitMessage( 'event:notification:chat:'+request.query.userId );
               Notification.create({
                 resource: 'chat',
                 id: conv.id,
-                heading: 'Private Conversation',
-                teaser: msg.content,
                 _user: request.query.userId
               }, function() {
                 return getPrivateConversation( request, reply);
@@ -249,17 +247,24 @@ function sendPrivateMessage( request, reply ){
           .update({_id: conversation._id}, {$push: {messages: mongoose.Types.ObjectId(msg.id)}}, function(err){
             if( err ) { return reply(Boom.badRequest(err)); }
 
-            emitMessage( 'event:notification:'+request.query.userId );
             emitMessage( 'event:conversation:'+conversation._id );
-            Notification.create({
-              resource: 'chat',
-              id: conversation._id,
-              heading: 'Private Conversation',
-              teaser: msg.content,
-              _user: request.query.userId
-            }, function() {
+            async.each( request.payload.users, function(user, callback){
+              if( user !== request.auth.credentials.id ) {
+                emitMessage( 'event:notification:chat:'+user );
+                Notification.create({
+                  resource: 'chat',
+                  id: conversation._id,
+                  _user: user
+                }, function() {
+                  callback();
+                });
+              } else {
+                callback();
+              }
+            }, function(){
               return reply( {message: msg} );
             });
+
           });
       });
     }

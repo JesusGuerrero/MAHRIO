@@ -1,7 +1,7 @@
 .row
     .col-md-12
         .column-padding-5
-            .col-md-2
+            .col-md-3
                 .box.box-primary
                     .box-header.with-border.text-center
                         h4.box-title
@@ -12,7 +12,7 @@
                                 id="{{::task._id}}")
                                 div(style="background: {{::task.color}}; color: white; padding: 5px;")
                                     |   {{::task.title}}
-            .col-md-2( ng-repeat="column in board.columns" repeat-end="initDroppable()" )
+            .col-md-3( ng-repeat="column in board.columns" repeat-end="initDroppable()" )
                 .box.box-primary
                     .box-header.with-border.text-center
                         h4.box-title

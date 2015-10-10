@@ -1,17 +1,26 @@
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
-    <div class="panel panel-default">
+  <div class="col-xs-12 xs-no-padding">
+    <div class="panel panel-default no-margin">
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
-        <h3 class="text-center">Add Board</h3>
+        <h3 class="text-center">New Board</h3>
         <form novalidate="novalidate" ng-submit="board._id ? update() : add()">
           <form-input-tag model="board.name" label="Name" required="true"></form-input-tag>
-          <div ng-show="board.members.length" class="form-group">
-            <label>Members</label>
-            <div><span ng-repeat="member in board.members track by $index" style="margin: 1px 0 0;padding: 5px; display: block;" class="bg-blue">  {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;<i style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember($index)" class="fa fa-close pull-right"></i></span></div>
+          <div ng-if="access.indexOf('sudo') !== -1" class="form-group">
+            <label>  Owner:&nbsp;</label>
+            <div ng-show="!has['owner']" class="pull-right">  me ?
+              <input type="checkbox" ng-model="has['owner']" ng-click="selectUser(null, 'owner', 1)" i-check="i-check"/>
+            </div><span ng-show="has['owner']" style="padding-right: 20px; position: relative" class="bg-red label"><i style="line-height: 20px; padding: 0 5px; cursor: pointer;position: absolute; right: 0; top: -1px" ng-click="removeUser( null , 'owner' )" class="fa fa-close pull-right"></i>  {{board.owner.profile.firstName}} {{board.owner.profile.lastName}} &lt;{{board.owner.email}}&gt;</span>
+            <div ng-show="!has['owner']">
+              <auto-complete input-model="tempOwner" placeholder="Add Owner" auto-complete-http="getUsers" selected="selectUser" hash="owner" single="1"></auto-complete>
+            </div>
           </div>
-          <auto-complete input-model="tempMember" placeholder="Members" auto-complete-http="getUsers" selected="selected"></auto-complete>
+          <div ng-show="has['members']" class="form-group">
+            <label>Members</label>
+            <div><span ng-repeat="member in board.members track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" class="bg-blue"><i style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeUser(member._id, 'members')" class="fa fa-close pull-right"></i>  {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;</span></div>
+          </div>
+          <auto-complete input-model="tempMember" placeholder="Members" auto-complete-http="getUsers" selected="selectUser" hash="members"></auto-complete>
           <div ng-show="board.columns.length" class="form-group">
             <label>Columns</label>
             <div><span ng-repeat="column in board.columns track by $index" style="padding: 5px; margin-right: 5px;" class="bg-aqua">  {{column.name}}<i style="padding: 0 5px; cursor: pointer" ng-click="removeColumn($index)" class="fa fa-close"></i></span></div>
@@ -21,12 +30,18 @@
               <input type="text" ng-model="tempColumn" placeholder="Columns (e.g InProgress, Testing, Done)" class="form-control"/><span style="background: #3C8DDD; color: #fff" ng-click="addColumn(tempColumn); tempColumn = '';" class="btn btn-primary input-group-addon"><i style="width: 30px" class="fa fa-plus"></i></span>
             </div>
           </div>
-          <hr/>
-          <div class="text-center form-group">
-            <button type="submit" class="btn btn-block btn-primary btn-lg">{{board._id ? 'Save' : 'Create'}}</button>
-          </div>
         </form>
-        <div class="col-xs-8 col-xs-offset-2 text-center form-group"><a ui-sref="boards.list" ui-sref-opts="{reload: true}" class="btn btn-block btn-default">Cancel</a></div>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-md-2">
+            <button ng-click="remove(board._id)" ng-show="board._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
+          </div>
+          <div class="col-md-3 col-md-offset-4"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ board._id ]" class="col-md-3 text-center">
+            <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{board._id ? 'Save' : 'Create'}}</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

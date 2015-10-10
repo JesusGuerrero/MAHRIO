@@ -2,7 +2,7 @@
 <div class="row">
   <div class="col-md-12">
     <div class="column-padding-5">
-      <div class="col-md-2">
+      <div class="col-md-3">
         <div class="box box-primary">
           <div class="box-header with-border text-center">
             <h4 class="box-title">  {{board.startColumn}}</h4>
@@ -16,7 +16,7 @@
           </div>
         </div>
       </div>
-      <div ng-repeat="column in board.columns" repeat-end="initDroppable()" class="col-md-2">
+      <div ng-repeat="column in board.columns" repeat-end="initDroppable()" class="col-md-3">
         <div class="box box-primary">
           <div class="box-header with-border text-center">
             <h4 class="box-title">  {{column.name}}</h4>

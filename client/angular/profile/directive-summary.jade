@@ -1,10 +1,10 @@
 div
     .row
         .col-xs-12
-            a.btn.btn-default(ui-sref="users.list" ui-sref-opts="{reload: true}" ng-show="!myProfile")
-                h4
-                    i.fa.fa-chevron-left
-                    |   Back
+            a.btn.btn-success(ui-sref="users.list" ui-sref-opts="{reload: true}" ng-show="!myProfile"
+                style="position: absolute;right: 15px;top: -65px; width: 120px;")
+                i.fa.fa-users
+                |   Users
     .row
         .col-md-6
             b
@@ -22,8 +22,17 @@ div
                 |   Email:
             br
             |   {{current.email}}
-        .col-md-6
+        .col-md-6(ng-if="isOwn")
             b
                 |   Access:
             br
             |   {{current.access}}
+        .col-md-6(ng-if="currentUser.access.indexOf('sudo') !== -1 && !isOwn")
+            b
+                |   Access:
+            br
+            |   {{current.access}}
+            .btn.btn-default.btn-block(ng-if="current.access.indexOf('admin') === -1" ng-click="makeAdmin(current._id)")
+                |   Make Admin
+            .btn.btn-warning.btn-block(ng-if="current.access.indexOf('admin') !== -1" ng-click="removeAdmin(current._id)")
+                |   Remove Admin

@@ -17,17 +17,31 @@
     </div>
     <ul class="sidebar-menu">
       <li class="header">  MAIN NAVIGATION</li>
-      <li><a href="#/"><i class="fa fa-dashboard"></i><span>  Dashboard</span></a></li>
-      <li><a ui-sref="notifications"><i class="fa fa-bell"></i><span>  Notifications</span></a></li>
-      <li ng-show="access.indexOf('sudo') !== -1"><a ui-sref="networks.list"><i class="fa fa-share-alt"></i><span>  Networks</span></a></li>
-      <li><a ui-sref="articles.list" ui-sref-opts="{reload: true}"><i class="fa fa-book"></i><span>  Articles</span></a></li>
-      <li><a ui-sref="boards.list"><i class="fa fa-tasks"></i><span>  Boards</span></a></li>
-      <li><a ui-sref="users.list" ui-sref-opts="{reload: true}"><i class="fa fa-users"></i><span>  Users</span><small class="label pull-right bg-green">  New</small></a></li>
-      <li><a href="#/admin/newsletter"><i class="fa fa-newspaper-o"></i><span>  Newsletters</span><small class="label pull-right bg-red">  3</small></a></li>
-      <li><a href="#/questions"><i class="fa fa-question"></i><span>  Questions</span><small class="label pull-right bg-red">  3</small></a></li>
-      <li><a ui-sref="calendar" ui-sref-opts="{reload: true}"><i class="fa fa-calendar"></i><span>  Calendar</span><small class="label pull-right bg-red">  3</small></a></li>
-      <li><a ui-sref="conversations" ui-sref-opts="{reload: true}"><i class="fa fa-comments"></i><span>  Conversations</span><small class="label pull-right bg-red">  3</small></a></li>
-      <li><a ui-sref="mail.inbox"><i class="fa fa-envelope"></i><span>  Mailbox</span><small class="label pull-right bg-yellow">  12</small></a></li>
+      <li ng-class="{active: state==='root'}"><a ui-sref="root" ui-sref-opts="{reload: true}"><i class="fa fa-dashboard"></i><span>  Dashboard</span></a></li>
+      <li ng-class="{active: state==='notifications'}" ng-if="access.indexOf('admin')!==-1"><a ui-sref="notifications"><i class="fa fa-bell"></i><span>  Notifications</span></a></li>
+      <li ng-class="{active: state==='networks'}" class="treeview"><a ui-sref="networks.list"><i class="fa fa-share-alt"></i><span>  Networks</span></a>
+        <ul ng-if="currentNetwork" ng-class="{'menu-open': currentNetwork}" class="treeview-menu">
+          <li><a ui-sref="networks.articles({id: currentNetwork})" ui-sref-opts="{reload: true}"><i class="fa fa-book"></i><span>  Articles</span></a></li>
+          <li><a ui-sref="networks.boards({id: currentNetwork})" ui-sref-opts="{reload: true}"><i class="fa fa-tasks"></i><span>  Boards</span></a></li>
+          <li><a ui-sref="networks.members({id: currentNetwork})" ui-sref-opts="{reload: true}"><i class="fa fa-users"></i><span>  Members</span></a></li>
+          <li><a ui-sref="networks.events({id: currentNetwork})" ui-sref-opts="{reload: true}"><i class="fa fa-calendar"></i><span>  Events</span></a></li>
+        </ul>
+      </li>
+      <li ng-if="access.indexOf('admin')!==-1" ng-class="{active: state==='articles'}"><a ui-sref="articles.list" ui-sref-opts="{reload: true}"><i class="fa fa-book"></i><span>  Articles</span></a></li>
+      <li ng-if="access.indexOf('admin')!==-1" ng-class="{active: state==='boards'}"><a ui-sref="boards.list"><i class="fa fa-tasks"></i><span>  Boards</span></a></li>
+      <li ng-if="access.indexOf('admin')!==-1" ng-class="{active: state==='calendar'}"><a ui-sref="calendar" ui-sref-opts="{reload: true}"><i class="fa fa-calendar"></i><span>  Events</span><small class="label pull-right bg-red">  3</small></a></li>
+      <li ng-if="access.indexOf('admin')!==-1 || access.indexOf('sudo')!==-1" ng-class="{active: state==='users'}"><a ui-sref="users.list" ui-sref-opts="{reload: true}"><i class="fa fa-users"></i><span>  Users</span><small class="label pull-right bg-green">  New</small></a></li>
+      <li ng-if="access.indexOf('sudo') !== -1"><a href="#/admin/newsletter"><i class="fa fa-newspaper-o"></i><span>  Newsletters</span><small class="label pull-right bg-red">  3</small></a></li>
+      <li ng-if="access.indexOf('sudo') !== -1"><a href="#/questions"><i class="fa fa-question"></i><span>  Questions</span><small class="label pull-right bg-red">  3</small></a></li>
+      <li ng-class="{active: state==='conversations'}"><a ui-sref="conversations" ui-sref-opts="{reload: true}"><i class="fa fa-comments"></i><span>  Conversations</span>
+          <!--small.label.pull-right.bg-red|   3
+          --></a></li>
+      <li ng-if="access.indexOf('admin')!==-1 || access.indexOf('sudo')!==-1" ng-class="{active: state==='mail'}"><a ui-sref="mail.inbox"><i class="fa fa-envelope"></i><span>  Mailbox</span><small class="label pull-right bg-yellow">  12</small></a></li>
+      <!--li(ng-show="currentNetwork")-->
+      <!--    a( ui-sref="networks.detail.boards({id: currentNetwork})" )-->
+      <!--        i.fa.fa-book-->
+      <!--        span-->
+      <!--            |   Articles-->
       <!--li.treeview-->
       <!--    a( href="#")-->
       <!--        i.fa.fa-share-->

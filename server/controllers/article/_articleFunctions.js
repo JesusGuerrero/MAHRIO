@@ -6,6 +6,7 @@ var async = require('async'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Article = mongoose.model('Article'),
+  Media = mongoose.model('Media'),
   Section = mongoose.model('Section');
 
 function createArticle( request, reply ) {
@@ -41,7 +42,7 @@ function _getArticleOwner( article, callback ) {
 function _getAllArticles( request, reply, callback ) {
   Article
     .find( )
-    .populate('widgets sections media')
+    .populate('widgets sections media coverImage')
     .exec( function(err, articles){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -68,7 +69,7 @@ function getArticle( request, reply, callback ) {
   } else {
     Article
       .findOne( {_id: request.params.id} )
-      .populate('widgets sections media')
+      .populate('widgets sections media coverImage')
       .exec( function(err, article){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -118,9 +119,24 @@ function _saveSections( sections, next ) {
     next();
   });
 }
+function _updateImage( request, reply ) {
+  Media
+    .create( request.payload.article.mediaInsert, function(err, media){
+      if( err ) { return reply( Boom.badRequest(err) ); }
+
+      Article.update({_id: request.params.id}, {$set: {coverImage: media.id}}, {multi: false},
+        function(err, article){
+          if( err || !article ){ return reply( Boom.badRequest('failed to update article with image'+err)); }
+
+          return reply({media: media});
+        });
+  });
+}
 function updateArticle( request, reply ) {
   if( !request.payload.article || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin')) || typeof request.params.id === 'undefined') {
-    return reply( Boom.badRequest() );
+    return reply(Boom.badRequest());
+  } else if( request.payload.article.mediaInsert ) {
+    _updateImage( request, reply );
   } else if( typeof request.payload.articleIds !== 'undefined' && Array.isArray( request.payload.articleIds ) ) {
     // TODO: update several articles at once
   } else {
