@@ -1,0 +1,24 @@
+.row
+    .col-md-12
+        .column-padding-5
+            .col-md-3
+                .box.box-primary
+                    .box-header.with-border.text-center
+                        h4.box-title
+                            |   {{board.startColumn}}
+                    .box-body.drop-test
+                        .current-tasks( class="current-tasks")
+                            .current-task(ng-repeat="task in board.tasks | filter: { start: true, _column: null}" repeat-end="initDraggable()" style="padding:0;"
+                                id="{{::task._id}}")
+                                div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                    |   {{::task.title}}
+            .col-md-3( ng-repeat="column in board.columns" repeat-end="initDroppable()" )
+                .box.box-primary
+                    .box-header.with-border.text-center
+                        h4.box-title
+                            |   {{column.name}}
+                    .box-body.drop-test( id="{{::column._id}}" )
+                        .current-tasks( class="current-tasks")
+                            .current-task(ng-repeat="task in board.tasks | filter: {_column: column._id}" style="padding:0;" repeat-end="initDraggable()" id="{{::task._id}}")
+                                div(style="background: {{::task.color}}; color: white; padding: 5px;")
+                                    |   {{::task.title}}
