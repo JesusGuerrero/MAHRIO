@@ -28,7 +28,7 @@
     </div>
     <hr/>
     <div class="form-group">
-      <button ui-sref="boards.detail.backlog.edit({task: current._id})" ui-sref-opts="{reload: true}" class="pull-left btn btn-default">  Edit</button>
+      <button ng-click="editTask( current )" class="pull-left btn btn-default">  Edit</button>
       <button ng-click="startTask(current._id)" class="pull-left btn btn-primary">  Start</button>
       <button ng-click="assignToMe(current._id)" class="btn btn-success pull-right">  Assign To Me</button>
     </div>

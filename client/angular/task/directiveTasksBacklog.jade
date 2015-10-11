@@ -34,7 +34,7 @@
                 |   {{current.created | date : 'medium' }}
         hr
         .form-group
-            button.pull-left.btn.btn-default(ui-sref="boards.detail.backlog.edit({task: current._id})" ui-sref-opts="{reload: true}")
+            button.pull-left.btn.btn-default(ng-click="editTask( current )")
                 |   Edit
             button.pull-left.btn.btn-primary(ng-click="startTask(current._id)")
                 |   Start

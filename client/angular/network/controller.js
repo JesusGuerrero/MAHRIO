@@ -127,7 +127,12 @@ angular.module('baseApp.controllers')
   .controller('NetworkBoardController', ['$scope', '$state', 'boards','currentUser','Notification','Board',
     function($scope, $state, boards, currentUser, Notification, Board){
       'use strict';
-
+      /* jshint maxstatements: 100 */
+      $scope.tab = {
+          selected: 'scrum',
+          scrum: false,
+          backlog: false
+        };
       if( $state.current.name === 'networks.boards' ) {
         $scope.networkId = $state.params.id;
         $scope.boards = boards.length ? boards : null;
@@ -142,23 +147,27 @@ angular.module('baseApp.controllers')
       } else if( $state.current.name === 'networks.board' ) {
         $scope.networkId = $state.params.id;
         $scope.board = boards;
+        if( ['backlog'].indexOf( $state.params.tab ) !== -1 ) {
+          $scope.tab.backlog = true;
+          $scope.tab.selected = 'backlog';
+        } else {
+          $scope.tab.scrum = true;
+        }
+
+        $scope.$on('task:edit', function(id){
+          $scope.task = id;
+          $('#modalTaskForm' ).modal().show();
+        });
+
+        $scope.newTask = function(){
+          $('#modalTaskForm' ).modal().show();
+        };
       }
       if( currentUser.currentNetwork === null ) {
         currentUser.currentNetwork = $scope.networkId;
       }
       if( $scope.board ) {
         currentUser.currentNetworkName = $scope.board.title;
-      }
-      $scope.tab = {
-        scrum: false,
-        backlog: false,
-        newTask: false,
-        editTask: false
-      };
-      if( ['scrum','backlog','newTask','editTask'].indexOf( $state.params.tab ) === -1 ) {
-        $scope.tab.scrum = true;
-      } else {
-        $scope.tab[ $state.params.tab ] = true;
       }
 
       $scope.remove = function( id ){

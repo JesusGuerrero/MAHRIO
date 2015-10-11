@@ -61,7 +61,7 @@ angular.module('baseApp.directives')
         //if( scope.active ) {
           Task.getAll( $stateParams.boardId )
             .then( function(response){
-              scope.tasks = _.filter( response.tasks, function(task) { return !task.start; });
+              scope.tasks = response.tasks ;//_.filter( response.tasks, function(task) { return !task.start; });
               if( scope.tasks.length ) {
                 scope.current = scope.tasks[0];
               }
@@ -82,6 +82,9 @@ angular.module('baseApp.directives')
               scope.tasks = _.filter( scope.tasks, function(task){ return task._id !== id; });
               if( scope.tasks.length ) { scope.current = scope.tasks[id]; }
             });
+        };
+        scope.editTask = function( task ){
+          scope.$emit('task:edit', task );
         };
       }
     };
@@ -134,7 +137,8 @@ angular.module('baseApp.directives')
             .then( function(){
               /* global alert */
               alert('saved');
-              //$state.go('boards.detail.backlog',{}, { reload: true });
+              //ui-sref="networks.board({tab: 'backlog'})"
+              $state.go('networks.board',{tab: 'backlog'}, { reload: true });
             });
 
         };

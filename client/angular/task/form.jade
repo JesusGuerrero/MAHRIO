@@ -1,24 +1,70 @@
 .row
-    .col-md-12
-        .column-padding-5
-            .col-md-3
-                .box.box-primary
-                    .box-header.with-border.text-center
-                        h4.box-title
-                            |   {{board.startColumn}}
-                    .box-body.drop-test
-                        .current-tasks( class="current-tasks")
-                            .current-task(ng-repeat="task in board.tasks | filter: { start: true, _column: null}" repeat-end="initDraggable()" style="padding:0;"
-                                id="{{::task._id}}")
-                                div(style="background: {{::task.color}}; color: white; padding: 5px;")
-                                    |   {{::task.title}}
-            .col-md-3( ng-repeat="column in board.columns" repeat-end="initDroppable()" )
-                .box.box-primary
-                    .box-header.with-border.text-center
-                        h4.box-title
-                            |   {{column.name}}
-                    .box-body.drop-test( id="{{::column._id}}" )
-                        .current-tasks( class="current-tasks")
-                            .current-task(ng-repeat="task in board.tasks | filter: {_column: column._id}" style="padding:0;" repeat-end="initDraggable()" id="{{::task._id}}")
-                                div(style="background: {{::task.color}}; color: white; padding: 5px;")
-                                    |   {{::task.title}}
+    .col-xs-12.xs-no-padding
+        .panel.panel-default.no-margin
+            error-message-box( validation-errors="validationErrors" )
+            .panel-body
+                h3.text-center
+                    | New Task
+                form(novalidate)
+                    .col-md-10.no-padding
+                        .form-group
+                            label(for="title")
+                                |   Title:
+                            input.form-control(ng-model="task.title" id="title")
+                    .col-md-2.no-padding
+                        .form-group
+                            label
+                                |   Label:
+                            .btn-group(style="width: 100%; margin-bottom: 10px;")
+                                button.btn.btn-block.btn-danger.btn-sm.dropdown-toggle.form-control( type="button" class="color-chooser-btn" data-toggle="dropdown")
+                                    |   Color
+                                    span.caret
+                                ul.dropdown-menu(id="color-chooser")
+                                    li
+                                        a.text-green( href="#")
+                                            i.fa.fa-square
+                                                |   Green
+                                    li
+                                        a.text-blue( href="#")
+                                            i.fa.fa-square
+                                                |   Blue
+                                    li
+                                        a.text-yellow( href="#")
+                                            i.fa.fa-square
+                                                |   Yellow
+                                    li
+                                        a.text-navy( href="#")
+                                            i.fa.fa-square
+                                                |   Navy
+                                    li
+                                        a.text-aqua( href="#")
+                                            i.fa.fa-square
+                                                |   Aqua
+                                    li
+                                        a.text-purple( href="#")
+                                            i.fa.fa-square
+                                                |   Purple
+                                    li
+                                        a.text-red( href="#")
+                                            i.fa.fa-square
+                                                |   Red
+
+                    .form-group
+                        ng-switch( on="task.description")
+                            div(ng-switch-when="true")
+                                textarea( id="wysihtml5-content" wysihtml5 placeholder="Enter text ..." ng-model="task.description"
+                                style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;")
+                            div(ng-switch-default)
+                                textarea( id="wysihtml5-content" wysihtml5 placeholder="Enter text ..." ng-model="task.description"
+                                style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;")
+            .panel-footer
+                .row
+                    .col-md-2
+                        button.btn.btn-block.btn-danger.btn-lg(ng-click="remove(task._id)" ng-show="task._id")
+                            |   Remove
+                    .col-md-3.col-md-offset-4
+                        a.btn.btn-block.btn-default.btn-lg(data-dismiss="modal" aria-label="Close")
+                            |   Cancel
+                    .col-md-3.text-center(ng-class="{true: 'col-md-offset-3'}[ task._id ]")
+                        button.btn.btn-block.btn-primary.btn-lg(ng-click="save()")
+                            |   {{task._id ? 'Save' : 'Create'}}

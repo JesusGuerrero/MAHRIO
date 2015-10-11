@@ -1,4 +1,8 @@
 .row(id="network-detail")
+    .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
+        a.btn.btn-primary.btn-block.pull-right(ng-click="newTask()" ng-if="board._id && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
+            i.fa.fa-plus
+            |   Task
     .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
         a.btn.btn-default(ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}")
             i.fa.fa-chevron-left
@@ -6,11 +10,22 @@
     .col-xs-12(id="tab-sections")
         tabset( vertical="false" type="pills")
             tab( heading="Scrum" ui-sref="networks.board({tab: 'scrum'})" active="tab.scrum")
-                tasks-current( board="board")
             tab( heading="Backlog" ui-sref="networks.board({tab: 'backlog'})" active="tab.backlog")
-                tasks-backlog( id="board._id")
-            tab( heading="New Task" ui-sref="networks.board({tab: 'newTask'})" active="tab.newTask")
-                .col-xs-12
-                    tasks-new( id="board._id")
-            tab( heading="Edit Task" ng-show="false" active="tab[3]")
-                tasks-new( id="board._id")
+
+        ng-switch( on="tab.selected" )
+            tasks-current( board="board" ng-switch-when="scrum")
+            tasks-backlog( id="board._id" ng-switch-when="backlog")
+
+
+modal-window-view( modal-id="modalTaskForm" title="Task")
+    modal-task-form( board-id="board._id" edit="task" )
+
+
+            //
+                tab( heading="New Task" ui-sref="networks.board({tab: 'newTask'})" active="tab.newTask")
+                    .col-xs-12
+                        tasks-new( id="board._id")
+                tab( heading="Edit Task" ng-show="false" active="tab[3]")
+                    ng-switch( on="typeof currentTask")
+                        div( ng-switch-when="undefined")
+                        tasks-new( id="currentTask" ng-switch-default)
