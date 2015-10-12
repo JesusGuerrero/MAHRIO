@@ -1,3 +1,9 @@
+.row( id="network-detail")
+    .col-xs-2.col-sm-2.col-md-2.col-lg-2(style="position: absolute; margin-top: -64px; right: 0px")
+        a.btn.btn-primary.btn-block.pull-right(ng-click="newNetwork()" ng-if="access.indexOf('sudo') !== -1")
+            i.fa.fa-plus
+            |   Network
+
 .col-xs-12(ng-if="!hasNetworks")
     |   No Networks
 .col-xs-12(ng-if="hasNetworks").hidden-xs
@@ -62,7 +68,7 @@
                         i.fa.fa-plus
                     a.btn.btn-warning.btn-block( href-"javascript::;" ng-click="leave(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 && network.members[ currentUser._id ]")
                         i.fa.fa-minus
-                    a.btn.btn-default.btn-block.hidden-xs( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()"
+                    a.btn.btn-default.btn-block.hidden-xs( ng-click="editNetwork( network ); $event.stopPropagation()"
                         ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1")
                         i.fa.fa-edit
                     a.btn.btn-danger.btn-block.hidden-xs( ng-click="remove( network._id ); $event.stopPropagation()"
@@ -70,8 +76,13 @@
                         i.fa.fa-trash
 
                 .clearfix
-.row(style="margin-top: 50px;" ng-show="access.indexOf('sudo') !== -1 || access.indexOf('admin') !== -1")
-    .col-xs-12.col-sm-4.col-md-3.col-lg-2
-        a.btn.btn-primary(ui-sref="networks.new" ui-sref-opts="{reload: true}")
-            i.fa.fa-plus
-            |   Add Network
+
+modal-window-view( modal-id="modalNetworkForm" title="Network")
+    network-form( edit="networkForm" )
+
+//
+    .row(style="margin-top: 50px;" ng-show="access.indexOf('sudo') !== -1 || access.indexOf('admin') !== -1")
+        .col-xs-12.col-sm-4.col-md-3.col-lg-2
+            a.btn.btn-primary(ui-sref="networks.new" ui-sref-opts="{reload: true}")
+                i.fa.fa-plus
+                |   Add Network

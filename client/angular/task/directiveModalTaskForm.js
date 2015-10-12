@@ -46,10 +46,7 @@ angular.module('baseApp.directives')
         }
         scope.save = function(){
           scope.task.description = $('#wysihtml5-content').val();
-          if( !scope.task._board ) {
-            scope.task._board = scope.boardId;
-          }
-          Task.save( scope.task )
+          Task.save( scope.boardId, scope.task )
             .then( function(){
               //alert('saved');
               $state.go('networks.board',{tab: 'backlog'}, { reload: true });

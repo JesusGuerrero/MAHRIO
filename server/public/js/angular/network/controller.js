@@ -42,6 +42,14 @@ angular.module('baseApp.controllers')
             $state.reload();
           });
       };
+      $scope.newNetwork = function(){
+        $scope.networkForm = { admins: {}, members: {} };
+        $('#modalNetworkForm' ).modal().show();
+      };
+      $scope.editNetwork = function( network ) {
+        $scope.networkForm = network;
+        $('#modalNetworkForm' ).modal().show();
+      };
     }])
   .controller('NetworkController', ['$scope', 'network','$state','FormHelper','Network','_','currentUser',
     function($scope, network, $state, FormHelper, Network, _, currentUser ){

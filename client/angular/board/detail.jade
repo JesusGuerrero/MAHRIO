@@ -14,7 +14,7 @@
 
         ng-switch( on="tab.selected" )
             tasks-current( board="board" ng-switch-when="scrum")
-            tasks-backlog( id="board._id" ng-switch-when="backlog")
+            tasks-backlog( tasks="board.tasks" ng-switch-when="backlog")
 
 
 modal-window-view( modal-id="modalTaskForm" title="Task")

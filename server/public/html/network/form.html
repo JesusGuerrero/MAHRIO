@@ -1,10 +1,11 @@
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
-    <div class="panel panel-default">
+  <div class="col-xs-12 xs-no-padding">
+    <div class="panel panel-default no-margin">
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
-        <form novalidate="novalidate" ng-submit="network._id ? update() : add()">
+        <h3 class="text-center">New Network</h3>
+        <form novalidate="novalidate" ng-submit="save()">
           <div class="form-group">
             <label>  Cover Image</label><br/><small ng-show="!network._id">  Image upload available after article created</small>
             <div ng-show="network._id">

@@ -55,17 +55,17 @@ angular.module('baseApp.directives')
       templateUrl: '/assets/html/task/directiveTasksBacklog',
       scope: {
         active: '=',
-        id: '='
+        tasks: '='
       },
       link: function( scope ) {
         //if( scope.active ) {
-          Task.getAll( $stateParams.boardId )
-            .then( function(response){
-              scope.tasks = response.tasks ;//_.filter( response.tasks, function(task) { return !task.start; });
-              if( scope.tasks.length ) {
-                scope.current = scope.tasks[0];
-              }
-            });
+        //  Task.getAll( $stateParams.boardId )
+        //    .then( function(response){
+        //      scope.tasks = response.tasks ;//_.filter( response.tasks, function(task) { return !task.start; });
+        //      if( scope.tasks.length ) {
+        //        scope.current = scope.tasks[0];
+        //      }
+        //    });
         //}
         scope.loadTask = function(id){
           scope.current = scope.tasks[id];

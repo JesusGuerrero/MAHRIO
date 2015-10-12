@@ -7,7 +7,8 @@ var async = require('async'),
   Board = mongoose.model('Board'),
   Task = mongoose.model('Task'),
   Column = mongoose.model('Column'),
-  User = mongoose.model('User');
+  User = mongoose.model('User'),
+  Network = mongoose.model('Network');
 
 function _removeColumn( columns, board, next ){
   if( columns.length ) {
@@ -83,6 +84,19 @@ function _createBoard( request ){
 
   return new Board( request.payload.board).save();
 }
+function _getNetwork( request, reply, callback ) {
+  Network
+    .findOne({_id: request.params.networkId})
+    .exec( function(err, network){
+      if( err || !network ) { return reply( Boom.badRequest()); }
+
+      if( typeof callback === 'function') {
+        callback( network );
+      } else {
+        return reply( Boom.badRequest());
+      }
+    });
+}
 function createBoard( request, reply ) {
   if( !_.contains(request.auth.credentials.access, 'admin') && !_.contains(request.auth.credentials.access, 'sudo') ) {
     return reply( Boom.forbidden() );
@@ -90,19 +104,31 @@ function createBoard( request, reply ) {
   if( !request.payload.board ) {
     return reply( Boom.badRequest() );
   }
-  _createColumns(request.payload.board.columns )
-    .then( function(columns){
-      request.payload.board.columns = columns;
-      _createBoard( request )
-        .then( function(board){
-          return reply( {board: board} );
-        }, function(err){
-          return reply( Boom.badRequest(err) );
-        });
-    }, function(err){
-      return reply(Boom.badRequest(err));
-    });
+  _getNetwork( request, reply, function(network){
+    if( network.admins.indexOf( request.auth.credentials.id ) !== -1 || request.auth.credentials.access.indexOf('admin') !== -1 ||
+      network.owner === request.auth.credentials.id ) {
+      _createColumns(request.payload.board.columns)
+        .then(function (columns) {
+          request.payload.board.columns = columns;
+          request.payload.board.network = network.id;
+          _createBoard(request)
+            .then(function (board) {
+              network.boards.push( board.id );
+              network.save( function(err){
+                if( err ){ return reply( Boom.badRequest());}
 
+                return reply({board: board});
+              });
+            }, function (err) {
+              return reply(Boom.badRequest(err));
+            });
+        }, function (err) {
+          return reply(Boom.badRequest(err));
+        });
+    } else {
+      return reply(Boom.badRequest());
+    }
+  });
 }
 function _getBoardMembers( board, callback ) {
   User

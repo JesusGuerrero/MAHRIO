@@ -1,9 +1,11 @@
 .row
-    .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
-        .panel.panel-default
+    .col-xs-12.xs-no-padding
+        .panel.panel-default.no-margin
             error-message-box( validation-errors="validationErrors" )
             .panel-body
-                form(novalidate ng-submit="network._id ? update() : add()")
+                h3.text-center
+                    | New Network
+                form(novalidate ng-submit="save()")
                     .form-group
                         label
                             |   Cover Image

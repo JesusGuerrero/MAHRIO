@@ -14,16 +14,17 @@ function createNetwork( request, reply ) {
   }
 
   var members = request.payload.network.members;
-  delete request.payload.network.members;
+  request.payload.network.members = Object.keys(_.indexBy(request.payload.network.members, '_id') );
+  request.payload.network.admins = Object.keys(_.indexBy(request.payload.network.admins, '_id') );
   if( typeof request.payload.network.owner._id === 'undefined' ) {
     request.payload.network.owner = request.auth.credentials.id;
   }
   Network.create( request.payload.network, function(err, network){
     if( err ) { return reply( Boom.badRequest(err) ); }
 
-    User.update( {_id: {$in: members}}, {$push: {networks: network.id}}, {multi: true},
+    User.update( {_id: {$in: Object.keys(members) }}, {$push: {networks: network.id}}, {multi: true},
       function(err){
-        if( err ) { return Boom.badRequest(err); }
+        if( err ) { return reply( Boom.badRequest(err) ); }
 
         return reply({network: network});
       });

@@ -7,7 +7,8 @@ angular.module('baseApp.directives')
       replace: true,
       templateUrl: '/assets/html/board/form',
       scope: {
-        edit: '='
+        edit: '=',
+        networkId: '='
       },
       link: function(scope){
         var formSetup = function(){
@@ -23,7 +24,12 @@ angular.module('baseApp.directives')
         };
         scope.board = {
           members: {},
-          columns: []
+          columns: [],
+          owner: null
+        };
+        scope.has = {
+          owner: false,
+          members: false
         };
         scope.$watch( function(){ return scope.edit; }, function(newVal){
           if( newVal ) {
@@ -38,7 +44,7 @@ angular.module('baseApp.directives')
                 $state.reload();
               });
           } else {
-            Board.add( scope.board )
+            Board.add( scope.networkId, scope.board )
               .then( function(){
                 $state.reload();
               });

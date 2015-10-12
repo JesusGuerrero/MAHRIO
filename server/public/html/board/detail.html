@@ -9,7 +9,7 @@
     </tabset>
     <ng-switch on="tab.selected">
       <tasks-current board="board" ng-switch-when="scrum"></tasks-current>
-      <tasks-backlog id="board._id" ng-switch-when="backlog"></tasks-backlog>
+      <tasks-backlog tasks="board.tasks" ng-switch-when="backlog"></tasks-backlog>
     </ng-switch>
   </div>
 </div>
