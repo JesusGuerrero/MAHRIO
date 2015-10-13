@@ -119,10 +119,10 @@ function createBoard( request, reply ) {
 
                 return reply({board: board});
               });
-            }, function (err) {
+            }, function () {
               return reply(Boom.badRequest('cannot create board'));
             });
-        }, function (err) {
+        }, function () {
           return reply(Boom.badRequest('cannot create columns'));
         });
     } else {

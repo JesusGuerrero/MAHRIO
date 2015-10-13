@@ -42,11 +42,12 @@ angular.module('baseApp.controllers')
           $scope.user = User.get( $state.params.id );
           break;
         case 'users.list':
-          var current = currentUser.get();
+          //var current = currentUser.get();
           $scope.open = 0;
-          User.getUsersList()
+          User.get()
             .then( function( res ){
-              $scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
+              $scope.users = res.users;
+              //$scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
             });
           $scope.messageModal = function( index ){
             $('#modalNewMessage').modal().toggle();
