@@ -19,6 +19,12 @@
                 |   &nbsp;
             tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
+
+callout-info( resource="boards" header="Boards: empty!" icon="tasks")
+    |   Add a new board by choosing '+ Board' button on the top right corner.
+    |   Boards are helpful when working on large projects because
+    |   they help prevent losing track of progress.
+
 .col-xs-12(ng-if="boards")
     .row
         .col-xs-12

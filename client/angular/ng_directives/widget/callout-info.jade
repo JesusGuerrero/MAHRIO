@@ -1,0 +1,8 @@
+.col-xs-12(ng-if="!resource.length && (currentUser.access.indexOf('admin') !== -1 || currentUser.access.indexOf('sudo') !== -1)")
+    .col-xs-12
+        .callout.callout-info.text-center
+            h4
+                i.fa(class="{{'fa-'+icon}}")
+                i.fa.fa-info-circle.pull-right
+                |   {{header}}
+            p(ng-transclude)

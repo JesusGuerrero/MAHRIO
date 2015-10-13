@@ -20,17 +20,11 @@
             tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
 
-.col-xs-12(ng-if="!articles && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
-    .col-xs-12
-        .callout.callout-info.text-center
-            h4
-                i.fa.fa-book
-                i.fa.fa-info-circle.pull-right
-                |   Articles: empty!
-            p
-                |   Add a new article by choosing '+ Article' button on the top right corner.
-                |   Articles are helpful when communicating on to large audiences because
-                |   they help organize your thoughts.
+callout-info( resource="articles" header="Articles: empty!" icon="book")
+    |   Add a new board by choosing '+ Board' button on the top right corner.
+    |   Boards are helpful when working on large projects because
+    |   they help prevent losing track of progress.
+
 
 
 .row

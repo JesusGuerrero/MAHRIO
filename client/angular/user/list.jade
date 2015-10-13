@@ -19,19 +19,11 @@
                 |   &nbsp;
             tab( heading="Members" active="active")
                 |   &nbsp;
+callout-info( resource="users" header="Users: empty!" icon="users")
+    |   Add a new user by choosing '+ User' button on the top right corner.
+    |   Users are the people whom will be joining on this network and
+    |   they are a valuable asset towards successful collaboration.
 
-.col-xs-12(ng-if="!users && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
-    .col-xs-12
-        .callout.callout-info.text-center
-            h4
-                i.fa.fa-users
-                i.fa.fa-info-circle.pull-right
-                |   Users: empty!
-            p
-
-                |   Add a new user by choosing '+ User' button on the top right corner.
-                |   Users are the people whom will be joining on this network and
-                |   they are a valuable asset towards successful collaboration.
 div
     .row
         .col-sm-6.col-xs-12(ng-repeat="user in users track by $index")

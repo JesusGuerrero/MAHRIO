@@ -107461,6 +107461,8 @@ angular.module('btford.socket-io', []).
   }
 }));
 
+"format amd";!function(){"use strict";function a(a,b){return a.module("angularMoment",[]).constant("angularMomentConfig",{preprocess:null,timezone:"",format:null,statefulFilters:!0}).constant("moment",b).constant("amTimeAgoConfig",{withoutSuffix:!1,serverTime:null,titleFormat:null,fullDateThreshold:null,fullDateFormat:null}).directive("amTimeAgo",["$window","moment","amMoment","amTimeAgoConfig","angularMomentConfig",function(b,c,d,e,f){return function(g,h,i){function j(){var a;if(p)a=p;else if(e.serverTime){var b=(new Date).getTime(),d=b-w+e.serverTime;a=c(d)}else a=c();return a}function k(){q&&(b.clearTimeout(q),q=null)}function l(a){var c=j().diff(a,"day"),d=u&&c>=u;if(h.text(d?a.format(v):a.from(j(),s)),t&&!h.attr("title")&&h.attr("title",a.local().format(t)),!d){var e=Math.abs(j().diff(a,"minute")),f=3600;1>e?f=1:60>e?f=30:180>e&&(f=300),q=b.setTimeout(function(){l(a)},1e3*f)}}function m(a){z&&h.attr("datetime",a)}function n(){if(k(),o){var a=d.preprocessDate(o,x,r);l(a),m(a.toISOString())}}var o,p,q=null,r=f.format,s=e.withoutSuffix,t=e.titleFormat,u=e.fullDateThreshold,v=e.fullDateFormat,w=(new Date).getTime(),x=f.preprocess,y=i.amTimeAgo,z="TIME"===h[0].nodeName.toUpperCase();g.$watch(y,function(a){return"undefined"==typeof a||null===a||""===a?(k(),void(o&&(h.text(""),m(""),o=null))):(o=a,void n())}),a.isDefined(i.amFrom)&&g.$watch(i.amFrom,function(a){p="undefined"==typeof a||null===a||""===a?null:c(a),n()}),a.isDefined(i.amWithoutSuffix)&&g.$watch(i.amWithoutSuffix,function(a){"boolean"==typeof a?(s=a,n()):s=e.withoutSuffix}),i.$observe("amFormat",function(a){"undefined"!=typeof a&&(r=a,n())}),i.$observe("amPreprocess",function(a){x=a,n()}),i.$observe("amFullDateThreshold",function(a){u=a,n()}),i.$observe("amFullDateFormat",function(a){v=a,n()}),g.$on("$destroy",function(){k()}),g.$on("amMoment:localeChanged",function(){n()})}}]).service("amMoment",["moment","$rootScope","$log","angularMomentConfig",function(b,c,d,e){this.preprocessors={utc:b.utc,unix:b.unix},this.changeLocale=function(d,e){var f=b.locale(d,e);return a.isDefined(d)&&c.$broadcast("amMoment:localeChanged"),f},this.changeTimezone=function(a){e.timezone=a,c.$broadcast("amMoment:timezoneChanged")},this.preprocessDate=function(c,f,g){return a.isUndefined(f)&&(f=e.preprocess),this.preprocessors[f]?this.preprocessors[f](c,g):(f&&d.warn("angular-moment: Ignoring unsupported value for preprocess: "+f),!isNaN(parseFloat(c))&&isFinite(c)?b(parseInt(c,10)):b(c,g))},this.applyTimezone=function(a,b){return(b=b||e.timezone)?(b.match(/^Z|[+-]\d\d:?\d\d$/i)?a=a.utcOffset(b):a.tz?a=a.tz(b):d.warn("angular-moment: named timezone specified but moment.tz() is undefined. Did you forget to include moment-timezone.js?"),a):a}}]).filter("amCalendar",["moment","amMoment","angularMomentConfig",function(a,b,c){function d(c,d,e){if("undefined"==typeof c||null===c)return"";c=b.preprocessDate(c,d);var f=a(c);return f.isValid()?b.applyTimezone(f,e).calendar():""}return d.$stateful=c.statefulFilters,d}]).filter("amDifference",["moment","amMoment","angularMomentConfig",function(a,b,c){function d(c,d,e,f,g,h){if("undefined"==typeof c||null===c)return"";c=b.preprocessDate(c,g);var i=a(c);if(!i.isValid())return"";var j;if("undefined"==typeof d||null===d)j=a();else if(d=b.preprocessDate(d,h),j=a(d),!j.isValid())return"";return b.applyTimezone(i).diff(b.applyTimezone(j),e,f)}return d.$stateful=c.statefulFilters,d}]).filter("amDateFormat",["moment","amMoment","angularMomentConfig",function(a,b,c){function d(d,e,f,g,h){var i=h||c.format;if("undefined"==typeof d||null===d)return"";d=b.preprocessDate(d,f,i);var j=a(d);return j.isValid()?b.applyTimezone(j,g).format(e):""}return d.$stateful=c.statefulFilters,d}]).filter("amDurationFormat",["moment","angularMomentConfig",function(a,b){function c(b,c,d){return"undefined"==typeof b||null===b?"":a.duration(b,c).humanize(d)}return c.$stateful=b.statefulFilters,c}]).filter("amTimeAgo",["moment","amMoment","angularMomentConfig",function(a,b,c){function d(c,d,e,f){var g,h;return"undefined"==typeof c||null===c?"":(c=b.preprocessDate(c,d),g=a(c),g.isValid()?(h=a(f),"undefined"!=typeof f&&h.isValid()?b.applyTimezone(g).from(h,e):b.applyTimezone(g).fromNow(e)):"")}return d.$stateful=c.statefulFilters,d}]).filter("amSubtract",["moment","angularMomentConfig",function(a,b){function c(b,c,d){return"undefined"==typeof b||null===b?"":a(b).subtract(parseInt(c,10),d)}return c.$stateful=b.statefulFilters,c}]).filter("amAdd",["moment","angularMomentConfig",function(a,b){function c(b,c,d){return"undefined"==typeof b||null===b?"":a(b).add(parseInt(c,10),d)}return c.$stateful=b.statefulFilters,c}])}"function"==typeof define&&define.amd?define(["angular","moment"],a):"undefined"!=typeof module&&module&&module.exports?(a(angular,require("moment")),module.exports="angularMoment"):a(angular,("undefined"!=typeof global?global:window).moment)}();
+//# sourceMappingURL=angular-moment.min.js.map
 /**
 * jquery.matchHeight-min.js master
 * http://brm.io/jquery-match-height/
@@ -108898,6 +108900,7 @@ angular.module('baseApp', [
   'ngResource',
   'btford.socket-io',
   'angular-loading-bar',
+  'angularMoment',
   'chart.js',
   'baseApp.services',
   'baseApp.directives',
@@ -108906,8 +108909,7 @@ angular.module('baseApp', [
   'angular-underscore'
 ])
   .constant('_', window._)
-  .config(
-  function ($stateProvider, $urlRouterProvider, $locationProvider, ChartJsProvider, ResProvider) {
+  .config( function ($stateProvider, $urlRouterProvider, $locationProvider, ChartJsProvider, ResProvider) {
     'use strict';
 
     var resource = ResProvider.$get();
@@ -109412,6 +109414,19 @@ angular.module('baseApp.controllers', [])
         $rootScope.settings = settings;
         window.localStorage.skin = settings.skin;
       };
+      $rootScope.getDate = function( minutes, hours, days ) {
+        var date = new Date();
+        if( days ) {
+          date.setDate(date.getDate() - days);
+        }
+        if( hours ) {
+          date.setHours(date.getHours() - hours);
+        }
+        if( minutes ) {
+          date.setMinutes(date.getMinutes() - minutes);
+        }
+        return date;
+      };
     }
   ]);
 
@@ -109570,6 +109585,75 @@ angular.module('baseApp.controllers')
         }
       });
     }]);
+angular.module('baseApp.directives')
+  .directive('modalArticleForm', [ '$state', 'Article','FormHelper', '_', function($state, Article, FormHelper, _){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/article/form',
+      link: function( scope ){
+
+        var formSetup = function(){
+          scope.sortableOptions = { disabled: true };
+
+          scope.addSection = function( section ){
+            scope.article.sections.push( {body: section} );
+          };
+          scope.editSection = function( index ) {
+            scope.article.sections[ index].edit = true;
+          };
+          scope.saveSection = function( index ) {
+            delete scope.article.sections[ index].edit;
+          };
+          scope.sortSections = function( ){
+            scope.sortableOptions = {
+              disabled: false
+            };
+            scope.sortingSections = true;
+          };
+          scope.stopSorting = function(){
+            scope.sortableOptions = {
+              disabled: true
+            };
+            scope.sortingSections = false;
+          };
+          scope.removeSection = function( index ) {
+            scope.article.sections.splice( index, 1);
+          };
+          scope.addWidget = function( widget ){
+            scope.article.widgets.push( widget );
+          };
+          scope.editWidget = function( index ) {
+            scope.article.widgets[ index].edit = true;
+          };
+          scope.saveWidget = function( index ){
+            delete scope.article.widgets[ index].edit;
+          };
+          scope.removeWidget = function( index ) {
+            scope.article.widgets.splice( index, 1);
+          };
+          FormHelper.setupFormHelper( scope, 'article', Article );
+        };
+        scope.article = {
+          sections: [],
+          widgets: []
+        };
+        scope.save = function(){
+          _.forEach( scope.article.sections, function(sec, key) {
+            sec.order = key;
+          });
+          Article.add( scope.article )
+            .then( function(){
+              scope.$directiveemit('closeModal');
+            });
+        };
+        formSetup();
+
+      }
+    };
+  }]);
 angular.module('baseApp.services').factory('ArticleResource', [ '$resource', function($resource) {
   'use strict';
   return $resource('/api/articles/:id',
@@ -109675,6 +109759,62 @@ angular.module('baseApp.controllers')
         }
       });
     }]);
+angular.module('baseApp.directives')
+  .directive('modalBoardForm', [ 'FormHelper', '$state', 'Board', function(FormHelper, $state, Board){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/board/form',
+      scope: {
+        edit: '=',
+        networkId: '='
+      },
+      link: function(scope){
+        var formSetup = function(){
+          FormHelper.setupFormHelper(scope, 'board', Board );
+          scope.addColumn = function(name){
+            if( name ) {
+              scope.board.columns.push( {name: name});
+            }
+          };
+          scope.removeColumn = function( i ) {
+            scope.board.columns.splice( i, 1);
+          };
+        };
+        scope.board = {
+          members: {},
+          columns: [],
+          owner: null
+        };
+        scope.has = {
+          owner: false,
+          members: false
+        };
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            console.log( newVal );
+            scope.board = newVal;
+          }
+        });
+        scope.save = function(){
+          if( scope.board._id ) {
+            Board.update( scope.board )
+              .then( function(){
+                $state.reload();
+              });
+          } else {
+            Board.add( scope.networkId, scope.board )
+              .then( function(){
+                $state.reload();
+              });
+          }
+        };
+        formSetup();
+      }
+    };
+  }]);
 angular.module('baseApp.services').factory('BoardResource', [ '$resource', function($resource) {
   'use strict';
   return $resource('/api/boards/:id',
@@ -109699,8 +109839,8 @@ angular.module('baseApp.services').factory('Board', [ 'BoardResource', function(
   'use strict';
   // Caching Option here...
   return {
-    add: function( obj ) {
-      return BoardResource.create( {board: obj} ).$promise;
+    add: function( networkId, obj ) {
+      return BoardResource.create( {id: networkId}, {board: obj} ).$promise;
     },
     get: function( id ) {
       return BoardResource.read( id ? {id: id} : {} ).$promise;
@@ -109921,6 +110061,45 @@ angular.module('baseApp.directives')
       };
     }
   ]);
+angular.module('baseApp.directives')
+  .directive('modalEventForm', [ 'Calendar', 'FormHelper', '$state', '_', function(Calendar, FormHelper, $state, _) {
+    'use strict';
+
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/calendar/form',
+      link: function(scope){
+        scope.has = {invited: false};
+        FormHelper.setupFormHelper(scope, 'event', Calendar );
+        scope.event = {
+          invited: {}
+        };
+        scope.save = function(){
+          var event = _.extend( {}, scope.event );
+          if( $('#eventStart').val() ) {
+            event.start = new Date( $('#eventStart').val() + ' UTC').toISOString();
+          }
+          if( $('#eventEnd').val() ) {
+            event.end = new Date( $('#eventEnd').val() + ' UTC').toISOString();
+          }
+          event.invited = Object.keys(event.invited);
+
+          //if( scope.event._id ) {
+          //  Calendar.update( event )
+          //    .then( function(){
+          //      $state.reload();
+          //    });
+          //} else {
+            Calendar.add( event )
+              .then( function(){
+                $state.reload();
+              });
+          //}
+        };
+      }
+    };
+  }]);
 angular.module('baseApp.directives')
   .directive('modalEditEvent', ['Calendar','$rootScope','$http','_','currentUser','$state',
     function( Calendar, $rootScope, $http, _, currentUser, $state ){
@@ -111556,6 +111735,9 @@ angular.module('baseApp.services')
                 scope.$parent.$broadcast('event:removeSuccess', scope.dataObject._id );
               });
           };
+          scope.$on('closeModal', function(){
+            $(elem).modal('hide');
+          });
         }
       };
     }
@@ -111604,6 +111786,14 @@ angular.module('baseApp.controllers')
             $state.reload();
           });
       };
+      $scope.newNetwork = function(){
+        $scope.networkForm = { admins: {}, members: {} };
+        $('#modalNetworkForm' ).modal().show();
+      };
+      $scope.editNetwork = function( network ) {
+        $scope.networkForm = network;
+        $('#modalNetworkForm' ).modal().show();
+      };
     }])
   .controller('NetworkController', ['$scope', 'network','$state','FormHelper','Network','_','currentUser',
     function($scope, network, $state, FormHelper, Network, _, currentUser ){
@@ -111643,15 +111833,19 @@ angular.module('baseApp.controllers')
             $state.go('networks.list');
           });
       };
+      $scope.active = true;
     }])
-  .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser',
-    function($scope, $state, articles, currentUser){
+  .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser','Notification','Article',
+    function($scope, $state, articles, currentUser, Notification, Article){
       'use strict';
       console.log( articles );
       if( $state.current.name === 'networks.articles' ) {
         $scope.networkId = $state.params.id;
-        $scope.articles = articles;
+        $scope.articles = articles.length ? articles : null;
         console.log( $scope.articles );
+        $scope.newArticle = function(){
+          $('#modalArticleForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.article' ) {
         $scope.networkId = $state.params.id;
         $scope.article = articles;
@@ -111663,18 +111857,63 @@ angular.module('baseApp.controllers')
       if( $scope.article ) {
         currentUser.currentNetworkName = $scope.article.title;
       }
-    }])
-  .controller('NetworkBoardController', ['$scope', '$state', 'boards','currentUser',
-    function($scope, $state, boards, currentUser){
-      'use strict';
 
+      $scope.remove = function( id ){
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Article.remove( Notification.id )
+            .then( function(){
+              $state.reload();
+            });
+        }
+      });
+
+      $scope.active = true;
+
+    }])
+  .controller('NetworkBoardController', ['$scope', '$state', 'boards','currentUser','Notification','Board',
+    function($scope, $state, boards, currentUser, Notification, Board){
+      'use strict';
+      /* jshint maxstatements: 100 */
+      $scope.tab = {
+          selected: 'scrum',
+          scrum: false,
+          backlog: false
+        };
       if( $state.current.name === 'networks.boards' ) {
         $scope.networkId = $state.params.id;
-        $scope.boards = boards;
+        $scope.boards = boards.length ? boards : null;
         console.log( $scope.boards );
+        $scope.newBoard = function(){
+          $('#modalBoardForm' ).modal().show();
+        };
+        $scope.editBoard = function( board ){
+          $scope.edit = board;
+          $('#modalBoardForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.board' ) {
         $scope.networkId = $state.params.id;
         $scope.board = boards;
+        if( ['backlog'].indexOf( $state.params.tab ) !== -1 ) {
+          $scope.tab.backlog = true;
+          $scope.tab.selected = 'backlog';
+        } else {
+          $scope.tab.scrum = true;
+        }
+
+        $scope.$on('task:edit', function(id){
+          $scope.task = id;
+          $('#modalTaskForm' ).modal().show();
+        });
+
+        $scope.newTask = function(){
+          $('#modalTaskForm' ).modal().show();
+        };
       }
       if( currentUser.currentNetwork === null ) {
         currentUser.currentNetwork = $scope.networkId;
@@ -111682,17 +111921,22 @@ angular.module('baseApp.controllers')
       if( $scope.board ) {
         currentUser.currentNetworkName = $scope.board.title;
       }
-      $scope.tab = {
-        scrum: false,
-        backlog: false,
-        newTask: false,
-        editTask: false
+
+      $scope.remove = function( id ){
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirmed = false;
       };
-      if( ['scrum','backlog','newTask','editTask'].indexOf( $state.params.tab ) === -1 ) {
-        $scope.tab.scrum = true;
-      } else {
-        $scope.tab[ $state.params.tab ] = true;
-      }
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Board.remove( Notification.id )
+            .then( function(){
+              $state.reload();
+            });
+        }
+      });
+      $scope.active = true;
     }])
   .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser',
     function($scope, $state, events, currentUser){
@@ -111700,7 +111944,10 @@ angular.module('baseApp.controllers')
 
       if( $state.current.name === 'networks.events' ) {
         $scope.networkId = $state.params.id;
-        $scope.events = events;
+        $scope.events = events.length ? events : null;
+        $scope.newEvent = function(){
+          $('#modalEventForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.event' ) {
         $scope.networkId = $state.params.id;
         $scope.event = events;
@@ -111711,6 +111958,7 @@ angular.module('baseApp.controllers')
       if( $scope.event ) {
         currentUser.currentNetworkName = $scope.event.title;
       }
+      $scope.active = true;
     }])
   .controller('NetworkMemberController', ['$scope', '$state', 'users','currentUser',
     function($scope, $state, users, currentUser){
@@ -111718,8 +111966,11 @@ angular.module('baseApp.controllers')
 
       if( $state.current.name === 'networks.members' ) {
         $scope.networkId = $state.params.id;
-        $scope.users = users;
+        $scope.users = users.length ? users : null;
         console.log( $scope.boards );
+        $scope.newUser = function(){
+          $('#modalUserForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.member' ) {
         $scope.networkId = $state.params.id;
         $scope.user = users;
@@ -111730,7 +111981,62 @@ angular.module('baseApp.controllers')
       if( $scope.user ) {
         currentUser.currentNetworkName = $scope.user.title;
       }
+      $scope.active = true;
     }]);
+angular.module('baseApp.directives')
+  .directive('networkForm', ['Network', 'FormHelper', '$state', function(Network, FormHelper, $state ){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/network/form',
+      scope: {
+        edit: '='
+      },
+      link: function( scope ) {
+
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            scope.network = newVal;
+            scope.has = {
+              owner: newVal.owner ? true : false,
+              members: Object.keys(newVal.members) ? true : false,
+              admins: Object.keys( newVal.admins ) ? true : false
+            };
+            console.log( newVal );
+          }
+        });
+        scope.network = {
+          admins: {},
+          members: {},
+          owner: {}
+        };
+        scope.has = {
+          owner: false,
+          members: false,
+          admins: false
+        };
+
+        FormHelper.setupFormHelper(scope, 'network', Network );
+
+        scope.save = function(){
+          if( scope.network._id ) {
+            Network.update( scope.network )
+              .then( function(){
+                $state.reload();
+              });
+          } else {
+            Network.add( scope.network )
+              .then( function(){
+                $state.reload();
+              });
+          }
+        };
+      }
+    };
+  }]);
+
 angular.module('baseApp.services').factory('NetworkResource', [ '$resource', function($resource) {
   'use strict';
   return $resource('/api/networks/:id/:action',
@@ -112248,6 +112554,24 @@ angular.module('baseApp.directives')
             $(elem).removeClass( attr.removeClass );
           }
         }
+      }
+    };
+  }]);
+angular.module('baseApp.directives')
+  .directive('calloutInfo', ['currentUser', function( currentUser ){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      transclude: true,
+      replace: true,
+      scope: {
+        header: '=',
+        icon: '='
+      },
+      templateUrl: '/assets/html/ng_directives/widget/callout-info',
+      link: function(scope){
+        scope.currentUser = currentUser.get();
       }
     };
   }]);
@@ -113288,6 +113612,65 @@ angular.module('baseApp.controllers')
   ]
 );
 angular.module('baseApp.directives')
+  .directive( 'modalTaskForm', ['Task', '$state', function(Task, $state){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/task/form',
+      scope: {
+        boardId: '=',
+        edit: '='
+      },
+      link: function( scope ){
+        var currColor = '#f56954';
+        var colorChooser = $('.color-chooser-btn');
+        $('#color-chooser > li > a').click(function(e) {
+          e.preventDefault();
+          currColor = $(this).css('color');
+          colorChooser
+            .css({'background-color': currColor, 'border-color': currColor})
+            .html('Color: <span class="caret"></span>');
+          scope.task.color = currColor;
+        });
+
+        scope.$watch( function(){ return scope.edit; }, function( newVal ) {
+          if( newVal ) {
+            scope.task = newVal.targetScope.current;
+            console.log( scope.task );
+          } else {
+            scope.task = {};
+          }
+        });
+        if( scope.taskId ) {
+          Task.getOne( scope.id )
+            .then( function(response){
+              scope.task = response.task;
+              $('.color-chooser-btn')
+                .css({'background-color': scope.task.color, 'border-color': scope.task.color})
+                .html('Color:  <span class="caret"></span>');
+              console.log( scope.task );
+            });
+        } else {
+          scope.task = {
+            color: currColor
+          };
+        }
+        scope.save = function(){
+          scope.task.description = $('#wysihtml5-content').val();
+          Task.save( scope.boardId, scope.task )
+            .then( function(){
+              //alert('saved');
+              $state.go('networks.board',{tab: 'backlog'}, { reload: true });
+              //$state.go('boards.detail.backlog',{}, { reload: true });
+            });
+
+        };
+      }
+    };
+  }]);
+angular.module('baseApp.directives')
   .directive( 'tasksCurrent', [ 'Task', function( Task ) {
     'use strict';
     return {
@@ -113344,18 +113727,18 @@ angular.module('baseApp.directives')
       templateUrl: '/assets/html/task/directiveTasksBacklog',
       scope: {
         active: '=',
-        id: '='
+        tasks: '='
       },
       link: function( scope ) {
-        if( scope.active ) {
-          Task.getAll( $stateParams.id )
-            .then( function(response){
-              scope.tasks = _.filter( response.tasks, function(task) { return !task.start; });
-              if( scope.tasks.length ) {
-                scope.current = scope.tasks[0];
-              }
-            });
-        }
+        //if( scope.active ) {
+        //  Task.getAll( $stateParams.boardId )
+        //    .then( function(response){
+        //      scope.tasks = response.tasks ;//_.filter( response.tasks, function(task) { return !task.start; });
+        //      if( scope.tasks.length ) {
+        //        scope.current = scope.tasks[0];
+        //      }
+        //    });
+        //}
         scope.loadTask = function(id){
           scope.current = scope.tasks[id];
         };
@@ -113372,6 +113755,9 @@ angular.module('baseApp.directives')
               if( scope.tasks.length ) { scope.current = scope.tasks[id]; }
             });
         };
+        scope.editTask = function( task ){
+          scope.$emit('task:edit', task );
+        };
       }
     };
   }])
@@ -113383,7 +113769,8 @@ angular.module('baseApp.directives')
       templateUrl: '/assets/html/task/directiveTasksNew',
       scope: {
         active: '=',
-        id: '=edit'
+        id: '=',
+        taskId: '='
       },
       link: function(scope){
         var currColor = '#f56954';
@@ -113397,9 +113784,9 @@ angular.module('baseApp.directives')
           scope.task.color = currColor;
         });
 
-
+        console.log( scope.id );
         scope.task = {};
-        if( scope.id ) {
+        if( scope.taskId ) {
           Task.getOne( scope.id )
             .then( function(response){
               scope.task = response.task;
@@ -113416,11 +113803,14 @@ angular.module('baseApp.directives')
         scope.save = function(){
           scope.task.description = $('#wysihtml5-content').val();
           if( !scope.task._board ) {
-            scope.task._board = $stateParams.id;
+            scope.task._board = $stateParams.boardId;
           }
           Task.save( scope.task )
             .then( function(){
-              $state.go('boards.detail.backlog',{}, { reload: true });
+              /* global alert */
+              alert('saved');
+              //ui-sref="networks.board({tab: 'backlog'})"
+              $state.go('networks.board',{tab: 'backlog'}, { reload: true });
             });
 
         };
@@ -113474,13 +113864,13 @@ angular.module('baseApp.services')
 
     return {
       getAll: function( boardId ){
-        return TaskResource.read( {id: boardId, action: 'board'} ).$promise;
+        return TaskResource.read( {id: boardId} ).$promise;
       },
       getOne: function( id ) {
         return TaskResource.read( {id: id} ).$promise;
       },
-      save: function( obj ) {
-        return TaskResource.create( {task: obj} ).$promise;
+      save: function( boardId, obj ) {
+        return TaskResource.create( {id: boardId}, {task: obj} ).$promise;
       },
       create: function( obj ) {
         return TaskResource.create( {task: obj} ).$promise;
@@ -113541,11 +113931,12 @@ angular.module('baseApp.controllers')
           $scope.user = User.get( $state.params.id );
           break;
         case 'users.list':
-          var current = currentUser.get();
+          //var current = currentUser.get();
           $scope.open = 0;
-          User.getUsersList()
+          User.get()
             .then( function( res ){
-              $scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
+              $scope.users = res.users;
+              //$scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
             });
           $scope.messageModal = function( index ){
             $('#modalNewMessage').modal().toggle();
@@ -113591,6 +113982,19 @@ angular.module('baseApp.controllers')
 
     }
   ]);
+angular.module('baseApp.directives')
+  .directive('modalUserForm', [ function(){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/user/form',
+      link: function(){
+
+      }
+    };
+  }]);
 angular.module('baseApp.services').factory('UserResource', [ '$resource', function($resource) {
   'use strict';
   return $resource('/api/users/:action',
@@ -113648,11 +114052,11 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     profile: function(){
       return UserResource.profile( {action: 'me'}).$promise;
     },
-    getUsersList: function(){
-      return UserResource.get( {action: 'all'}).$promise;
-    },
+    //getUsersList: function(){
+    //  return UserResource.get( {action: 'all'}).$promise;
+    //},
     get: function( id ){
-      return UserResource.get( {action: id}).$promise;
+      return UserResource.get( {action: id ? id : 'all'}).$promise;
     },
     makeAdmin: function(email){
       return UserResource.put( {action: 'other'}, {email: email, access: 'admin'}).$promise;

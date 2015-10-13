@@ -12,18 +12,11 @@
     </tabset>
   </div>
 </div>
-<div ng-if="!users &amp;&amp; (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="col-xs-12">
-  <div class="col-xs-12">
-    <div class="callout callout-info text-center">
-      <h4><i class="fa fa-users"></i><i class="fa fa-info-circle pull-right"></i>  Users: empty!</h4>
-      <p>
-          Add a new user by choosing '+ User' button on the top right corner.
-          Users are the people whom will be joining on this network and
-          they are a valuable asset towards successful collaboration.
-      </p>
-    </div>
-  </div>
-</div>
+<callout-info resource="users" header="Users: empty!" icon="users">
+    Add a new user by choosing '+ User' button on the top right corner.
+    Users are the people whom will be joining on this network and
+    they are a valuable asset towards successful collaboration.
+</callout-info>
 <div>
   <div class="row">
     <div ng-repeat="user in users track by $index" class="col-sm-6 col-xs-12">
