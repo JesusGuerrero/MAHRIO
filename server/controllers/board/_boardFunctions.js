@@ -102,11 +102,11 @@ function createBoard( request, reply ) {
     return reply( Boom.forbidden() );
   }
   if( !request.payload.board ) {
-    return reply( Boom.badRequest() );
+    return reply( Boom.badRequest('no board present') );
   }
   _getNetwork( request, reply, function(network){
     if( network.admins.indexOf( request.auth.credentials.id ) !== -1 || request.auth.credentials.access.indexOf('admin') !== -1 ||
-      network.owner === request.auth.credentials.id ) {
+      network.owner === request.auth.credentials.id ||  request.auth.credentials.access.indexOf('sudo') !== -1) {
       _createColumns(request.payload.board.columns)
         .then(function (columns) {
           request.payload.board.columns = columns;
@@ -115,18 +115,18 @@ function createBoard( request, reply ) {
             .then(function (board) {
               network.boards.push( board.id );
               network.save( function(err){
-                if( err ){ return reply( Boom.badRequest());}
+                if( err ){ return reply( Boom.badRequest('not able to update board in network'));}
 
                 return reply({board: board});
               });
             }, function (err) {
-              return reply(Boom.badRequest(err));
+              return reply(Boom.badRequest('cannot create board'));
             });
         }, function (err) {
-          return reply(Boom.badRequest(err));
+          return reply(Boom.badRequest('cannot create columns'));
         });
     } else {
-      return reply(Boom.badRequest());
+      return reply(Boom.badRequest('not admin of network or not admin or you are not network owner'));
     }
   });
 }
