@@ -1,6 +1,6 @@
 angular.module('baseApp.controllers')
-  .controller('RightSettingsController', ['$scope','currentUser','$rootScope',
-    function ($scope, currentUser, $rootScope ) {
+  .controller('RightSettingsController', ['$scope','currentUser','$rootScope','$state',
+    function ($scope, currentUser, $rootScope, $state ) {
       'use strict';
 
       $scope.user = currentUser.get();
@@ -29,6 +29,7 @@ angular.module('baseApp.controllers')
         colorChooser
           .css({'background-color': currColor, 'border-color': currColor})
           .html($(this).text()+' <span class="caret"></span>');
+        $state.reload();
       });
     }
   ]);

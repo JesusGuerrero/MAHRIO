@@ -112,6 +112,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.article ) {
         currentUser.currentNetworkName = $scope.article.title;
+      } else {
+        currentUser.currentNetworkName = 'Articles';
       }
 
       $scope.remove = function( id ){
@@ -176,6 +178,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.board ) {
         currentUser.currentNetworkName = $scope.board.title;
+      }  else {
+        currentUser.currentNetworkName = 'Boards';
       }
 
       $scope.remove = function( id ){
@@ -213,6 +217,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.event ) {
         currentUser.currentNetworkName = $scope.event.title;
+      } else {
+        currentUser.currentNetworkName = 'Events';
       }
       $scope.active = true;
     }])
@@ -236,6 +242,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.user ) {
         currentUser.currentNetworkName = $scope.user.title;
+      } else {
+        currentUser.currentNetworkName = 'Users';
       }
       $scope.active = true;
     }]);

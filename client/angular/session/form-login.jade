@@ -35,16 +35,16 @@
                             | {{locale['form'].button['login']}}
 
                     .col-sm-6.col-sm-offset-3.col-xs-12.text-center.form-group
-                        a.btn.btn-block.btn-primary.btn-lg(href="/api/oauth/linkedin/login" style="background: #1883BB")
+                        a.btn.btn-block.btn-primary.btn-lg(href="/api/oauth/linkedin/login" style="background: #1883BB; color: #fff; border: none;")
                             i.fa.fa-linkedin-square
                             |   LinkedIn
 
                     .col-sm-6.col-sm-offset-3.col-xs-12.text-center.form-group
-                        a.btn.btn-block.btn-primary.btn-lg(href="/api/oauth/facebook/login" style="background: #3D5A98")
+                        a.btn.btn-block.btn-primary.btn-lg(href="/api/oauth/facebook/login" style="background: #3D5A98; color: #fff;border: none;")
                             i.fa.fa-facebook-square
                             |   facebook
               .form-group.text-center
                 p.text-center
                   | {{locale['form'].page['signin'].signUp}}
-                a.btn.btn-default( ui-sref="users.new")
+                button.btn.btn-default( ui-sref="users.new")
                   | {{locale['form'].page['signin'].register }}

@@ -20,7 +20,7 @@
             tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
 
-callout-info( resource="boards" header="Boards: empty!" icon="tasks")
+callout-info( resource="boards" header="" icon="tasks")
     |   Add a new board by choosing '+ Board' button on the top right corner.
     |   Boards are helpful when working on large projects because
     |   they help prevent losing track of progress.
@@ -37,18 +37,6 @@ callout-info( resource="boards" header="Boards: empty!" icon="tasks")
             .col-xs-12.col-sm-4
                 strong
                     |Tasks
-.col-xs-12(ng-if="!boards && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
-    .col-xs-12
-        .callout.callout-info.text-center
-            h4
-                i.fa.fa-tasks
-                i.fa.fa-info-circle.pull-right
-                |   Boards: empty!
-            p
-
-                |   Add a new board by choosing '+ Board' button on the top right corner.
-                |   Boards are helpful when working on large projects because
-                |   they help prevent losing track of progress.
 .row
     .col-xs-12
         .list-group

@@ -314,7 +314,8 @@ angular.module('baseApp', [
           articles: function($stateParams, Article, $q ) {
             return resource.articles( null, Article, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Articles'
       })
       .state('networks.article', {
         url: '/:id/article/:articleId',
@@ -334,7 +335,8 @@ angular.module('baseApp', [
           boards: function($stateParams, Board, $q) {
             return resource.boards( null, Board, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Boards'
       })
       .state('networks.board', {
         url: '/:id/board/:boardId?tab',
@@ -344,7 +346,8 @@ angular.module('baseApp', [
           boards: function($stateParams, Board, $q) {
             return resource.boards( $stateParams.boardId, Board, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Articles'
       })
       .state('networks.events', {
         url: '/:id/events',
@@ -354,7 +357,8 @@ angular.module('baseApp', [
           events: function($stateParams, Calendar, $q) {
             return resource.events( null, Calendar, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Events'
       })
       .state('networks.event', {
         url: '/:id/event/:eventId',
@@ -374,7 +378,8 @@ angular.module('baseApp', [
           users: function($stateParams, User, $q) {
             return resource.users( null, User, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Users'
       })
       .state('networks.member', {
         url: '/:id/members/:userId',

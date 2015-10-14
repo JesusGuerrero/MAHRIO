@@ -21,12 +21,13 @@
           <div class="col-xs-12 text-center form-group">
             <button type="submit" class="btn btn-block btn-primary btn-lg">{{locale['form'].button['login']}}</button>
           </div>
-          <div class="col-sm-6 col-sm-offset-3 col-xs-12 text-center form-group"><a href="/api/oauth/linkedin/login" style="background: #1883BB" class="btn btn-block btn-primary btn-lg"><i class="fa fa-linkedin-square"></i>  LinkedIn</a></div>
-          <div class="col-sm-6 col-sm-offset-3 col-xs-12 text-center form-group"><a href="/api/oauth/facebook/login" style="background: #3D5A98" class="btn btn-block btn-primary btn-lg"><i class="fa fa-facebook-square"></i>  facebook</a></div>
+          <div class="col-sm-6 col-sm-offset-3 col-xs-12 text-center form-group"><a href="/api/oauth/linkedin/login" style="background: #1883BB; color: #fff; border: none;" class="btn btn-block btn-primary btn-lg"><i class="fa fa-linkedin-square"></i>  LinkedIn</a></div>
+          <div class="col-sm-6 col-sm-offset-3 col-xs-12 text-center form-group"><a href="/api/oauth/facebook/login" style="background: #3D5A98; color: #fff;border: none;" class="btn btn-block btn-primary btn-lg"><i class="fa fa-facebook-square"></i>  facebook</a></div>
         </form>
       </div>
       <div class="form-group text-center">
-        <p class="text-center">{{locale['form'].page['signin'].signUp}}</p><a ui-sref="users.new" class="btn btn-default">{{locale['form'].page['signin'].register }}</a>
+        <p class="text-center">{{locale['form'].page['signin'].signUp}}</p>
+        <button ui-sref="users.new" class="btn btn-default">{{locale['form'].page['signin'].register }}</button>
       </div>
     </div>
   </div>

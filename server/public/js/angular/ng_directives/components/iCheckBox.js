@@ -7,7 +7,7 @@ angular.module('baseApp.directives')
         link: function(scope, elem){
           try {
             $('input[type="checkbox"]', $(elem)).iCheck({
-              checkboxClass: 'icheckbox_flat-blue',
+              checkboxClass: 'icheckbox_flat-'+window.localStorage.skin.split('-')[1],
               radioClass: 'iradio_flat-blue'
             });
           } catch(e) {
@@ -31,7 +31,7 @@ angular.module('baseApp.directives')
           });
 
           return $(element).iCheck({
-            checkboxClass: 'icheckbox_flat-blue',
+            checkboxClass: 'icheckbox_flat-'+window.localStorage.skin.split('-')[1],
             radioClass: 'iradio_flat-aero'
 
           }).on('ifChanged', function (event) {

@@ -19,7 +19,7 @@
                 |   &nbsp;
             tab( heading="Members" active="active")
                 |   &nbsp;
-callout-info( resource="users" header="Users: empty!" icon="users")
+callout-info( resource="users" header="" icon="users")
     |   Add a new user by choosing '+ User' button on the top right corner.
     |   Users are the people whom will be joining on this network and
     |   they are a valuable asset towards successful collaboration.
@@ -30,7 +30,7 @@ div
             .info-box
                 span.info-box-icon.bg-aqua
                     i.fa.fa-user-secret(ng-show="!user.avatarImage")
-                    img( src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -40px auto 0")
+                    img( src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -8px auto 0")
                 .info-box-content
                     span.info-box-text
                         |   {{user.profile.firstName}} {{user.profile.lastName}}

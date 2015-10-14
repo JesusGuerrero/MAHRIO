@@ -1,10 +1,10 @@
 div
-    .row
-        .col-xs-12
-            a.btn.btn-success(ui-sref="users.list" ui-sref-opts="{reload: true}" ng-show="!myProfile"
-                style="position: absolute;right: 15px;top: -65px; width: 120px;")
-                i.fa.fa-users
-                |   Users
+    //
+        .row(ng-if="!myProfile")
+            .col-xs-12
+                a.btn.btn-success(ui-sref="users.list" ui-sref-opts="{reload: true}" style="position: absolute;right: 15px;top: -65px; width: 120px;")
+                    i.fa.fa-users
+                    |   Users
     .row
         .col-md-6
             b

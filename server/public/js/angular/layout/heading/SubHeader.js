@@ -40,13 +40,14 @@ angular.module('baseApp.directives')
               return;
             }
 
-            if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
-              currentUser.currentNetwork = null;
-              currentUser.currentNetworkName = '';
-            }
-            if( /networks/.test( toState.name )  ) {
-              toState.title = currentUser.currentNetworkName;
-            }
+            //currentUser.currentNetwork
+            //if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
+            //  currentUser.currentNetwork = null;
+            //  currentUser.currentNetworkName = '';
+            //}
+            //if( /networks/.test( toState.name )  ) {
+            //  toState.title = currentUser.currentNetworkName;
+            //}
             console.log( fromState );
             scope.heading = {
               title: toState.title,

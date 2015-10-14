@@ -1,8 +1,12 @@
 
 <div>
-  <div class="row">
-    <div class="col-xs-12"><a ui-sref="users.list" ui-sref-opts="{reload: true}" ng-show="!myProfile" style="position: absolute;right: 15px;top: -65px; width: 120px;" class="btn btn-success"><i class="fa fa-users"></i>  Users</a></div>
-  </div>
+  <!--
+  .row(ng-if="!myProfile")
+      .col-xs-12
+          a.btn.btn-success(ui-sref="users.list" ui-sref-opts="{reload: true}" style="position: absolute;right: 15px;top: -65px; width: 120px;")
+              i.fa.fa-users
+              |   Users
+  -->
   <div class="row">
     <div class="col-md-6"><b>  First Name:</b><br/>  {{current.profile.firstName}}</div>
     <div class="col-md-6"><b>  Last Name:</b><br/>  {{current.profile.lastName}}</div>

@@ -12,7 +12,7 @@
     </tabset>
   </div>
 </div>
-<callout-info resource="users" header="Users: empty!" icon="users">
+<callout-info resource="users" header="" icon="users">
     Add a new user by choosing '+ User' button on the top right corner.
     Users are the people whom will be joining on this network and
     they are a valuable asset towards successful collaboration.
@@ -20,7 +20,7 @@
 <div>
   <div class="row">
     <div ng-repeat="user in users track by $index" class="col-sm-6 col-xs-12">
-      <div class="info-box"><span class="info-box-icon bg-aqua"><i ng-show="!user.avatarImage" class="fa fa-user-secret"></i><img src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -40px auto 0"/></span>
+      <div class="info-box"><span class="info-box-icon bg-aqua"><i ng-show="!user.avatarImage" class="fa fa-user-secret"></i><img src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -8px auto 0"/></span>
         <div class="info-box-content"><span class="info-box-text">  {{user.profile.firstName}} {{user.profile.lastName}}</span><span class="info-box-number">  Web Architect</span>
           <div class="progress">
             <div style="width: 20%" class="progress-bar bg-aqua"></div>

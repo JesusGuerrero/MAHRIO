@@ -1,0 +1,9 @@
+
+<div ng-if="!resource.length &amp;&amp; (currentUser.access.indexOf('admin') !== -1 || currentUser.access.indexOf('sudo') !== -1)" class="col-xs-12">
+  <div class="col-xs-12">
+    <div class="callout callout-info text-center">
+      <h4><i class="fa {{'fa-'+icon}}"></i><i class="fa fa-info-circle pull-right"></i>  {{header}}</h4>
+      <p ng-transclude="ng-transclude"></p>
+    </div>
+  </div>
+</div>

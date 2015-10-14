@@ -6,6 +6,7 @@ angular.module('baseApp.directives')
       replace: true,
       templateUrl: '/assets/html/profile/directive-summary',
       link: function(scope) {
+        scope.myProfile = true;
         scope.current = currentUser.get();
         scope.isOwn = true;
         scope.makeAdmin = function(id){
