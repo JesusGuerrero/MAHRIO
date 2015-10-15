@@ -1,3 +1,4 @@
+.row(render-video-bg )
 .row.login
     .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1.col-xs-12.xs-no-padding
         .panel.panel-default
@@ -30,7 +31,7 @@
                         a.text-muted( ui-sref="recoverpassword")
                             | {{locale['form'].page['signin'].forgotPassword}}
 
-                    .col-xs-12.text-center.form-group
+                    .col-xs-12.text-center.form-group.no-padding
                         button.btn.btn-block.btn-primary.btn-lg( type="submit" )
                             | {{locale['form'].button['login']}}
 

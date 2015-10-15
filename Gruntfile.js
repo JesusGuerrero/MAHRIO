@@ -64,6 +64,7 @@ module.exports = function (grunt) {
               'bower_components/jquery/dist/jquery.js',
               'bower_components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
               'bower_components/jquery-ui/jquery-ui.js',
+              'bower_components/jquery.videoBG/jquery.videoBG.js',
               'bower_components/underscore/underscore.js',
               'bower_components/socket.io-client/socket.io.js',
               'bower_components/moment/moment.js',
@@ -141,7 +142,7 @@ module.exports = function (grunt) {
 
         protractor: {
             options: {
-                configFile: "test/client.conf.js", // Default config file
+                configFile: 'test/client.conf.js', // Default config file
                 // keepAlive: true, // If false, the grunt process stops when the test fails.
                 noColor: false, // If true, protractor will not use colors in its output.
                 //debug: true,
