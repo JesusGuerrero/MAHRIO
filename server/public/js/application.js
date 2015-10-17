@@ -40480,6 +40480,353 @@ var tooltip = $.widget( "ui.tooltip", {
 
 
 }));
+/**
+ * @preserve Copyright 2011 Syd Lawrence ( www.sydlawrence.com ).
+ * Version: 0.2
+ *
+ * Licensed under MIT and GPLv2.
+ *
+ * Usage: $('body').videoBG(options);
+ *
+ */
+
+ (function( $ ){
+
+  $.fn.videoBG = function( selector, options ) {
+    if (options === undefined) {
+      options = {};
+    }
+    if (typeof selector === "object") {
+      options = $.extend({}, $.fn.videoBG.defaults, selector);
+    }
+    else if (!selector) {
+      options = $.fn.videoBG.defaults;
+    }
+    else {
+      return $(selector).videoBG(options);
+    }
+
+    var container = $(this);
+
+    // check if elements available otherwise it will cause issues
+    if (!container.length) {
+      return;
+    }
+
+    // container to be at least relative
+    if (container.css('position') == 'static' || !container.css('position')) {
+      container.css('position','relative');
+    }
+
+    // we need a width
+    if (options.width === 0) {
+      options.width = container.width();
+    }
+
+    // we need a height
+    if (options.height === 0) {
+      options.height = container.height();
+    }
+
+    // get the wrapper
+    var wrap = $.fn.videoBG.wrapper();
+    wrap.height(options.height)
+      .width(options.width);
+
+    // if is a text replacement
+    if (options.textReplacement) {
+
+      // force sizes
+      options.scale = true;
+
+      // set sizes and forcing text out
+      container.width(options.width)
+        .height(options.height)
+        .css('text-indent','-9999px');
+    }
+    else {
+
+      // set the wrapper above the video
+      wrap.css('z-index',options.zIndex+1);
+    }
+
+    // move the contents into the wrapper
+    wrap.html(container.clone(true));
+
+    // get the video
+    var video = $.fn.videoBG.video(options);
+
+    // if we are forcing width / height
+    if (options.scale) {
+
+      // overlay wrapper
+      wrap.height(options.height)
+        .width(options.width);
+
+      // video
+      video.height(options.height)
+        .width(options.width);
+    }
+
+    // add it all to the container
+    container.html(wrap);
+    container.append(video);
+
+    return video.find("video")[0];
+  };
+
+  // set to fullscreen
+  $.fn.videoBG.setFullscreen = function($el) {
+    var windowWidth = $(window).width(),
+    windowHeight = $(window).height();
+
+    $el.css('min-height',0).css('min-width',0);
+    $el.parent().width(windowWidth).height(windowHeight);
+    // if by width
+    var shift = 0;
+    if (windowWidth / windowHeight > $el.aspectRatio) {
+      $el.width(windowWidth).height('auto');
+      // shift the element up
+      var height = $el.height();
+      shift = (height - windowHeight) / 2;
+      if (shift < 0) {
+        shift = 0;
+      }
+      $el.css("top",-shift);
+    } else {
+      $el.width('auto').height(windowHeight);
+      // shift the element left
+      var width = $el.width();
+      shift = (width - windowWidth) / 2;
+      if (shift < 0) {
+        shift = 0;
+      }
+      $el.css("left",-shift);
+
+      // this is a hack mainly due to the iphone
+      if (shift === 0) {
+        var t = setTimeout(function() {
+          $.fn.videoBG.setFullscreen($el);
+        },500);
+      }
+    }
+
+    $('body > .videoBG_wrapper').width(windowWidth).height(windowHeight);
+
+  };
+
+  // get the formatted video element
+  $.fn.videoBG.video = function(options) {
+
+    $('html, body').scrollTop(-1);
+
+    // video container
+    var $div = $('<div/>');
+    $div.addClass('videoBG')
+      .css('position',options.position)
+      .css('z-index',options.zIndex)
+      .css('top',0)
+      .css('left',0)
+      .css('height',options.height)
+      .css('width',options.width)
+      .css('opacity',options.opacity)
+      .css('overflow','hidden');
+
+    // video element
+    var $video = $('<video/>');
+    $video.css('position','absolute')
+      .css('z-index',options.zIndex)
+      .attr('poster',options.poster)
+      .css('top',0)
+      .css('left',0)
+      .css('min-width','100%')
+      .css('min-height','100%');
+
+    if (options.autoplay) {
+      $video.attr('autoplay',options.autoplay);
+    }
+
+    // if fullscreen
+    if (options.fullscreen) {
+      $video.bind('canplay',function() {
+        // set the aspect ratio
+        $video.aspectRatio = $video.width() / $video.height();
+        $.fn.videoBG.setFullscreen($video);
+      });
+
+      // listen out for screenresize
+      var resizeTimeout;
+      $(window).resize(function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+          $.fn.videoBG.setFullscreen($video);
+        },100);
+      });
+      $.fn.videoBG.setFullscreen($video);
+    }
+
+
+    // video standard element
+    var v = $video[0];
+
+    // if meant to loop
+    if (options.loop) {
+      loops_left = options.loop;
+
+      // cant use the loop attribute as firefox doesnt support it
+      $video.bind('ended', function(){
+
+        // if we have some loops to throw
+        if (loops_left) {
+          // replay that bad boy
+          v.play();
+        }
+
+        // if not forever
+        if (loops_left !== true) {
+          // one less loop
+          loops_left--;
+        }
+      });
+    }
+
+    // when can play, play
+    $video.bind('canplay', function(){
+
+      if (options.autoplay) {
+        // replay that bad boy
+        v.play();
+      }
+
+    });
+
+
+    // if supports video
+    if ($.fn.videoBG.supportsVideo()) {
+
+      // supports webm
+      if ($.fn.videoBG.supportType('webm')){
+
+        // play webm
+        $video.attr('src',options.webm);
+      }
+      // supports mp4
+      else if ($.fn.videoBG.supportType('mp4')) {
+
+        // play mp4
+        $video.attr('src',options.mp4);
+      }
+      // throw ogv at it then
+      else {
+
+        // play ogv
+        $video.attr('src',options.ogv);
+      }
+
+    }
+
+    // image for those that dont support the video
+    var $img = $('<img/>');
+    $img.attr('src',options.poster)
+      .css('position','absolute')
+      .css('z-index',options.zIndex)
+      .css('top',0)
+      .css('left',0)
+      .css('min-width','100%')
+      .css('min-height','100%');
+
+    // add the image to the video
+    // if suuports video
+    if ($.fn.videoBG.supportsVideo()) {
+      // add the video to the wrapper
+      $div.html($video);
+    }
+
+    // nope - whoa old skool
+    else {
+
+      // add the image instead
+      $div.html($img);
+    }
+
+    // if text replacement
+    if (options.textReplacement) {
+
+      // force the heights and widths
+      $div.css('min-height',1).css('min-width',1);
+      $video.css('min-height',1).css('min-width',1);
+      $img.css('min-height',1).css('min-width',1);
+
+      $div.height(options.height).width(options.width);
+      $video.height(options.height).width(options.width);
+      $img.height(options.height).width(options.width);
+    }
+
+    if ($.fn.videoBG.supportsVideo()) {
+      v.play();
+    }
+    return $div;
+  };
+
+  // check if suuports video
+  $.fn.videoBG.supportsVideo = function() {
+    return (document.createElement('video').canPlayType);
+  };
+
+  // check which type is supported
+  $.fn.videoBG.supportType = function(str) {
+
+    // if not at all supported
+    if (!$.fn.videoBG.supportsVideo()) {
+      return false;
+    }
+
+    // create video
+    var v = document.createElement('video');
+
+    // check which?
+    switch (str) {
+      case 'webm' :
+        return (v.canPlayType('video/webm; codecs="vp8, vorbis"'));
+      case 'mp4' :
+        return (v.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"'));
+      case 'ogv' :
+        return (v.canPlayType('video/ogg; codecs="theora, vorbis"'));
+    }
+    // nope
+    return false;
+  };
+
+  // get the overlay wrapper
+  $.fn.videoBG.wrapper = function() {
+    var $wrap = $('<div/>');
+    $wrap.addClass('videoBG_wrapper')
+      .css('position','absolute')
+      .css('top',0)
+      .css('left',0);
+    return $wrap;
+  };
+
+  // these are the defaults
+  $.fn.videoBG.defaults = {
+    mp4:'',
+    ogv:'',
+    webm:'',
+    poster:'',
+    autoplay:true,
+    loop:true,
+    scale:false,
+    position:"absolute",
+    opacity:1,
+    textReplacement:false,
+    zIndex:0,
+    width:0,
+    height:0,
+    fullscreen:false,
+    imgFallback:true
+  };
+
+})( jQuery );
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -109204,7 +109551,8 @@ angular.module('baseApp', [
           articles: function($stateParams, Article, $q ) {
             return resource.articles( null, Article, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Articles'
       })
       .state('networks.article', {
         url: '/:id/article/:articleId',
@@ -109224,7 +109572,8 @@ angular.module('baseApp', [
           boards: function($stateParams, Board, $q) {
             return resource.boards( null, Board, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Boards'
       })
       .state('networks.board', {
         url: '/:id/board/:boardId?tab',
@@ -109234,7 +109583,8 @@ angular.module('baseApp', [
           boards: function($stateParams, Board, $q) {
             return resource.boards( $stateParams.boardId, Board, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Articles'
       })
       .state('networks.events', {
         url: '/:id/events',
@@ -109244,7 +109594,8 @@ angular.module('baseApp', [
           events: function($stateParams, Calendar, $q) {
             return resource.events( null, Calendar, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Events'
       })
       .state('networks.event', {
         url: '/:id/event/:eventId',
@@ -109264,7 +109615,8 @@ angular.module('baseApp', [
           users: function($stateParams, User, $q) {
             return resource.users( null, User, $q.defer() );
           }
-        }
+        },
+        title: 'Network: Users'
       })
       .state('networks.member', {
         url: '/:id/members/:userId',
@@ -110991,13 +111343,14 @@ angular.module('baseApp.directives')
               return;
             }
 
-            if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
-              currentUser.currentNetwork = null;
-              currentUser.currentNetworkName = '';
-            }
-            if( /networks/.test( toState.name )  ) {
-              toState.title = currentUser.currentNetworkName;
-            }
+            //currentUser.currentNetwork
+            //if( toState.name === 'networks.list' || !/networks/.test( toState.name )  ) {
+            //  currentUser.currentNetwork = null;
+            //  currentUser.currentNetworkName = '';
+            //}
+            //if( /networks/.test( toState.name )  ) {
+            //  toState.title = currentUser.currentNetworkName;
+            //}
             console.log( fromState );
             scope.heading = {
               title: toState.title,
@@ -111134,8 +111487,8 @@ angular.module('baseApp.controllers')
     }
   ]);
 angular.module('baseApp.controllers')
-  .controller('RightSettingsController', ['$scope','currentUser','$rootScope',
-    function ($scope, currentUser, $rootScope ) {
+  .controller('RightSettingsController', ['$scope','currentUser','$rootScope','$state',
+    function ($scope, currentUser, $rootScope, $state ) {
       'use strict';
 
       $scope.user = currentUser.get();
@@ -111164,6 +111517,7 @@ angular.module('baseApp.controllers')
         colorChooser
           .css({'background-color': currColor, 'border-color': currColor})
           .html($(this).text()+' <span class="caret"></span>');
+        $state.reload();
       });
     }
   ]);
@@ -111856,6 +112210,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.article ) {
         currentUser.currentNetworkName = $scope.article.title;
+      } else {
+        currentUser.currentNetworkName = 'Articles';
       }
 
       $scope.remove = function( id ){
@@ -111920,6 +112276,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.board ) {
         currentUser.currentNetworkName = $scope.board.title;
+      }  else {
+        currentUser.currentNetworkName = 'Boards';
       }
 
       $scope.remove = function( id ){
@@ -111957,6 +112315,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.event ) {
         currentUser.currentNetworkName = $scope.event.title;
+      } else {
+        currentUser.currentNetworkName = 'Events';
       }
       $scope.active = true;
     }])
@@ -111980,6 +112340,8 @@ angular.module('baseApp.controllers')
       }
       if( $scope.user ) {
         currentUser.currentNetworkName = $scope.user.title;
+      } else {
+        currentUser.currentNetworkName = 'Users';
       }
       $scope.active = true;
     }]);
@@ -112152,7 +112514,7 @@ angular.module('baseApp.directives')
         link: function(scope, elem){
           try {
             $('input[type="checkbox"]', $(elem)).iCheck({
-              checkboxClass: 'icheckbox_flat-blue',
+              checkboxClass: 'icheckbox_flat-'+window.localStorage.skin.split('-')[1],
               radioClass: 'iradio_flat-blue'
             });
           } catch(e) {
@@ -112176,7 +112538,7 @@ angular.module('baseApp.directives')
           });
 
           return $(element).iCheck({
-            checkboxClass: 'icheckbox_flat-blue',
+            checkboxClass: 'icheckbox_flat-'+window.localStorage.skin.split('-')[1],
             radioClass: 'iradio_flat-aero'
 
           }).on('ifChanged', function (event) {
@@ -112298,6 +112660,26 @@ angular.module('baseApp.directives')
       };
     }
   ]);
+angular.module('baseApp.directives')
+  .directive( 'renderVideoBg', [ function(){
+    'use strict';
+
+    return {
+      restrict: 'A',
+      link: function( scope, elem ) {
+        elem.videoBG({
+          position:'fixed',
+          zIndex:0,
+          mp4:'/assets/video/video.mp4',
+          ogv:'assets/video/video.ogv',
+          webm:'assets/video/video.webm',
+          poster:'assets/video/video.jpg',
+          opacity:1,
+          fullscreen:true
+        });
+      }
+    };
+  }]);
 angular.module('baseApp.directives')
   .directive('toolTip', ['$rootScope',
     function(){
@@ -112564,14 +112946,15 @@ angular.module('baseApp.directives')
     return {
       restrict: 'E',
       transclude: true,
-      replace: true,
       scope: {
-        header: '=',
-        icon: '='
+        resource: '='
       },
       templateUrl: '/assets/html/ng_directives/widget/callout-info',
-      link: function(scope){
+      link: function(scope, elem, attr){
         scope.currentUser = currentUser.get();
+        scope.header = attr.header;
+        scope.icon = attr.icon;
+        console.log( scope.header, scope.resource );
       }
     };
   }]);
@@ -113218,6 +113601,7 @@ angular.module('baseApp.directives')
       replace: true,
       templateUrl: '/assets/html/profile/directive-summary',
       link: function(scope) {
+        scope.myProfile = true;
         scope.current = currentUser.get();
         scope.isOwn = true;
         scope.makeAdmin = function(id){
