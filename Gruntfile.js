@@ -276,6 +276,14 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-protractor-runner');
+    grunt.loadNpmTasks('grunt-run');
+    grunt.loadNpmTasks('grunt-contrib-csslint');
+    grunt.loadNpmTasks('grunt-browser-sync');
+
     grunt.registerTask('default', ['watch']);
     grunt.registerTask('build', ['less', 'jade', 'concat', 'copy']);
     grunt.registerTask('build-dev', ['less', 'jade', 'tags', 'copy:dev', 'copy:devScripts', 'concat:angular']);
