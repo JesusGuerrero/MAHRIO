@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node server/index.js",
-    "test": "make test"
+    "test": "make test",
+    "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update && node node_modules/protractor/bin/webdriver-manager update",
+    "update-ie": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update --ie && node node_modules/protractor/bin/webdriver-manager update --ie"
   },
   "engines": {
     "node": "0.12.x",
@@ -68,6 +70,7 @@
     "lab": "^4.0.1",
     "load-grunt-tasks": "^1.0.0",
     "mkdirp": "^0.5.1",
+    "protractor": "^2.5.1",
     "sinon": "^1.10.3"
   }
 }
