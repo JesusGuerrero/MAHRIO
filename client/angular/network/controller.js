@@ -94,6 +94,7 @@ angular.module('baseApp.controllers')
   .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser','Notification','Article',
     function($scope, $state, articles, currentUser, Notification, Article){
       'use strict';
+      /* jshint maxstatements: 100 */
       console.log( articles );
       if( $state.current.name === 'networks.articles' ) {
         $scope.networkId = $state.params.id;
@@ -102,6 +103,19 @@ angular.module('baseApp.controllers')
         $scope.newArticle = function(){
           $('#modalArticleForm' ).modal().show();
         };
+        $scope.editArticle = function( article ){
+          $scope.edit = article;
+          $('#modalArticleForm' ).modal().show();
+        };
+        $scope.removeSelected = function(){
+
+        };
+        console.log('im in here', $state.params.view);
+        if( ['list'].indexOf( $state.params.view ) !== -1 ) {
+          $scope.view = 'list';
+        } else {
+          $scope.view = 'objects';
+        }
       } else if( $state.current.name === 'networks.article' ) {
         $scope.networkId = $state.params.id;
         $scope.article = articles;

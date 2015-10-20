@@ -307,7 +307,7 @@ angular.module('baseApp', [
         }
       })
       .state('networks.articles', {
-        url: '/:id/articles',
+        url: '/:id/articles?view',
         controller: 'NetworkArticleController',
         templateUrl: '/assets/html/article/list',
         resolve: {

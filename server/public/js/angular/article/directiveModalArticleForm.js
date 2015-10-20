@@ -7,7 +7,8 @@ angular.module('baseApp.directives')
       replace: true,
       templateUrl: '/assets/html/article/form',
       scope: {
-        networkId: '='
+        networkId: '=',
+        edit: '='
       },
       link: function( scope ){
 
@@ -57,6 +58,12 @@ angular.module('baseApp.directives')
           widgets: [],
           network: scope.networkId
         };
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            console.log( newVal );
+            scope.article = newVal;
+          }
+        });
         scope.save = function(){
           _.forEach( scope.article.sections, function(sec, key) {
             sec.order = key;
