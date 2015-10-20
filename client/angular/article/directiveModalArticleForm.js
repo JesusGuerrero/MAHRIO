@@ -6,6 +6,9 @@ angular.module('baseApp.directives')
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/article/form',
+      scope: {
+        networkId: '='
+      },
       link: function( scope ){
 
         var formSetup = function(){
@@ -51,7 +54,8 @@ angular.module('baseApp.directives')
         };
         scope.article = {
           sections: [],
-          widgets: []
+          widgets: [],
+          network: scope.networkId
         };
         scope.save = function(){
           _.forEach( scope.article.sections, function(sec, key) {
@@ -59,7 +63,8 @@ angular.module('baseApp.directives')
           });
           Article.add( scope.article )
             .then( function(){
-              scope.$directiveemit('closeModal');
+              scope.$emit('closeModal');
+              $state.reload();
             });
         };
         formSetup();

@@ -11,12 +11,44 @@ header.main-header
             span.icon-bar
             span.icon-bar
             span.icon-bar
-        .pull-left.hidden-xs.hidden-sm(style="height: 40px; margin-top: 10px; width: 350px")
-            auto-complete(input-model="tempMember" placeholder="Search users..." auto-complete-http="getUsers"
-            selected="selected")
+        //.pull-left.hidden-xs.hidden-sm(style="height: 40px; margin-top: 10px; width: 350px")
+            //auto-complete(input-model="tempMember" placeholder="Search users..." auto-complete-http="getUsers"
+            //selected="selected")
         .navbar-custom-menu
             ul.nav.navbar-nav
-                chat-widget
+                //chat-widget
+                li.dropdown.messages-menu
+                    a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown" ng-click="isOpen()")
+                        i.fa.fa-comments
+                        span.label.label-success(ng-show="chat && chat.total")
+                            |   {{chat.total}}
+                    ul.dropdown-menu(id="msgDropdown")
+                        li.header
+                            b
+                                |   Conversations
+                            span( ng-show="chat && chat.total")
+                                |   ({{chat.total}})
+                        li
+                            ul.menu
+                                li( ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}" style="position: relative;")
+                                    i.text-blue.fa.pull-right(ng-click="toggleNotification($event, conversation._id)"
+                                    style="position: absolute; margin-top: 25px; right: 10px; cursor: pointer;"
+                                    ng-class="conversation.isNew ? 'fa-circle':'fa-circle-o'")
+                                    a( ui-sref="conversations.view({id: conversation._id})" ui-sref-opts="{reload: true}")
+                                        .pull-left
+                                            img.img-circle( ng-src="{{conversation.members[ conversation.messages[0]._user ].avatarImage.url}}" alt="User Image")
+                                        h4
+                                            span(ng-repeat="user in conversation.members")
+                                                |   {{user.profile.firstName}};
+                                            small
+                                                i.fa.fa-clock-o
+                                                    |   {{conversation.messages[0].created | date : 'MM-dd h:mm a' }}
+
+                                        p(style="margin-right: 15px")
+                                            |   {{conversation.members[ conversation.messages[0]._user ].profile.firstName}}: {{conversation.messages[0].content}}
+                        li.footer
+                            a( ui-sref="conversations" ui-sref-opts="{reload: true}" )
+                                |   See All Conversations
                 li.dropdown.messages-menu(ng-if="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
                     a.dropdown-toggle( href="javascript:void(0)" data-toggle="dropdown")
                         i.fa.fa-envelope

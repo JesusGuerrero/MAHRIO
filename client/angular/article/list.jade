@@ -20,7 +20,7 @@
             tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
 
-callout-info( resource="articles" header="" icon="book")
+callout-info( resource="articles" header="Articles: empty!" icon="book")
     |   Add a new article by choosing '+ Article' button on the top right corner.
     |   Articles are helpful when communicating on to large audiences because
     |   they help organize your thoughts.
@@ -76,4 +76,4 @@ callout-info( resource="articles" header="" icon="book")
                                     i.fa.fa-trash
                                     |   &nbsp;Remove
 modal-window-view( modal-id="modalArticleForm" title="Article")
-    modal-article-form
+    modal-article-form( network-id="networkId")
