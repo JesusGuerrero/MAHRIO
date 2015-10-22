@@ -179,10 +179,22 @@ function removeArticle( request, reply ){
     return reply( Boom.badRequest() );
   }
   if( typeof request.params.id !== 'undefined' ) {
-    Article.remove({_id: request.params.id}, function (err) {
-      if (err) { return reply(Boom.badRequest()); }
+    getArticle( request, reply, function(article){
+      if( article ) {
+        var networkId = article.network;
+        Article.remove({_id: request.params.id}, function (err) {
+          if (err) { return reply(Boom.badRequest()); }
 
-      return reply({removed: true});
+          if( networkId ) {
+            Network.update({_id: networkId}, {$pull: {articles: request.params.id}}, {multi: false},
+              function () {
+                return reply({removed: true});
+              });
+          } else {
+            return reply({removed: true});
+          }
+        });
+      }
     });
   } else {
     return reply( Boom.badRequest() );

@@ -133,7 +133,7 @@ angular.module('baseApp.controllers')
 
       $scope.remove = function( id ){
         Notification.id = id;
-        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirm = 'Are you sure you want to delete?' + id;
         Notification.confirmed = false;
       };
       $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
@@ -199,7 +199,7 @@ angular.module('baseApp.controllers')
 
       $scope.remove = function( id ){
         Notification.id = id;
-        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirm = 'Are you sure you want to delete? ' + id;
         Notification.confirmed = false;
       };
       $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {

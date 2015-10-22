@@ -16,8 +16,8 @@ angular.module('baseApp.directives')
             scope.network = newVal;
             scope.has = {
               owner: newVal.owner ? true : false,
-              members: Object.keys(newVal.members) ? true : false,
-              admins: Object.keys( newVal.admins ) ? true : false
+              members: newVal.members && Object.keys(newVal.members) ? true : false,
+              admins: newVal.admins && Object.keys( newVal.admins ) ? true : false
             };
             console.log( newVal );
           }
