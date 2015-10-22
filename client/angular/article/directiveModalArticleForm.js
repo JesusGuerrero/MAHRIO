@@ -53,26 +53,34 @@ angular.module('baseApp.directives')
           };
           FormHelper.setupFormHelper( scope, 'article', Article );
         };
-        scope.article = {
-          sections: [],
-          widgets: [],
-          network: scope.networkId
-        };
+
         scope.$watch( function(){ return scope.edit; }, function(newVal){
           if( newVal ) {
-            console.log( newVal );
             scope.article = newVal;
+          } else {
+            scope.article = {
+              sections: [],
+              widgets: [],
+              network: scope.networkId
+            };
           }
         });
         scope.save = function(){
-          _.forEach( scope.article.sections, function(sec, key) {
-            sec.order = key;
-          });
-          Article.add( scope.article )
-            .then( function(){
-              scope.$emit('closeModal');
-              $state.reload();
+          if( scope.article._id ) {
+            Article.update( scope.article )
+              .then( function(){
+                $state.reload();
+              });
+          } else {
+            _.forEach( scope.article.sections, function(sec, key) {
+              sec.order = key;
             });
+            Article.add( scope.article )
+              .then( function(){
+                scope.$emit('closeModal');
+                $state.reload();
+              });
+          }
         };
         formSetup();
 

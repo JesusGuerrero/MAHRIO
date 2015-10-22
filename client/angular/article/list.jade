@@ -11,11 +11,11 @@
 
             ul.dropdown-menu.dropdown-menu-right
                 li(ng-class="{true:'active'}[view==='objects']")
-                    a( ng-click="view = 'objects';")
+                    a( ui-sref="networks.articles({id: networkId, view: 'objects'})" ui-sref-opts="{reload: true}")
                         i.fa.fa-object-ungroup(style="width: 20px; margin: 0 auto")
                         |   : Presentation
                 li(ng-class="{true:'active'}[view==='list']")
-                    a( ng-click="view = 'list';")
+                    a( ui-sref="networks.articles({id: networkId, view: 'list'})" ui-sref-opts="{reload: true}")
                         i.fa.fa-list-ol(style="width: 20px; margin: 0 auto")
                         |   : Manage
                 li.divider(role="divider")
@@ -51,8 +51,8 @@ callout-info( resource="articles" header="Articles: empty!" icon="book")
             |   Add Article
 
 ng-switch( on="view" )
-    view-articles-list(ng-switch-when="list" network-id="networkId" access="access" articles="articles" edit-article="editArticle")
-    view-article-objects-array(ng-switch-default network-id="networkId" access="access" articles="articles")
+    view-articles-list(ng-switch-when="list" network-id="networkId" access="access" articles="articles" edit-article="editArticle" remove="remove")
+    view-article-objects-array(ng-switch-default network-id="networkId" access="access" articles="articles" edit-article="editArticle" remove="remove")
 
 modal-window-view( modal-id="modalArticleForm" title="Article")
     modal-article-form( network-id="networkId" edit="edit" )

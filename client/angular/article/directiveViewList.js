@@ -9,7 +9,8 @@ angular.module('baseApp.directives')
         articles: '=',
         networkId: '=',
         access: '=',
-        editArticle: '='
+        editArticle: '=',
+        remove: '='
       },
       link: function(){
 

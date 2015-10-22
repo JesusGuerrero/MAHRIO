@@ -8,7 +8,9 @@ angular.module('baseApp.directives')
       scope: {
         articles: '=',
         networkId: '=',
-        access: '='
+        access: '=',
+        editArticle: '=',
+        remove: '='
       },
       link: function(){
 

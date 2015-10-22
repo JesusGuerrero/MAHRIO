@@ -101,6 +101,7 @@ angular.module('baseApp.controllers')
         $scope.articles = articles.length ? articles : null;
         console.log( $scope.articles );
         $scope.newArticle = function(){
+          $scope.edit = null;
           $('#modalArticleForm' ).modal().show();
         };
         $scope.editArticle = function( article ){

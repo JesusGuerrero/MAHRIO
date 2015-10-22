@@ -46,12 +46,12 @@
 
             .panel-footer
                 .row
-                    .col-md-3
+                    .col-sm-4.col-md-3
                         button.btn.btn-block.btn-danger.btn-lg(ng-click="remove(board._id)" ng-show="board._id")
                             |   Remove
-                    .col-md-3.col-md-offset-3
+                    .col-sm-4.col-md-3.col-md-offset-3
                         a.btn.btn-block.btn-default.btn-lg(data-dismiss="modal" aria-label="Close")
                             |   Cancel
-                    .col-md-3.text-center(ng-class="{true: 'col-md-offset-3'}[ board._id ]")
+                    .col-sm-4.col-md-3.text-center(ng-class="{true: 'col-md-offset-3'}[ board._id ]")
                         button.btn.btn-block.btn-primary.btn-lg(ng-click="save()")
                             |   {{board._id ? 'Save' : 'Create'}}

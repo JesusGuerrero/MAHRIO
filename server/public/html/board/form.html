@@ -34,11 +34,11 @@
       </div>
       <div class="panel-footer">
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-sm-4 col-md-3">
             <button ng-click="remove(board._id)" ng-show="board._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
           </div>
-          <div class="col-md-3 col-md-offset-3"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
-          <div ng-class="{true: 'col-md-offset-3'}[ board._id ]" class="col-md-3 text-center">
+          <div class="col-sm-4 col-md-3 col-md-offset-3"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ board._id ]" class="col-sm-4 col-md-3 text-center">
             <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{board._id ? 'Save' : 'Create'}}</button>
           </div>
         </div>
