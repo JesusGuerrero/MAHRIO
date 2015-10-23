@@ -1,5 +1,5 @@
 angular.module('baseApp.directives')
-  .directive('modalArticleForm', [ '$state', 'Article','FormHelper', '_', function($state, Article, FormHelper, _){
+  .directive('modalArticleForm', [ 'Article','FormHelper', '_', function(Article, FormHelper, _){
     'use strict';
 
     return {
@@ -69,7 +69,7 @@ angular.module('baseApp.directives')
           if( scope.article._id ) {
             Article.update( scope.article )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           } else {
             _.forEach( scope.article.sections, function(sec, key) {
@@ -78,7 +78,6 @@ angular.module('baseApp.directives')
             Article.add( scope.article )
               .then( function(){
                 scope.$emit('closeModal');
-                $state.reload();
               });
           }
         };

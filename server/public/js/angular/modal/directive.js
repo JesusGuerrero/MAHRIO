@@ -1,6 +1,6 @@
   angular.module('baseApp.directives')
-  .directive('modalWindowView', [
-    function(){
+  .directive('modalWindowView', [ '$state',
+    function( $state ){
       'use strict';
       return {
         restrict: 'E',
@@ -43,6 +43,9 @@
           };
           scope.$on('closeModal', function(){
             $(elem).modal('hide');
+            setTimeout( function(){
+              $state.reload();
+            }, 200);
           });
         }
       };

@@ -1,5 +1,5 @@
 angular.module('baseApp.directives')
-  .directive('modalBoardForm', [ 'FormHelper', '$state', 'Board', function(FormHelper, $state, Board){
+  .directive('modalBoardForm', [ 'FormHelper', 'Board', function(FormHelper, Board){
     'use strict';
 
     return {
@@ -41,12 +41,12 @@ angular.module('baseApp.directives')
           if( scope.board._id ) {
             Board.update( scope.board )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           } else {
             Board.add( scope.networkId, scope.board )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           }
         };

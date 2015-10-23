@@ -16,7 +16,7 @@ function createNetwork( request, reply ) {
   var members = request.payload.network.members;
   request.payload.network.members = Object.keys(_.indexBy(request.payload.network.members, '_id') );
   request.payload.network.admins = Object.keys(_.indexBy(request.payload.network.admins, '_id') );
-  if( typeof request.payload.network.owner._id === 'undefined' ) {
+  if( !request.payload.network.owner || !request.payload.network.owner._id ) {
     request.payload.network.owner = request.auth.credentials.id;
   }
   Network.create( request.payload.network, function(err, network){
@@ -164,6 +164,7 @@ function updateNetwork( request, reply ) {
 
       network.name = request.payload.network.name;
       network.isPrivate = request.payload.network.isPrivate;
+      network.isProtected = request.payload.network.isProtected;
       network.admins = request.payload.network.admins;
       network.owner = undefined;
       if( request.payload.network.owner && request.payload.network.owner._id ) {

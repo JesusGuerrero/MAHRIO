@@ -47,11 +47,18 @@
           </div>
           <auto-complete input-model="tempAdmin" placeholder="Moderators" auto-complete-http="getUsers" selected="selectUser" hash="admins"></auto-complete>
           <hr/>
-          <div class="text-center form-group">
-            <button type="submit" class="btn btn-block btn-primary btn-lg">{{network._id ? 'Save' : 'Create'}}</button>
-          </div>
         </form>
-        <div class="col-xs-8 col-xs-offset-2 text-center form-group"><a ui-sref="networks.list" ui-sref-opts="{reload: true}" class="btn btn-block btn-default">Cancel</a></div>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-sm-4 col-md-3">
+            <button ng-click="remove(network._id)" ng-show="network._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
+          </div>
+          <div class="col-sm-4 col-md-3 col-md-offset-3"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ network._id ]" class="col-sm-4 col-md-3 text-center">
+            <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{network._id ? 'Save' : 'Create'}}</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

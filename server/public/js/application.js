@@ -109544,7 +109544,7 @@ angular.module('baseApp', [
         }
       })
       .state('networks.articles', {
-        url: '/:id/articles',
+        url: '/:id/articles?view',
         controller: 'NetworkArticleController',
         templateUrl: '/assets/html/article/list',
         resolve: {
@@ -109945,6 +109945,10 @@ angular.module('baseApp.directives')
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/article/form',
+      scope: {
+        networkId: '=',
+        edit: '='
+      },
       link: function( scope ){
 
         var formSetup = function(){
@@ -109988,20 +109992,74 @@ angular.module('baseApp.directives')
           };
           FormHelper.setupFormHelper( scope, 'article', Article );
         };
-        scope.article = {
-          sections: [],
-          widgets: []
-        };
+
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            scope.article = newVal;
+          } else {
+            scope.article = {
+              sections: [],
+              widgets: [],
+              network: scope.networkId
+            };
+          }
+        });
         scope.save = function(){
-          _.forEach( scope.article.sections, function(sec, key) {
-            sec.order = key;
-          });
-          Article.add( scope.article )
-            .then( function(){
-              scope.$directiveemit('closeModal');
+          if( scope.article._id ) {
+            Article.update( scope.article )
+              .then( function(){
+                $state.reload();
+              });
+          } else {
+            _.forEach( scope.article.sections, function(sec, key) {
+              sec.order = key;
             });
+            Article.add( scope.article )
+              .then( function(){
+                scope.$emit('closeModal');
+                $state.reload();
+              });
+          }
         };
         formSetup();
+
+      }
+    };
+  }]);
+angular.module('baseApp.directives')
+  .directive('viewArticlesList', [ function(){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      templateUrl: '/assets/html/article/viewList',
+      scope: {
+        articles: '=',
+        networkId: '=',
+        access: '=',
+        editArticle: '=',
+        remove: '='
+      },
+      link: function(){
+
+      }
+    };
+  }]);
+angular.module('baseApp.directives')
+  .directive('viewArticleObjectsArray', [ function(){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      templateUrl: '/assets/html/article/viewObjects',
+      scope: {
+        articles: '=',
+        networkId: '=',
+        access: '=',
+        editArticle: '=',
+        remove: '='
+      },
+      link: function(){
 
       }
     };
@@ -111184,11 +111242,9 @@ angular.module('baseApp.directives')
                   newCount = Object.keys(newConversations).length;
                   scope.notifications.chat = _.defaults( newConversations, conversations );
                 }
-                //console.log( scope.notifications.chat );
                 scope.chat = {
                   total: newCount
                 };
-                //console.log( scope.chat );
               });
           }
           scope.$watch( currentUser.get, function(newUser){
@@ -112192,14 +112248,29 @@ angular.module('baseApp.controllers')
   .controller('NetworkArticleController', ['$scope', '$state', 'articles','currentUser','Notification','Article',
     function($scope, $state, articles, currentUser, Notification, Article){
       'use strict';
+      /* jshint maxstatements: 100 */
       console.log( articles );
       if( $state.current.name === 'networks.articles' ) {
         $scope.networkId = $state.params.id;
         $scope.articles = articles.length ? articles : null;
         console.log( $scope.articles );
         $scope.newArticle = function(){
+          $scope.edit = null;
           $('#modalArticleForm' ).modal().show();
         };
+        $scope.editArticle = function( article ){
+          $scope.edit = article;
+          $('#modalArticleForm' ).modal().show();
+        };
+        $scope.removeSelected = function(){
+
+        };
+        console.log('im in here', $state.params.view);
+        if( ['list'].indexOf( $state.params.view ) !== -1 ) {
+          $scope.view = 'list';
+        } else {
+          $scope.view = 'objects';
+        }
       } else if( $state.current.name === 'networks.article' ) {
         $scope.networkId = $state.params.id;
         $scope.article = articles;
@@ -112216,7 +112287,7 @@ angular.module('baseApp.controllers')
 
       $scope.remove = function( id ){
         Notification.id = id;
-        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirm = 'Are you sure you want to delete?' + id;
         Notification.confirmed = false;
       };
       $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
@@ -112282,7 +112353,7 @@ angular.module('baseApp.controllers')
 
       $scope.remove = function( id ){
         Notification.id = id;
-        Notification.confirm = 'Are you sure you want to delete?';
+        Notification.confirm = 'Are you sure you want to delete? ' + id;
         Notification.confirmed = false;
       };
       $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
@@ -112363,8 +112434,8 @@ angular.module('baseApp.directives')
             scope.network = newVal;
             scope.has = {
               owner: newVal.owner ? true : false,
-              members: Object.keys(newVal.members) ? true : false,
-              admins: Object.keys( newVal.admins ) ? true : false
+              members: newVal.members && Object.keys(newVal.members) ? true : false,
+              admins: newVal.admins && Object.keys( newVal.admins ) ? true : false
             };
             console.log( newVal );
           }

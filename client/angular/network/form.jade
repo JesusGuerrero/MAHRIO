@@ -61,12 +61,15 @@
 
                     auto-complete(input-model="tempAdmin" placeholder="Moderators" auto-complete-http="getUsers"
                         selected="selectUser" hash="admins")
-
                     hr
-                    .text-center.form-group
-                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
-                            | {{network._id ? 'Save' : 'Create'}}
-
-                .col-xs-8.col-xs-offset-2.text-center.form-group
-                    a.btn.btn-block.btn-default( ui-sref="networks.list" ui-sref-opts="{reload: true}")
-                        | Cancel
+            .panel-footer
+                .row
+                    .col-sm-4.col-md-3
+                        button.btn.btn-block.btn-danger.btn-lg(ng-click="remove(network._id)" ng-show="network._id")
+                            |   Remove
+                    .col-sm-4.col-md-3.col-md-offset-3
+                        a.btn.btn-block.btn-default.btn-lg(data-dismiss="modal" aria-label="Close")
+                            |   Cancel
+                    .col-sm-4.col-md-3.text-center(ng-class="{true: 'col-md-offset-3'}[ network._id ]")
+                        button.btn.btn-block.btn-primary.btn-lg(ng-click="save()")
+                            |   {{network._id ? 'Save' : 'Create'}}

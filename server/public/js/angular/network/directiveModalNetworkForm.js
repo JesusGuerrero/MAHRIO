@@ -1,5 +1,5 @@
 angular.module('baseApp.directives')
-  .directive('networkForm', ['Network', 'FormHelper', '$state', function(Network, FormHelper, $state ){
+  .directive('networkForm', ['Network', 'FormHelper', function(Network, FormHelper ){
     'use strict';
 
     return {
@@ -39,12 +39,12 @@ angular.module('baseApp.directives')
           if( scope.network._id ) {
             Network.update( scope.network )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           } else {
             Network.add( scope.network )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           }
         };
