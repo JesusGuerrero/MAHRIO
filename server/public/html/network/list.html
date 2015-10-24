@@ -20,7 +20,7 @@
     <div class="list-group">
       <div ng-repeat="network in networks track by $index" ui-sref="networks.detail({id: network._id})" ui-sref-opts="{reload: true}" style="cursor:pointer" class="list-group-item">
         <div class="col-xs-12 col-sm-3 col-md-2 no-padding"><strong><span class="visible-xs pull-left">  Network:&nbsp;</span><i ng-if="network.isPrivate" class="fa fa-lock text-danger"></i><i ng-if="network.isProtected" class="fa fa-lock text-warning"></i>{{network.name}}</strong></div>
-        <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Members:&nbsp;</span><span>{{network.members.length || 0}}</span></div>
+        <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Members:&nbsp;</span><span>{{network.users.length || 0}}</span></div>
         <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Articles:&nbsp;</span><span>  {{network.articles.length || 0}}<br/></span></div>
         <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Boards:&nbsp;</span><span>  {{network.boards.length || 0}}<br/></span></div>
         <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Events:&nbsp;</span><span>  {{network.events.length || 'None'}}<br/></span></div>

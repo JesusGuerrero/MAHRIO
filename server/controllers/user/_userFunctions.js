@@ -162,7 +162,7 @@ function getUsers( request, reply ){
     queryString += ' access';
   }
   User
-    .find()
+    .find( request.query.networkId ? {networks: {$in: [request.query.networkId]}} : {})
     .select( queryString )
     .populate('profile avatarImage')
     .exec( function (err, users) {

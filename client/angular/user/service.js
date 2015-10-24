@@ -58,8 +58,12 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     //getUsersList: function(){
     //  return UserResource.get( {action: 'all'}).$promise;
     //},
-    get: function( id ){
-      return UserResource.get( {action: id ? id : 'all'}).$promise;
+    get: function( id, networkId ){
+      var options = id ? {action: id} : {action: 'all'};
+      if( networkId ) {
+        options.networkId = networkId;
+      }
+      return UserResource.get( options ).$promise;
     },
     makeAdmin: function(email){
       return UserResource.put( {action: 'other'}, {email: email, access: 'admin'}).$promise;

@@ -376,7 +376,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/user/list',
         resolve: {
           users: function($stateParams, User, $q) {
-            return resource.users( null, User, $q.defer() );
+            return resource.users( null, User, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Users'

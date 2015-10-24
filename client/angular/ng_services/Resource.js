@@ -69,8 +69,8 @@ angular.module('baseApp')
             });
           return defer.promise;
         },
-        users: function (id, User, defer) {
-          User.get(id)
+        users: function (id, User, defer, networkId) {
+          User.get(id, networkId)
             .then(function (res) {
               if( id ) {
                 defer.resolve(res.user);

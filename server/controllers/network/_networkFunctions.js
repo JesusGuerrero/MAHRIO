@@ -113,6 +113,7 @@ function getNetwork( request, reply, callback ) {
         _getNetworkMembers( network, function(err){
           if( err ) { return reply( Boom.badRequest() ); }
 
+          network._doc.users = Object.keys( network.members );
           callback();
         });
       }, function(){
@@ -239,20 +240,26 @@ function joinNetwork( request, reply ) {
   if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
 
   getNetwork( request, reply, function(network) {
-    if( !network.isPrivate && !network.isProtected ) {
-      User.update({_id: request.auth.credentials.id}, {$push: {networks: network.id}}, {multi: false}, function(err){
-        if( err ) { return reply( Boom.badRequest(err)); }
+    if( network && network.id ) {
+      Network.update({_id: network.id}, {$push: {members: request.auth.credentials.id}}, {multi: false}, function(){
+        if( !network.isPrivate && !network.isProtected ) {
+          User.update({_id: request.auth.credentials.id}, {$push: {networks: network.id}}, {multi: false}, function(err){
+            if( err ) { return reply( Boom.badRequest(err)); }
 
-        reply( {joined: true} );
-      });
-    } else if( network.isProtected ) {
-      User.update({_id: request.auth.credentials.id}, {$push: {pending: network.id}}, {multi: false}, function(err){
-        if( err ) { return reply( Boom.badRequest(err)); }
+            reply( {joined: true} );
+          });
+        } else if( network.isProtected ) {
+          User.update({_id: request.auth.credentials.id}, {$push: {pending: network.id}}, {multi: false}, function(err){
+            if( err ) { return reply( Boom.badRequest(err)); }
 
-        reply( {pending: true} );
+            reply( {pending: true} );
+          });
+        } else {
+          reply( Boom.badRequest() );
+        }
       });
     } else {
-      reply( Boom.badRequest() );
+      return reply( Boom.badRequest('network not found') );
     }
   });
 }
@@ -269,11 +276,16 @@ function addMediaNetwork( request, reply ) {
 function leaveNetwork( request, reply ) {
   if( typeof request.params.id === 'undefined' ) { return reply( Boom.badRequest() ); }
 
-  User.update({_id: request.auth.credentials.id}, {$pull: {networks: request.params.id}}, {multi: false}, function(err){
-    if( err ) { return reply( Boom.badRequest(err)); }
+  getNetwork( request, reply, function(network) {
+    Network.update({_id: network.id}, {$pull: {members: request.auth.credentials.id}}, {multi: false}, function(){
+      User.update({_id: request.auth.credentials.id}, {$pull: {networks: request.params.id}}, {multi: false}, function(err){
+        if( err ) { return reply( Boom.badRequest(err)); }
 
-    reply( {left: true} );
+        reply( {left: true} );
+      });
+    });
   });
+
 }
 function removeNetwork( request, reply ){
   if( !_.contains(request.auth.credentials.access, 'sudo') ) {
