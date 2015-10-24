@@ -312,7 +312,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/article/list',
         resolve: {
           articles: function($stateParams, Article, $q ) {
-            return resource.articles( null, Article, $q.defer() );
+            return resource.articles( null, Article, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Articles'
@@ -333,7 +333,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/board/list',
         resolve: {
           boards: function($stateParams, Board, $q) {
-            return resource.boards( null, Board, $q.defer() );
+            return resource.boards( null, Board, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Boards'

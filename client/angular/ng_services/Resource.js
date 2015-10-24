@@ -4,8 +4,8 @@ angular.module('baseApp')
     'use strict';
     this.$get = function () {
       return {
-        articles: function( id, Article, defer ) {
-          Article.get( id )
+        articles: function( id, Article, defer, networkId ) {
+          Article.get( id, networkId )
             .then( function( res ) {
               if( id ) {
                 defer.resolve(res.article);
@@ -17,8 +17,8 @@ angular.module('baseApp')
             });
           return defer.promise;
         },
-        boards: function( id, Board, defer ) {
-          Board.get( id )
+        boards: function( id, Board, defer, networkId ) {
+          Board.get( id, networkId )
             .then( function( res ) {
               if( id ) {
                 defer.resolve(res.board);

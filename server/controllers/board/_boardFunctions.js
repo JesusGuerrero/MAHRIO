@@ -178,7 +178,7 @@ function getBoard( request, reply ) {
         });
       });
   } else {
-    query = Board.find({});
+    query = Board.find( request.query.networkId ? {network: request.query.networkId} : {}  );
     query
       .and([
         {
@@ -220,11 +220,12 @@ function removeBoard(request, reply){
         if( err ) { return Boom.badRequest(err); }
 
         board._removed = true;
-
+        var networkId = board.network;
         board.save( function(err) {
           if( err ) { return reply( Boom.badRequest(err) ); }
-
-          reply( {removed: true} );
+          Network.update({_id: networkId},{$pull: {boards: board.id}}, {multi: true}, function(){
+            reply( {removed: true} );
+          });
         });
       });
   } else {

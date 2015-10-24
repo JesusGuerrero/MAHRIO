@@ -42,24 +42,24 @@
                     span.visible-xs.pull-left
                         |   Members:&nbsp;
                     span
-                        | {{members.length || 0}}
+                        | {{network.members.length || 0}}
                 .col-xs-6.col-sm-2.col-md-2.col-lg-2.no-padding
                     span.visible-xs.pull-left
                         |   Articles:&nbsp;
                     span
-                        |   {{articles.length || 0}}
+                        |   {{network.articles.length || 0}}
                         br
                 .col-xs-6.col-sm-2.col-md-2.col-lg-2.no-padding
                     span.visible-xs.pull-left
                         |   Boards:&nbsp;
                     span
-                        |   {{boards.length || 0}}
+                        |   {{network.boards.length || 0}}
                         br
                 .col-xs-6.col-sm-2.col-md-2.col-lg-2.no-padding
                     span.visible-xs.pull-left
                         |   Events:&nbsp;
                     span
-                        |   {{articles.length || 'None'}}
+                        |   {{network.events.length || 'None'}}
                         br
                 .col-xs-12.col-sm-1.col-md-2.col-lg-2.no-padding
                     a.btn.btn-primary.btn-block.hidden-xs( href-"javascript::;" ng-click="requestAdmin(network._id); $event.stopPropagation(); " ng-if="access.indexOf('admin') !== -1 && network.members[ currentUser._id ]")

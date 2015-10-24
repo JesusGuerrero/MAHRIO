@@ -23,7 +23,13 @@ angular.module('baseApp.services').factory('Article', [ 'ArticleResource', funct
           }
         }).$promise;
     },
-    get: function( id ) { return ArticleResource.read( id ? {id: id} : {} ).$promise; },
+    get: function( id, networkId ) {
+      var options = id ? {id: id} : {};
+      if( networkId ) {
+        options.networkId = networkId;
+      }
+      return ArticleResource.read( options ).$promise;
+    },
     update: function( article ) { return ArticleResource.update( {id: article._id}, {article: article} ) .$promise; },
     remove: function(id){ return ArticleResource.remove( {id: id} ).$promise; }
   };
