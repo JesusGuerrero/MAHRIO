@@ -223,6 +223,10 @@ angular.module('baseApp.controllers')
         $scope.newEvent = function(){
           $('#modalEventForm' ).modal().show();
         };
+        $scope.editEvent = function( event ){
+          $scope.edit = event;
+          $('#modalEventForm' ).modal().show();
+        };
       } else if( $state.current.name === 'networks.event' ) {
         $scope.networkId = $state.params.id;
         $scope.event = events;

@@ -15,42 +15,7 @@ angular.module('baseApp.directives')
         var formSetup = function(){
           scope.sortableOptions = { disabled: true };
 
-          scope.addSection = function( section ){
-            scope.article.sections.push( {body: section} );
-          };
-          scope.editSection = function( index ) {
-            scope.article.sections[ index].edit = true;
-          };
-          scope.saveSection = function( index ) {
-            delete scope.article.sections[ index].edit;
-          };
-          scope.sortSections = function( ){
-            scope.sortableOptions = {
-              disabled: false
-            };
-            scope.sortingSections = true;
-          };
-          scope.stopSorting = function(){
-            scope.sortableOptions = {
-              disabled: true
-            };
-            scope.sortingSections = false;
-          };
-          scope.removeSection = function( index ) {
-            scope.article.sections.splice( index, 1);
-          };
-          scope.addWidget = function( widget ){
-            scope.article.widgets.push( widget );
-          };
-          scope.editWidget = function( index ) {
-            scope.article.widgets[ index].edit = true;
-          };
-          scope.saveWidget = function( index ){
-            delete scope.article.widgets[ index].edit;
-          };
-          scope.removeWidget = function( index ) {
-            scope.article.widgets.splice( index, 1);
-          };
+          FormHelper.setupArticleForm( scope );
           FormHelper.setupFormHelper( scope, 'article', Article );
         };
 

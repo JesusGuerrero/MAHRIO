@@ -5,6 +5,7 @@ var Boom = require('boom'),
   async = require('async'),
   _ = require('underscore'),
   User = mongoose.model('User'),
+  Media = mongoose.model('Media'),
   CalendarEvent = mongoose.model('CalendarEvent');
 
 function createEvent( request, reply ) {
@@ -35,6 +36,7 @@ function _getEventInvites( event, callback ) {
 function _getAllEvents( request, reply, callback ) {
   CalendarEvent
     .find( )
+    .populate('coverImage')
     .exec( function(err, events){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -76,9 +78,24 @@ function getEvent( request, reply, callback ) {
       });
   }
 }
+function _updateImage( request, reply ) {
+  Media
+    .create( request.payload.event.mediaInsert, function(err, media){
+      if( err ) { return reply( Boom.badRequest(err) ); }
+
+      CalendarEvent.update({_id: request.params.id}, {$set: {coverImage: media.id}}, {multi: false},
+        function(err, event){
+          if( err || !event ){ return reply( Boom.badRequest('failed to update article with image'+err)); }
+
+          return reply({media: media});
+        });
+    });
+}
 function updateEvent( request, reply ) {
   if( !request.payload.event || (!_.contains(request.auth.credentials.access, 'sudo') && !_.contains(request.auth.credentials.access, 'admin')) || typeof request.params.id === 'undefined') {
     return reply( Boom.badRequest() );
+  } else if( request.payload.event.mediaInsert ) {
+    _updateImage(request, reply);
   } else if( typeof request.payload.eventIds !== 'undefined' && Array.isArray( request.payload.eventIds ) ) {
     // TODO: update several networks at once
   } else {

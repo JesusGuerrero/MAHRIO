@@ -20,7 +20,7 @@
             tab( heading="Members" ui-sref="networks.members({id: networkId})" ui-sref-opts="{reload: true}")
                 |   &nbsp;
 
-callout-info( resource="events" header="" icon="calendar")
+callout-info( resource="events" header="Events: empty!" icon="calendar")
     |   Add a new event by choosing '+ Event' button on the top right corner.
     |   Events are helpful when organizing a meet up because
     |   they help keep track of agenda and attendees.
@@ -32,8 +32,8 @@ callout-info( resource="events" header="" icon="calendar")
             li( ng-repeat="event in events track by $index")
                 a(ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
                     figure
-                        //img( ng-src='{{article.coverImage.url}}')
-                        //figcaption(class="credit")
+                        img( ng-src='{{event.coverImage.url}}')
+                        figcaption(class="credit")
                     h3
                         |{{event.title}}
                 a(ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
@@ -54,7 +54,7 @@ callout-info( resource="events" header="" icon="calendar")
                     .col-xs-10.col-xs-offset-1
                         .row
                             .col-xs-6
-                                a.btn.btn-default.btn-block(ng-click="editEvent( event );")
+                                a.btn.btn-default.btn-block(ng-click="editEvent( event ); $event.stopPropagation()" ng-if="networkId && (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)")
                                     i.fa.fa-edit
                                     |   &nbsp;Edit
                             .col-xs-6
@@ -64,4 +64,4 @@ callout-info( resource="events" header="" icon="calendar")
 
 
 modal-window-view( modal-id="modalEventForm" title="Event")
-    modal-event-form
+    modal-event-form( edit="edit" network-id="networkId")

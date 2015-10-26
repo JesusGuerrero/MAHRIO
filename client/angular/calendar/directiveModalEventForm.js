@@ -6,12 +6,25 @@ angular.module('baseApp.directives')
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/calendar/form',
+      scope: {
+        networkId: '=',
+        edit: '='
+      },
       link: function(scope){
         scope.has = {invited: false};
         FormHelper.setupFormHelper(scope, 'event', Calendar );
-        scope.event = {
-          invited: {}
-        };
+
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            scope.event = newVal;
+          } else {
+            scope.event = {
+              invited: {},
+              network: scope.networkId
+            };
+          }
+        });
+
         scope.save = function(){
           var event = _.extend( {}, scope.event );
           if( $('#eventStart').val() ) {
@@ -20,19 +33,18 @@ angular.module('baseApp.directives')
           if( $('#eventEnd').val() ) {
             event.end = new Date( $('#eventEnd').val() + ' UTC').toISOString();
           }
-          event.invited = Object.keys(event.invited);
-
-          //if( scope.event._id ) {
-          //  Calendar.update( event )
-          //    .then( function(){
-          //      $state.reload();
-          //    });
-          //} else {
+          event.invited = event.invited ? Object.keys(event.invited) : [];
+          if( event._id ) {
+            Calendar.update( event )
+              .then( function(){
+                scope.$emit('closeModal');
+              });
+          } else {
             Calendar.add( event )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
-          //}
+          }
         };
       }
     };

@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
   schema = mongoose.Schema({
+    coverImage: {type: mongoose.Schema.Types.ObjectId, ref: 'Media'},
     title: {type: String, required: true},
     description: {type: String},
     isPrivate: {type: Boolean},

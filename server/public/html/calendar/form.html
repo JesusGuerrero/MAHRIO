@@ -5,7 +5,13 @@
       <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
         <h3 class="text-center">New Event</h3>
-        <form novalidate="novalidate" ng-submit="createEvent()">
+        <form novalidate="novalidate">
+          <div class="form-group">
+            <label>  Image</label><br/><small ng-show="!event._id">  Image upload available after event created</small>
+            <div ng-show="event._id">
+              <media media="event.coverImage" container="event" actions="mediaActions" icon="fa-photo"></media>
+            </div>
+          </div>
           <form-input-tag model="event.title" label="Title" required="true"></form-input-tag>
           <div class="form-group">
             <label>Description</label>
@@ -49,10 +55,10 @@
       </div>
       <div class="panel-footer">
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-sm-4 col-md-3">
             <button ng-click="remove(event._id)" ng-show="event._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
           </div>
-          <div class="col-md-3 col-md-offset-4"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div class="col-sm-4 col-md-3 col-md-offset-3"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
           <div ng-class="{true: 'col-md-offset-3'}[ event._id ]" class="col-md-3 text-center">
             <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{event._id ? 'Save' : 'Create'}}</button>
           </div>
