@@ -213,8 +213,8 @@ angular.module('baseApp.controllers')
       });
       $scope.active = true;
     }])
-  .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser',
-    function($scope, $state, events, currentUser){
+  .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser','Notification','Calendar',
+    function($scope, $state, events, currentUser, Notification, Calendar){
       'use strict';
 
       if( $state.current.name === 'networks.events' ) {
@@ -235,6 +235,22 @@ angular.module('baseApp.controllers')
       } else {
         currentUser.currentNetworkName = 'Events';
       }
+
+      $scope.remove = function( id ){
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete? ' + id;
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Calendar.remove( Notification.id )
+            .then( function(){
+              $state.reload();
+            });
+        }
+      });
+
       $scope.active = true;
     }])
   .controller('NetworkMemberController', ['$scope', '$state', 'users','currentUser',

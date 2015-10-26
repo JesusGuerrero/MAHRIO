@@ -50,6 +50,17 @@ callout-info( resource="events" header="" icon="calendar")
                 br.hidden-xs.hidden-sm
                 div(class="article-content")
                     |  {{event.description}}
+                .row(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
+                    .col-xs-10.col-xs-offset-1
+                        .row
+                            .col-xs-6
+                                a.btn.btn-default.btn-block(ng-click="editEvent( event );")
+                                    i.fa.fa-edit
+                                    |   &nbsp;Edit
+                            .col-xs-6
+                                a.btn.btn-block.btn-danger(ng-click="remove( event._id );")
+                                    i.fa.fa-trash
+                                    |   &nbsp;Remove
 
 
 modal-window-view( modal-id="modalEventForm" title="Event")
