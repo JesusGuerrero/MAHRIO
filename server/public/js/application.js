@@ -109549,7 +109549,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/article/list',
         resolve: {
           articles: function($stateParams, Article, $q ) {
-            return resource.articles( null, Article, $q.defer() );
+            return resource.articles( null, Article, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Articles'
@@ -109570,7 +109570,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/board/list',
         resolve: {
           boards: function($stateParams, Board, $q) {
-            return resource.boards( null, Board, $q.defer() );
+            return resource.boards( null, Board, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Boards'
@@ -109613,7 +109613,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/user/list',
         resolve: {
           users: function($stateParams, User, $q) {
-            return resource.users( null, User, $q.defer() );
+            return resource.users( null, User, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Users'
@@ -109938,7 +109938,7 @@ angular.module('baseApp.controllers')
       });
     }]);
 angular.module('baseApp.directives')
-  .directive('modalArticleForm', [ '$state', 'Article','FormHelper', '_', function($state, Article, FormHelper, _){
+  .directive('modalArticleForm', [ 'Article','FormHelper', '_', function(Article, FormHelper, _){
     'use strict';
 
     return {
@@ -109954,42 +109954,7 @@ angular.module('baseApp.directives')
         var formSetup = function(){
           scope.sortableOptions = { disabled: true };
 
-          scope.addSection = function( section ){
-            scope.article.sections.push( {body: section} );
-          };
-          scope.editSection = function( index ) {
-            scope.article.sections[ index].edit = true;
-          };
-          scope.saveSection = function( index ) {
-            delete scope.article.sections[ index].edit;
-          };
-          scope.sortSections = function( ){
-            scope.sortableOptions = {
-              disabled: false
-            };
-            scope.sortingSections = true;
-          };
-          scope.stopSorting = function(){
-            scope.sortableOptions = {
-              disabled: true
-            };
-            scope.sortingSections = false;
-          };
-          scope.removeSection = function( index ) {
-            scope.article.sections.splice( index, 1);
-          };
-          scope.addWidget = function( widget ){
-            scope.article.widgets.push( widget );
-          };
-          scope.editWidget = function( index ) {
-            scope.article.widgets[ index].edit = true;
-          };
-          scope.saveWidget = function( index ){
-            delete scope.article.widgets[ index].edit;
-          };
-          scope.removeWidget = function( index ) {
-            scope.article.widgets.splice( index, 1);
-          };
+          FormHelper.setupArticleForm( scope );
           FormHelper.setupFormHelper( scope, 'article', Article );
         };
 
@@ -110008,7 +109973,7 @@ angular.module('baseApp.directives')
           if( scope.article._id ) {
             Article.update( scope.article )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           } else {
             _.forEach( scope.article.sections, function(sec, key) {
@@ -110017,7 +109982,6 @@ angular.module('baseApp.directives')
             Article.add( scope.article )
               .then( function(){
                 scope.$emit('closeModal');
-                $state.reload();
               });
           }
         };
@@ -110089,7 +110053,13 @@ angular.module('baseApp.services').factory('Article', [ 'ArticleResource', funct
           }
         }).$promise;
     },
-    get: function( id ) { return ArticleResource.read( id ? {id: id} : {} ).$promise; },
+    get: function( id, networkId ) {
+      var options = id ? {id: id} : {};
+      if( networkId ) {
+        options.networkId = networkId;
+      }
+      return ArticleResource.read( options ).$promise;
+    },
     update: function( article ) { return ArticleResource.update( {id: article._id}, {article: article} ) .$promise; },
     remove: function(id){ return ArticleResource.remove( {id: id} ).$promise; }
   };
@@ -110170,7 +110140,7 @@ angular.module('baseApp.controllers')
       });
     }]);
 angular.module('baseApp.directives')
-  .directive('modalBoardForm', [ 'FormHelper', '$state', 'Board', function(FormHelper, $state, Board){
+  .directive('modalBoardForm', [ 'FormHelper', 'Board', function(FormHelper, Board){
     'use strict';
 
     return {
@@ -110212,12 +110182,12 @@ angular.module('baseApp.directives')
           if( scope.board._id ) {
             Board.update( scope.board )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           } else {
             Board.add( scope.networkId, scope.board )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           }
         };
@@ -110252,8 +110222,12 @@ angular.module('baseApp.services').factory('Board', [ 'BoardResource', function(
     add: function( networkId, obj ) {
       return BoardResource.create( {id: networkId}, {board: obj} ).$promise;
     },
-    get: function( id ) {
-      return BoardResource.read( id ? {id: id} : {} ).$promise;
+    get: function( id, networkId ) {
+      var options = id ? {id: id} : {};
+      if( networkId ) {
+        options.networkId = networkId;
+      }
+      return BoardResource.read( options ).$promise;
     },
     update: function( obj ) {
       return BoardResource.update( {id: obj._id}, {board: obj} ) .$promise;
@@ -110479,12 +110453,25 @@ angular.module('baseApp.directives')
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/calendar/form',
+      scope: {
+        networkId: '=',
+        edit: '='
+      },
       link: function(scope){
         scope.has = {invited: false};
         FormHelper.setupFormHelper(scope, 'event', Calendar );
-        scope.event = {
-          invited: {}
-        };
+
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            scope.event = newVal;
+          } else {
+            scope.event = {
+              invited: {},
+              network: scope.networkId
+            };
+          }
+        });
+
         scope.save = function(){
           var event = _.extend( {}, scope.event );
           if( $('#eventStart').val() ) {
@@ -110493,19 +110480,18 @@ angular.module('baseApp.directives')
           if( $('#eventEnd').val() ) {
             event.end = new Date( $('#eventEnd').val() + ' UTC').toISOString();
           }
-          event.invited = Object.keys(event.invited);
-
-          //if( scope.event._id ) {
-          //  Calendar.update( event )
-          //    .then( function(){
-          //      $state.reload();
-          //    });
-          //} else {
+          event.invited = event.invited ? Object.keys(event.invited) : [];
+          if( event._id ) {
+            Calendar.update( event )
+              .then( function(){
+                scope.$emit('closeModal');
+              });
+          } else {
             Calendar.add( event )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
-          //}
+          }
         };
       }
     };
@@ -110644,6 +110630,16 @@ angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', fun
 
   var currentEventId = null;
   return {
+    addCoverImage: function( event, media ){
+      return CalendarResource.update(
+        {
+          id: event._id
+        },{
+          event: {
+            mediaInsert: media
+          }
+        }).$promise;
+    },
     add: function( obj ) {
       return CalendarResource.create( {event: obj} ).$promise;
     },
@@ -112103,8 +112099,8 @@ angular.module('baseApp.services')
   }]);
 
   angular.module('baseApp.directives')
-  .directive('modalWindowView', [
-    function(){
+  .directive('modalWindowView', [ '$state',
+    function( $state ){
       'use strict';
       return {
         restrict: 'E',
@@ -112147,6 +112143,9 @@ angular.module('baseApp.services')
           };
           scope.$on('closeModal', function(){
             $(elem).modal('hide');
+            setTimeout( function(){
+              $state.reload();
+            }, 200);
           });
         }
       };
@@ -112274,7 +112273,9 @@ angular.module('baseApp.controllers')
       } else if( $state.current.name === 'networks.article' ) {
         $scope.networkId = $state.params.id;
         $scope.article = articles;
-        console.log( $scope.article );
+        /* global $ */
+        /* global window */
+        $(window).scrollTop(0);
       }
       if( currentUser.currentNetwork === null ) {
         currentUser.currentNetwork = $scope.networkId;
@@ -112367,14 +112368,18 @@ angular.module('baseApp.controllers')
       });
       $scope.active = true;
     }])
-  .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser',
-    function($scope, $state, events, currentUser){
+  .controller('NetworkEventController', ['$scope', '$state', 'events','currentUser','Notification','Calendar',
+    function($scope, $state, events, currentUser, Notification, Calendar){
       'use strict';
 
       if( $state.current.name === 'networks.events' ) {
         $scope.networkId = $state.params.id;
         $scope.events = events.length ? events : null;
         $scope.newEvent = function(){
+          $('#modalEventForm' ).modal().show();
+        };
+        $scope.editEvent = function( event ){
+          $scope.edit = event;
           $('#modalEventForm' ).modal().show();
         };
       } else if( $state.current.name === 'networks.event' ) {
@@ -112389,6 +112394,22 @@ angular.module('baseApp.controllers')
       } else {
         currentUser.currentNetworkName = 'Events';
       }
+
+      $scope.remove = function( id ){
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete? ' + id;
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Calendar.remove( Notification.id )
+            .then( function(){
+              $state.reload();
+            });
+        }
+      });
+
       $scope.active = true;
     }])
   .controller('NetworkMemberController', ['$scope', '$state', 'users','currentUser',
@@ -112417,7 +112438,7 @@ angular.module('baseApp.controllers')
       $scope.active = true;
     }]);
 angular.module('baseApp.directives')
-  .directive('networkForm', ['Network', 'FormHelper', '$state', function(Network, FormHelper, $state ){
+  .directive('networkForm', ['Network', 'FormHelper', function(Network, FormHelper ){
     'use strict';
 
     return {
@@ -112457,12 +112478,12 @@ angular.module('baseApp.directives')
           if( scope.network._id ) {
             Network.update( scope.network )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           } else {
             Network.add( scope.network )
               .then( function(){
-                $state.reload();
+                scope.$emit('closeModal');
               });
           }
         };
@@ -113029,6 +113050,17 @@ angular.module('baseApp.directives')
       }
     };
   }]);
+angular.module('baseApp.directives')
+  .directive('sharebar', [ function(){
+    'use strict';
+    return {
+      restrict: 'E',
+      templateUrl: '/assets/html/ng_directives/widget/sharebar/sharebar',
+      link: function(){
+
+      }
+    };
+  }]);
 angular.module('baseApp.filters');
 angular.module('baseApp.filters', [])
   .filter('rawhtml', ['$sce', function($sce){
@@ -113115,7 +113147,7 @@ angular.module('baseApp.services')
           $scope.mediaActions = {
             upload: function( mediaDetails, file ){
               var defer = $q.defer();
-              mediaDetails.object = 'articles';
+              mediaDetails.object = resource + 's';
               Media.getKey( mediaDetails )
                 .then( function(res) {
                   $http({
@@ -113143,6 +113175,44 @@ angular.module('baseApp.services')
             }
           };
         }
+      };
+      this.setupArticleForm = function( scope ) {
+        scope.addSection = function( section ){
+          scope.article.sections.push( {body: section} );
+        };
+        scope.editSection = function( index ) {
+          scope.article.sections[ index].edit = true;
+        };
+        scope.saveSection = function( index ) {
+          delete scope.article.sections[ index].edit;
+        };
+        scope.sortSections = function( ){
+          scope.sortableOptions = {
+            disabled: false
+          };
+          scope.sortingSections = true;
+        };
+        scope.stopSorting = function(){
+          scope.sortableOptions = {
+            disabled: true
+          };
+          scope.sortingSections = false;
+        };
+        scope.removeSection = function( index ) {
+          scope.article.sections.splice( index, 1);
+        };
+        scope.addWidget = function( widget ){
+          scope.article.widgets.push( widget );
+        };
+        scope.editWidget = function( index ) {
+          scope.article.widgets[ index].edit = true;
+        };
+        scope.saveWidget = function( index ){
+          delete scope.article.widgets[ index].edit;
+        };
+        scope.removeWidget = function( index ) {
+          scope.article.widgets.splice( index, 1);
+        };
       };
 
       return this;
@@ -113193,8 +113263,8 @@ angular.module('baseApp')
     'use strict';
     this.$get = function () {
       return {
-        articles: function( id, Article, defer ) {
-          Article.get( id )
+        articles: function( id, Article, defer, networkId ) {
+          Article.get( id, networkId )
             .then( function( res ) {
               if( id ) {
                 defer.resolve(res.article);
@@ -113206,8 +113276,8 @@ angular.module('baseApp')
             });
           return defer.promise;
         },
-        boards: function( id, Board, defer ) {
-          Board.get( id )
+        boards: function( id, Board, defer, networkId ) {
+          Board.get( id, networkId )
             .then( function( res ) {
               if( id ) {
                 defer.resolve(res.board);
@@ -113258,8 +113328,8 @@ angular.module('baseApp')
             });
           return defer.promise;
         },
-        users: function (id, User, defer) {
-          User.get(id)
+        users: function (id, User, defer, networkId) {
+          User.get(id, networkId)
             .then(function (res) {
               if( id ) {
                 defer.resolve(res.user);
@@ -114510,8 +114580,12 @@ angular.module('baseApp.services').factory('User', [ 'UserResource', '$q', funct
     //getUsersList: function(){
     //  return UserResource.get( {action: 'all'}).$promise;
     //},
-    get: function( id ){
-      return UserResource.get( {action: id ? id : 'all'}).$promise;
+    get: function( id, networkId ){
+      var options = id ? {action: id} : {action: 'all'};
+      if( networkId ) {
+        options.networkId = networkId;
+      }
+      return UserResource.get( options ).$promise;
     },
     makeAdmin: function(email){
       return UserResource.put( {action: 'other'}, {email: email, access: 'admin'}).$promise;

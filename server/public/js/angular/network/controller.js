@@ -120,7 +120,9 @@ angular.module('baseApp.controllers')
       } else if( $state.current.name === 'networks.article' ) {
         $scope.networkId = $state.params.id;
         $scope.article = articles;
-        console.log( $scope.article );
+        /* global $ */
+        /* global window */
+        $(window).scrollTop(0);
       }
       if( currentUser.currentNetwork === null ) {
         currentUser.currentNetwork = $scope.networkId;

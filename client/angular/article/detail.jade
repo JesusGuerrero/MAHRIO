@@ -9,23 +9,26 @@
             h4
                 i.fa.fa-chevron-left
                 |   Back
-.row.article-cover
-    figure
+.row.article-cover(ng-style="article.coverImage ? {} : {marginTop: 0}")
+    figure(ng-show="article.coverImage")
         img(ng-src='{{article.coverImage.url}}')
         figcaption(class="credit")
-    .article-heading
+    .article-heading(ng-style="article.coverImage ? {} : {marginTop: 0, height: 'auto', textShadow: 'none', background: '#FFF', color: '#333', padding: '20px 0', fontSize: '13pt'}")
         h1
             |   {{article.title}}
         p
             |   {{article.deck}}
-        .col-xs-3.col-xs-offset-3
-            p.bg-green.label(style="display: block")
-                |   {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
-        .col-xs-3
-            p.bg-yellow.label.hidden-sm.hidden-xs(style="display: block")
-                |   {{article.created | date:'medium'}}
-            p.bg-yellow.label.hidden-md.hidden-lg(style="display: block")
-                |   {{article.created | date}}
+        sharebar
+        .row
+            .col-xs-3.col-xs-offset-3
+                p.bg-green.label(style="display: block")
+                    |   {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
+            .col-xs-3
+                p.bg-yellow.label.hidden-sm.hidden-xs(style="display: block")
+                    |   {{article.created | date:'medium'}}
+                p.bg-yellow.label.hidden-md.hidden-lg(style="display: block")
+                    |   {{article.created | date}}
+        .clearfix
 .row(style="margin-top: 30px")
     .col-sm-10.col-sm-offset-1
         div(class="article-content")

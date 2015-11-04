@@ -19685,6 +19685,32 @@ table tr td div.icheckbox_flat-blue {
 #message-box-slot #message_error {
   border: 1px solid #a94442;
 }
+ul.sharebar {
+  padding: 0;
+}
+ul.sharebar li {
+  display: inline-block;
+  list-style: none;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  margin: 0 3px;
+  color: #F2F2F2;
+  font-size: 20px;
+}
+ul.sharebar li.facebook {
+  background: #3B5998;
+}
+ul.sharebar li.twitter {
+  background: #3CF;
+}
+ul.sharebar li.linkedin {
+  background: #0084B4;
+}
+ul.sharebar li i {
+  cursor: pointer;
+}
 #task-tabs .tab-content {
   padding: 10px;
   border: 1px solid #dddddd;
