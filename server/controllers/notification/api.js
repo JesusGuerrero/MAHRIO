@@ -11,6 +11,22 @@ module.exports = function(config, server) {
         handler: NoticeCtrl.get,
         auth: 'simple'
       }
+    },
+    {
+      method: ['POST'],
+      path: '/api/notifications/{resource?}',
+      config: {
+        handler: NoticeCtrl.add,
+        auth: 'simple'
+      }
+    },
+    {
+      method: ['DELETE'],
+      path: '/api/notifications/{resource?}',
+      config: {
+        handler: NoticeCtrl.remove,
+        auth: 'simple'
+      }
     }
   ].forEach(function (route) { server.route(route); });
 };

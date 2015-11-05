@@ -22,11 +22,15 @@ angular.module('baseApp.services').factory('Board', [ 'BoardResource', function(
   'use strict';
   // Caching Option here...
   return {
-    add: function( obj ) {
-      return BoardResource.create( {board: obj} ).$promise;
+    add: function( networkId, obj ) {
+      return BoardResource.create( {id: networkId}, {board: obj} ).$promise;
     },
-    get: function( id ) {
-      return BoardResource.read( id ? {id: id} : {} ).$promise;
+    get: function( id, networkId ) {
+      var options = id ? {id: id} : {};
+      if( networkId ) {
+        options.networkId = networkId;
+      }
+      return BoardResource.read( options ).$promise;
     },
     update: function( obj ) {
       return BoardResource.update( {id: obj._id}, {board: obj} ) .$promise;

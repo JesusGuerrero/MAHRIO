@@ -1,2 +1,39 @@
-h2
-   |  Contact Us
+.row(render-video-bg )
+.row.login
+    .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1.col-xs-12.xs-no-padding
+        h3.text-white
+            | Contact Us
+        .panel.panel-default
+            error-message-box( validation-errors="validationErrors" )
+            .panel-body
+
+                form.form-horizontal
+                    .form-group
+                        label.col-sm-2.control-label( for="inputEmail")
+                            |  Name
+                            span.text-danger
+                                |   *
+                        .col-sm-10
+                            .row
+                                .col-sm-6.input-group-lg
+                                    input.form-control( type="email" placeholder="First Name" ng-model="firstName")
+                                .col-sm-6.input-group-lg
+                                    input.form-control( type="email" placeholder="Last Name" ng-model="lastName")
+                    .form-group
+                        label.col-sm-2.control-label( for="inputPassword3" )
+                            |  Email
+                            span.text-danger
+                                |   *
+                        .col-sm-10.input-group-lg
+                            input.form-control( type="password" placeholder="Email")
+                    .form-group
+                        label.col-sm-2.control-label( for="inputPassword3" )
+                            |  Message
+                            span.text-danger
+                                |   *
+                        .col-sm-10.input-group-lg
+                            textarea.form-control( placeholder="How can we help you?" style="height: 100px")
+                    .form-group
+                        .col-sm-offset-2.col-sm-10
+                            button.btn.btn-primary.btn-lg.btn-block( type="submit" )
+                                |  Submit

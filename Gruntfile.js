@@ -56,67 +56,69 @@ module.exports = function (grunt) {
         },
 
         concat: {
-            options: {
-                separator: '\n'
-            },
-            angular: {
-                src: [
-                    'bower_components/jquery/dist/jquery.js',
-                    'bower_components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
-                    'bower_components/jquery-ui/jquery-ui.js',
-                    'bower_components/underscore/underscore.js',
-                    'bower_components/socket.io-client/socket.io.js',
-                    'bower_components/moment/moment.js',
-                    'bower_components/fullcalendar/dist/fullcalendar.js',
-                    'bower_components/bootstrap/dist/js/bootstrap.js',
-                    'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-                    'bower_components/jquery.slimscroll/jquery.slimscroll.min.js',
-                    'bower_components/fastclick/lib/fastclick.js',
-                    'bower_components/icheck/icheck.min.js',
-                    'bower_components/Chart.js/Chart.js',
-                    'bower_components/angular/angular.js',
-                    'bower_components/angular-ui-router/release/angular-ui-router.js',
-                    'bower_components/angular-ui-sortable/sortable.min.js',
-                    'bower_components/angular-ui-bootstrap/src/modal/modal.js',
-                    'bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js',
-                    'bower_components/angular-ui-bootstrap/src/position/position.js',
-                    'bower_components/angular-ui-bootstrap/src/bindHtml/bindHtml.js',
-                    'bower_components/angular-ui-bootstrap/src/tabs/tabs.js',
-                    'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
-                    'bower_components/angular-resource/angular-resource.js',
-                    'bower_components/angular-route/angular-route.js',
-                    'bower_components/angular-cookies/angular-cookies.js',
-                    'bower_components/angular-sanitize/angular-sanitize.js',
-                    'bower_components/angular-animate/angular-animate.js',
-                    'bower_components/angular-touch/angular-touch.js',
-                    'bower_components/angular-loading-bar/build/loading-bar.js',
-                    'bower_components/angular-underscore/angular-underscore.min.js',
-                    'bower_components/angular-socket-io/socket.js',
-                    'bower_components/angular-chart.js/dist/angular-chart.js',
-                    'bower_components/matchHeight/jquery.matchHeight-min.js',
-                    'client/AdminLTE/AdminLTE.js'
-                ],
-                dest: 'server/public/js/angular.js'
-            },
-            utils: {
-                src: [
-                    'bower_components/jquery/dist/jquery.js',
-                    'bower_components/jquery.videoBG/jquery.videoBG.js',
-                    'bower_components/bootstrap/dist/js/bootstrap.js',
-                    'bower_components/requirejs/require.js',
-                    'client/requirejs/setup.js'
-                ],
-                dest: 'server/public/js/utils.js'
-            },
-            application: {
-                src: [
-                    'server/public/js/angular.js',
-                    'client/AdminLTE/AdminLTE.js',
-                    'client/angular/application.js',
-                    'client/angular/**/*.js'
-                ],
-                dest: 'server/public/js/application.js'
-            }
+          options: {
+            separator: '\n'
+          },
+          angular: {
+            src: [
+              'bower_components/jquery/dist/jquery.js',
+              'bower_components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
+              'bower_components/jquery-ui/jquery-ui.js',
+              'bower_components/jquery.videoBG/jquery.videoBG.js',
+              'bower_components/underscore/underscore.js',
+              'bower_components/socket.io-client/socket.io.js',
+              'bower_components/moment/moment.js',
+              'bower_components/fullcalendar/dist/fullcalendar.js',
+              'bower_components/bootstrap/dist/js/bootstrap.js',
+              'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+              'bower_components/jquery.slimscroll/jquery.slimscroll.min.js',
+              'bower_components/fastclick/lib/fastclick.js',
+              'bower_components/icheck/icheck.min.js',
+              'bower_components/Chart.js/Chart.js',
+              'bower_components/angular/angular.js',
+              'bower_components/angular-ui-router/release/angular-ui-router.js',
+              'bower_components/angular-ui-sortable/sortable.min.js',
+              'bower_components/angular-ui-bootstrap/src/modal/modal.js',
+              'bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js',
+              'bower_components/angular-ui-bootstrap/src/position/position.js',
+              'bower_components/angular-ui-bootstrap/src/bindHtml/bindHtml.js',
+              'bower_components/angular-ui-bootstrap/src/tabs/tabs.js',
+              'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+              'bower_components/angular-resource/angular-resource.js',
+              'bower_components/angular-route/angular-route.js',
+              'bower_components/angular-cookies/angular-cookies.js',
+              'bower_components/angular-sanitize/angular-sanitize.js',
+              'bower_components/angular-animate/angular-animate.js',
+              'bower_components/angular-touch/angular-touch.js',
+              'bower_components/angular-loading-bar/build/loading-bar.js',
+              'bower_components/angular-underscore/angular-underscore.min.js',
+              'bower_components/angular-socket-io/socket.js',
+              'bower_components/angular-chart.js/dist/angular-chart.js',
+              'bower_components/angular-moment/angular-moment.min.js',
+              'bower_components/matchHeight/jquery.matchHeight-min.js',
+              'client/AdminLTE/AdminLTE.js'
+            ],
+            dest: 'server/public/js/angular.js'
+          },
+          utils: {
+              src: [
+                  'bower_components/jquery/dist/jquery.js',
+                  'bower_components/jquery.videoBG/jquery.videoBG.js',
+                  'bower_components/bootstrap/dist/js/bootstrap.js',
+                  'bower_components/requirejs/require.js',
+                  'client/requirejs/setup.js'
+              ],
+              dest: 'server/public/js/utils.js'
+          },
+          application: {
+            src: [
+              'server/public/js/angular.js',
+              'client/AdminLTE/AdminLTE.js',
+              'client/angular/application.js',
+              'client/angular/**/*.js'
+            ],
+            dest: 'server/public/js/application.js'
+          }
         },
 
         connect: {
@@ -129,7 +131,6 @@ module.exports = function (grunt) {
                     livereload: 35729,
                     open: true,
                     base: ['server']
-
                 }
             },
             test: {
@@ -139,19 +140,9 @@ module.exports = function (grunt) {
             }
         },
 
-        karma: {
-            once: {
-                configFile: 'test/karma.conf.js',
-                singleRun: true
-            },
-            watch: {
-                configFile: 'test/karma.conf.js'
-            }
-        },
-
         protractor: {
             options: {
-                configFile: "test/client.conf.js", // Default config file
+                configFile: 'test/client.conf.js', // Default config file
                 // keepAlive: true, // If false, the grunt process stops when the test fails.
                 noColor: false, // If true, protractor will not use colors in its output.
                 //debug: true,
@@ -212,6 +203,7 @@ module.exports = function (grunt) {
                 expand: true
             }
         },
+        
         watch: {
             less: {
                 files: ['client/styles/**/*.less','client/angular/**/*.less'],

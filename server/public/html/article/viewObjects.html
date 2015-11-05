@@ -1,0 +1,32 @@
+
+<div id="articlesList" class="row">
+  <div class="col-md-10 col-md-offset-1 col-sm-12">
+    <ul style="list-style-type: none; padding: 0; margin: 0">
+      <li ng-repeat="article in articles track by $index"><a ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}">
+          <figure><img ng-src="{{article.coverImage.url}}"/>
+            <figcaption class="credit"></figcaption>
+          </figure>
+          <h3>{{article.title}}</h3></a><a ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}">
+          <figure><img ng-src="{{article.coverImage.url}}"/>
+            <figcaption class="credit"></figcaption>
+          </figure>
+          <h3>{{article.title}}</h3></a>
+        <p class="bg-green label pull-left">  {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</p>
+        <p class="bg-yellow label pull-right hidden-sm hidden-xs">  {{article.created | date:'medium'}}</p>
+        <p class="bg-yellow label pull-right hidden-md hidden-lg">  {{article.created | date}}</p><br/><br class="hidden-xs hidden-sm"/>
+        <div class="article-content">
+          <p ng-repeat="section in article.sections track by $index">{{section.body}}</p>
+        </div>
+        <div class="form-group"><a ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}" class="btn btn-primary btn-block form-control">  Continue Reading</a><a ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}" class="btn btn-primary btn-block form-control">  Continue Reading</a></div>
+        <div ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1" class="row">
+          <div class="col-xs-10 col-xs-offset-1">
+            <div class="row">
+              <div class="col-xs-6"><a ng-click="editArticle( article );" class="btn btn-default btn-block"><i class="fa fa-edit"></i>  &nbsp;Edit</a></div>
+              <div class="col-xs-6"><a ng-click="remove( article._id );" class="btn btn-block btn-danger"><i class="fa fa-trash"></i>  &nbsp;Remove</a></div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

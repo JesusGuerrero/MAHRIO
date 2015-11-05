@@ -6,7 +6,9 @@ var async = require('async'),
   mongoose = require('mongoose'),
   Board = mongoose.model('Board'),
   Task = mongoose.model('Task'),
-  Column = mongoose.model('Column');
+  Column = mongoose.model('Column'),
+  User = mongoose.model('User'),
+  Network = mongoose.model('Network');
 
 function _removeColumn( columns, board, next ){
   if( columns.length ) {
@@ -45,7 +47,7 @@ function _updateBoard( request, reply, board) {
 function updateBoard( request, reply ) {
   if( request.params.id ) {
     Board
-      .findOne( { _id: request.params.id, _owner: request.auth.credentials.id })
+      .findOne( { _id: request.params.id, owner: request.auth.credentials.id })
       .select('name columns members tasks')
       .populate([{
         path: 'columns',
@@ -75,33 +77,71 @@ function updateBoard( request, reply ) {
 }
 
 function _createBoard( request ){
-  request.payload.board._owner = request.auth.credentials.id;
+  request.payload.board.owner = request.auth.credentials.id;
   request.payload.board.members = _.map( request.payload.board.members, function(member) {return member._id;});
   request.payload.board.columns = _.map( request.payload.board.columns, function(column){ return column.id;});
   request.payload.board.tasks = [];
 
   return new Board( request.payload.board).save();
 }
+function _getNetwork( request, reply, callback ) {
+  Network
+    .findOne({_id: request.params.networkId})
+    .exec( function(err, network){
+      if( err || !network ) { return reply( Boom.badRequest()); }
+
+      if( typeof callback === 'function') {
+        callback( network );
+      } else {
+        return reply( Boom.badRequest());
+      }
+    });
+}
 function createBoard( request, reply ) {
   if( !_.contains(request.auth.credentials.access, 'admin') && !_.contains(request.auth.credentials.access, 'sudo') ) {
     return reply( Boom.forbidden() );
   }
   if( !request.payload.board ) {
-    return reply( Boom.badRequest() );
+    return reply( Boom.badRequest('no board present') );
   }
-  _createColumns(request.payload.board.columns )
-    .then( function(columns){
-      request.payload.board.columns = columns;
-      _createBoard( request )
-        .then( function(board){
-          return reply( {board: board} );
-        }, function(err){
-          return reply( Boom.badRequest(err) );
-        });
-    }, function(err){
-      return reply(Boom.badRequest(err));
-    });
+  _getNetwork( request, reply, function(network){
+    if( network.admins.indexOf( request.auth.credentials.id ) !== -1 || request.auth.credentials.access.indexOf('admin') !== -1 ||
+      network.owner === request.auth.credentials.id ||  request.auth.credentials.access.indexOf('sudo') !== -1) {
+      _createColumns(request.payload.board.columns)
+        .then(function (columns) {
+          request.payload.board.columns = columns;
+          request.payload.board.network = network.id;
+          _createBoard(request)
+            .then(function (board) {
+              network.boards.push( board.id );
+              network.save( function(err){
+                if( err ){ return reply( Boom.badRequest('not able to update board in network'));}
 
+                return reply({board: board});
+              });
+            }, function () {
+              return reply(Boom.badRequest('cannot create board'));
+            });
+        }, function () {
+          return reply(Boom.badRequest('cannot create columns'));
+        });
+    } else {
+      return reply(Boom.badRequest('not admin of network or not admin or you are not network owner'));
+    }
+  });
+}
+function _getBoardMembers( board, callback ) {
+  User
+    .find( {_id: {$in: board.members}})
+    .select('email profile avatarImage')
+    .populate('profile avatarImage')
+    .exec( function(err, users){
+      if( err ) { callback(err); }
+
+      board._doc.members = _.indexBy( users, '_id');
+
+      callback( false );
+    });
 }
 function getBoard( request, reply ) {
   var query;
@@ -115,70 +155,77 @@ function getBoard( request, reply ) {
           $or: [{
             members: {$in: [request.auth.credentials.id]}
           },{
-            _owner: request.auth.credentials.id
+            owner: request.auth.credentials.id
           }]
         },
         {
           _removed: false
         }])
-      .select('name created members columns tasks _owner startColumn')
+      .select('name created members columns tasks owner startColumn')
       .populate([{
-        path: 'members',
-        select: 'firstName lastName email'
-      },{
         path: 'columns',
         select: 'name'
       }, {
         path: 'tasks'
       }])
       .exec( function(err, board){
-        if( err ) { return reply( Boom.badRequest() ); }
+        if( err ) { return reply( Boom.badRequest(err) ); }
 
-        reply( {board: board} );
+        _getBoardMembers( board, function(err){
+          if( err ) { return reply( Boom.badRequest(err) ); }
+
+          return reply( {board: board} );
+        });
       });
   } else {
-    query = Board.find({});
+    query = Board.find( request.query.networkId ? {network: request.query.networkId} : {}  );
     query
       .and([
         {
           $or: [{
             members: {$in: [request.auth.credentials.id]}
           },{
-            _owner: request.auth.credentials.id
+            owner: request.auth.credentials.id
           }]
         },
         {
           _removed: false
         }])
-      .select('name created members columns _owner')
+      .select('name created members columns owner')
       .populate([{
-        path: 'members',
-        select: 'firstName lastName email'
-      },{
         path: 'columns',
         select: 'name'
       }])
       .exec( function(err, boards){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
-        reply( {boards: boards} );
+        async.each( boards, function(board, callback){
+          _getBoardMembers( board, function(err){
+            if( err ) { return reply( Boom.badRequest() ); }
+
+            callback();
+          });
+        }, function(){
+          return reply( {boards: boards} );
+        });
       });
   }
 }
 function removeBoard(request, reply){
   if( request.params.id ) {
     Board
-      .findOne( { _id: request.params.id, _owner: request.auth.credentials.id })
+      .findOne( { _id: request.params.id, owner: request.auth.credentials.id })
       .select('_removed ')
       .exec( function(err, board){
         if( err ) { return Boom.badRequest(err); }
 
         board._removed = true;
-
+        var networkId = board.network;
         board.save( function(err) {
           if( err ) { return reply( Boom.badRequest(err) ); }
-
-          reply( {removed: true} );
+          Network.update({_id: networkId},{$pull: {boards: board.id}}, {multi: true}, function(){
+            reply( {removed: true} );
+          });
         });
       });
   } else {

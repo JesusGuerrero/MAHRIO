@@ -1,34 +1,34 @@
 
-<div class="container">
-  <div class="row login">
-    <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1 snapScreen">
-      <div class="panel panel-default">
-        <error-message-box validation-errors="validationErrors"></error-message-box>
-        <div class="panel-body">
-          <h3 class="text-center">{{locale['form'].page['signin'].title}}</h3>
-          <form novalidate="novalidate" ng-submit="login()">
-            <form-input-tag model="user.email" label="{{locale['form'].label['shared'].email}}" required="true" icon="envelope" regex="validate['email']"></form-input-tag>
-            <form-input-tag model="user.password" type="password" label="{{locale['form'].label['shared'].password}}" required="true" icon="lock"></form-input-tag>
-            <div ng-show="vm.error" class="form-group ng-hide">
-              <div class="red bold margin">{{error}}</div>
-              <!--
-              .col-md-6.col-xs-6.form-group
-                label
-                  input( type="checkbox" ng-model="rememberMe" )
-                  |  {{locale['form'].page['signin'].rememberMe}}
-              -->
-            </div>
-            <div class="col-xs-12 text-right form-group col-xs-offset-0"><a ui-sref="recoverpassword" class="text-muted">{{locale['form'].page['signin'].forgotPassword}}</a></div>
-            <div class="col-xs-12 text-center form-group">
-              <button type="submit" class="btn btn-block btn-primary btn-lg">{{locale['form'].button['login']}}</button>
-            </div>
-            <div class="col-xs-6 col-xs-offset-3 text-center form-group"><a href="/api/oauth/linkedin/login" style="background: #1883BB" class="btn btn-block btn-primary btn-lg"><i class="fa fa-linkedin-square"></i>  LinkedIn</a></div>
-            <div class="col-xs-6 col-xs-offset-3 text-center form-group"><a href="/api/oauth/facebook/login" style="background: #3D5A98" class="btn btn-block btn-primary btn-lg"><i class="fa fa-facebook-square"></i>  facebook</a></div>
-          </form>
-        </div>
-        <div class="form-group text-center">
-          <p class="text-center">{{locale['form'].page['signin'].signUp}}</p><a ui-sref="users.new" class="btn btn-default">{{locale['form'].page['signin'].register }}</a>
-        </div>
+<div render-video-bg="render-video-bg" class="row"></div>
+<div class="row login">
+  <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-xs-12 xs-no-padding">
+    <div class="panel panel-default">
+      <error-message-box validation-errors="validationErrors"></error-message-box>
+      <div class="panel-body">
+        <h3 class="text-center">{{locale['form'].page['signin'].title}}</h3>
+        <form novalidate="novalidate" ng-submit="login()">
+          <form-input-tag model="user.email" label="{{locale['form'].label['shared'].email}}" required="true" icon="envelope" regex="validate['email']"></form-input-tag>
+          <form-input-tag model="user.password" type="password" label="{{locale['form'].label['shared'].password}}" required="true" icon="lock"></form-input-tag>
+          <div ng-show="vm.error" class="form-group ng-hide">
+            <div class="red bold margin">{{error}}</div>
+            <!--
+            .col-md-6.col-xs-6.form-group
+              label
+                input( type="checkbox" ng-model="rememberMe" )
+                |  {{locale['form'].page['signin'].rememberMe}}
+            -->
+          </div>
+          <div class="col-xs-12 text-right form-group col-xs-offset-0"><a ui-sref="recoverpassword" class="text-muted">{{locale['form'].page['signin'].forgotPassword}}</a></div>
+          <div class="col-xs-12 text-center form-group no-padding">
+            <button type="submit" class="btn btn-block btn-primary btn-lg">{{locale['form'].button['login']}}</button>
+          </div>
+          <div class="col-sm-6 col-sm-offset-3 col-xs-12 text-center form-group"><a href="/api/oauth/linkedin/login" style="background: #1883BB; color: #fff; border: none;" class="btn btn-block btn-primary btn-lg"><i class="fa fa-linkedin-square"></i>  LinkedIn</a></div>
+          <div class="col-sm-6 col-sm-offset-3 col-xs-12 text-center form-group"><a href="/api/oauth/facebook/login" style="background: #3D5A98; color: #fff;border: none;" class="btn btn-block btn-primary btn-lg"><i class="fa fa-facebook-square"></i>  facebook</a></div>
+        </form>
+      </div>
+      <div class="form-group text-center">
+        <p class="text-center">{{locale['form'].page['signin'].signUp}}</p>
+        <button ui-sref="users.new" class="btn btn-default">{{locale['form'].page['signin'].register }}</button>
       </div>
     </div>
   </div>

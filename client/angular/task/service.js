@@ -24,13 +24,13 @@ angular.module('baseApp.services')
 
     return {
       getAll: function( boardId ){
-        return TaskResource.read( {id: boardId, action: 'board'} ).$promise;
+        return TaskResource.read( {id: boardId} ).$promise;
       },
       getOne: function( id ) {
         return TaskResource.read( {id: id} ).$promise;
       },
-      save: function( obj ) {
-        return TaskResource.create( {task: obj} ).$promise;
+      save: function( boardId, obj ) {
+        return TaskResource.create( {id: boardId}, {task: obj} ).$promise;
       },
       create: function( obj ) {
         return TaskResource.create( {task: obj} ).$promise;

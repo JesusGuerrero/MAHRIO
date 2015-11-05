@@ -1,13 +1,17 @@
 
-<div class="col-xs-12">
+<div id="network-detail" class="row">
+  <div style="position: absolute; margin-top: -64px; right: 0px" class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a ng-click="newNetwork()" ng-if="access.indexOf('sudo') !== -1" class="btn btn-primary btn-block pull-right"><i class="fa fa-plus"></i>  Network</a></div>
+</div>
+<div ng-if="!hasNetworks" class="col-xs-12">  No Networks</div>
+<div ng-if="hasNetworks" class="col-xs-12 hidden-xs">
   <div class="row">
     <div class="col-xs-12">
-      <div class="col-md-2 col-lg-2 no-padding"><strong>Name</strong></div>
-      <div class="col-md-2 col-lg-3"><strong>Members</strong></div>
-      <div class="col-md-2 col-lg-2"><strong>Events</strong></div>
-      <div class="col-md-2 col-lg-2"><strong>Boards</strong></div>
-      <div class="col-md-2 col-lg-2"><strong>Conversations</strong></div>
-      <div class="col-md-2 col-lg-1"><strong>Actions</strong></div>
+      <div class="col-sm-3 col-md-2 col-lg-2 no-padding"><strong>Name</strong></div>
+      <div class="col-sm-2 col-md-2 col-lg-2 no-padding"><strong>Members</strong></div>
+      <div class="col-sm-2 col-md-2 col-lg-2 no-padding"><strong>Articles</strong></div>
+      <div class="col-sm-2 col-md-2 col-lg-2 no-padding"><strong>Boards</strong></div>
+      <div class="col-sm-2 col-md-2 col-lg-2 no-padding"><strong>Events</strong></div>
+      <div class="col-sm-1 col-md-2 col-lg-1 no-padding"><strong>Actions</strong></div>
     </div>
   </div>
 </div>
@@ -15,17 +19,24 @@
   <div class="col-xs-12">
     <div class="list-group">
       <div ng-repeat="network in networks track by $index" ui-sref="networks.detail({id: network._id})" ui-sref-opts="{reload: true}" style="cursor:pointer" class="list-group-item">
-        <div class="col-md-2 col-lg-2 no-padding"><strong><i ng-show="network.isPrivate" class="fa fa-lock"></i>{{network.name}}</strong></div>
-        <div class="col-md-2 col-lg-3 no-padding"><span ng-repeat="member in network.members track by $index">{{member.profile.firstName}} {{member.profile.lastName}}<br/></span></div>
-        <div class="col-md-2 col-lg-2 no-padding"><span ng-repeat="board in network.boards track by $index">{{board.name}}<br/></span></div>
-        <div class="col-md-2 col-lg-2 no-padding"><span ng-repeat="event in network.events track by $index">{{event.title}} {{event.start | date:'medium' }}<br/></span></div>
-        <div class="col-md-2 col-lg-2 no-padding"><span ng-repeat="conversation in network.conversations track by $index">{{conversation.topic}}<br/></span></div>
-        <div ng-show="network.owner === currentUser._id" class="col-md-2 col-lg-1 no-padding"><a ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()" class="btn btn-default btn-block"><i class="fa fa-edit"></i></a><a ng-click="remove( network._id ); $event.stopPropagation()" class="btn btn-danger btn-block"><i class="fa fa-trash"></i></a></div>
+        <div class="col-xs-12 col-sm-3 col-md-2 no-padding"><strong><span class="visible-xs pull-left">  Network:&nbsp;</span><i ng-if="network.isPrivate" class="fa fa-lock text-danger"></i><i ng-if="network.isProtected" class="fa fa-lock text-warning"></i>{{network.name}}</strong></div>
+        <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Members:&nbsp;</span><span>{{network.users.length || 0}}</span></div>
+        <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Articles:&nbsp;</span><span>  {{network.articles.length || 0}}<br/></span></div>
+        <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Boards:&nbsp;</span><span>  {{network.boards.length || 0}}<br/></span></div>
+        <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 no-padding"><span class="visible-xs pull-left">  Events:&nbsp;</span><span>  {{network.events.length || 'None'}}<br/></span></div>
+        <div class="col-xs-12 col-sm-1 col-md-2 col-lg-2 no-padding"><a href-"javascript::;="href-"javascript::;" ng-click="requestAdmin(network._id); $event.stopPropagation(); " ng-if="access.indexOf('admin') !== -1 &amp;&amp; network.members[ currentUser._id ]" class="btn btn-primary btn-block hidden-xs"><i class="fa fa-mortar-board"></i></a><a href-"javascript::;="href-"javascript::;" ng-click="join(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 &amp;&amp; !network.members[ currentUser._id ]" class="btn btn-success btn-block"><i class="fa fa-plus"></i></a><a href-"javascript::;="href-"javascript::;" ng-click="leave(network._id); $event.stopPropagation(); " ng-if="access.indexOf('authorized') !== -1 &amp;&amp; network.members[ currentUser._id ]" class="btn btn-warning btn-block"><i class="fa fa-minus"></i></a><a ng-click="editNetwork( network ); $event.stopPropagation()" ng-if="network.owner === currentUser._id || access.indexOf('sudo') !== -1" class="btn btn-default btn-block hidden-xs"><i class="fa fa-edit"></i></a><a ng-click="remove( network._id ); $event.stopPropagation()" ng-if="access.indexOf('sudo') !== -1" class="btn btn-danger btn-block hidden-xs"><i class="fa fa-trash"></i></a></div>
         <div class="clearfix"></div>
       </div>
     </div>
   </div>
 </div>
-<div style="margin-top: 50px;" class="row">
-  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.new" ui-sref-opts="{reload: true}" class="btn btn-primary"><i class="fa fa-plus"></i>  Add Network</a></div>
-</div>
+<modal-window-view modal-id="modalNetworkForm" title="Network">
+  <network-form edit="networkForm"></network-form>
+</modal-window-view>
+<!--
+.row(style="margin-top: 50px;" ng-show="access.indexOf('sudo') !== -1 || access.indexOf('admin') !== -1")
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2
+        a.btn.btn-primary(ui-sref="networks.new" ui-sref-opts="{reload: true}")
+            i.fa.fa-plus
+            |   Add Network
+-->

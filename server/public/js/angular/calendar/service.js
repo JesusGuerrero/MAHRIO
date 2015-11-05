@@ -23,6 +23,16 @@ angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', fun
 
   var currentEventId = null;
   return {
+    addCoverImage: function( event, media ){
+      return CalendarResource.update(
+        {
+          id: event._id
+        },{
+          event: {
+            mediaInsert: media
+          }
+        }).$promise;
+    },
     add: function( obj ) {
       return CalendarResource.create( {event: obj} ).$promise;
     },

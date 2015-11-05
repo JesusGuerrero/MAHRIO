@@ -1,25 +1,32 @@
 
+<div ng-if="networkId" class="row">
+  <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
+</div>
 <div class="row hidden">
   <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="articles.list" ui-sref-opts="{reload: true}" class="btn btn-default">
       <h4><i class="fa fa-chevron-left"></i>  Back</h4></a></div>
 </div>
-<div class="row article-cover">
-  <figure><img src="/assets/img/mahrio.png" ng-show="article.title==='mahrio'"/><img src="/assets/img/college.jpg" ng-show="article.title!=='mahrio'"/>
+<div ng-style="article.coverImage ? {} : {marginTop: 0}" class="row article-cover">
+  <figure ng-show="article.coverImage"><img ng-src="{{article.coverImage.url}}"/>
     <figcaption class="credit"></figcaption>
   </figure>
-  <div class="article-heading">
+  <div ng-style="article.coverImage ? {} : {marginTop: 0, height: 'auto', textShadow: 'none', background: '#FFF', color: '#333', padding: '20px 0', fontSize: '13pt'}" class="article-heading">
     <h1>  {{article.title}}</h1>
     <p>  {{article.deck}}</p>
-  </div>
-  <div style="margin-top: -50px; position: absolute; width: 100%;" class="row">
-    <div class="col-xs-3 col-xs-offset-3">
-      <p style="display: block" class="bg-green label">  {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</p>
+    <sharebar></sharebar>
+    <div class="row">
+      <div class="col-xs-3 col-xs-offset-3">
+        <p style="display: block" class="bg-green label">  {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</p>
+      </div>
+      <div class="col-xs-3">
+        <p style="display: block" class="bg-yellow label hidden-sm hidden-xs">  {{article.created | date:'medium'}}</p>
+        <p style="display: block" class="bg-yellow label hidden-md hidden-lg">  {{article.created | date}}</p>
+      </div>
     </div>
-    <div class="col-xs-3">
-      <p style="display: block" class="bg-yellow label hidden-sm hidden-xs">  {{article.created | date:'medium'}}</p>
-      <p style="display: block" class="bg-yellow label hidden-md hidden-lg">  {{article.created | date}}</p>
-    </div>
+    <div class="clearfix"></div>
   </div>
+</div>
+<div style="margin-top: 30px" class="row">
   <div class="col-sm-10 col-sm-offset-1">
     <div class="article-content">
       <p ng-repeat="section in article.sections track by $index">{{section.body}}</p>

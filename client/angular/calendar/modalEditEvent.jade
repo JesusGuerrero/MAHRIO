@@ -39,8 +39,8 @@
                 label
                     | Invites
                 div
-                    span.bg-blue( ng-repeat="member in event.invited track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" )
-                        i.fa.fa-close.pull-right(style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeMember(member._id)")
+                    span.bg-purple.label( ng-repeat="member in event.invited track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" )
+                        i.fa.fa-close.pull-right(style="line-height: 12px; padding: 0 5px; cursor: pointer" ng-click="removeMember(member._id)")
                         |   {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;
 
             auto-complete(input-model="tempMember" placeholder="Invite Users..." auto-complete-http="getUsers"

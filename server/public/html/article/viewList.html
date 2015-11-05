@@ -1,0 +1,76 @@
+
+<div id="articlesList" ng-if="articles" class="row">
+  <div class="col-xs-12">
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <th> Image</th>
+          <th> Title</th>
+          <th> Creator</th>
+          <th> Created</th>
+          <th class="text-right">
+            <div class="form-group">
+              <input type="checkbox" i-check="i-check" ng-model="selectAll"/>
+            </div>
+          </th>
+        </tr>
+        <tr ng-repeat="article in articles track by $index">
+          <td><img ng-src="{{article.coverImage.url}}" style="max-height: 40px;"/></td>
+          <td> {{article.title}}</td>
+          <td> {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</td>
+          <td> {{article.created | date}}</td>
+          <td class="text-right">
+            <div class="form-group">
+              <button ng-click="editArticle( article );" class="btn btn-default"><i class="fa fa-edit"></i></button>
+              <input i-check="i-check" type="checkbox" ng-model="article.selected"/>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-xs-12"><a ng-click="removeSelected( ); $event.stopPropagation()" class="btn btn-danger"><i class="fa fa-trash">  Remove Selected</i></a></div>
+  <!--
+  ul(style="list-style-type: none; padding: 0; margin: 0")
+      li( ng-repeat="article in articles track by $index")
+          a(ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
+              figure
+                  img( ng-src='{{article.coverImage.url}}')
+                  figcaption(class="credit")
+              h3
+                  | {{article.title}}
+          a(ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+              figure
+                  img( ng-src='{{article.coverImage.url}}')
+                  figcaption(class="credit")
+              h3
+                  | {{article.title}}
+          p.bg-green.label.pull-left
+              |   {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
+          p.bg-yellow.label.pull-right.hidden-sm.hidden-xs
+              |   {{article.created | date:'medium'}}
+          p.bg-yellow.label.pull-right.hidden-md.hidden-lg
+              |   {{article.created | date}}
+          br
+          br.hidden-xs.hidden-sm
+          div(class="article-content")
+              p(ng-repeat="section in article.sections track by $index")
+                  | {{section.body}}
+          .form-group
+              a.btn.btn-primary.btn-block.form-control(ng-if='networkId' ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
+                  |   Continue Reading
+              a.btn.btn-primary.btn-block.form-control(ng-if='!networkId' ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                  |   Continue Reading
+          .row(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
+              .col-xs-10.col-xs-offset-1
+                  .row
+                      .col-xs-6
+                          a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
+                              i.fa.fa-edit
+                              |   &nbsp;Edit
+                      .col-xs-6
+                          a.btn.btn-block.btn-danger(ng-click="remove( article._id ); $event.stopPropagation()")
+                              i.fa.fa-trash
+                              |   &nbsp;Remove
+  -->
+</div>

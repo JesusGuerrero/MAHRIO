@@ -3,7 +3,8 @@
 var http = require('request'),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    Boom = require('boom');
+    Boom = require('boom'),
+    Profile = mongoose.model('Profile');
 
 var crypto = require('crypto');
 
@@ -63,7 +64,7 @@ function logout (request, reply) {
     reply({logout: true});
   }
 }
-function findUserForOauth( emailAddress, reply ) {
+function findUserForOauth( emailAddress, fName, lName, reply ) {
   User.findOne({email: emailAddress}, function (err, user) {
     if (err) {
       return reply(Boom.badData(err));
@@ -74,15 +75,26 @@ function findUserForOauth( emailAddress, reply ) {
         password: crypto.randomBytes(20).toString('hex'),
         access: ['authorized']
       });
-      newUser.save(function (err, user2) {
-        if (err) {
-          return reply(Boom.badRequest(err));
-        }
 
-        var response = '<html><body></body><script>window.localStorage.Access=["'+user.access.join('", "')+'"];window.localStorage.Authorization="Bearer ';
-        response += user2.authorizationToken + '";window.location.href="/";</script></html>';
-        return reply(response);
-      });
+      Profile.create({firstName: fName, lastName: lName},
+        function( err, profile ) {
+          if (err) {  return reply(Boom.badRequest(err)); }
+
+          newUser.profile = profile.id;
+          newUser.save(function (err, user2) {
+            if (err) {
+              return reply(Boom.badRequest(err));
+            }
+
+            profile._owner = user2.id;
+            profile.save( function(err) {
+              if (err) { return reply(Boom.badRequest(err)); }
+              var response = '<html><body></body><script>window.localStorage.Access=["' + user2.access.join('", "') + '"];window.localStorage.Authorization="Bearer ';
+              response += user2.authorizationToken + '";window.location.href="/";</script></html>';
+              return reply(response);
+            });
+          });
+        });
     } else {
       user.authorizationToken = crypto.randomBytes(20).toString('hex');
       user.save(function (err, user) {
@@ -137,7 +149,7 @@ function loginThroughOauth(request, reply, party, config) {
           }
         }, function(err, httpResponse, body) {
           try {
-            findUserForOauth( JSON.parse(body).email, reply );
+            findUserForOauth( JSON.parse(body).email, JSON.parse(body).first_name, JSON.parse(body).last_name, reply );
           } catch(e){
             reply('FAILED');
           }
@@ -157,7 +169,7 @@ function loginThroughOauth(request, reply, party, config) {
           }
         }, function(err, httpResponse, body) {
           try {
-            findUserForOauth( JSON.parse(body).emailAddress, reply);
+            findUserForOauth( JSON.parse(body).emailAddress, JSON.parse(body).firstName, JSON.parse(body).lastName, reply);
           } catch(e){
             reply('FAILED');
           }

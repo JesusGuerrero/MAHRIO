@@ -1,44 +1,55 @@
 
 <div id="{{modalId}}" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}" aria-hidden="true" class="modal fade">
-  <div ng-class="type=='message' || type=='event' ? 'modal-lg' : ''" class="modal-dialog">
-    <ng-switch on="type">
-      <div ng-switch-when="conversation" style="background-color: transparent" class="modal-content">
-        <div ng-transclude="ng-transclude"></div>
-      </div>
-      <div ng-switch-default="ng-switch-default" class="modal-content">
-        <div class="modal-header">
-          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">  &times;</span></button>
-          <h4 class="modal-title">  {{title}}</h4>
-        </div>
-        <div ng-transclude="ng-transclude" class="modal-body"></div>
-        <ng-switch on="type">
-          <div ng-switch-when="message" class="modal-footer">
-            <div class="pull-right">
-              <button ng-click="save()" class="btn btn-default"><i class="fa fa-pencil"></i>  Draft</button>
-              <button ng-click="send()" class="btn btn-primary"><i class="fa fa-envelope"></i>  Send</button>
-            </div>
-            <button data-dismiss="modal" aria-label="Close" class="btn btn-danger pull-left"><i class="fa fa-times"></i>  Discard</button>
-          </div>
-          <div ng-switch-when="event" class="modal-footer">
-            <div class="pull-right">
-              <button data-dismiss="modal" aria-label="Close" class="btn btn-default"><i class="fa fa-times"></i>  Cancel</button>
-              <button ng-click="save()" class="btn btn-primary"><i class="fa fa-floppy-o"></i>  Save</button>
-            </div>
-            <button data-dismiss="modal" aria-label="Close" ng-click="discard()" ng-show="objectId" class="btn btn-danger pull-left"><i class="fa fa-trash"></i>  Delete</button>
-          </div>
-          <div ng-switch-when="conversation" class="modal-footer">
-            <div ng-show="messageSent" class="col-xs-12">
-              <div type="button" data-dismiss="modal" class="button btn btn-default btn-block">  Close</div>
-            </div>
-            <div ng-show="!messageSent" class="col-xs-8">
-              <input type="text" ng-model="message" class="form-control"/>
-            </div>
-            <div ng-show="!messageSent" class="col-xs-4">
-              <div type="button" ng-click="save()" class="button btn btn-primary btn-block">  Send</div>
-            </div>
-          </div>
-        </ng-switch>
-      </div>
-    </ng-switch>
+  <div class="modal-dialog">
+    <!--(ng-class="type=='message' || type=='event' ? 'modal-lg' : ''")//ng-switch(on="type")
+    -->
+    <div class="modal-content">
+      <!--(ng-switch-when="conversation" style="background-color: transparent")-->
+      <div ng-transclude="ng-transclude"></div>
+    </div>
+    <!--.modal-content(ng-switch-default)
+    .modal-header
+        button( type="button" class="close" data-dismiss="modal"
+        aria-label="Close")
+            span( aria-hidden="true")
+                |   &times;
+                
+        h4( class="modal-title")
+            |   {{title}}
+    .modal-body(ng-transclude)
+    
+    ng-switch( on="type" )
+        .modal-footer( ng-switch-when="message")
+            .pull-right
+                button.btn.btn-default( ng-click="save()" )
+                    i.fa.fa-pencil
+                    |   Draft
+                button.btn.btn-primary( ng-click="send()" )
+                    i.fa.fa-envelope
+                    |   Send
+            button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close")
+                i.fa.fa-times
+                |   Discard
+        .modal-footer(ng-switch-when="event")
+            .pull-right
+                button.btn.btn-default( data-dismiss="modal" aria-label="Close" )
+                    i.fa.fa-times
+                    |   Cancel
+                button.btn.btn-primary( ng-click="save()" )
+                    i.fa.fa-floppy-o
+                    |   Save
+            button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close" ng-click="discard()" ng-show="objectId")
+                i.fa.fa-trash
+                |   Delete
+        .modal-footer(ng-switch-when="conversation")
+            .col-xs-12( ng-show="messageSent" )
+                .button( type="button" class="btn btn-default btn-block" data-dismiss="modal" )
+                    |   Close
+            .col-xs-8( ng-show="!messageSent" )
+                input( type="text" ng-model="message" class='form-control' )
+            .col-xs-4( ng-show="!messageSent" )
+                .button( type="button" class="btn btn-primary btn-block" ng-click="save()")
+                    |   Send
+    -->
   </div>
 </div>

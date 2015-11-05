@@ -1,49 +1,51 @@
 .modal.fade(id="{{modalId}}" tabindex="-1" role="dialog"
             aria-labelledby="{{modalId}}" aria-hidden="true")
-    .modal-dialog(ng-class="type=='message' || type=='event' ? 'modal-lg' : ''")
-        ng-switch(on="type")
-            .modal-content(ng-switch-when="conversation" style="background-color: transparent")
-                div(ng-transclude)
-            .modal-content(ng-switch-default)
-                .modal-header
-                    button( type="button" class="close" data-dismiss="modal"
-                    aria-label="Close")
-                        span( aria-hidden="true")
-                            |   &times;
+    .modal-dialog
+        //(ng-class="type=='message' || type=='event' ? 'modal-lg' : ''")
+            //ng-switch(on="type")
+        .modal-content
+            //(ng-switch-when="conversation" style="background-color: transparent")
+            div(ng-transclude)
+        //.modal-content(ng-switch-default)
+            .modal-header
+                button( type="button" class="close" data-dismiss="modal"
+                aria-label="Close")
+                    span( aria-hidden="true")
+                        |   &times;
 
-                    h4( class="modal-title")
-                        |   {{title}}
-                .modal-body(ng-transclude)
+                h4( class="modal-title")
+                    |   {{title}}
+            .modal-body(ng-transclude)
 
-                ng-switch( on="type" )
-                    .modal-footer( ng-switch-when="message")
-                        .pull-right
-                            button.btn.btn-default( ng-click="save()" )
-                                i.fa.fa-pencil
-                                |   Draft
-                            button.btn.btn-primary( ng-click="send()" )
-                                i.fa.fa-envelope
-                                |   Send
-                        button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close")
+            ng-switch( on="type" )
+                .modal-footer( ng-switch-when="message")
+                    .pull-right
+                        button.btn.btn-default( ng-click="save()" )
+                            i.fa.fa-pencil
+                            |   Draft
+                        button.btn.btn-primary( ng-click="send()" )
+                            i.fa.fa-envelope
+                            |   Send
+                    button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close")
+                        i.fa.fa-times
+                        |   Discard
+                .modal-footer(ng-switch-when="event")
+                    .pull-right
+                        button.btn.btn-default( data-dismiss="modal" aria-label="Close" )
                             i.fa.fa-times
-                            |   Discard
-                    .modal-footer(ng-switch-when="event")
-                        .pull-right
-                            button.btn.btn-default( data-dismiss="modal" aria-label="Close" )
-                                i.fa.fa-times
-                                |   Cancel
-                            button.btn.btn-primary( ng-click="save()" )
-                                i.fa.fa-floppy-o
-                                |   Save
-                        button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close" ng-click="discard()" ng-show="objectId")
-                            i.fa.fa-trash
-                            |   Delete
-                    .modal-footer(ng-switch-when="conversation")
-                        .col-xs-12( ng-show="messageSent" )
-                            .button( type="button" class="btn btn-default btn-block" data-dismiss="modal" )
-                                |   Close
-                        .col-xs-8( ng-show="!messageSent" )
-                            input( type="text" ng-model="message" class='form-control' )
-                        .col-xs-4( ng-show="!messageSent" )
-                            .button( type="button" class="btn btn-primary btn-block" ng-click="save()")
-                                |   Send
+                            |   Cancel
+                        button.btn.btn-primary( ng-click="save()" )
+                            i.fa.fa-floppy-o
+                            |   Save
+                    button.btn.btn-danger.pull-left( data-dismiss="modal" aria-label="Close" ng-click="discard()" ng-show="objectId")
+                        i.fa.fa-trash
+                        |   Delete
+                .modal-footer(ng-switch-when="conversation")
+                    .col-xs-12( ng-show="messageSent" )
+                        .button( type="button" class="btn btn-default btn-block" data-dismiss="modal" )
+                            |   Close
+                    .col-xs-8( ng-show="!messageSent" )
+                        input( type="text" ng-model="message" class='form-control' )
+                    .col-xs-4( ng-show="!messageSent" )
+                        .button( type="button" class="btn btn-primary btn-block" ng-click="save()")
+                            |   Send

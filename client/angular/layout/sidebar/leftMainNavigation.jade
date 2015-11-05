@@ -21,73 +21,101 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
         ul.sidebar-menu
             li.header
                 |   MAIN NAVIGATION
-            li
-                a( href="#/")
+            li(ng-class="{active: state==='root'}")
+                a( ui-sref="root" ui-sref-opts="{reload: true}")
                     i.fa.fa-dashboard
                     span
                         |   Dashboard
-            li
+            li(ng-class="{active: state==='notifications'}" ng-if="access.indexOf('admin')!==-1")
                 a( ui-sref="notifications")
                     i.fa.fa-bell
                     span
                         |   Notifications
-            li(ng-show="access.indexOf('sudo') !== -1")
-                a( ui-sref="networks.list")
+            li.treeview( ng-class="{active: state==='networks'}")
+                a(ui-sref="networks.list")
                     i.fa.fa-share-alt
                     span
                         |   Networks
-            li
+                ul.treeview-menu(ng-if="currentNetwork" ng-class="{'menu-open': currentNetwork}")
+                    li
+                        a( ui-sref="networks.articles({id: currentNetwork})" ui-sref-opts="{reload: true}" )
+                            i.fa.fa-book
+                            span
+                                |   Articles
+                    li
+                        a( ui-sref="networks.boards({id: currentNetwork})" ui-sref-opts="{reload: true}" )
+                            i.fa.fa-tasks
+                            span
+                                |   Boards
+                    li
+                        a( ui-sref="networks.members({id: currentNetwork})" ui-sref-opts="{reload: true}" )
+                            i.fa.fa-users
+                            span
+                                |   Members
+                    li
+                        a( ui-sref="networks.events({id: currentNetwork})" ui-sref-opts="{reload: true}")
+                            i.fa.fa-calendar
+                            span
+                                |   Events
+
+            li(ng-if="access.indexOf('admin')!==-1" ng-class="{active: state==='articles'}")
                 a( ui-sref="articles.list" ui-sref-opts="{reload: true}")
                     i.fa.fa-book
                     span
                         |   Articles
-            li
+            li(ng-if="access.indexOf('admin')!==-1" ng-class="{active: state==='boards'}")
                 a( ui-sref="boards.list")
                     i.fa.fa-tasks
                     span
                         |   Boards
-            li
+            li(ng-if="access.indexOf('admin')!==-1" ng-class="{active: state==='calendar'}")
+                a( ui-sref="calendar" ui-sref-opts="{reload: true}" )
+                    i.fa.fa-calendar
+                    span
+                        |   Events
+                    small.label.pull-right.bg-red
+                        |   3
+            li(ng-if="access.indexOf('admin')!==-1 || access.indexOf('sudo')!==-1" ng-class="{active: state==='users'}")
                 a( ui-sref="users.list" ui-sref-opts="{reload: true}")
                     i.fa.fa-users
                     span
                         |   Users
                     small.label.pull-right.bg-green
                         |   New
-            li
+            li(ng-if="access.indexOf('sudo') !== -1")
                 a( href="#/admin/newsletter")
                     i.fa.fa-newspaper-o
                     span
                         |   Newsletters
                     small.label.pull-right.bg-red
                         |   3
-            li
+            li(ng-if="access.indexOf('sudo') !== -1")
                 a( href="#/questions")
                     i.fa.fa-question
                     span
                         |   Questions
                     small.label.pull-right.bg-red
                         |   3
-            li
-                a( ui-sref="calendar" ui-sref-opts="{reload: true}" )
-                    i.fa.fa-calendar
-                    span
-                        |   Calendar
-                    small.label.pull-right.bg-red
-                        |   3
-            li
+
+            li(ng-class="{active: state==='conversations'}")
                 a( ui-sref="conversations" ui-sref-opts="{reload: true}")
                     i.fa.fa-comments
                     span
                         |   Conversations
-                    small.label.pull-right.bg-red
+                    //small.label.pull-right.bg-red
                         |   3
-            li
+            li(ng-if="access.indexOf('admin')!==-1 || access.indexOf('sudo')!==-1" ng-class="{active: state==='mail'}")
                 a( ui-sref="mail.inbox" )
                     i.fa.fa-envelope
                     span
                         |   Mailbox
                     small.label.pull-right.bg-yellow
                         |   12
+            //li(ng-show="currentNetwork")
+            //    a( ui-sref="networks.detail.boards({id: currentNetwork})" )
+            //        i.fa.fa-book
+            //        span
+            //            |   Articles
             //li.treeview
             //    a( href="#")
             //        i.fa.fa-share

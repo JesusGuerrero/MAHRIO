@@ -55,18 +55,18 @@ angular.module('baseApp.directives')
       templateUrl: '/assets/html/task/directiveTasksBacklog',
       scope: {
         active: '=',
-        id: '='
+        tasks: '='
       },
       link: function( scope ) {
-        if( scope.active ) {
-          Task.getAll( $stateParams.id )
-            .then( function(response){
-              scope.tasks = _.filter( response.tasks, function(task) { return !task.start; });
-              if( scope.tasks.length ) {
-                scope.current = scope.tasks[0];
-              }
-            });
-        }
+        //if( scope.active ) {
+        //  Task.getAll( $stateParams.boardId )
+        //    .then( function(response){
+        //      scope.tasks = response.tasks ;//_.filter( response.tasks, function(task) { return !task.start; });
+        //      if( scope.tasks.length ) {
+        //        scope.current = scope.tasks[0];
+        //      }
+        //    });
+        //}
         scope.loadTask = function(id){
           scope.current = scope.tasks[id];
         };
@@ -83,6 +83,9 @@ angular.module('baseApp.directives')
               if( scope.tasks.length ) { scope.current = scope.tasks[id]; }
             });
         };
+        scope.editTask = function( task ){
+          scope.$emit('task:edit', task );
+        };
       }
     };
   }])
@@ -94,7 +97,8 @@ angular.module('baseApp.directives')
       templateUrl: '/assets/html/task/directiveTasksNew',
       scope: {
         active: '=',
-        id: '=edit'
+        id: '=',
+        taskId: '='
       },
       link: function(scope){
         var currColor = '#f56954';
@@ -108,9 +112,9 @@ angular.module('baseApp.directives')
           scope.task.color = currColor;
         });
 
-
+        console.log( scope.id );
         scope.task = {};
-        if( scope.id ) {
+        if( scope.taskId ) {
           Task.getOne( scope.id )
             .then( function(response){
               scope.task = response.task;
@@ -127,11 +131,14 @@ angular.module('baseApp.directives')
         scope.save = function(){
           scope.task.description = $('#wysihtml5-content').val();
           if( !scope.task._board ) {
-            scope.task._board = $stateParams.id;
+            scope.task._board = $stateParams.boardId;
           }
           Task.save( scope.task )
             .then( function(){
-              $state.go('boards.detail.backlog',{}, { reload: true });
+              /* global alert */
+              alert('saved');
+              //ui-sref="networks.board({tab: 'backlog'})"
+              $state.go('networks.board',{tab: 'backlog'}, { reload: true });
             });
 
         };

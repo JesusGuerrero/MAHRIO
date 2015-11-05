@@ -3,10 +3,32 @@
 @import (less) "../../bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css";
 @import (less) "../../bower_components/ionicons/css/ionicons.min.css";
 @import (less) "../../bower_components/icheck/skins/flat/blue.css";
+@import (less) "../../bower_components/icheck/skins/flat/purple.css";
+@import (less) "../../bower_components/icheck/skins/flat/yellow.css";
+@import (less) "../../bower_components/icheck/skins/flat/red.css";
+@import (less) "../../bower_components/icheck/skins/flat/green.css";
 .icheckbox_flat-blue,
 .iradio_flat-blue {
   background: url('/assets/img/blue.png') no-repeat;
 }
+.icheckbox_flat-yellow,
+.iradio_flat-yellow {
+  background: url('/assets/img/yellow.png') no-repeat;
+}
+.icheckbox_flat-purple,
+.iradio_flat-purple {
+  background: url('/assets/img/purple.png') no-repeat;
+}
+.icheckbox_flat-red,
+.iradio_flat-red {
+  background: url('/assets/img/red.png') no-repeat;
+}
+.icheckbox_flat-green,
+.iradio_flat-green {
+  background: url('/assets/img/green.png') no-repeat;
+}
+@import "../angular/modal/modal.less";
+
 @import (less) "../AdminLTE/main.css";
 @import (less) "../AdminLTE/_all-skins.css";
 
@@ -17,12 +39,20 @@
 @import "../../bower_components/angular-chart.js/angular-chart.less";
 
 @import (less) "../../bower_components/fullcalendar/dist/fullcalendar.css";
-@import "../angular/article/main.less";
-@import "../angular/conversations/main.less";
+@import "../angular/article/article.less";
+@import "../angular/board/board.less";
+@import "../angular/chat/main.less";
 @import "../angular/mail/main.less";
-@import "../angular/directives/forms/feedback/feedback-boxes.less";
+@import "../angular/ng_directives/forms/feedback/feedback-boxes.less";
+@import "../angular/ng_directives/widget/sharebar/sharebar.less";
 @import "../angular/task/main.less";
+@import "../angular/network/network.less";
 @import "../angular/calendar/main.less";
+@import "themes/blue.less";
+@import "themes/green.less";
+@import "themes/red.less";
+@import "themes/purple.less";
+@import "themes/yellow.less";
 
 .external-event {
   margin: 10px 0;
@@ -45,3 +75,12 @@ body {
   }
 }
 
+@media only screen and (max-width: 767px) {
+  .xs-no-padding {
+    padding: 0 !important;
+  }
+  .xs-no-margin {
+    margin: 0 !important;
+  }
+}
+@import (less) "colors.css";

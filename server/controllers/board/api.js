@@ -14,7 +14,7 @@ module.exports = function(config, server) {
     },
     {
       method: ['POST'],
-      path: '/api/boards',
+      path: '/api/boards/{networkId?}',
       config: {
         handler: BoardCtrl.create,
         auth: 'simple'

@@ -1,0 +1,15 @@
+
+<li class="dropdown messages-menu"><a href="javascript:void(0)" data-toggle="dropdown" ng-click="isOpen()" class="dropdown-toggle"><i class="fa fa-comments"></i><span ng-show="chat &amp;&amp; chat.total" class="label label-success">  {{chat.total}}</span></a>
+  <ul id="msgDropdown" class="dropdown-menu">
+    <li class="header"><b>  Conversations</b><span ng-show="chat &amp;&amp; chat.total">  ({{chat.total}})</span></li>
+    <li>
+      <ul class="menu">
+        <li ng-repeat="conversation in notifications.chat" ng-style="{background: conversation.isNew ? '#F5F8FE' : ''}" style="position: relative;"><i ng-click="toggleNotification($event, conversation._id)" style="position: absolute; margin-top: 25px; right: 10px; cursor: pointer;" ng-class="conversation.isNew ? 'fa-circle':'fa-circle-o'" class="text-blue fa pull-right"></i><a ui-sref="conversations.view({id: conversation._id})" ui-sref-opts="{reload: true}">
+            <div class="pull-left"><img ng-src="{{conversation.members[ conversation.messages[0]._user ].avatarImage.url}}" alt="User Image" class="img-circle"/></div>
+            <h4><span ng-repeat="user in conversation.members">  {{user.profile.firstName}};</span><small><i class="fa fa-clock-o">  {{conversation.messages[0].created | date : 'MM-dd h:mm a' }}</i></small></h4>
+            <p style="margin-right: 15px">  {{conversation.members[ conversation.messages[0]._user ].profile.firstName}}: {{conversation.messages[0].content}}</p></a></li>
+      </ul>
+    </li>
+    <li class="footer"><a ui-sref="conversations" ui-sref-opts="{reload: true}">  See All Conversations</a></li>
+  </ul>
+</li>

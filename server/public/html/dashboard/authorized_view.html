@@ -1,109 +1,61 @@
 
 <div id="dashboard" ng-controller="AuthorizedDashboardController" class="row">
   <div class="col-xs-12">
-    <div id="accordion" role="tablist" aria-multiselectable="true" class="panel-group">
+    <div ng-if="!networks.length" class="h3 text-center">  You have not joined any network. Proceed to discover networks on the left menu or the following link<br/><br/>
+      <div class="row">
+        <div class="col-xs-6 col-xs-offset-3"><a ui-sref="networks.list" ui-sref-opts="{reload: true}" class="btn btn-primary btn-block">  Networks</a></div>
+      </div>
+    </div>
+    <div id="accordion" role="tablist" aria-multiselectable="true" ng-if="networks.length" class="panel-group">
       <div class="panel panel-default">
-        <div role="tab" id="headingOne" class="panel-heading">
-          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">  Network 1: MAHRIO</a></h4>
+        <div role="tab" id="heading{{$index}}" ng-repeat-start="network in networks track by $index" class="panel-heading">
+          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{network._id}}" aria-expanded="{{!$index ? 'true':'false'}}" aria-controls="{{network._id}}"><i ng-if="network.isPrivate" class="fa fa-lock text-danger"></i><i ng-if="network.isProtected" class="fa fa-lock text-warning"></i>  {{network.name}}</a></h4>
         </div>
-        <div id="collapseOne" role="tabpanel" aria-labelledby="headingOne" class="panel-collapse collapse in">
+        <div id="{{network._id}}" role="tabpanel" aria-labelledby="heading{{$index}}" ng-repeat-end="" ng-class="{in: !$index}" class="panel-collapse collapse">
           <div class="panel-body">
             <div class="row">
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="small-box bg-aqua">
                   <div class="inner">
-                    <h3>  10 / 3</h3>
-                    <p>  Tasks / Boards</p>
+                    <h3>  {{::network.boards.length || 0}}&nbsp;</h3>
+                    <p>  Boards</p>
                   </div>
                   <div class="icon">
                     <div class="fa fa-tasks"></div>
-                  </div><a href="#" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
+                  </div><a ui-sref="networks.boards( {id: network._id} )" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="small-box bg-green">
                   <div class="inner">
-                    <h3>  4</h3>
+                    <h3>  {{::network.members.length || 0}}&nbsp;</h3>
                     <p>  Members</p>
                   </div>
                   <div class="icon">
                     <div class="i fa fa-users"></div>
-                  </div><a href="#" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
+                  </div><a ui-sref="networks.members( {id: network._id} )" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="small-box bg-purple">
                   <div class="inner">
-                    <h3>  43</h3>
+                    <h3>  {{::network.articles.length || 0}}&nbsp;</h3>
                     <p>  Articles</p>
                   </div>
                   <div class="icon">
                     <div class="i fa fa-book"></div>
-                  </div><a href="#" class="small-box-footer">  More info<i class="fa fa-arrow-circle-right"></i></a>
+                  </div><a ui-sref="networks.articles( {id: network._id} )" class="small-box-footer">  More info<i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="small-box bg-yellow">
                   <div class="inner">
-                    <h3>  4</h3>
-                    <p>  Conversations</p>
+                    <h3>  {{::network.events.length || 0}}&nbsp;</h3>
+                    <p>  Events</p>
                   </div>
                   <div class="icon">
-                    <div class="i ion ion-ios-chatboxes"></div>
-                  </div><a href="#" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div role="tab" id="headingTwo" class="panel-heading">
-          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" class="collapsed">  Network 2: Computer Science &amp; Engineering</a></h4>
-        </div>
-        <div id="collapseTwo" role="tabpanel" aria-labelledby="headingTwo" class="panel-collapse collapse">
-          <div class="panel-body">
-            <div class="row">
-              <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="small-box bg-aqua">
-                  <div class="inner">
-                    <h3>  10 / 3</h3>
-                    <p>  Tasks / Boards</p>
-                  </div>
-                  <div class="icon">
-                    <div class="fa fa-tasks"></div>
-                  </div><a href="#" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="small-box bg-green">
-                  <div class="inner">
-                    <h3>  4</h3>
-                    <p>  Members</p>
-                  </div>
-                  <div class="icon">
-                    <div class="i fa fa-users"></div>
-                  </div><a href="#" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-6 col-sm-6 col-xs-12">
-                <div class="small-box bg-purple">
-                  <div class="inner">
-                    <h3>  43</h3>
-                    <p>  Articles</p>
-                  </div>
-                  <div class="icon">
-                    <div class="i fa fa-book"></div>
-                  </div><a href="#" class="small-box-footer">  More info<i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="small-box bg-yellow">
-                  <div class="inner">
-                    <h3>  4</h3>
-                    <p>  Conversations</p>
-                  </div>
-                  <div class="icon">
-                    <div class="i ion ion-ios-chatboxes"></div>
-                  </div><a href="#" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
+                    <div class="fa fa-calendar"></div>
+                  </div><a ui-sref="networks.events( {id: network._id} )" class="small-box-footer">  View<i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
             </div>

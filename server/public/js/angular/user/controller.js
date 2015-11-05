@@ -8,7 +8,9 @@ angular.module('baseApp.controllers')
 
       switch( $state.current.name ) {
         case 'users.new':
-          $scope.user = {};
+          $scope.user = {
+            profile: {}
+          };
           $scope.$watch( function(){ return $scope.user.password; }, function(nw){
             if( typeof nw === 'undefined'){
               validate.confirmPass.pattern = /.+/i;
@@ -40,11 +42,12 @@ angular.module('baseApp.controllers')
           $scope.user = User.get( $state.params.id );
           break;
         case 'users.list':
-          var current = currentUser.get();
+          //var current = currentUser.get();
           $scope.open = 0;
-          User.getUsersList()
+          User.get()
             .then( function( res ){
-              $scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
+              $scope.users = res.users;
+              //$scope.usersList = _.filter( res.list, function(user){ return user._id !== current._id; });
             });
           $scope.messageModal = function( index ){
             $('#modalNewMessage').modal().toggle();
@@ -73,17 +76,16 @@ angular.module('baseApp.controllers')
         }
       };
 
-      $scope.makeAdmin = function(){
-        User.makeAdmin( $scope.email )
+      $scope.makeAdmin = function( id ){
+        Admin.makeAdmin( id )
           .then( function(){
-            $.grep( $scope.usersList, function(e){
-              if( e.email === $scope.email ){
-                e.access='admin';
-                return true;
-              }
-            });
-            $scope.madeAdmin = $scope.email;
-            $scope.email = '';
+            $state.reload();
+          });
+      };
+      $scope.removeAdmin = function(id){
+        Admin.removeAdmin( id )
+          .then( function(){
+            $state.reload();
           });
       };
 

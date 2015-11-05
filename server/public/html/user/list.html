@@ -1,11 +1,43 @@
 
+<div ng-if="networkId || access.indexOf(&quot;sudo&quot;) !== -1" id="network-detail" class="row">
+  <div style="position: absolute; margin-top: -64px; right: 0px" class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a ng-click="newUser()" ui-sref-opts="{reload: true}" ng-if="networkId || (access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1)" class="btn btn-primary btn-block pull-right"><i class="fa fa-plus"></i>  User</a></div>
+  <div style="position: absolute; margin-top: -64px" ng-if="networkId" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
+  <div id="tab-sections" ng-if="networkId" class="col-xs-12">
+    <tabset vertical="false" type="pills">
+      <tab heading="Summary" ui-sref="networks.detail({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Articles" ui-sref="networks.articles({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Boards" ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Events" ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}">  &nbsp;</tab>
+      <tab heading="Members" active="active">  &nbsp;</tab>
+    </tabset>
+  </div>
+</div>
+<callout-info resource="users" header="" icon="users">
+    Add a new user by choosing '+ User' button on the top right corner.
+    Users are the people whom will be joining on this network and
+    they are a valuable asset towards successful collaboration.
+</callout-info>
 <div>
   <div class="row">
-    <div ng-repeat="user in usersList track by $index" class="col-lg-3 col-sm-6 col-xs-12">
-      <div style="cursor: pointer;" ui-sref="users.detail( {id: user._id} )" ui-sref-opts="{reload: true}" class="info-box"><span style="overflow: hidden; float: none; width: 100%" class="info-box-icon"><i ng-show="!user.avatarImage" class="fa fa-user-secret"></i><img src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -40px auto 0"/></span>
-        <div style="margin: 0 auto" class="info-box-content"><span class="info-box-text text-center">  {{user.profile.first_name}} {{user.profile.last_name}}</span><span class="info-box-text text-center"><small>  {{user.email}}</small></span></div>
+    <div ng-repeat="user in users track by $index" class="col-sm-6 col-xs-12">
+      <div class="info-box"><span class="info-box-icon bg-aqua"><i ng-show="!user.avatarImage" class="fa fa-user-secret"></i><img src="{{user.avatarImage.url}}" style="max-width: 100%; max-height: 100$; margin: -8px auto 0"/></span>
+        <div class="info-box-content"><span class="info-box-text">  {{user.profile.firstName}} {{user.profile.lastName}}</span><span class="info-box-number">  Web Architect</span>
+          <div class="progress">
+            <div style="width: 20%" class="progress-bar bg-aqua"></div>
+          </div>
+          <div class="btn-group dropup pull-right">
+            <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary btn-xs dropdown-toggle">  Action&nbsp;<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a ng-click="messageModal($index);" href="javascript:void(0)">  Message</a></li>
+              <!--li.divider(role="separator")-->
+              <!--li
+              a(href="javascript:void(0)")
+                  |   Another action
+              -->
+            </ul>
+          </div><span class="progress-description"><i class="fa fa-caret-up text-green">  20%</i>  last<b>  30 Days</b></span>
+        </div>
       </div>
-      <button ng-click="messageModal($index);" class="btn btn-block btn-primary">  Message</button>
     </div>
   </div>
   <div class="row">
@@ -14,3 +46,6 @@
     </modal-window-view>
   </div>
 </div>
+<modal-window-view modal-id="modalUserForm" title="User">
+  <modal-user-form></modal-user-form>
+</modal-window-view>

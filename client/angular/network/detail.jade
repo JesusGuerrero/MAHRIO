@@ -1,55 +1,145 @@
-.row
-    .col-xs-12.col-sm-4.col-md-3.col-lg-2
+.row(id="network-detail")
+    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
         a.btn.btn-default(ui-sref="networks.list" ui-sref-opts="{reload: true}")
             i.fa.fa-chevron-left
                 |   Back
-    br
-    br
-    br
+    .col-xs-12(id="tab-sections")
+        tabset( vertical="false" type="pills")
+            tab( heading="Summary" active="active")
+                |   &nbsp;
+            tab( heading="Articles" ui-sref="networks.articles({id: network._id})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Boards" ui-sref="networks.boards({id: network._id})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Events" ui-sref="networks.events({id: network._id})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+            tab( heading="Members" ui-sref="networks.members({id: network._id})" ui-sref-opts="{reload: true}")
+                |   &nbsp;
+    .col-xs-12(id="cover-photo")
+        img(ng-src="{{network.coverImage.url}}")
+.row
     .col-xs-12
-        .form-group
-            label.pull-left
-                | Name: &nbsp;
-            |   {{network.name}}
-        .form-group
-            label.pull-left
-                |   Is Private? &nbsp;
-            |   {{network.isPrivate}}
-        .form-group
-            label
-                | Members
-            div
-                span(ng-repeat="member in network.members track by $index")
-                    | {{member.profile.firstName}} {{member.profile.lastName}}
-                    br
-        .form-group
-            label
-                | Events
-            div
-                span(ng-repeat="event in network.events track by $index")
-                    | {{event.title}} {{event.start | date:'medium' }}
-                    br
-        .form-group
-            label
-                | Boards
-            div
-                span(ng-repeat="board in network.boards track by $index")
-                    | {{board.name}}
-                    br
-        .form-group
-            label
-                | Conversations
-            div
-                span(ng-repeat="conversation in network.conversations track by $index")
-                    | {{conversation.topic}}
-                    br
-        .form-group(ng-show="network.owner === currentUser._id")
-            label
-                | Actions
-            div
-                a.btn.btn-default.btn-block( ui-sref="networks.edit({id: network._id})" ui-sref-opts="{reload: true}" ng-click="$event.stopPropagation()")
-                    |   Edit &nbsp;
-                    i.fa.fa-edit
-                a.btn.btn-danger.btn-block( ng-click="remove( network._id ); $event.stopPropagation()")
-                    |   Remove &nbsp;
-                    i.fa.fa-trash
+        ul.timeline
+            li.time-label
+                span.bg-red
+                    |   Present
+            li
+                i.fa.fa-book.bg-blue
+                .timeline-item
+                    span.time
+                        i.fa.fa-clock-o
+                            |   &nbsp;
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   2 minutes ago
+                    h3.timeline-header
+                        a(href="#")
+                            |   Jesus Rocha
+                        |   published an article
+                    .timeline-body
+                        |   Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                        |   weebly ning heekya handango imeem plugg dopplr jibjab, movity
+                        |   jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+                        |   quora plaxo ideeli hulu weebly balihoo...
+                    .timeline-footer
+                        a.btn.btn-primary.btn-xs
+                            |   Read more
+
+            li
+                i.fa.fa-user.bg-aqua
+                .timeline-item
+                    span.time
+                        i.fa.fa-clock-o
+                            |   &nbsp;
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   5 minutes ago
+                    h3.timeline-header.no-border
+                        a(href="#")
+                            |   Sarah Young
+                        |   joined the network
+            li
+                i.fa.fa-comments.bg-yelow
+                .timeline-item
+                    span.time
+                        i.fa.fa-clock-o
+                            |   &nbsp;
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   27 minutes ago
+                    h3.timeline-header
+                        a(href="#")
+                            |   Jay White
+                        |   chatted on
+                        a(href="#")
+                            |   Events
+                        |   channel
+                    .timeline-body
+                        |   Take me to your leader!
+                        |   Switzerland is small and neutral!
+                        |   We are more like Germany, ambitious and misunderstood!
+                    .timeline-footer
+                        a.btn.btn-warning.btn-flat.btn-xs
+                            |   View Chat
+
+            li.time-label
+                span.bg-green
+                    |   3 Jan. 2014
+            li
+                i.fa.fa-tasks.bg-green
+                .timeline-item
+                    span.time
+                        i.fa.fa-clock-o
+                            |   &nbsp;
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   1 hour ago
+                    h3.timeline-header.no-border
+                        a(href="#")
+                            |   Jesus Rocha
+                        |   moved task to
+                        i
+                            |   Done
+                        |   in board
+                        i
+                            |   MAHRIO
+            li
+                i.fa.fa-camera.bg-purple
+                .timeline-item
+                    span.time
+                        i.fa.fa-clock-o
+                            |   &nbsp;
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   2 hours ago
+                    h3.timeline-header
+                        a(href="#")
+                            |   Mina lee
+                        |   uploaded photos to
+                        a(href="#")
+                            |   Finance Workshop
+                        |   event
+
+                    .timeline-body
+                        img.margin( src="http://placehold.it/150x100" )
+                        img.margin( src="http://placehold.it/150x100" )
+                        img.margin( src="http://placehold.it/150x100" )
+                        img.margin( src="http://placehold.it/150x100" )
+            li
+                i.fa.fa-video-camera.bg-maroon
+                .timeline-item
+                    span.time
+                        i.fa.fa-clock-o
+                            |   &nbsp;
+                            span
+                                //(am-time-ago="{{::getDate(2,0,0)}}")
+                                |   5 hours ago
+                    h3.timeline-header
+                        a(href="#")
+                            |   Mr. Doe
+                        |   published a video
+                    .timeline-body
+                        .embed-responsive.embed-responsive-16by9
+                            iframe.embed-responsive-item(src="https://www.youtube.com/embed/tMWkeBIohBs" frameborder="0" allowfullscreen="")
+            li
+                i.fa.fa-clock-o.bg-gray

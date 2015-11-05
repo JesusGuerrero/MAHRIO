@@ -1,5 +1,5 @@
 .row
-    div(ng-class="{'col-xs-12 col-sm-4 col-md-3 col-lg-2':vertical}")
+    div.tabs-nav(ng-class="{'col-xs-12 col-sm-4 col-md-3 col-lg-2':vertical}")
         ul( class="nav nav-{{type || 'tabs'}}" ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" ng-transclude)
     .tab-content(ng-class="{'col-xs-12 col-sm-8 col-md-9 col-lg-10':vertical}")
         .tab-pane( ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab")

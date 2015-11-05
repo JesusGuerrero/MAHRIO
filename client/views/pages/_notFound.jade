@@ -1,21 +1,34 @@
-.container
-   .row
-      .col-xs-10.col-xs-offset-1
-         .panel.panel-danger
-            .panel-heading
-               h4.text-center
-                  | Oops! Page Not Found
-            .panel-body.text-center
-               p
-                  |  Sorry, the page you requested was not found on this server, or is currently unavailable.
-               p
-                  |  You may want to start at our
-                  a( href="/" )
-                     |  home page
-                  |  or make a selection from the available options below.
+doctype
+html(lang="en", itemtype="http://schema.org/WebPage" itemscope ng-app="baseApp")
+    include ../common/_head
 
-               h4
-                  |  Domains:
-               p
-                  a( href="/knowledge/information_technology")
-                     | Information Technology
+    body.sidebar-mini(ng-cloak class="{{::getThemeClass()}}"
+        ng-class="access.indexOf('any') === -1 ? (isSidebarCollapsed ? 'sidebar-collapse':'') :'layout-top-nav'")
+        .wrapper
+            div( header-navigation-top access="access" )
+
+            div( side-bar type="navigation" access="access")
+
+            div( page-layout )
+                .panel.panel-danger
+                    .panel-heading
+                        h4.text-center
+                            | Oops! Page Not Found
+                    .panel-body.text-center
+                        p
+                            |  Sorry, the page you requested was not found on this server, or is currently unavailable.
+                        p
+                            |  You may want to start at our
+                            a( href="/" )
+                                |  home page
+                            |  or make a selection from the available options below.
+
+            div( footer )
+
+            div( side-bar type="settings" access="access" render-app-gestures)
+
+    if( typeof develop === 'undefined' )
+        script( src="/assets/js/application.js")
+    else
+        script( src="/assets/js/angular.js")
+        include ../common/_scripts

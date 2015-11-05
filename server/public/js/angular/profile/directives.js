@@ -1,12 +1,26 @@
 angular.module('baseApp.directives')
-  .directive( 'profileSummary', ['currentUser', function( currentUser) {
+  .directive( 'profileSummary', ['currentUser', 'Admin',function( currentUser, Admin) {
     'use strict';
     return {
       restrict: 'E',
       replace: true,
       templateUrl: '/assets/html/profile/directive-summary',
       link: function(scope) {
+        scope.myProfile = true;
         scope.current = currentUser.get();
+        scope.isOwn = true;
+        scope.makeAdmin = function(id){
+          Admin.makeAdmin( id )
+            .then( function(){
+              scope.current.access.push( 'admin' );
+            });
+        };
+        scope.removeAdmin = function(id){
+          Admin.removeAdmin( id )
+            .then( function(){
+              scope.current.access.splice( scope.current.access.indexOf('admin'), 1);
+            });
+        };
       }
     };
   }])

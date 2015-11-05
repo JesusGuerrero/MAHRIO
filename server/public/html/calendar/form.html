@@ -1,0 +1,69 @@
+
+<div class="row">
+  <div class="col-xs-12 xs-no-padding">
+    <div class="panel panel-default no-margin">
+      <error-message-box validation-errors="validationErrors"></error-message-box>
+      <div class="panel-body">
+        <h3 class="text-center">New Event</h3>
+        <form novalidate="novalidate">
+          <div class="form-group">
+            <label>  Image</label><br/><small ng-show="!event._id">  Image upload available after event created</small>
+            <div ng-show="event._id">
+              <media media="event.coverImage" container="event" actions="mediaActions" icon="fa-photo"></media>
+            </div>
+          </div>
+          <form-input-tag model="event.title" label="Title" required="true"></form-input-tag>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="wysihtml5-content" placeholder="Enter text ..." ng-model="event.description" style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;"></textarea>
+          </div>
+          <form-input-tag model="event.url" label="URL"></form-input-tag>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label> All Day</label>
+                <input type="checkbox" ng-model="event.allDay" i-check="i-check"/>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label> Private</label>
+                <input type="checkbox" ng-model="event.isPrivate" i-check="i-check"/>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label> Start Date</label>
+                <input type="text" id="eventStart" ng-model="event.start" datepicker="{{event.start}}" class="form-control"/>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label> End Date</label>
+                <input type="text" id="eventEnd" ng-model="event.end" datepicker="{{event.end}}" class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div ng-show="has['invited']" class="form-group">
+            <label>Invites</label>
+            <div><span ng-repeat="member in event.invited track by $index" style="margin: 1px 0 0; padding: 5px; display: block;" class="bg-blue"><i style="line-height: 20px; padding: 0 5px; cursor: pointer" ng-click="removeUser(member._id, 'invited')" class="fa fa-close pull-right"></i>  {{member.profile.firstName}} {{member.profile.lastName}} &lt;{{member.email}}&gt;</span></div>
+          </div>
+          <auto-complete input-model="tempMember" placeholder="Members" auto-complete-http="getUsers" selected="selectUser" hash="invited"></auto-complete>
+        </form>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-sm-4 col-md-3">
+            <button ng-click="remove(event._id)" ng-show="event._id" class="btn btn-block btn-danger btn-lg">  Remove</button>
+          </div>
+          <div class="col-sm-4 col-md-3 col-md-offset-3"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
+          <div ng-class="{true: 'col-md-offset-3'}[ event._id ]" class="col-md-3 text-center">
+            <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{event._id ? 'Save' : 'Create'}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

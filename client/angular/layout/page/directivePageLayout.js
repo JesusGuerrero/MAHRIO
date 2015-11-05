@@ -8,21 +8,28 @@ angular.module('baseApp.directives')
         transclude: true,
         templateUrl: '/assets/html/layout/page/index',
         link: function(scope) {
+          var eventListener = false;
           scope.$watch( function(){ return Notification.confirm; }, function(newMsg){
             if( newMsg ) {
               scope.title = 'Confirm';
               scope.message = newMsg;
               $('#pageNotification').modal().show();
+              if( !eventListener ) {
+                $('#pageNotification').on('hide.bs.modal', function(){
+                    Notification.confirm = null;
+                });
+                eventListener = true;
+              }
             }
           });
           scope.close = function(){
             Notification.confirm = null;
           };
           scope.confirm = function(){
-            $('#pageNotification').modal().hide();
-            Notification.confirm = null;
             Notification.confirmed = true;
+              $('#pageNotification').modal('hide');
           };
+
         }
       };
     }

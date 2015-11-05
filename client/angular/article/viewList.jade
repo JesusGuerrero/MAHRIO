@@ -1,0 +1,76 @@
+.row(id="articlesList" ng-if="articles")
+    .col-xs-12
+        div.table-responsive
+            table.table
+                tr
+                    th
+                        |  Image
+                    th
+                        |  Title
+                    th
+                        |  Creator
+                    th
+                        |  Created
+                    th.text-right
+                        .form-group
+                            input(type="checkbox" i-check ng-model="selectAll")
+                tr(ng-repeat="article in articles track by $index")
+                    td
+                        img( ng-src='{{article.coverImage.url}}' style="max-height: 40px;")
+                    td
+                        |  {{article.title}}
+                    td
+                        |  {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
+                    td
+                        |  {{article.created | date}}
+                    td.text-right
+                        .form-group
+                            button.btn.btn-default(ng-click="editArticle( article );")
+                                i.fa.fa-edit
+                            input(i-check type="checkbox" ng-model='article.selected')
+    .col-xs-12
+        a.btn.btn-danger(ng-click="removeSelected( ); $event.stopPropagation()")
+            i.fa.fa-trash
+                |   Remove Selected
+    //
+        ul(style="list-style-type: none; padding: 0; margin: 0")
+            li( ng-repeat="article in articles track by $index")
+                a(ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
+                    figure
+                        img( ng-src='{{article.coverImage.url}}')
+                        figcaption(class="credit")
+                    h3
+                        | {{article.title}}
+                a(ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                    figure
+                        img( ng-src='{{article.coverImage.url}}')
+                        figcaption(class="credit")
+                    h3
+                        | {{article.title}}
+                p.bg-green.label.pull-left
+                    |   {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
+                p.bg-yellow.label.pull-right.hidden-sm.hidden-xs
+                    |   {{article.created | date:'medium'}}
+                p.bg-yellow.label.pull-right.hidden-md.hidden-lg
+                    |   {{article.created | date}}
+                br
+                br.hidden-xs.hidden-sm
+                div(class="article-content")
+                    p(ng-repeat="section in article.sections track by $index")
+                        | {{section.body}}
+                .form-group
+                    a.btn.btn-primary.btn-block.form-control(ng-if='networkId' ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
+                        |   Continue Reading
+                    a.btn.btn-primary.btn-block.form-control(ng-if='!networkId' ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                        |   Continue Reading
+                .row(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
+                    .col-xs-10.col-xs-offset-1
+                        .row
+                            .col-xs-6
+                                a.btn.btn-default.btn-block(ui-sref="articles.edit({id: article._id})" ui-sref-opts="{reload: true}")
+                                    i.fa.fa-edit
+                                    |   &nbsp;Edit
+                            .col-xs-6
+                                a.btn.btn-block.btn-danger(ng-click="remove( article._id ); $event.stopPropagation()")
+                                    i.fa.fa-trash
+                                    |   &nbsp;Remove
