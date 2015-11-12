@@ -432,6 +432,12 @@ angular.module('baseApp', [
         url: '/view/:id/:action',
         title: 'Mailbox',
         subTitle: 'View'
+      })
+      .state('hardware', {
+        url: '/hardware',
+        controller: 'HardwareController',
+        templateUrl: '/assets/html/hardware/list',
+        title: 'Hardware'
       });
 
     $urlRouterProvider.otherwise('/');

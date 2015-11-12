@@ -109669,6 +109669,11 @@ angular.module('baseApp', [
         url: '/view/:id/:action',
         title: 'Mailbox',
         subTitle: 'View'
+      })
+      .state('raspberrys', {
+        url: '/raspberry',
+        controller: 'RaspberryController',
+        templateUrl: '/assets/html/raspberry/index'
       });
 
     $urlRouterProvider.otherwise('/');
@@ -114412,6 +114417,19 @@ angular.module('baseApp.services')
     };
   }]);
 
+angular.module('baseApp.controllers')
+  .controller( 'SocketController', [ '$scope', '$http', 'Socket', function( $scope, $http, Socket ){
+    'use strict';
+    $scope.emitSocketEvent = function(){
+      $http.get( '/api/sockets')
+        .success( function(res){
+          console.log( res );
+        });
+    };
+    Socket.get.on('event:testing', function(){
+      console.log('socket tested');
+    });
+  }]);
 /* global confirm */
 /* global $ */
 

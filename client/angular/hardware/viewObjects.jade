@@ -1,0 +1,44 @@
+.row(id="articlesList")
+    .col-md-10.col-md-offset-1.col-sm-12
+
+
+        ul(style="list-style-type: none; padding: 0; margin: 0")
+            li( ng-repeat="embedded in hardware track by $index")
+                a( ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                    figure
+                        img( ng-src='{{embedded.coverImage.url}}')
+                        figcaption(class="credit")
+                    h3
+                        |{{embedded.name}}
+                    h4
+                        | {{embedded.type}}
+                p.bg-green.label.pull-left
+                    |   {{embedded.owner.profile.firstName}} {{embedded.owner.profile.lastName}}
+                p.bg-yellow.label.pull-right.hidden-sm.hidden-xs
+                    |   {{embedded.created | date:'medium'}}
+                p.bg-yellow.label.pull-right.hidden-md.hidden-lg
+                    |   {{embedded.created | date}}
+                br
+                br.hidden-xs.hidden-sm
+                div(class="article-content" style="min-height: 300px; background: red; ")
+                    p(ng-repeat="msg in embedded.messages track by $index")
+                        |{{msg}}
+                .form-group
+                    form( ng-submit="sendMessage()")
+                        .input-group
+                            input.form-control( type="text" name="message" placeholder="Type Message ..." ng-model="newMessage")
+                            span.input-group-btn
+                                button.btn.btn-primary.btn-flat( type="submit")
+                                    |   Send
+
+                .row(ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1")
+                    .col-xs-10.col-xs-offset-1
+                        .row
+                            .col-xs-6
+                                a.btn.btn-default.btn-block(ng-click="editEmbedded( embedded );")
+                                    i.fa.fa-edit
+                                    |   &nbsp;Edit
+                            .col-xs-6
+                                a.btn.btn-block.btn-danger(ng-click="remove( embedded._id );")
+                                    i.fa.fa-trash
+                                    |   &nbsp;Remove

@@ -3,8 +3,8 @@
 <div class="row login">
   <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-xs-12 xs-no-padding">
     <div class="panel panel-default">
-      <error-message-box validation-errors="validationErrors"></error-message-box>
       <div class="panel-body">
+        <error-message-box validation-errors="validationErrors"></error-message-box>
         <h3 class="text-center">{{locale['form'].page['signin'].title}}</h3>
         <form novalidate="novalidate" ng-submit="login()">
           <form-input-tag model="user.email" label="{{locale['form'].label['shared'].email}}" required="true" icon="envelope" regex="validate['email']"></form-input-tag>

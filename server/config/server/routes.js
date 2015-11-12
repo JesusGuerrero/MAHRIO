@@ -18,6 +18,8 @@ function requireControllers(config, server){
   require('../../controllers/task/api')(config, server);
   require('../../controllers/contact/newsletter')(config, server);
   require('../../controllers/contact/knowledge')(config, server);
+  require('../../controllers/socket/api')(config, server);
+  require('../../controllers/hardware/api')(config, server);
 }
 module.exports = function (config, server) {
 

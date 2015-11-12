@@ -10,6 +10,7 @@ require('./Contact');
 require('./Conversation');
 require('./Event');
 //require('./List');
+require('./Hardware');
 require('./Mail');
 require('./Network');
 require('./Media');
