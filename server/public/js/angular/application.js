@@ -516,7 +516,7 @@ angular.module('baseApp.controllers', [])
       };
 
       $rootScope.access = ['any'];
-      $rootScope.settings = { skin: window.localStorage.skin || 'skin-blue' };
+      $rootScope.settings = { skin: window.localStorage.skin || 'skin-green' };
       $rootScope.getThemeClass = function(){
         return $rootScope.settings.skin;
       };
