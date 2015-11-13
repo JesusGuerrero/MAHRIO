@@ -1,1 +1,37 @@
 /* Empty. Add your own CSS if you like */
+
+input.search {
+  width: 80%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #e3e3e3;
+  margin: 7px auto;
+  padding: 0 5px;
+  text-align: center;
+}
+a {
+  text-decoration: none;
+}
+body.tabbed-nav .bar {
+  height: 64px;
+}
+body.tabbed-nav .bar .title {
+  height: 63px;
+}
+body.tabbed-nav .bar .tabs {
+  background: transparent;
+  height: 21px;
+  line-height: 18px;
+  top: 0px;
+  bottom: auto;
+  border: 1px solid #e3e3e3 !important;
+  padding-top: 0;
+}
+body.tabbed-nav .bar .tabs .tab-item {
+  border-right: 1px solid #e3e3e3;
+}
+body.tabbed-nav .scroll-content {
+  margin-top: 21px;
+}

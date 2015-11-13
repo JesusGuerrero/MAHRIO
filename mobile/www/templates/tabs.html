@@ -10,9 +10,19 @@ navigation history that also transitions its views in and out.
     <ion-nav-view name="tab-dash"></ion-nav-view>
   </ion-tab>
 
+  <!-- Articles Tab -->
+  <ion-tab title="Networks" icon-off="ion-ios-cloud-outline" icon-on="ion-ios-cloud" href="#/tab/networks">
+    <ion-nav-view name="tab-network"></ion-nav-view>
+  </ion-tab>
+
   <!-- Chats Tab -->
-  <ion-tab title="Chats" icon-off="ion-ios-chatboxes-outline" icon-on="ion-ios-chatboxes" href="#/tab/chats">
+  <ion-tab title="Chats" icon-off="ion-ios-chatboxes-outline" icon-on="ion-ios-chatboxes" href="#/tab/chats" badge="3">
     <ion-nav-view name="tab-chats"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Calendar Tab -->
+  <ion-tab title="Search" icon-off="ion-ios-search-strong" icon-on="ion-search" href="#/tab/search">
+    <ion-nav-view name="tab-search"></ion-nav-view>
   </ion-tab>
 
   <!-- Account Tab -->
