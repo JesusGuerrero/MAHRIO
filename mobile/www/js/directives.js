@@ -5,7 +5,7 @@ angular.module('starter.directives', [])
       restrict: 'A',
       link: function( scope, elem ) {
         scope.$watch( function() { return $state.current; }, function(newVal) {
-          if( false && newVal && newVal.name && newVal.name === 'tab.networks' ) {
+          if( false && newVal && newVal.name && newVal.name === 'tab.articles' ) {
             elem.addClass('tabbed-nav');
           } else {
             elem.removeClass('tabbed-nav');

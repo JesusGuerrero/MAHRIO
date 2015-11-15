@@ -25,13 +25,26 @@ body.tabbed-nav .bar .tabs {
   height: 21px;
   line-height: 18px;
   top: 0px;
-  bottom: auto;
-  border: 1px solid #e3e3e3 !important;
+  /*bottom: auto;*/
+  /*border: 1px solid #e3e3e3 !important;*/
   padding-top: 0;
 }
 body.tabbed-nav .bar .tabs .tab-item {
-  border-right: 1px solid #e3e3e3;
+  /*border-right: 1px solid #e3e3e3;*/
 }
 body.tabbed-nav .scroll-content {
   margin-top: 21px;
+}
+.item-icon-label {
+  position: absolute;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  text-align: center;
+}
+.network-detail {
+  margin: 0;
+  line-height: 43px;
+  font-size: 21pt;
 }

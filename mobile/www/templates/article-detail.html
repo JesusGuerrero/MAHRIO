@@ -1,0 +1,14 @@
+<ion-view>
+  <ion-nav-title>
+    {{article.title}}
+  </ion-nav-title>
+
+  <ion-content>
+    <img ng-src="{{article.cover}}">
+    <h2>{{article.title}}</h2>
+    <p>{{article.deck}}</p>
+    <p ng-repeat="section in article.sections" ng-bind-html="section">
+    </p>
+  </ion-content>
+
+</ion-view>

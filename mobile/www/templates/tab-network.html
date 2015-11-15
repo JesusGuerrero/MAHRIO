@@ -17,13 +17,12 @@
     <!--</div>-->
   </ion-nav-title>
   <ion-content>
-
-    <h1>+ book</h1>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="article in articles" type="item-text-wrap" href="#/tab/article/{{article._id}}">
-        <img ng-src="{{chat.face}}">
-        <h2>Viviana Jade Rocha</h2>
-        <p>Born 10/27/2015 @ 21:39</p>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="network in networks" type="item-text-wrap" href="#/tab/network/{{network.id}}">
+        <img ng-src="{{network.cover}}">
+        <h2>{{network.title}}</h2>
+        <p>{{network.deck}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </ion-list>
   </ion-content>

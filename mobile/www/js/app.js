@@ -6,7 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.directives'])
-  .constant('APP_IP', '192.168.0.4:8042')
+  .constant('APP_IP', 'http://192.168.0.4:8042')
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -49,15 +49,60 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
+    .state('tab.articles', {
+      url: '/articles?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/tab-articles.html'
+        }
+      }
+    })
+    .state('tab.article', {
+      url: '/article/:articleId?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/article-detail.html',
+          controller: 'ArticleDetailCtrl'
+        }
+      }
+    })
+    .state('tab.boards', {
+      url: '/boards?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/tab-boards.html'
+        }
+      }
+    })
+    .state('tab.board', {
+      url: '/board/:boardId?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/board-detail.html',
+          controller: 'BoardDetailCtrl'
+        }
+      }
+    })
   .state('tab.networks', {
     url: '/networks',
     views: {
-      'tab-network': {
+      'tab-networks': {
         templateUrl: 'templates/tab-network.html',
-        controller: 'NetworkCtrl'
+        controller: 'NetworksCtrl'
       }
     }
   })
+
+    .state('tab.network', {
+      url: '/network/:networkId',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/network-detail.html',
+          controller: 'NetworkDetailCtrl'
+        }
+      }
+    })
+
   .state('tab.chats', {
     url: '/chats',
     views: {
