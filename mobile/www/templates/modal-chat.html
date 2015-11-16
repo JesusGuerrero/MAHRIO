@@ -8,15 +8,15 @@
       <div class="list">
         <label class="item item-input item-select">
           <div class="input-label">
-            Select User: {{chat}}
+            Select User:
           </div>
           <select ng-model="chat.otherMember">
-            <option>Blue</option>
-            <option selected>Green</option>
-            <option>Red</option>
+            <option ng-repeat="user in users" value="{{user.id}}">
+              {{user.profile.firstName}}
+              {{user.profile.lastName}}
+            </option>
           </select>
         </label>
-        <button class="button button-block button-stable" ng-click="addObject()">Create</button>
       </div>
     </div>
     <ion-list>
@@ -28,7 +28,7 @@
             </strong>
           </span>
           <span class="direct-chat-timestamp" ng-class="currentUser.id===chat.members[message._user].id ? 'pull-right' : 'pull-left'">
-            {{message.created }}
+            {{message.created | date: 'short' }}
           </span>
         </div>
         <img class="direct-chat-img" ng-src="{{chat.members[message._user].face}}" width="40">

@@ -66,7 +66,7 @@ angular.module('starter.services', [])
     return {
 
       get: function(networkId) {
-        return _.findById( networks, networkId);
+        return _.where( networks, {id: networkId})[0];
       },
       all: function(){
         return networks;
@@ -97,7 +97,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Chats', function(Users, Messages) {
+  .factory('Chats', function(Users, Messages, _) {
     // Might use a resource here that returns a JSON array
 
     // Some fake testing data
@@ -121,7 +121,7 @@ angular.module('starter.services', [])
         '2': null,
         '4': null
       }
-    }];
+    }], counter = 3;
 
     var api = {
       all: function() {
@@ -138,8 +138,13 @@ angular.module('starter.services', [])
         });
         return _.indexBy( _chats, 'id');
       },
-      remove: function(chat) {
-        chats.splice(chats.indexOf(chat), 1);
+      remove: function(chatId) {
+        var obj = _.where( chats, {id: chatId});
+        if( obj ) {
+          chats.splice(chats.indexOf( obj[0] ), 1);
+          return true;
+        }
+        return false;
       },
       get: function(chatId) {
         var allChats = api.all(), saveChat = null;
@@ -151,8 +156,22 @@ angular.module('starter.services', [])
         });
         return saveChat;
       },
-      add: function( chat ) {
+      add: function( members, messages ) {
+        var chatObj = {id: counter, members: {}, messages: messages, created: new Date() };
+        _.each( members, function(member){
 
+          chatObj.members[ member+'' ] = null;
+        });
+        chats.push( chatObj );
+        counter++;
+        return chatObj;
+      },
+      updateMessages: function( chatId, msgId) {
+        var obj = _.where( chats, {id: chatId});
+        if( obj ) {
+          var index = chats.indexOf( obj[0] );
+          chats[ index ].messages[ msgId ] = null;
+        }
       }
     };
     return api;
@@ -163,26 +182,26 @@ angular.module('starter.services', [])
       content: 'Hey!',
       _user: 1,
       _chat: 1,
-      created: '06-16 3:10 PM'
+      created: new Date('06/16/2015 3:10 PM')
     },{
       id: 2,
       content: 'Check this out, http://mahr.io',
       _user: 1,
       _chat: 2,
-      created: '06-16 3:11 PM'
+      created: new Date('06/16/2015 3:11 PM')
     },{
       id: 3,
       content: 'ETA?',
       _user: 2,
       _chat: 1,
-      created: '09-29 3:36 PM'
+      created: new Date('09/29/2015 3:36 PM')
     },{
       id: 4,
       content: 'Cool!',
       _user: 3,
       _chat: 2,
-      created: '09-29 3:40 PM'
-    }];
+      created: new Date('09/29/2015 3:40 PM')
+    }], counter = 5;
     return {
       all: function() {
         return messages;
@@ -192,6 +211,19 @@ angular.module('starter.services', [])
       },
       getMessages: function( chatId ) {
         return _.filter( messages, function(message) { return message._chat === chatId; });
+      },
+      add: function( chatId, userId, message ) {
+        var msgObj = {id: counter, content: message, _user: userId, _chat: chatId, created: new Date() };
+        messages.push( msgObj );
+        counter++;
+        return msgObj;
+      },
+      updateChat: function( msgId, chatId ) {
+        var obj = _.where( messages, {id: msgId});
+        if( obj ) {
+          var index = messages.indexOf( obj[0] );
+          messages[ index ]._chat = chatId;
+        }
       }
     };
   })
@@ -230,11 +262,14 @@ angular.module('starter.services', [])
         lastName: 'Peterson'
       },
       face: 'img/users/2/user-profile.jpg'
-    }], currentUser = null;
+    }], currentUser = users[0];
 
     return {
       getUsers: function( chatIds ) {
         return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
+      },
+      getXother: function(){
+        return _.filter( users, function(user) { return user.id !== currentUser.id; });
       },
       login: function(email){
         var current = _.findWhere( users, {email: email});

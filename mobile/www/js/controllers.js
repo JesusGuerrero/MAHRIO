@@ -12,6 +12,7 @@ angular.module('starter.controllers', [])
     };
     $scope.$on('$destroy', function() {
       $scope.modal.remove();
+      $scope.$broadcast('event:done');
     });
 
     $scope.$on('provision:modal:signin', function(){
@@ -65,7 +66,7 @@ angular.module('starter.controllers', [])
     $scope.board = Networks.getBoards( $stateParams.network, $stateParams.articleId );
   })
 
-  .controller('ChatsCtrl', function($scope, Chats) {
+  .controller('ChatsCtrl', function($scope, Users, Chats, Messages ) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
@@ -76,12 +77,27 @@ angular.module('starter.controllers', [])
 
     $scope.chats = Chats.all();
     $scope.chat = {};
+    $scope.users = Users.getXother();
     $scope.create = function( ) {
-      Chats.add( chat );
+      if( $scope.chat.id ) {
+        var message = Messages.add( $scope.chat.id, Users.currentUser.id, $scope.chat.newMessage );
+        $scope.chat.messages[ message.id ] = message;
+      } else {
+        console.log( $scope.chat.otherMember );
+        var chat = Chats.add( [Users.currentUser.id, $scope.chat.otherMember], [] );
+        var msg = Messages.add( chat.id, Users.currentUser.id, $scope.chat.newMessage );
+        Chats.updateMessages( chat.id, msg.id );
+        Messages.updateChat( msg.id, chat.id );
+        $scope.chat = Chats.get( chat.id );
+        $scope.chats = Chats.all();
+        console.log( $scope.chats );
+      }
+      $scope.chat.newMessage = '';
     };
-    console.log( $scope.chats );
-    $scope.remove = function(chat) {
-      Chats.remove(chat);
+    $scope.remove = function(chatId) {
+      if( Chats.remove(chatId) ) {
+        $scope.chats = Chats.all();
+      }
     };
     $scope.provisionChatModal = function( id ){
       if( typeof id !== 'undefined'){
@@ -95,6 +111,9 @@ angular.module('starter.controllers', [])
         chat: $scope.chat
       });
     };
+    $scope.$on('event:done', function(){
+      console.log('INNNNNNN')
+    });
   })
   //.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   //  $scope.chat = Chats.get($stateParams.chatId);
