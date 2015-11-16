@@ -1,0 +1,21 @@
+<ion-view>
+  <ion-nav-title>
+    Articles
+    <!--<div class="tabs tabs-top" style="margin-top: 35px;">-->
+      <!--<a class="tab-item" href="javascript:void(0)">-->
+        <!--Viviana Jade Rocha-->
+      <!--</a>-->
+    <!--</div>-->
+  </ion-nav-title>
+
+  <ion-content ng-controller="ArticlesCtrl">
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="article in articles" type="item-text-wrap" href="#/tab/article/{{article.id}}?network={{networkId}}">
+        <img ng-src="{{article.cover}}">
+        <h2>{{article.title}}</h2>
+        <p>{{article.deck}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,28 @@
+<ion-view view-title="Account">
+  <ion-content>
+    <ion-list>
+    <ion-toggle ng-model="settings.enableFriends">
+        Show me online
+    </ion-toggle>
+    </ion-list>
+    <div class="row">
+      <div class="col">&nbsp;</div>
+      <div class="col col-50">
+        <button class="button button-positive" style="width: 100%" ng-click="provisionSignInModal()">
+          Sign In
+        </button>
+      </div>
+      <div class="col">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col">&nbsp;</div>
+      <div class="col col-50">
+        <button class="button button-assertive" style="width: 100%">
+          Sign Out
+        </button>
+      </div>
+      <div class="col">&nbsp;</div>
+    </div>
+
+  </ion-content>
+</ion-view>

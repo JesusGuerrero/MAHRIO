@@ -2,8 +2,8 @@
 .row
     .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1.col-xs-12.xs-no-padding
         .panel.panel-default
-            error-message-box( validation-errors="validationErrors" )
             .panel-body
+                error-message-box( validation-errors="validationErrors" )
                 h3.text-center
                     | {{locale['form'].page['register'].title}}
                 form(novalidate ng-submit="register()")
@@ -36,7 +36,7 @@
                     .form-group.ng-hide(ng-show="error")
                         .red.bold.margin {{error}}
 
-                    .row 
+                    .row
                         .col-sm-8.col-sm-offset-2.col-xs-12.form-group.text-center
                             |   By clicking Register, you agree to our
                             a(ui-sref='terms')

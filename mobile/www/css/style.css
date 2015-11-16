@@ -1,0 +1,113 @@
+/* Empty. Add your own CSS if you like */
+
+input.search {
+  width: 80%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #e3e3e3;
+  margin: 7px auto;
+  padding: 0 5px;
+  text-align: center;
+}
+a {
+  text-decoration: none;
+}
+body.tabbed-nav .bar {
+  height: 64px;
+}
+body.tabbed-nav .bar .title {
+  height: 63px;
+}
+body.tabbed-nav .bar .tabs {
+  background: transparent;
+  height: 21px;
+  line-height: 18px;
+  top: 0px;
+  /*bottom: auto;*/
+  /*border: 1px solid #e3e3e3 !important;*/
+  padding-top: 0;
+}
+body.tabbed-nav .bar .tabs .tab-item {
+  /*border-right: 1px solid #e3e3e3;*/
+}
+body.tabbed-nav .scroll-content {
+  margin-top: 21px;
+}
+.item:first-of-type {
+  border-top: none;
+}
+.modal .item:first-of-type {
+  border-top: 1px solid #ddd;
+}
+.modal .tab-nav.tabs {
+  background: transparent;
+}
+.modal .tab-nav.tabs .tab-item.tab-item-active {
+  border: 1px solid #ddd;
+  margin-top: -5px;
+}
+.modal .tab-nav.tabs .icon {
+  float: left;
+}
+
+.left, .right {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+.right img {
+  float: right;
+}
+.right .direct-chat-text {
+  margin: 5px 50px 0 0;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+.direct-chat-info {
+  height: 20px;
+}
+.direct-chat-img {
+  border-radius: 50%;
+  float: left;
+  width: 40px;
+  height: 40px;
+}
+.direct-chat-text {
+  border-radius: 5px;
+  position: relative;
+  padding: 5px 10px;
+  background: #d2d6de;
+  border: 1px solid #d2d6de;
+  margin: 5px 0 0 50px;
+  color: #444444;
+  white-space: normal !important;
+}
+.direct-chat.modal .item {
+  border: none !important;
+  white-space: initial;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.bar.bar-header {
+  border-bottom: 1px solid #ddd;
+}
+.item-icon-label {
+  position: absolute;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  text-align: center;
+}
+.network-detail {
+  margin: 0;
+  line-height: 43px;
+  font-size: 21pt;
+}

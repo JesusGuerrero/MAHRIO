@@ -1,0 +1,14 @@
+<ion-view>
+  <ion-nav-title>
+    Hardware
+  </ion-nav-title>
+
+  <ion-content ng-controller="HardwareCtrl">
+    <ion-list>
+      <ion-item class="item-remove-animate item-icon-right" ng-repeat="device in hardware" type="item-text-wrap" href="#/tab/appliance/{{device.id}}?network={{networkId}}">
+        <h2>{{device.name}}</h2>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

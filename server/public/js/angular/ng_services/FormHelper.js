@@ -89,7 +89,11 @@ angular.module('baseApp.services')
                     mediaDetails.url = res.url;
                     media.addCoverImage( {_id: $scope[resource]._id}, mediaDetails )
                       .then( function(res){
-                        $scope[resource].media.push( res.media );
+                        if( $scope[resource].media ) {
+                          $scope[resource].media.push( res.media );
+                        } else {
+                          $scope[resource].media = [ res.media ];
+                        }
                         defer.resolve({url: res.media.url});
                       }, function(){
                         defer.reject();

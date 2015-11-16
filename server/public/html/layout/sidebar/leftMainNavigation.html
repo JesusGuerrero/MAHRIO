@@ -37,6 +37,7 @@
           <!--small.label.pull-right.bg-red|   3
           --></a></li>
       <li ng-if="access.indexOf('admin')!==-1 || access.indexOf('sudo')!==-1" ng-class="{active: state==='mail'}"><a ui-sref="mail.inbox"><i class="fa fa-envelope"></i><span>  Mailbox</span><small class="label pull-right bg-yellow">  12</small></a></li>
+      <li ng-if="access.indexOf('sudo') !== -1"><a ui-sref="hardware" ui-sref-opts="{reload: true}"><i class="fa fa-hdd-o"></i><span>  Hardware</span><small class="label pull-right bg-red">  3</small></a></li>
       <!--li(ng-show="currentNetwork")-->
       <!--    a( ui-sref="networks.detail.boards({id: currentNetwork})" )-->
       <!--        i.fa.fa-book-->

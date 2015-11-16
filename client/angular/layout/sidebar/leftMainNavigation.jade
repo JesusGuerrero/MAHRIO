@@ -111,6 +111,13 @@ aside.main-sidebar(ng-controller="LeftNavigationController")
                         |   Mailbox
                     small.label.pull-right.bg-yellow
                         |   12
+            li(ng-if="access.indexOf('sudo') !== -1")
+                a( ui-sref="hardware" ui-sref-opts="{reload: true}")
+                    i.fa.fa-hdd-o
+                    span
+                        |   Hardware
+                    small.label.pull-right.bg-red
+                        |   3
             //li(ng-show="currentNetwork")
             //    a( ui-sref="networks.detail.boards({id: currentNetwork})" )
             //        i.fa.fa-book

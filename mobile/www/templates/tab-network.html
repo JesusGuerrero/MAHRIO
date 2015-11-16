@@ -1,0 +1,29 @@
+<ion-view>
+  <ion-nav-title>
+    Networks
+    <!--<div class="tabs" style="margin-top: 35px;">-->
+      <!--<a class="tab-item" href="#/tabs/networks/categories">-->
+        <!--<i class="ion-android-menu"></i>-->
+        <!--Categories-->
+      <!--</a>-->
+      <!--<a class="tab-item" href="#/tabs/networks/popular">-->
+        <!--<i class="ion-ios-star"></i>-->
+        <!--Popular-->
+      <!--</a>-->
+      <!--<a class="tab-item" style="border-right: none;" href="#/tabs/networks/explore">-->
+        <!--<i class="ion-compass"></i>-->
+        <!--Explore-->
+      <!--</a>-->
+    <!--</div>-->
+  </ion-nav-title>
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="network in networks" type="item-text-wrap" href="#/tab/network/{{network.id}}">
+        <img ng-src="{{network.cover}}">
+        <h2>{{network.title}}</h2>
+        <p>{{network.deck}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

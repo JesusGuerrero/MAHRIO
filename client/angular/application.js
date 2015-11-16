@@ -432,6 +432,12 @@ angular.module('baseApp', [
         url: '/view/:id/:action',
         title: 'Mailbox',
         subTitle: 'View'
+      })
+      .state('hardware', {
+        url: '/hardware',
+        controller: 'HardwareController',
+        templateUrl: '/assets/html/hardware/list',
+        title: 'Hardware'
       });
 
     $urlRouterProvider.otherwise('/');
@@ -510,7 +516,7 @@ angular.module('baseApp.controllers', [])
       };
 
       $rootScope.access = ['any'];
-      $rootScope.settings = { skin: window.localStorage.skin || 'skin-blue' };
+      $rootScope.settings = { skin: window.localStorage.skin || 'skin-green' };
       $rootScope.getThemeClass = function(){
         return $rootScope.settings.skin;
       };

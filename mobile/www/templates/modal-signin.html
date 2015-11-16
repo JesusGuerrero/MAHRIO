@@ -1,0 +1,17 @@
+<div class="modal">
+  <ion-header-bar class="bar-header bar-positive">
+    <h1 class="title">New Object</h1>
+    <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
+  </ion-header-bar>
+  <ion-content>
+    <div class="padding">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Name</span>
+          <input ng-model="form.name" type="text" name="name" />
+        </label>
+        <button class="button button-block button-positive" ng-click="addObject()">Create</button>
+      </div>
+    </div>
+  </ion-content>
+</div>

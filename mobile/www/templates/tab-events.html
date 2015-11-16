@@ -1,0 +1,14 @@
+<ion-view>
+  <ion-nav-title>
+    Events
+  </ion-nav-title>
+
+  <ion-content ng-controller="EventsCtrl">
+    <ion-list>
+      <ion-item class="item-remove-animate item-icon-right" ng-repeat="event in events" type="item-text-wrap" href="#/tab/event/{{event.id}}?network={{networkId}}">
+        <h2>{{event.name}}</h2>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
