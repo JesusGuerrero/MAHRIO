@@ -12,16 +12,13 @@ angular.module('starter.controllers', [])
     };
     $scope.$on('$destroy', function() {
       $scope.modal.remove();
-      $scope.$broadcast('event:done');
     });
 
     $scope.$on('provision:modal:signin', function(){
       Modal.provisionModal($scope, 'templates/modal.html').then(function(modal){
         $scope.modal = modal;
         $scope.modal.show();
-        console.log('IN MODAL');
       });
-      console.log('PROVISIONED MODAL');
     });
     $scope.$on('provision:modal:chat', function( event, eventObject ){
       eventObject.scope.currentUser = Users.currentUser;
@@ -29,22 +26,12 @@ angular.module('starter.controllers', [])
         $scope.modal = modal;
         $scope.modal.show();
         console.log( eventObject );
-        console.log('IN MODAL', eventObject.scope );
       });
-      console.log('PROVISIONED CHAT ' + eventObject.id + ' MODAL', eventObject.scope);
     });
   })
   .controller('DashCtrl', function($scope) {})
 
   .controller('NetworksCtrl', function( $scope, Networks) {
-    //$http({
-    //  method: 'GET',
-    //  url: APP_IP + '/api/networks'
-    //}).then( function(){
-    //
-    //}, function(){
-    //
-    //});
     $scope.networks = Networks.all();
   })
   .controller('NetworkDetailCtrl', function( $scope, $stateParams, Networks) {
@@ -53,7 +40,6 @@ angular.module('starter.controllers', [])
   .controller('ArticlesCtrl', function($scope, $stateParams, Networks){
     $scope.networkId = $stateParams.network;
     $scope.articles = Networks.getArticles( $stateParams.network );
-    console.log( $scope.articles );
   })
   .controller('ArticleDetailCtrl', function($scope, $stateParams, Networks){
     $scope.article = Networks.getArticles( $stateParams.network, $stateParams.articleId );
@@ -63,7 +49,28 @@ angular.module('starter.controllers', [])
     $scope.boards = Networks.getBoards( $stateParams.network );
   })
   .controller('BoardDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.board = Networks.getBoards( $stateParams.network, $stateParams.articleId );
+    $scope.board = Networks.getBoards( $stateParams.network, $stateParams.boardId );
+  })
+  .controller('EventsCtrl', function($scope, $stateParams, Networks){
+    $scope.networkId = $stateParams.network;
+    $scope.events = Networks.getEvents( $stateParams.network );
+  })
+  .controller('EventDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.event = Networks.getEvents( $stateParams.network, $stateParams.eventId );
+  })
+  .controller('HardwareCtrl', function($scope, $stateParams, Networks){
+    $scope.networkId = $stateParams.network;
+    $scope.harware = Networks.getHardware( $stateParams.network );
+  })
+  .controller('HardwareDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.hardware = Networks.getHardware( $stateParams.network, $stateParams.hardwareId );
+  })
+  .controller('MembersCtrl', function($scope, $stateParams, Networks){
+    $scope.networkId = $stateParams.network;
+    $scope.members = Networks.getMembers( $stateParams.network );
+  })
+  .controller('MembersDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.member = Networks.getMembers( $stateParams.network, $stateParams.memberId );
   })
 
   .controller('ChatsCtrl', function($scope, Users, Chats, Messages ) {
@@ -111,9 +118,6 @@ angular.module('starter.controllers', [])
         chat: $scope.chat
       });
     };
-    $scope.$on('event:done', function(){
-      console.log('INNNNNNN')
-    });
   })
   //.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   //  $scope.chat = Chats.get($stateParams.chatId);

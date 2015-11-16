@@ -89,6 +89,57 @@ angular.module('starter', [
         }
       }
     })
+    .state('tab.events', {
+      url: '/events?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/tab-events.html'
+        }
+      }
+    })
+    .state('tab.event', {
+      url: '/event/:eventId?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/event-detail.html',
+          controller: 'EventDetailCtrl'
+        }
+      }
+    })
+    .state('tab.appliances', {
+      url: '/appliances?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/tab-hardware.html'
+        }
+      }
+    })
+    .state('tab.appliance', {
+      url: '/appliance/:applianceId?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/hardware-detail.html',
+          controller: 'HardwareDetailCtrl'
+        }
+      }
+    })
+    .state('tab.members', {
+      url: '/members?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/tab-members.html'
+        }
+      }
+    })
+    .state('tab.member', {
+      url: '/member/:memberId?network',
+      views: {
+        'tab-networks': {
+          templateUrl: 'templates/member-detail.html',
+          controller: 'MemberDetailCtrl'
+        }
+      }
+    })
   .state('tab.networks', {
     url: '/networks',
     views: {

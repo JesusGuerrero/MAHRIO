@@ -11,15 +11,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Articles', function( _ ) {
-    var articles = [
-
-    ];
-    return {
-      get: function( networkId ) {}
-    };
-  })
-  .factory('Networks', function( APP_IP, $http, __ ){
+  .factory('Networks', function( APP_IP, $http, _, Users ){
     var networks = [{
         id: 1,
         title: 'Viviana Jade Rocha',
@@ -31,51 +23,84 @@ angular.module('starter.services', [])
           title: 'Birth Story',
           deck: 'Discover events of Oct. 27, 2015',
           cover: 'img/articles/1/birth-story.png',
-          sections: ['<h1>Heading</h1>','<p>Hello World</p>','Goodbye World']
+          sections: ['Vivamus mollis fringilla mauris pharetra rutrum. Cras maximus sapien turpis, sed finibus enim porta sed. Phasellus faucibus justo sem, sit amet ultrices sem condimentum quis. In gravida ut mauris nec scelerisque. Maecenas eu consectetur urna. Cras vitae tellus posuere, blandit diam vel, suscipit dolor. Maecenas scelerisque pretium est non fringilla. Donec suscipit enim lorem, vel eleifend ex dapibus at.']
+        },{
+          id: 2,
+          title: 'First Week',
+          deck: 'Our sweet bundle of joy!',
+          cover: 'img/articles/2/first-week.png',
+          sections: ['Nullam euismod purus urna, vitae rutrum purus suscipit consectetur. Sed ac lobortis quam. Vivamus ac sagittis orci, eget luctus nisi. Pellentesque porta leo quis iaculis ultrices. Nullam convallis velit sit amet lorem vehicula rutrum vel eu lorem. Vivamus scelerisque eleifend dolor vel facilisis. Nunc eleifend non elit in venenatis.']
         }],
-        boards: [{
-          id: 1,
-          name: 'Todo'
-        }]
+        boards: [],
+        events: [],
+        hardware: [],
+        members: []
       },{
         id: 2,
         title: 'MAHRIO',
         deck: 'Born 03/16/2015 @ 20:30',
         cover: 'img/networks/2/mahrio-network.png',
-        coverFull: 'img/networks/2/mahrio-coverFull.png'
+        coverFull: 'img/networks/2/mahrio-coverFull.png',
+        articles: [],
+        boards: [],
+        events: [],
+        hardware: [],
+        members: []
       },{
         id: 3,
         title: 'The Flamingo',
         deck: 'Est. 05/29/2015 @ 13:15',
         cover: 'img/networks/3/the-flamingo-network.png',
-        coverFull: 'img/networks/3/the-flamingo-coverFull.png'
+        coverFull: 'img/networks/3/the-flamingo-coverFull.png',
+        articles: [],
+        boards: [],
+        events: [],
+        hardware: [],
+        members: []
       },{
         id: 4,
         title: 'Swedish Cadillac',
         deck: 'Est. 10/10/2015 @ 09:30',
         cover: 'img/networks/4/swedish-cadillac-network.png',
-        coverFull: 'img/networks/5/swedish-cadillac-coverFull.png'
+        coverFull: 'img/networks/5/swedish-cadillac-coverFull.png',
+        articles: [],
+        boards: [],
+        events: [],
+        hardware: [],
+        members: []
       },{
         id: 5,
         title: 'Finance',
         deck: 'Est. 08/24/2015 @ 13:00',
         cover: 'img/networks/5/finance-network.png',
-        coverFull: 'img/networks/5/finance-coverFull.png'
+        coverFull: 'img/networks/5/finance-coverFull.png',
+        articles: [],
+        boards: [],
+        events: [],
+        hardware: [],
+        members: []
     }];
 
-    return {
+    var api = {
 
       get: function(networkId) {
-        return _.where( networks, {id: networkId})[0];
+        var allNetworks = api.all(), saveNetwork = null;
+        _.each( allNetworks, function(network){
+          if( network.id == networkId ) {
+            saveNetwork = network;
+          }
+        });
+        return saveNetwork;
       },
       all: function(){
-        return networks;
+        return _.indexBy( networks, 'id');
       },
       getArticles: function( networkId, articleId ){
-        var network = this.get(networkId);
+        var network = api.get(networkId);
         if( network && network.articles ) {
           if( articleId ) {
-            return  _.findById( network.articles, articleId);
+            var articles = _.indexBy( network.articles, 'id');
+            return articles[ articleId ];
           } else {
             return network.articles;
           }
@@ -94,8 +119,45 @@ angular.module('starter.services', [])
         } else {
           return [];
         }
+      },
+      getEvents: function( networkId, eventId ){
+        var network = this.get(networkId);
+        if( network && network.events ) {
+          if( eventId ) {
+            return  _.findById( network.events, eventId);
+          } else {
+            return network.events;
+          }
+        } else {
+          return [];
+        }
+      },
+      getHardware: function( networkId, hardwareId ){
+        var network = this.get(networkId);
+        if( network && network.hardware ) {
+          if( hardwareId ) {
+            return  _.findById( network.events, hardwareId);
+          } else {
+            return network.hardware;
+          }
+        } else {
+          return [];
+        }
+      },
+      getMembers: function( networkId, memberId ){
+        var network = this.get(networkId);
+        if( network && network.members ) {
+          if( memberId ) {
+            return  _.findById( network.members, memberId);
+          } else {
+            return network.members;
+          }
+        } else {
+          return [];
+        }
       }
-    }
+    };
+    return api;
   })
   .factory('Chats', function(Users, Messages, _) {
     // Might use a resource here that returns a JSON array
