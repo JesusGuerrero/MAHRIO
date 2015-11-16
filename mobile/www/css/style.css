@@ -35,6 +35,68 @@ body.tabbed-nav .bar .tabs .tab-item {
 body.tabbed-nav .scroll-content {
   margin-top: 21px;
 }
+.item:first-of-type {
+  border-top: none;
+}
+.modal .item:first-of-type {
+  border-top: 1px solid #ddd;
+}
+.modal .tab-nav.tabs {
+  background: transparent;
+}
+.modal .tab-nav.tabs .tab-item.tab-item-active {
+  border: 1px solid #ddd;
+  margin-top: -5px;
+}
+.modal .tab-nav.tabs .icon {
+  float: left;
+}
+
+.left, .right {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+.right img {
+  float: right;
+}
+.right .direct-chat-text {
+  margin: 5px 50px 0 0;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+.direct-chat-info {
+  height: 20px;
+}
+.direct-chat-img {
+  border-radius: 50%;
+  float: left;
+  width: 40px;
+  height: 40px;
+}
+.direct-chat-text {
+  border-radius: 5px;
+  position: relative;
+  padding: 5px 10px;
+  background: #d2d6de;
+  border: 1px solid #d2d6de;
+  margin: 5px 0 0 50px;
+  color: #444444;
+}
+.direct-chat.modal .item {
+  border: none !important;
+  white-space: initial;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.bar.bar-header {
+  border-bottom: 1px solid #ddd;
+}
 .item-icon-label {
   position: absolute;
   left: 15px;

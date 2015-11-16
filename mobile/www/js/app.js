@@ -5,8 +5,14 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.directives'])
+angular.module('starter', [
+  'ionic',
+  'starter.controllers',
+  'starter.services',
+  'starter.directives',
+  'angular-underscore'])
   .constant('APP_IP', 'http://192.168.0.4:8042')
+  .constant('_', window._)
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

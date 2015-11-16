@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="starter">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
@@ -14,6 +14,8 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/underscore/underscore-min.js"></script>
+    <script src="lib/underscore/angular-underscore.min.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -23,8 +25,10 @@
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
     <script src="js/directives.js"></script>
+
+
   </head>
-  <body ng-app="starter" tabbed-navigation>
+  <body ng-controller="HomeCtrl" tabbed-navigation>
     <!--
       The nav bar that will be updated as we navigate between views.
     -->

@@ -1,0 +1,35 @@
+<div class="modal">
+  <ion-header-bar class="bar-header">
+    <h1 class="title">{{others ? others.name : other ? other.name : 'Chat'}}</h1>
+    <button class="button button-clear" ng-click="modal.hide()">Close</button>
+  </ion-header-bar>
+  <ion-content>
+    <div class="item-input-inset">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios-chatboxes placeholder-icon"></i>
+        <input type="search" placeholder="Message...">
+      </label>
+      <button class="button button-stable">
+        Send
+      </button>
+    </div>
+    <div class="padding">
+      <div class="list">
+        <label class="item item-input">
+          <input ng-model="form.name" type="text" name="name" placeholder="Placeholder" />
+        </label>
+        <label class="item item-input item-select">
+          <div class="input-label">
+            Lightsaber
+          </div>
+          <select>
+            <option>Blue</option>
+            <option selected>Green</option>
+            <option>Red</option>
+          </select>
+        </label>
+        <button class="button button-block button-stable" ng-click="addObject()">Create</button>
+      </div>
+    </div>
+  </ion-content>
+</div>
