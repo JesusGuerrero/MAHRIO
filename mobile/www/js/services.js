@@ -82,7 +82,9 @@ angular.module('starter.services', [])
     }];
 
     var api = {
-
+      join: function( networkId, memberId ){
+        networks[ networkId ].members.push( memberId );
+      },
       get: function(networkId) {
         var allNetworks = api.all(), saveNetwork = null;
         _.each( allNetworks, function(network){
@@ -307,7 +309,8 @@ angular.module('starter.services', [])
         firstName: 'Jesus',
         lastName: 'Rocha'
       },
-      face: 'img/users/1/user-profile.jpg'
+      face: 'img/users/1/user-profile.jpg',
+      networks: [1]
     }, {
       id: 2,
       email: 'aida.hurtado@whichdegree.co',
@@ -315,7 +318,8 @@ angular.module('starter.services', [])
         firstName: 'Aida',
         lastName: 'Hurtado'
       },
-      face: 'img/users/3/user-profile.jpg'
+      face: 'img/users/3/user-profile.jpg',
+      networks: []
     }, {
       id: 3,
       email: 'emcp@whichdegree.co',
@@ -323,10 +327,14 @@ angular.module('starter.services', [])
         firstName: 'Erik',
         lastName: 'Peterson'
       },
-      face: 'img/users/2/user-profile.jpg'
+      face: 'img/users/2/user-profile.jpg',
+      networks: []
     }], currentUser = users[0];
 
     return {
+      addNetwork: function(networkId){
+        currentUser.networks.push( networkId );
+      },
       getUsers: function( chatIds ) {
         return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
       },
