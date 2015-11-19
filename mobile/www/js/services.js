@@ -292,12 +292,14 @@ angular.module('starter.services', [])
     };
   })
   .factory('Modal', function($ionicModal){
+    var currentModal = null;
     return {
       provisionModal: function( $scope, url ){
-        return $ionicModal.fromTemplateUrl(url, {
+        currentModal = $ionicModal.fromTemplateUrl(url, {
           animation: 'slide-in-up',
           scope: $scope
         });
+        return currentModal;
       }
     };
   })
@@ -305,6 +307,7 @@ angular.module('starter.services', [])
     var users = [{
       id: 1,
       email: 'jesus.rocha@whichdegree.co',
+      password: '1234',
       profile: {
         firstName: 'Jesus',
         lastName: 'Rocha'
@@ -314,6 +317,7 @@ angular.module('starter.services', [])
     }, {
       id: 2,
       email: 'aida.hurtado@whichdegree.co',
+      password: '1234',
       profile: {
         firstName: 'Aida',
         lastName: 'Hurtado'
@@ -323,6 +327,7 @@ angular.module('starter.services', [])
     }, {
       id: 3,
       email: 'emcp@whichdegree.co',
+      password: '1234',
       profile: {
         firstName: 'Erik',
         lastName: 'Peterson'

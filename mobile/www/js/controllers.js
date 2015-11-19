@@ -11,21 +11,14 @@ angular.module('starter.controllers', [])
       $scope.modal.hide();
     };
     $scope.$on('$destroy', function() {
-      $scope.modal.remove();
+      Modal.currentModal.remove();
     });
 
-    $scope.$on('provision:modal:signin', function(){
-      Modal.provisionModal($scope, 'templates/modal.html').then(function(modal){
-        $scope.modal = modal;
-        $scope.modal.show();
-      });
-    });
     $scope.$on('provision:modal:chat', function( event, eventObject ){
       eventObject.scope.currentUser = Users.currentUser;
       Modal.provisionModal(eventObject.scope, 'templates/modal-chat.html').then(function(modal){
         $scope.modal = modal;
         $scope.modal.show();
-        console.log( eventObject );
       });
     });
   })
@@ -34,8 +27,34 @@ angular.module('starter.controllers', [])
   .controller('NetworksCtrl', function( $scope, Networks) {
     $scope.networks = Networks.all();
   })
-  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Networks) {
+  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Modal, Networks) {
     $scope.network = Networks.get($stateParams.networkId);
+    $scope.confirmStatusChanges = function() {
+      $scope.data = {};
+      var myPopup = $ionicPopup.show({
+        template: '<input type="password" ng-model="data.wifi" style="padding:0 10px">',
+        title: 'Confirm Departure',
+        subTitle: 'Please enter account password',
+        scope: $scope,
+        buttons: [
+          { text: 'Cancel' },
+          {
+            text: '<b>Leave</b>',
+            type: 'button-stable',
+            onTap: function(e) {
+              if (!$scope.data.wifi) {
+                e.preventDefault();
+              } else {
+                return $scope.data.wifi;
+              }
+            }
+          }
+        ]
+      });
+      myPopup.then(function(res) {
+        console.log('Tapped!', res);
+      });
+    };
   })
   .controller('ArticlesCtrl', function($scope, $stateParams, Networks){
     $scope.networkId = $stateParams.network;
@@ -126,11 +145,22 @@ angular.module('starter.controllers', [])
 
   })
 
-  .controller('AccountCtrl', function($scope) {
+  .controller('AccountCtrl', function($scope, Modal, Users) {
     $scope.settings = {
       enableFriends: true
     };
     $scope.provisionSignInModal = function(){
-      $scope.$emit('provision:modal:signin');
+      $scope.form = {};
+      $scope.signIn = function( ){
+        if( $scope.form.email && Users.login( $scope.form.email) ) {
+          alert( 'logged in');
+        }
+        console.log( this );
+        $scope.modal.remove();
+      };
+      Modal.provisionModal( $scope, 'templates/modal-signin.html').then(function(modal){
+        $scope.modal = modal;
+        $scope.modal.show();
+      });
     };
   });

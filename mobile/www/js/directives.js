@@ -21,7 +21,9 @@ angular.module('starter.directives', [])
         on: '@',
         off: '@',
         icon: '@',
-        id: '@'
+        id: '@',
+        type: '@',
+        confirm: '=click'
       },
       templateUrl: 'templates/directives/button-secondary.html',
       link: function(scope){
@@ -32,10 +34,36 @@ angular.module('starter.directives', [])
         } else {
           scope.text = scope.on;
         }
+        scope.styleType = function(){
+          switch( scope.type ) {
+            case "1":
+              return {
+                fontSize: '12px',
+                position: 'absolute',
+                bottom: '20px',
+                minHeight: '20px',
+                lineHeight: '26px'
+              };
+          }
+        };
         scope.join = function(){
           Networks.join( scope.network );
           Users.addNetwork( scope.network );
+        };
+        scope.confirmClick = function(){
+          if( typeof scope.confirm === 'function' ) {
+            scope.confirm();
+          }
         }
+      }
+    }
+  })
+  .directive('popupConfirm', function( $ionicPopup){
+    return {
+      restrict: 'A',
+      templateUrl: 'templates/directives/popup-confirm.html',
+      link: function( scope ) {
+
       }
     }
   });
