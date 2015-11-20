@@ -1,97 +1,28 @@
 angular.module('starter.controllers', [])
-
-  .controller('HomeCtrl', function($scope, Users, Modal){
-
-    $scope.openModal = function(){
-      $scope.modal.show();
+  .controller('AccountCtrl', function($scope, Modal, Users) {
+    $scope.settings = {
+      enableFriends: true
     };
     $scope.form = {};
-    $scope.addObject = function() {
-      console.log($scope);
-      $scope.modal.hide();
+    $scope.signIn = function( ){
+      if( $scope.form.email && Users.login( $scope.form.email) ) {
+        alert( 'logged in');
+      }
+      $scope.form = {};
+      $scope.$emit('modal:destroy');
     };
-    $scope.$on('$destroy', function() {
-      Modal.currentModal.remove();
-    });
+    $scope.signOut = function(){
 
-    $scope.$on('provision:modal:chat', function( event, eventObject ){
-      eventObject.scope.currentUser = Users.currentUser;
-      Modal.provisionModal(eventObject.scope, 'templates/modal-chat.html').then(function(modal){
-        $scope.modal = modal;
-        $scope.modal.show();
-      });
-    });
-  })
-  .controller('DashCtrl', function($scope) {})
+    };
 
-  .controller('NetworksCtrl', function( $scope, Networks) {
-    $scope.networks = Networks.all();
-  })
-  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Modal, Networks) {
-    $scope.network = Networks.get($stateParams.networkId);
-    $scope.confirmStatusChanges = function() {
-      $scope.data = {};
-      var myPopup = $ionicPopup.show({
-        template: '<input type="password" ng-model="data.wifi" style="padding:0 10px">',
-        title: 'Confirm Departure',
-        subTitle: 'Please enter account password',
-        scope: $scope,
-        buttons: [
-          { text: 'Cancel' },
-          {
-            text: '<b>Leave</b>',
-            type: 'button-stable',
-            onTap: function(e) {
-              if (!$scope.data.wifi) {
-                e.preventDefault();
-              } else {
-                return $scope.data.wifi;
-              }
-            }
-          }
-        ]
-      });
-      myPopup.then(function(res) {
-        console.log('Tapped!', res);
+    $scope.provisionSignInModal = function(){
+      $scope.$emit('provision:modal:signin',{
+        scope: $scope
       });
     };
-  })
-  .controller('ArticlesCtrl', function($scope, $stateParams, Networks){
-    $scope.networkId = $stateParams.network;
-    $scope.articles = Networks.getArticles( $stateParams.network );
-  })
-  .controller('ArticleDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.article = Networks.getArticles( $stateParams.network, $stateParams.articleId );
-  })
-  .controller('BoardsCtrl', function($scope, $stateParams, Networks){
-    $scope.networkId = $stateParams.network;
-    $scope.boards = Networks.getBoards( $stateParams.network );
-  })
-  .controller('BoardDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.board = Networks.getBoards( $stateParams.network, $stateParams.boardId );
-  })
-  .controller('EventsCtrl', function($scope, $stateParams, Networks){
-    $scope.networkId = $stateParams.network;
-    $scope.events = Networks.getEvents( $stateParams.network );
-  })
-  .controller('EventDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.event = Networks.getEvents( $stateParams.network, $stateParams.eventId );
-  })
-  .controller('HardwareCtrl', function($scope, $stateParams, Networks){
-    $scope.networkId = $stateParams.network;
-    $scope.harware = Networks.getHardware( $stateParams.network );
-  })
-  .controller('HardwareDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.hardware = Networks.getHardware( $stateParams.network, $stateParams.hardwareId );
-  })
-  .controller('MembersCtrl', function($scope, $stateParams, Networks){
-    $scope.networkId = $stateParams.network;
-    $scope.members = Networks.getMembers( $stateParams.network );
-  })
-  .controller('MembersDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.member = Networks.getMembers( $stateParams.network, $stateParams.memberId );
-  })
 
+    $scope.currentUser = Users.currentUser;
+  })
   .controller('ChatsCtrl', function($scope, Users, Chats, Messages ) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
@@ -138,29 +69,107 @@ angular.module('starter.controllers', [])
       });
     };
   })
-  //.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  //  $scope.chat = Chats.get($stateParams.chatId);
-  //})
-  .controller('SearchCtrl', function( $scope) {
+  .controller('DashCtrl', function($scope) {})
+  .controller('HomeCtrl', function($scope, Users, Modal){
 
-  })
-
-  .controller('AccountCtrl', function($scope, Modal, Users) {
-    $scope.settings = {
-      enableFriends: true
+    $scope.openModal = function(){
+      $scope.modal.show();
     };
-    $scope.provisionSignInModal = function(){
-      $scope.form = {};
-      $scope.signIn = function( ){
-        if( $scope.form.email && Users.login( $scope.form.email) ) {
-          alert( 'logged in');
-        }
-        console.log( this );
-        $scope.modal.remove();
-      };
-      Modal.provisionModal( $scope, 'templates/modal-signin.html').then(function(modal){
+    $scope.form = {};
+    $scope.addObject = function() {
+      console.log($scope);
+      $scope.modal.hide();
+    };
+    $scope.$on('modal:destroy', function() {
+      $scope.modal.remove();
+    });
+
+    $scope.$on('provision:modal:signin', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-signin.html').then(function(modal){
         $scope.modal = modal;
         $scope.modal.show();
       });
+    });
+    $scope.$on('provision:modal:chat', function( event, eventObject ){
+      eventObject.scope.currentUser = Users.currentUser;
+      Modal.provisionModal(eventObject.scope, 'templates/modal-chat.html').then(function(modal){
+        $scope.modal = modal;
+        $scope.modal.show();
+      });
+    });
+  })
+  .controller('NetworksCtrl', function( $scope, Networks) {
+    $scope.networks = Networks.get();
+  })
+  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Networks) {
+    $scope.network = Networks.get( $stateParams.networkId );
+
+    $scope.confirmStatusChanges = function() {
+      $scope.data = {};
+      var myPopup = $ionicPopup.show({
+        template: '<input type="password" ng-model="data.wifi" style="padding:0 10px">',
+        title: 'Confirm Departure',
+        subTitle: 'Please enter account password',
+        scope: $scope,
+        buttons: [
+          { text: 'Cancel' },
+          {
+            text: '<b>Leave</b>',
+            type: 'button-stable',
+            onTap: function(e) {
+              if (!$scope.data.wifi) {
+                e.preventDefault();
+              } else {
+                return $scope.data.wifi;
+              }
+            }
+          }
+        ]
+      });
+      myPopup.then(function(res) {
+        console.log('Tapped!', res);
+      });
     };
+  })
+  .controller('OfflineCtrl', function($scope){
+
+  })
+  .controller('ArticlesCtrl', function($scope, $stateParams, Networks ){
+    $scope.networkId = $stateParams.network;
+    $scope.articles = Networks.get($scope.networkId).articles;
+  })
+  .controller('ArticleDetailCtrl', function($scope, $stateParams, Articles){
+    $scope.article = Articles.get( $stateParams.articleId );
+    console.log( $scope.article );
+  })
+  .controller('BoardsCtrl', function($scope, $stateParams, Networks){
+    $scope.networkId = $stateParams.network;
+    $scope.boards = Networks.getBoards( $stateParams.network );
+  })
+  .controller('BoardDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.board = Networks.getBoards( $stateParams.network, $stateParams.boardId );
+  })
+  .controller('EventsCtrl', function($scope, $stateParams, Networks){
+    $scope.networkId = $stateParams.network;
+    $scope.events = Networks.getEvents( $stateParams.network );
+  })
+  .controller('EventDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.event = Networks.getEvents( $stateParams.network, $stateParams.eventId );
+  })
+  .controller('HardwareCtrl', function($scope, $stateParams, Networks){
+    $scope.networkId = $stateParams.network;
+    $scope.harware = Networks.getHardware( $stateParams.network );
+  })
+  .controller('HardwareDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.hardware = Networks.getHardware( $stateParams.network, $stateParams.hardwareId );
+  })
+  .controller('MembersCtrl', function($scope, $stateParams, Networks){
+    $scope.networkId = $stateParams.network;
+    $scope.members = Networks.getMembers( $stateParams.network );
+  })
+  .controller('MembersDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.member = Networks.getMembers( $stateParams.network, $stateParams.memberId );
+  })
+  .controller('SearchCtrl', function( $scope) {
+
   });
