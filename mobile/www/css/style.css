@@ -111,3 +111,12 @@ body.tabbed-nav .scroll-content {
   line-height: 43px;
   font-size: 21pt;
 }
+
+.bg-faces {
+  background: url('../img/bg/faces.jpg');
+  background-size: cover;
+  min-height: 200px;
+}
+.bg-faces div {
+  position: relative;
+}

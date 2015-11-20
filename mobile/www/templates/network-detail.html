@@ -21,7 +21,23 @@
     <!--</div>-->
   </ion-nav-title>
 
+  <ion-nav-buttons side="secondary">
+
+  </ion-nav-buttons>
+
   <ion-content>
+    <div class="row bg-faces">
+      <div class="col col-50">
+      </div>
+      <div class="col col-25">
+      </div>
+      <div class="col col-25">
+        <button-secondary on="JOIN" off="LEAVE" click="confirmStatusChanges"
+                          icon="ion-ios-arrow-forward" id="2" type="1">
+        </button-secondary>
+
+      </div>
+    </div>
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/articles?network={{network.id}}">
         <i class="item-icon-label ion-ios-book"></i>

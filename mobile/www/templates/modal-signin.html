@@ -1,16 +1,20 @@
 <div class="modal">
-  <ion-header-bar class="bar-header bar-positive">
-    <h1 class="title">New Object</h1>
-    <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
+  <ion-header-bar class="bar-header">
+    <h1 class="title">Sign In</h1>
+    <button class="button button-clear" ng-click="modal.hide()">Cancel</button>
   </ion-header-bar>
   <ion-content>
     <div class="padding">
       <div class="list">
         <label class="item item-input">
-          <span class="input-label">Name</span>
-          <input ng-model="form.name" type="text" name="name" />
+          <span class="input-label">Email</span>
+          <input ng-model="form.email" type="text" name="name" />
         </label>
-        <button class="button button-block button-positive" ng-click="addObject()">Create</button>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input ng-model="form.password" type="password" name="name" />
+        </label>
+        <button class="button button-block" ng-click="signIn( modal )">Create</button>
       </div>
     </div>
   </ion-content>
