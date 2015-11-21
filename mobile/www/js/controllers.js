@@ -1,24 +1,7 @@
 angular.module('starter.controllers', [])
-  .controller('AccountCtrl', function($scope, Modal, Users) {
+  .controller('AccountCtrl', function($scope, Users) {
     $scope.settings = {
       enableFriends: true
-    };
-    $scope.form = {};
-    $scope.signIn = function( ){
-      if( $scope.form.email && Users.login( $scope.form.email) ) {
-        alert( 'logged in');
-      }
-      $scope.form = {};
-      $scope.$emit('modal:destroy');
-    };
-    $scope.signOut = function(){
-
-    };
-
-    $scope.provisionSignInModal = function(){
-      $scope.$emit('provision:modal:signin',{
-        scope: $scope
-      });
     };
 
     $scope.currentUser = Users.currentUser;
@@ -84,8 +67,14 @@ angular.module('starter.controllers', [])
       $scope.modal.remove();
     });
 
-    $scope.$on('provision:modal:signin', function(event, eventObject){
-      Modal.provisionModal(eventObject.scope, 'templates/modal-signin.html').then(function(modal){
+    $scope.$on('provision:modal:register', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-register.html').then(function(modal){
+        $scope.modal = modal;
+        $scope.modal.show();
+      });
+    });
+    $scope.$on('provision:modal:login', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-login.html').then(function(modal){
         $scope.modal = modal;
         $scope.modal.show();
       });
@@ -132,6 +121,34 @@ angular.module('starter.controllers', [])
     };
   })
   .controller('OfflineCtrl', function($scope){
+
+  })
+  .controller('DemoCtrl', function($scope){
+
+  })
+  .controller('IntroCtrl', function ($scope, $state) {
+    $scope.form = {};
+    var pushedNext = false;
+
+    $scope.register = function() {
+      $state.go('tab.welcome');
+    };
+    $scope.tryFree = function(){
+      // login manually
+      $state.go('tab.dash');
+    };
+
+    $scope.agreedTerms = function() {
+      return angular.isDefined($scope.form.terms);
+    };
+    $scope.isPastFirstSlide = function(){
+      return angular.isDefined( $scope.form.firstName ) && angular.isDefined( $scope.form.lastName ) && pushedNext;
+    };
+    $scope.pushNext = function(){
+      pushedNext = true;
+    };
+  })
+  .controller('WelcomeCtrl', function($scope){
 
   })
   .controller('ArticlesCtrl', function($scope, $stateParams, Networks ){

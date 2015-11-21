@@ -1,0 +1,78 @@
+<div class="modal">
+  <ion-header-bar class="bar-header">
+    <h1 class="title">Register</h1>
+    <button class="button button-clear" ng-click="modal.hide()">Cancel</button>
+  </ion-header-bar>
+  <!--<ion-nav-buttons side="left">-->
+    <!--<button class="button button-light no-animation"-->
+            <!--ng-click="start()">-->
+      <!--Skip wizard-->
+    <!--</button>-->
+    <!--<button class="button button-light no-animation" ion-wizard-previous>-->
+      <!--Back-->
+    <!--</button>-->
+  <!--</ion-nav-buttons>-->
+  <!--<ion-nav-buttons side="right">-->
+    <!--<button class="button button-light no-animation" ion-wizard-next>-->
+      <!--Next-->
+    <!--</button>-->
+    <!--<button class="button button-light no-animation" ion-wizard-start="start()" condition="startCondition()">-->
+      <!--Start App-->
+    <!--</button>-->
+
+  <!--</ion-nav-buttons>-->
+  <ion-content>
+    <ion-slide-box ion-wizard>
+      <ion-slide ion-wizard-step  next-condition="form.firstName && form.lastName">
+        <ion-wizard-content class="has-header"></ion-wizard-content>
+        <div class="padding">
+          <div class="list">
+            <div class="item" style="padding: 0 16px;">
+              <input ng-model="form.firstName" type="text" placeholder="First Name"/>
+            </div>
+            <div class="item" style="padding: 0 16px;">
+              <input ng-model="form.lastName" type="text" placeholder="Last Name"/>
+            </div>
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide ion-wizard-step next-condition="form.email && form.password">
+        <ion-wizard-content class="has-header"></ion-wizard-content>
+        <div class="padding">
+          <div class="list">
+            <div class="item" style="padding: 0 16px;">
+              <input ng-model="form.email" type="text" placeholder="Email"/>
+            </div>
+            <div class="item" style="padding: 0 16px;">
+              <input ng-model="form.password" type="password" placeholder="Password"/>
+            </div>
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide ion-wizard-step>
+        <ion-wizard-content class="has-header"></ion-wizard-content>
+        <div class="padding">
+          <div class="list">
+            <div class="item" style="padding: 0 16px;">
+              <label>Are you an student?</label>
+              <input type="checkbox" ng-click="form.student"/>
+            </div>
+            <div class="item" style="padding: 0 16px;">
+              <label>Are you an expert?</label>
+              <input ng-model="form.expert" type="checkbox"/>
+            </div>
+          </div>
+        </div>
+      </ion-slide>
+    </ion-slide-box>
+  </ion-content>
+  <ion-footer-bar align-title="left">
+    <div class="row" style="padding: 0;">
+      <div class="col col-50 col-offset-50">
+        <div class="footer-primary" ng-click="doSomething()">
+          <button class="button">Next</button>
+        </div>
+      </div>
+    </div>
+  </ion-footer-bar>
+</div>

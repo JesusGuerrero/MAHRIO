@@ -58,12 +58,56 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('popupConfirm', function( $ionicPopup){
+  .directive('popupConfirm', function( $ionicPopup ){
     return {
       restrict: 'A',
       templateUrl: 'templates/directives/popup-confirm.html',
       link: function( scope ) {
 
+      }
+    }
+  })
+  .directive('loginButton', function(Modal, Users){
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'templates/directives/login-button.html',
+      link: function(scope){
+        scope.form = {};
+        scope.login = function( ){
+          if( scope.form.email && Users.login( scope.form.email) ) {
+            alert( 'logged in');
+          }
+          scope.form = {};
+          scope.$emit('modal:destroy');
+        };
+        scope.loginModal = function(){
+          scope.$emit('provision:modal:login',{
+            scope: scope
+          });
+        };
+      }
+    }
+  })
+  .directive('registerButton', function(Modal, Users){
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'templates/directives/register-button.html',
+      link: function(scope){
+        scope.form = {};
+        scope.login = function( ){
+          if( scope.form.email && Users.login( scope.form.email) ) {
+            alert( 'logged in');
+          }
+          scope.form = {};
+          scope.$emit('modal:destroy');
+        };
+        scope.registerModal = function(){
+          scope.$emit('provision:modal:register',{
+            scope: scope
+          });
+        };
       }
     }
   });

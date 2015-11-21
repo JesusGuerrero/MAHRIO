@@ -1,6 +1,6 @@
 <div class="modal">
   <ion-header-bar class="bar-header">
-    <h1 class="title">Sign In</h1>
+    <h1 class="title">Log in</h1>
     <button class="button button-clear" ng-click="modal.hide()">Cancel</button>
   </ion-header-bar>
   <ion-content>
@@ -14,8 +14,21 @@
           <span class="input-label">Password</span>
           <input ng-model="form.password" type="password" name="name" />
         </label>
-        <button class="button button-block" ng-click="signIn( modal )">Create</button>
       </div>
     </div>
   </ion-content>
+  <ion-footer-bar align-title="left">
+    <div class="row" style="padding: 0;">
+      <div class="col col-50">
+        <div class="footer-primary" style="float: left;">
+          <button class="button button-clear" >Forgot Password</button>
+        </div>
+      </div>
+      <div class="col col-50" style="float: right;">
+        <div class="footer-primary" ng-click="login()">
+          <button class="button">Log in</button>
+        </div>
+      </div>
+    </div>
+  </ion-footer-bar>
 </div>

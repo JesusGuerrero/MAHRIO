@@ -120,3 +120,34 @@ body.tabbed-nav .scroll-content {
 .bg-faces div {
   position: relative;
 }
+#offline {
+  height: 100%;
+}
+#offline h3 {
+  position: absolute;
+  bottom: 75%;
+  width: 80%;
+  left: 10%;
+  text-align: center;
+}
+#view {
+  position: absolute; bottom: 5%; width: 90%; left: 5%; text-align: center;
+}
+.slider {
+  border-color: #b2b2b2;
+  background-color: #f8f8f8;
+  height: 100%;
+}
+.slider-slide {
+  background: #fff;
+}
+.slidingTabs {
+  display: none;
+}
+.footer-primary .button {
+  float: right;
+  min-height: 25px;
+  line-height: 23px;
+  font-size: 13px !important;
+  min-height: 10px;
+}
