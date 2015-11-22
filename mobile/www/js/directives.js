@@ -67,7 +67,7 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('loginButton', function(Modal, Users){
+  .directive('loginButton', function(Modal, Users, $state){
     return {
       restrict: 'E',
       replace: true,
@@ -76,7 +76,7 @@ angular.module('starter.directives', [])
         scope.form = {};
         scope.login = function( ){
           if( scope.form.email && Users.login( scope.form.email) ) {
-            alert( 'logged in');
+            $state.go('tab.dash');
           }
           scope.form = {};
           scope.$emit('modal:destroy');
@@ -96,13 +96,6 @@ angular.module('starter.directives', [])
       templateUrl: 'templates/directives/register-button.html',
       link: function(scope){
         scope.form = {};
-        scope.login = function( ){
-          if( scope.form.email && Users.login( scope.form.email) ) {
-            alert( 'logged in');
-          }
-          scope.form = {};
-          scope.$emit('modal:destroy');
-        };
         scope.registerModal = function(){
           scope.$emit('provision:modal:register',{
             scope: scope

@@ -126,12 +126,12 @@ angular.module('starter.controllers', [])
   .controller('DemoCtrl', function($scope){
 
   })
-  .controller('IntroCtrl', function ($scope, $state) {
+  .controller('RegisterCtrl', function ($scope, $state) {
     $scope.form = {};
     var pushedNext = false;
 
     $scope.register = function() {
-      $state.go('tab.welcome');
+      $state.go('tab.dash');
     };
     $scope.tryFree = function(){
       // login manually
