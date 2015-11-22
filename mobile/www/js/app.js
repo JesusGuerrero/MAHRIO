@@ -26,6 +26,8 @@ angular.module('starter', [
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    window.analytics.startTrackerWithId('UA-XXXX-YY');
   });
 })
 
