@@ -1,4 +1,4 @@
-var fs = require('fs');
+//var fs = require('fs');
 var path = require('path');
 
 var TestUtils = function () {
@@ -7,30 +7,31 @@ var TestUtils = function () {
     this.writeToLog = function (message, suiteName, isTitleMessage) {
 
         if (typeof message !== 'string') {
-            message = "WARNING: messaged was not a string";
+            message = 'WARNING: messaged was not a string';
         }
         var delimiter = '-',
             d = new Date(),
-            dateString = d.getDate()  + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes();
+            dateString = d.getDate()  + '-' + (d.getMonth() + 1) + '-' + d.getFullYear() + ' ' + d.getHours() + ':' + d.getMinutes();
         if (isTitleMessage) {
             message = message.toUpperCase() + '\n';
         } else {
             delimiter = '--';
         }
-        console.log(dateString + " " + suiteName + " " + delimiter + message);
+        console.log(dateString + ' ' + suiteName + ' ' + delimiter + message);
     };
 
     this.pad = function (num, size) {
-        var s = "000000000" + num;
+        var s = '000000000' + num;
         return s.substr(s.length - size);
     };
 
     this.generateScreenshotPathAndFilename = function (metadata) {
-        var testSuiteName = metadata['testSuiteName'];
-        var paddedCounter = metadata['counter'];
-        var message = metadata['message'];
+        var testSuiteName = metadata.testSuiteName;
+        var paddedCounter = metadata.counter;
+        var message = metadata.message;
 
-        return browser.params.baseTestFolderName + path.sep + testSuiteName + path.sep + browser.params.browserName + path.sep + paddedCounter + "_" + message + "_" + browser.params.dimensions.width + "x" + browser.params.dimensions.height + ".png"
+        return browser.params.baseTestFolderName + path.sep + testSuiteName + path.sep + browser.params.browserName + path.sep +
+          paddedCounter + '_' + message + '_' + browser.params.dimensions.width + 'x' + browser.params.dimensions.height + '.png';
     };
 
     this.findAccordionElement = function (name) {
@@ -43,7 +44,8 @@ var TestUtils = function () {
                 }
             });
         }, function() {
-            self.writeToLog("ERROR - Stale element, rerunning search! ");
+            /* global self */
+            self.writeToLog('ERROR - Stale element, rerunning search! ');
             element.all(by.binding('group.displayName')).each(function(ele) {
                 ele.getText().then(function(txt) {
                     if (txt === name) {
@@ -69,7 +71,7 @@ var TestUtils = function () {
         element.all(by.css(category)).each(function (ele) {
             ele.getText().then(function (txt) {
                 if (txt.indexOf(name) > -1) {
-                    self.writeToLog("Element " + name + " found under accordion " + category, "testUtils.js");
+                    self.writeToLog('Element ' + name + ' found under accordion ' + category, 'testUtils.js');
                     deviceEle = ele;
                 }
             });
@@ -84,7 +86,7 @@ var TestUtils = function () {
 
     this.waitForExpectedElementToBeClickableByCSS = function (expectedElementCSS, timeout) {
 
-        this.writeToLog("waiting for expected element " + expectedElementCSS + " to be Clickable");
+        this.writeToLog('waiting for expected element ' + expectedElementCSS + ' to be Clickable');
 
         var expectedElement = element(by.css(expectedElementCSS));
 
@@ -97,7 +99,7 @@ var TestUtils = function () {
 
     this.waitForExpectedElementToBeVisibleByCSS = function (expectedElementCSS, timeout) {
 
-        this.writeToLog("waiting for expected element " + expectedElementCSS + " to be Visible");
+        this.writeToLog('waiting for expected element ' + expectedElementCSS + ' to be Visible');
 
         var expectedElement = element(by.css(expectedElementCSS));
 
@@ -110,7 +112,7 @@ var TestUtils = function () {
 
     this.waitForExpectedElementToBeInvisibleByCSS = function (expectedElementCSS, timeout) {
 
-        this.writeToLog("waiting for expected element " + expectedElementCSS + " to be Invisible");
+        this.writeToLog('waiting for expected element ' + expectedElementCSS + ' to be Invisible');
 
         var expectedElement = element(by.css(expectedElementCSS));
 
@@ -122,7 +124,7 @@ var TestUtils = function () {
         if (timeout === undefined) {
             timeout = 10000;
         }
-
+            /* global protractor */
         var EC = protractor.ExpectedConditions;
         return browser.wait(EC.visibilityOf(expectedElement), timeout).then(function (element) {
             return element;
@@ -134,7 +136,7 @@ var TestUtils = function () {
         if (timeout === undefined) {
             timeout = 10000;
         }
-
+        /* global protractor */
         var EC = protractor.ExpectedConditions;
         return browser.wait(EC.elementToBeClickable(expectedElement), timeout).then(function (element) {
             return element;
@@ -146,17 +148,17 @@ var TestUtils = function () {
         if (timeout === undefined) {
             timeout = 10000;
         }
-
+        /* global protractor */
         var EC = protractor.ExpectedConditions;
         return browser.wait(EC.invisibilityOf(expectedElement), timeout).then(
             function (element) {
                 return element;
             },
             function(error){
-                if(error.name === "StaleElementReferenceError"){
-                    console.log("ignoring stale element, it's already invisible");
+                if(error.name === 'StaleElementReferenceError'){
+                    console.log('ignoring stale element, it\'s already invisible');
                 } else if(error.name === 'NoSuchElementError') {
-                    console.log("ignoring element, it's already invisible");
+                    console.log('ignoring element, it\'s already invisible');
                 } else {
                     throw error;
                 }
@@ -192,15 +194,15 @@ var TestUtils = function () {
         expect(targetElement.isPresent()).toBeTruthy();
         expect(targetElement.isDisplayed()).toBeTruthy();
 
-        targetElement.click().then(function(elm){
+        targetElement.click().then(function(){
             return true;
         }, function(error){
-            console.log("Error occurred clicking element...");
+            console.log('Error occurred clicking element...');
             if(error.message.indexOf('Element is not clickable at point') > -1){
-                console.log("scrolling into view now..");
+                console.log('scrolling into view now..');
                 return browser.executeScript(self.scrollIntoView, targetElement.getWebElement())
-                    .then(function(element){
-                        console.log("and retrying click");
+                    .then(function(){
+                        console.log('and retrying click');
                         targetElement.click();
                     });
             } else {
