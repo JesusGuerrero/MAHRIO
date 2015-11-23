@@ -27,8 +27,7 @@ angular.module('starter.directives', [])
       },
       templateUrl: 'templates/directives/button-secondary.html',
       link: function(scope){
-        var user = Users.currentUser;
-        console.log( user.networks, scope.id );
+        var user = Users.getCurrent();
         if( user.networks.indexOf( scope.id ) ) {
           scope.text = scope.off;
         } else {

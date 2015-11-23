@@ -1,10 +1,12 @@
 angular.module('starter.controllers', [])
-  .controller('AccountCtrl', function($scope, Users) {
+  .controller('AccountCtrl', function($scope, $state, Users) {
     $scope.settings = {
       enableFriends: true
     };
-
-    $scope.currentUser = Users.currentUser;
+    $scope.logout = function(){
+      Users.logout();
+      $state.go('offline');
+    }
   })
   .controller('ChatsCtrl', function($scope, Users, Chats, Messages ) {
     // With the new view caching in Ionic, Controllers are only called
@@ -12,45 +14,44 @@ angular.module('starter.controllers', [])
     // To listen for when this page is active (for example, to refresh data),
     // listen for the $ionicView.enter event:
     //
-    //$scope.$on('$ionicView.enter', function(e) {
-    //});
-
-    $scope.chats = Chats.all();
-    $scope.chat = {};
-    $scope.users = Users.getXother();
-    $scope.create = function( ) {
-      if( $scope.chat.id ) {
-        var message = Messages.add( $scope.chat.id, Users.currentUser.id, $scope.chat.newMessage );
-        $scope.chat.messages[ message.id ] = message;
-      } else {
-        console.log( $scope.chat.otherMember );
-        var chat = Chats.add( [Users.currentUser.id, $scope.chat.otherMember], [] );
-        var msg = Messages.add( chat.id, Users.currentUser.id, $scope.chat.newMessage );
-        Chats.updateMessages( chat.id, msg.id );
-        Messages.updateChat( msg.id, chat.id );
-        $scope.chat = Chats.get( chat.id );
-        $scope.chats = Chats.all();
-        console.log( $scope.chats );
-      }
-      $scope.chat.newMessage = '';
-    };
-    $scope.remove = function(chatId) {
-      if( Chats.remove(chatId) ) {
-        $scope.chats = Chats.all();
-      }
-    };
-    $scope.provisionChatModal = function( id ){
-      if( typeof id !== 'undefined'){
-        $scope.chat = Chats.get( id );
-      } else {
-        $scope.chat = {};
-      }
-      $scope.$emit('provision:modal:chat', {
-        id: id,
-        scope: $scope,
-        chat: $scope.chat
-      });
-    };
+    $scope.$on('$ionicView.enter', function(e) {
+      $scope.chats = Chats.all();
+      $scope.chat = {};
+      $scope.users = Users.getXother();
+      $scope.current = Users.getCurrent();
+      console.log( $scope.chats );
+      $scope.create = function( ) {
+        if( $scope.chat.id ) {
+          var message = Messages.add( $scope.chat.id, $scope.current.id, $scope.chat.newMessage );
+          $scope.chat.messages[ message.id ] = message;
+        } else {
+          var chat = Chats.add( [$scope.current.id, $scope.chat.otherMember], [] );
+          var msg = Messages.add( chat.id, $scope.current.id, $scope.chat.newMessage );
+          Chats.updateMessages( chat.id, msg.id );
+          Messages.updateChat( msg.id, chat.id );
+          $scope.chat = Chats.get( chat.id );
+          $scope.chats = Chats.all();
+        }
+        $scope.chat.newMessage = '';
+      };
+      $scope.remove = function(chatId) {
+        if( Chats.remove(chatId) ) {
+          $scope.chats = Chats.all();
+        }
+      };
+      $scope.provisionChatModal = function( id ){
+        if( typeof id !== 'undefined'){
+          $scope.chat = Chats.get( id );
+        } else {
+          $scope.chat = {};
+        }
+        $scope.$emit('provision:modal:chat', {
+          id: id,
+          scope: $scope,
+          chat: $scope.chat
+        });
+      };
+    });
   })
   .controller('DashCtrl', function($scope) {})
   .controller('HomeCtrl', function($scope, Users, Modal){
@@ -61,12 +62,11 @@ angular.module('starter.controllers', [])
     };
     $scope.form = {};
     $scope.addObject = function() {
-      console.log($scope);
       $scope.modal.hide();
     };
     $scope.$on('modal:destroy', function() {
       for( var key in $scope.modal ) {
-        $scope.modal[ key].remove();
+        $scope.modal[ key ].remove();
       }
     });
 
@@ -89,15 +89,41 @@ angular.module('starter.controllers', [])
       });
     });
     $scope.$on('provision:modal:chat', function( event, eventObject ){
-      eventObject.scope.currentUser = Users.currentUser;
       Modal.provisionModal(eventObject.scope, 'templates/modal-chat.html').then(function(modal){
-        $scope.modal = modal;
-        $scope.modal.show();
+        $scope.modal.chat = modal;
+        $scope.modal.chat.show();
+      });
+    });
+    $scope.$on('provision:modal:networks', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-all-networks.html').then(function(modal){
+        $scope.modal.networks = modal;
+        $scope.modal.networks.show();
       });
     });
   })
-  .controller('NetworksCtrl', function( $scope, Networks) {
-    $scope.networks = Networks.get();
+  .controller('NetworksCtrl', function( $scope, Networks, Users) {
+    $scope.$on('$ionicView.enter', function() {
+      $scope.networks = Networks.get( Users.getCurrent().networks );
+    });
+    $scope.provisionNetworksModal = function(){
+      $scope.otherNetworks = Networks.get( Users.getCurrent().networks, true);
+      $scope.joinNetwork = function( networkId ) {
+        var joined = $scope.otherNetworks[ networkId ];
+        $scope.networks[ networkId ] = joined;
+        delete $scope.otherNetworks[ networkId ];
+        Networks.join( networkId, Users.getCurrent().id );
+      };
+      $scope.leaveNetwork = function( networkId ) {
+        var left = $scope.networks[ networkId ];
+        $scope.otherNetworks[ networkId ] = left;
+        delete $scope.networks[ networkId ];
+        Networks.leave( networkId, Users.getCurrent().id );
+      };
+      $scope.$emit('provision:modal:networks',{
+        scope: $scope
+      });
+    };
+
   })
   .controller('NetworkDetailCtrl', function( $scope, $stateParams, Networks) {
     $scope.network = Networks.get( $stateParams.networkId );

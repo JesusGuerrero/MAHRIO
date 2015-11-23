@@ -1,7 +1,7 @@
 <div class="modal direct-chat">
   <ion-header-bar class="bar-header">
     <h1 class="title">{{chat.otherMember.profile.firstName}}</h1>
-    <button class="button button-clear" ng-click="modal.hide()">Done</button>
+    <button class="button button-clear" ng-click="modal.chat.hide()">Done</button>
   </ion-header-bar>
   <ion-content>
     <div class="padding" ng-hide="chat.id">
@@ -20,14 +20,14 @@
       </div>
     </div>
     <ion-list>
-      <ion-item ng-repeat="message in chat.messages" type="item-text-wrap" ng-class="currentUser.id===chat.members[message._user].id ? 'left' : 'right'">
+      <ion-item ng-repeat="message in chat.messages" type="item-text-wrap" ng-class="current.id===chat.members[message._user].id ? 'left' : 'right'">
         <div class="direct-chat-info">
-          <span class="direct-chat-name" ng-class="currentUser.id===chat.members[message._user].id ? 'pull-left' : 'pull-right'" >
-            <strong>
+          <span class="direct-chat-name" ng-class="current.id===chat.members[message._user].id ? 'pull-left' : 'pull-right'" >
+            <strong>{{currentUser.id}}
               {{chat.members[message._user].profile.firstName}} {{chat.members[message._user].profile.lastName}}
             </strong>
           </span>
-          <span class="direct-chat-timestamp" ng-class="currentUser.id===chat.members[message._user].id ? 'pull-right' : 'pull-left'">
+          <span class="direct-chat-timestamp" ng-class="current.id===chat.members[message._user].id ? 'pull-right' : 'pull-left'">
             {{message.created | date: 'short' }}
           </span>
         </div>
@@ -45,10 +45,5 @@
     <button class="button button-stable" ng-click="create()">
       Send
     </button>
-    <!--<ion-tabs class="tabs-icon-only">-->
-      <!--<ion-tab href="#" title="Done" ng-click="modal.hide()">-->
-      <!--</ion-tab>-->
-
-    <!--</ion-tabs>-->
   </ion-footer-bar>
 </div>

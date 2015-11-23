@@ -15,6 +15,22 @@ angular.module('starter.services', [])
     };
     return api;
   })
+  .factory('$localstorage', function($window) {
+    return {
+      set: function(key, value) {
+        $window.localStorage[key] = value;
+      },
+      get: function(key, defaultValue) {
+        return $window.localStorage[key] || defaultValue;
+      },
+      setObject: function(key, value) {
+        $window.localStorage[key] = JSON.stringify(value);
+      },
+      getObject: function(key) {
+        return JSON.parse($window.localStorage[key] || '{}');
+      }
+    }
+  })
   .factory('Articles', function(_, Util, Sections){
     var articles = [{
         id: 1,
@@ -43,17 +59,6 @@ angular.module('starter.services', [])
           '4': null
         }
     }];
-
-    //function populateAllArticles(){
-    //  return Util.populateAll( articles, {sections: api.getSections });
-    //  //var _articles = [];
-    //  //_.each( articles, function(article){
-    //  //  var _article = article;
-    //  //  _article.sections = api.getSections( _article );
-    //  //  _articles.push( _article );
-    //  //});
-    //  //return _.indexBy( _articles, 'id');
-    //}
     var api = {
       get: function(articleIds) {
         var allArticles = Util.populateAll( articles, {sections: api.getSections });
@@ -74,7 +79,7 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Networks', function( _, Util, Articles ){
+  .factory('Networks', function( _, Util, Articles, Users ){
     var networks = [{
         id: 1,
         title: 'Viviana Jade Rocha',
@@ -138,17 +143,24 @@ angular.module('starter.services', [])
 
     var api = {
       join: function( networkId, memberId ){
-        networks[ networkId ].members.push( memberId );
+        var network = api.get( networkId );
+        network.members[ memberId ] = null;
+        Users.addNetwork( networkId );
       },
-      get: function(networkIds) {
+      leave: function( networkId, memberId ){
+        delete networks[ networkId ].members[ memberId ];
+        Users.removeNetwork( networkId );
+      },
+      get: function(networkIds, inverse) {
         var allNetworks = Util.populateAll( networks, {articles: api.getArticles });
         // get all
         if( typeof networkIds === 'undefined') { return allNetworks; }
         // get all that belong to network through articleIds
         if( _.isArray(networkIds) ){
-          return _.filter(allNetworks, function(network){
-            return _.contains(networkIds, network.id)
+          var list = _.filter(allNetworks, function(network){
+            return !inverse ? _.contains(networkIds, network.id) : !_.contains(networkIds, network.id);
           });
+          return _.indexBy( list, 'id');
         }
         // get one
         return _.find( allNetworks, function(network){ return networkIds == network.id; });
@@ -268,15 +280,15 @@ angular.module('starter.services', [])
 
     var api = {
       all: function() {
-        var _chats = [], currentUser = Users.currentUser;
-        _.each( chats, function(chat){
+        var _chats = [], currentUser = Users.getCurrent();
+        _.each( _.filter( chats, function(chat){ return chat.members.hasOwnProperty( currentUser.id ); }), function(chat){
           var _chat = chat,
             members = Users.getUsers( Object.keys(_chat.members)),
             messages = Messages.getMessages( _chat.id );
           _chat.members = _.indexBy( members, 'id');
           _chat.messages = _.indexBy( messages, 'id');
           _chat.lastMessage = _.filter( _chat.messages, function(msg, key) { return !key; })[0];
-          _chat.otherMember = _.filter( _chat.members, function(usr, key){ return currentUser.id == key; })[0];
+          _chat.otherMember = _.filter( _chat.members, function(usr){ return currentUser.id !== usr.id; })[0];
           _chats.push( _chat );
         });
         return _.indexBy( _chats, 'id');
@@ -412,7 +424,7 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Users', function(){
+  .factory('Users', function($localstorage){
     var users = [{
       id: 1,
       email: 'jesus.rocha@whichdegree.co',
@@ -422,7 +434,7 @@ angular.module('starter.services', [])
         lastName: 'Rocha'
       },
       face: 'img/users/1/user-profile.jpg',
-      networks: [1]
+      networks: [1, 2, 3, 4, 5]
     }, {
       id: 2,
       email: 'aida.hurtado@whichdegree.co',
@@ -432,7 +444,7 @@ angular.module('starter.services', [])
         lastName: 'Hurtado'
       },
       face: 'img/users/3/user-profile.jpg',
-      networks: []
+      networks: [1, 2]
     }, {
       id: 3,
       email: 'emcp@whichdegree.co',
@@ -442,12 +454,15 @@ angular.module('starter.services', [])
         lastName: 'Peterson'
       },
       face: 'img/users/2/user-profile.jpg',
-      networks: []
+      networks: [2]
     }], currentUser = null;
 
     return {
       addNetwork: function(networkId){
         currentUser.networks.push( networkId );
+      },
+      removeNetwork: function(networkId){
+        currentUser.networks.splice( currentUser.networks.indexOf(networkId), 1);
       },
       getUsers: function( chatIds ) {
         return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
@@ -459,11 +474,25 @@ angular.module('starter.services', [])
         var current = _.findWhere( users, {email: email});
         if( current ) {
           currentUser = current;
+          $localstorage.setObject( 'currentUser', currentUser );
           return true;
         } else {
           return false;
         }
       },
-      currentUser: currentUser
+      logout: function(){
+        $localstorage.setObject( 'currentUser', null );
+      },
+      getCurrent: function(){
+        return currentUser;
+      },
+      checkLoggedIn: function(){
+        var user = $localstorage.getObject( 'currentUser' );
+        if( user && user.id ) {
+          currentUser = user;
+          return true;
+        }
+        return false;
+      }
     }
   });
