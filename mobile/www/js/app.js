@@ -10,8 +10,7 @@ angular.module('starter', [
   'starter.controllers',
   'starter.services',
   'starter.directives',
-  'angular-underscore',
-  'ionic.wizard'])
+  'angular-underscore'])
   .constant('APP_IP', 'http://192.168.0.4:8042')
   .constant('_', window._)
 .run(function($ionicPlatform) {
@@ -53,15 +52,6 @@ angular.module('starter', [
         'tab-dash': {
           templateUrl: 'templates/tab-dash.html',
           controller: 'DashCtrl'
-        }
-      }
-    })
-    .state('tab.welcome', {
-      url: '/welcome',
-      views: {
-        'tab-welcomeh': {
-          templateUrl: 'templates/tab-welcome.html',
-          controller: 'WelcomeCtrl'
         }
       }
     })
