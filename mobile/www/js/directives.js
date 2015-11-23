@@ -58,30 +58,60 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('popupConfirm', function( $ionicPopup ){
-    return {
-      restrict: 'A',
-      templateUrl: 'templates/directives/popup-confirm.html',
-      link: function( scope ) {
-
-      }
-    }
-  })
-  .directive('loginButton', function(Modal, Users, $state){
+  .directive('loginButton', function(Users, $state, $ionicSlideBoxDelegate, $ionicPopup, $timeout, $ionicHistory){
     return {
       restrict: 'E',
       replace: true,
-      templateUrl: 'templates/directives/login-button.html',
+      template: '<button class="button button-block" ng-click="loginModal();">Log in</button>',
+      scope: {},
       link: function(scope){
         scope.form = {};
+        scope.state = 'Log in';
         scope.login = function( ){
           if( scope.form.email && Users.login( scope.form.email) ) {
+            $ionicHistory.nextViewOptions({
+              disableBack: true
+            });
             $state.go('tab.dash');
+            scope.$emit('modal:destroy');
+          } else {
+            $ionicPopup.alert({
+              title: 'Login Error',
+              template: 'Email and/or Password incorrect. Try again!'
+            }).then( function(){
+              scope.form = {};
+            });
           }
-          scope.form = {};
+        };
+        scope.resetPassword = function(){
+          $ionicPopup.alert({
+            title: 'Password Reset Success',
+            template: 'Now check your email for further instructions.'
+          }).then( function(){
+            scope.$emit('modal:destroy');
+            $timeout( function(){
+              scope.form = {};
+              scope.state = 'Log in';
+            }, 200);
+          })
+        };
+        scope.closeAndReset = function(){
           scope.$emit('modal:destroy');
+          $timeout( function(){
+            scope.form = {};
+            scope.state = 'Log in';
+          }, 200);
+        };
+        scope.resetPasswordSlide = function(){
+          scope.state = 'Reset password';
+          $ionicSlideBoxDelegate.next();
+        };
+        scope.loginSlide = function(){
+          scope.state = 'Log in';
+          $ionicSlideBoxDelegate.previous();
         };
         scope.loginModal = function(){
+          console.log(scope);
           scope.$emit('provision:modal:login',{
             scope: scope
           });
@@ -89,17 +119,58 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('registerButton', function(Modal, Users){
+  .directive('registerButton', function(Users, $state, $ionicHistory){
     return {
       restrict: 'E',
       replace: true,
-      templateUrl: 'templates/directives/register-button.html',
+      template: '<a class="button button-block" ng-click="registerModal()">Register</a>',
+      scope: {},
       link: function(scope){
         scope.form = {};
         scope.registerModal = function(){
+          console.log(scope);
           scope.$emit('provision:modal:register',{
             scope: scope
           });
+        };
+        scope.register = function(){
+          $ionicHistory.nextViewOptions({
+            disableBack: true
+          });
+          $state.go('tab.dash');
+          scope.$emit('modal:destroy');
+        };
+        scope.closeAndReset = function(){
+          scope.$emit('modal:destroy');
+          scope.form = {};
+        };
+      }
+    }
+  })
+  .directive('demoButton', function(Users, $state, $ionicHistory, $ionicSlideBoxDelegate){
+    return {
+      restrict: 'E',
+      replace: true,
+      template: '<a class="button button-block" ng-click="demoModal()">Demo</a>',
+      scope: {},
+      link: function(scope){
+        scope.state = 0;
+        scope.demoModal = function(){
+          scope.state = 0;
+          scope.$emit('provision:modal:demo',{
+            scope: scope
+          });
+        };
+        scope.previous = function(){
+          scope.state--;
+          $ionicSlideBoxDelegate.previous();
+        };
+        scope.next = function(){
+          scope.state++;
+          $ionicSlideBoxDelegate.next();
+        };
+        scope.slideHasChanged = function( index ) {
+          scope.state = index;
         };
       }
     }

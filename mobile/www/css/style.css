@@ -35,7 +35,7 @@ body.tabbed-nav .bar .tabs .tab-item {
 body.tabbed-nav .scroll-content {
   margin-top: 21px;
 }
-.item:first-of-type {
+.network.item:first-of-type {
   border-top: none;
 }
 .modal .item:first-of-type {
@@ -120,7 +120,7 @@ body.tabbed-nav .scroll-content {
 .bg-faces div {
   position: relative;
 }
-#offline {
+#offline, #offline .scroll {
   height: 100%;
 }
 #offline h3 {

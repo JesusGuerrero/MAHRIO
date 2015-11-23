@@ -206,23 +206,8 @@ angular.module('starter', [
     })
     .state('offline', {
       url: '/offline',
-      template: '<ion-nav-view></ion-nav-view>',
-      abstract: true
-    })
-    .state('offline.welcome', {
-      url: '/welcome',
       templateUrl: 'templates/offline.html',
       controller: 'OfflineCtrl'
-    })
-    .state('offline.register', {
-      url: '/register',
-      templateUrl: 'templates/offline-intro.html',
-      controller: 'RegisterCtrl'
-    })
-    .state('offline.demo', {
-      url: '/demo',
-      templateUrl: 'templates/demo.html',
-      controller: 'DemoCtrl'
     });
 
   // if none of the above states are matched, use this as the fallback
