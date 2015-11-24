@@ -8,9 +8,9 @@ var DashboardPageUtils = function () {
         if(browser.params.subroute){
             return browser.get(browser.params.subroute);
         } else {
-            return browser.get("/");
+            return browser.get('/');
         }
-    }
+    };
 };
 
 DashboardPageUtils.prototype = coreUtils;

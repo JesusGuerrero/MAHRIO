@@ -1,0 +1,34 @@
+<div class="modal all-networks">
+  <ion-header-bar class="bar-header">
+    <h1 class="title">All Networks</h1>
+    <button class="button button-clear" ng-click="modal.networks.hide()">Done</button>
+  </ion-header-bar>
+
+  <ion-content>
+    <div class="list">
+
+      <div class="item item-divider">
+        My Networks
+      </div>
+
+      <a class="item item-thumbnail-left" ng-repeat="network in networks" ng-click="leaveNetwork(network.id)">
+        <img ng-src="{{network.cover}}">
+        <h2>{{network.title}}</h2>
+        <p>{{network.deck}}</p>
+        <button class="button button-small button-block">Leave</button>
+      </a>
+
+      <div class="item item-divider">
+        Other Networks
+      </div>
+
+      <a class="item item-thumbnail-left" ng-repeat="network in otherNetworks" ng-click="joinNetwork(network.id)">
+        <img ng-src="{{network.cover}}">
+        <h2>{{network.title}}</h2>
+        <p>{{network.deck}}</p>
+        <button class="button button-small button-block" ng-show="network.protected">Apply</button>
+        <button class="button button-small button-block" ng-show="!network.protected">Join</button>
+      </a>
+    </div>
+  </ion-content>
+</div>

@@ -1,0 +1,61 @@
+<div class="modal">
+  <ion-header-bar class="bar-header">
+    <button class="button button-clear" ng-click="loginSlide()" ng-hide="state=='Log in'">Back</button>
+    <h1 class="title">{{state}}</h1>
+    <button class="button button-clear" ng-click="closeAndReset()">Cancel</button>
+  </ion-header-bar>
+  <ion-content>
+    <ion-slide-box show-pager="false" style="height: 165px;">
+      <ion-slide>
+        <div class="padding">
+          <div class="list">
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Email</span>
+              <input ng-model="form.email" type="text" placeholder="you@domain.com" />
+            </label>
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Password</span>
+              <input ng-model="form.password" type="password" placeholder="******" />
+            </label>
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="padding">
+          <div class="list">
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Email</span>
+              <input ng-model="form.email" type="text" placeholder="you@domain.com" />
+            </label>
+          </div>
+        </div>
+      </ion-slide>
+    </ion-slide-box>
+  </ion-content>
+  <ion-footer-bar align-title="left">
+    <div class="row" style="padding: 0;" ng-show="state==='Log in'">
+      <div class="col col-50">
+        <div class="footer-primary" style="float: left;">
+          <button class="button button-clear" ng-click="resetPasswordSlide()">Forgot Password</button>
+        </div>
+      </div>
+      <div class="col col-50" style="float: right;">
+        <div class="footer-primary" ng-click="login()">
+          <button class="button button-block" style="margin: 0" ng-disabled="!form.password || !form.email">Log in</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="padding: 0; margin: 0;" ng-hide="state==='Log in'">
+      <div class="col col-50">
+        <div class="footer-primary" style="float: left;">
+          &nbsp;
+        </div>
+      </div>
+      <div class="col col-50" style="float: right;">
+        <div class="footer-primary" ng-click="resetPassword()">
+          <button class="button button-block" style="margin: 0" ng-disabled="!form.email">Reset password</button>
+        </div>
+      </div>
+    </div>
+  </ion-footer-bar>
+</div>

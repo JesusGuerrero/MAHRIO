@@ -13,7 +13,7 @@ angular.module('starter', [
   'angular-underscore'])
   .constant('APP_IP', 'http://192.168.0.4:8042')
   .constant('_', window._)
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $location, $rootScope, Users) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -26,6 +26,12 @@ angular.module('starter', [
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    if( Users.checkLoggedIn() ){
+      $location.path('/tab/dash');
+    } else {
+      $location.path('/offline');
+    }
+    $rootScope.$apply();
   });
 })
 
@@ -201,6 +207,6 @@ angular.module('starter', [
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/offline');
 
 });

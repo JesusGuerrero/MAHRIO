@@ -1,105 +1,146 @@
 angular.module('starter.controllers', [])
-  .controller('AccountCtrl', function($scope, Modal, Users) {
+  .controller('AccountCtrl', function($scope, $state, Users) {
     $scope.settings = {
       enableFriends: true
     };
-    $scope.form = {};
-    $scope.signIn = function( ){
-      if( $scope.form.email && Users.login( $scope.form.email) ) {
-        alert( 'logged in');
-      }
-      $scope.form = {};
-      $scope.$emit('modal:destroy');
-    };
-    $scope.signOut = function(){
-
-    };
-
-    $scope.provisionSignInModal = function(){
-      $scope.$emit('provision:modal:signin',{
-        scope: $scope
-      });
-    };
-
-    $scope.currentUser = Users.currentUser;
+    $scope.logout = function(){
+      Users.logout();
+      $state.go('offline');
+    }
   })
-  .controller('ChatsCtrl', function($scope, Users, Chats, Messages ) {
+  .controller('ChatsCtrl', function($scope, Users, Chats, Messages, $ionicActionSheet ) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
     // listen for the $ionicView.enter event:
     //
-    //$scope.$on('$ionicView.enter', function(e) {
-    //});
-
-    $scope.chats = Chats.all();
-    $scope.chat = {};
-    $scope.users = Users.getXother();
-    $scope.create = function( ) {
-      if( $scope.chat.id ) {
-        var message = Messages.add( $scope.chat.id, Users.currentUser.id, $scope.chat.newMessage );
-        $scope.chat.messages[ message.id ] = message;
-      } else {
-        console.log( $scope.chat.otherMember );
-        var chat = Chats.add( [Users.currentUser.id, $scope.chat.otherMember], [] );
-        var msg = Messages.add( chat.id, Users.currentUser.id, $scope.chat.newMessage );
-        Chats.updateMessages( chat.id, msg.id );
-        Messages.updateChat( msg.id, chat.id );
-        $scope.chat = Chats.get( chat.id );
-        $scope.chats = Chats.all();
-        console.log( $scope.chats );
-      }
-      $scope.chat.newMessage = '';
-    };
-    $scope.remove = function(chatId) {
-      if( Chats.remove(chatId) ) {
-        $scope.chats = Chats.all();
-      }
-    };
-    $scope.provisionChatModal = function( id ){
-      if( typeof id !== 'undefined'){
-        $scope.chat = Chats.get( id );
-      } else {
-        $scope.chat = {};
-      }
-      $scope.$emit('provision:modal:chat', {
-        id: id,
-        scope: $scope,
-        chat: $scope.chat
-      });
-    };
+    $scope.$on('$ionicView.enter', function(e) {
+      $scope.chats = Chats.all();
+      $scope.chat = {};
+      $scope.users = Users.getXother();
+      $scope.current = Users.getCurrent();
+      console.log( $scope.chats );
+      $scope.create = function( ) {
+        if( $scope.chat.id ) {
+          var message = Messages.add( $scope.chat.id, $scope.current.id, $scope.chat.newMessage );
+          $scope.chat.messages[ message.id ] = message;
+        } else {
+          var chat = Chats.add( [$scope.current.id, $scope.chat.otherMember], [] );
+          var msg = Messages.add( chat.id, $scope.current.id, $scope.chat.newMessage );
+          Chats.updateMessages( chat.id, msg.id );
+          Messages.updateChat( msg.id, chat.id );
+          $scope.chat = Chats.get( chat.id );
+          $scope.chats = Chats.all();
+        }
+        $scope.chat.newMessage = '';
+      };
+      $scope.remove = function(chatId) {
+        if( Chats.remove(chatId) ) {
+          $scope.chats = Chats.all();
+        }
+      };
+      $scope.menu = function(){
+        $ionicActionSheet.show({
+          buttons: [
+            { text: 'Insert Image' },
+            { text: 'Insert Video' },
+            { text: 'Insert File' }
+          ],
+          titleText: 'Options',
+          cancelText: 'Cancel',
+          cancel: function() {
+            // add cancel code..
+          },
+          buttonClicked: function(index) {
+            return true;
+          }
+        });
+      };
+      $scope.provisionChatModal = function( id ){
+        if( typeof id !== 'undefined'){
+          $scope.chat = Chats.get( id );
+        } else {
+          $scope.chat = {};
+        }
+        $scope.$emit('provision:modal:chat', {
+          id: id,
+          scope: $scope,
+          chat: $scope.chat
+        });
+      };
+    });
   })
   .controller('DashCtrl', function($scope) {})
   .controller('HomeCtrl', function($scope, Users, Modal){
 
+    $scope.modal = {};
     $scope.openModal = function(){
       $scope.modal.show();
     };
     $scope.form = {};
     $scope.addObject = function() {
-      console.log($scope);
       $scope.modal.hide();
     };
     $scope.$on('modal:destroy', function() {
-      $scope.modal.remove();
+      for( var key in $scope.modal ) {
+        $scope.modal[ key ].remove();
+      }
     });
 
-    $scope.$on('provision:modal:signin', function(event, eventObject){
-      Modal.provisionModal(eventObject.scope, 'templates/modal-signin.html').then(function(modal){
-        $scope.modal = modal;
-        $scope.modal.show();
+    $scope.$on('provision:modal:register', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-register.html').then(function(modal){
+        $scope.modal.register = modal;
+        $scope.modal.register.show();
+      });
+    });
+    $scope.$on('provision:modal:demo', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-demo.html').then( function(modal){
+        $scope.modal.demo = modal;
+        $scope.modal.demo.show();
+      })
+    });
+    $scope.$on('provision:modal:login', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-login.html').then(function(modal){
+        $scope.modal.login = modal;
+        $scope.modal.login.show();
       });
     });
     $scope.$on('provision:modal:chat', function( event, eventObject ){
-      eventObject.scope.currentUser = Users.currentUser;
       Modal.provisionModal(eventObject.scope, 'templates/modal-chat.html').then(function(modal){
-        $scope.modal = modal;
-        $scope.modal.show();
+        $scope.modal.chat = modal;
+        $scope.modal.chat.show();
+      });
+    });
+    $scope.$on('provision:modal:networks', function(event, eventObject){
+      Modal.provisionModal(eventObject.scope, 'templates/modal-all-networks.html').then(function(modal){
+        $scope.modal.networks = modal;
+        $scope.modal.networks.show();
       });
     });
   })
-  .controller('NetworksCtrl', function( $scope, Networks) {
-    $scope.networks = Networks.get();
+  .controller('NetworksCtrl', function( $scope, Networks, Users) {
+    $scope.$on('$ionicView.enter', function() {
+      $scope.networks = Networks.get( Users.getCurrent().networks );
+    });
+    $scope.provisionNetworksModal = function(){
+      $scope.otherNetworks = Networks.get( Users.getCurrent().networks, true);
+      $scope.joinNetwork = function( networkId ) {
+        var joined = $scope.otherNetworks[ networkId ];
+        $scope.networks[ networkId ] = joined;
+        delete $scope.otherNetworks[ networkId ];
+        Networks.join( networkId, Users.getCurrent().id );
+      };
+      $scope.leaveNetwork = function( networkId ) {
+        var left = $scope.networks[ networkId ];
+        $scope.otherNetworks[ networkId ] = left;
+        delete $scope.networks[ networkId ];
+        Networks.leave( networkId, Users.getCurrent().id );
+      };
+      $scope.$emit('provision:modal:networks',{
+        scope: $scope
+      });
+    };
+
   })
   .controller('NetworkDetailCtrl', function( $scope, $stateParams, Networks) {
     $scope.network = Networks.get( $stateParams.networkId );
@@ -140,7 +181,6 @@ angular.module('starter.controllers', [])
   })
   .controller('ArticleDetailCtrl', function($scope, $stateParams, Articles){
     $scope.article = Articles.get( $stateParams.articleId );
-    console.log( $scope.article );
   })
   .controller('BoardsCtrl', function($scope, $stateParams, Networks){
     $scope.networkId = $stateParams.network;
