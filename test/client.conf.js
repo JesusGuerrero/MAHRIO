@@ -1,5 +1,5 @@
 var configUtils = require('./client/Utils/configUtils.js');
-var path = require('path');
+//var path = require('path');
 
 exports.config = {
 
@@ -50,13 +50,14 @@ exports.config = {
     },
     baseUrl: 'http://localhost:9000',
     onPrepare: function () {
-
+        'use strict';
         browser.getProcessedConfig().then(function(config) {
-            console.log("Processing Config....");
+
+            console.log('Processing Config....');
             browser.params.browserName = config.capabilities.browserName.split(' ').join('_');
 
-            var settingsSuggestion = configUtils.assessClientSelection(browser.params.enableDesktopMode , { "height" : browser.params.dimensions.height,
-                                                                                             "width" : browser.params.dimensions.width});
+            var settingsSuggestion = configUtils.assessClientSelection(browser.params.enableDesktopMode , { 'height' : browser.params.dimensions.height,
+                                                                                             'width' : browser.params.dimensions.width});
 
             browser.params.testDeviceType = settingsSuggestion.testDeviceType;
 
@@ -71,7 +72,7 @@ exports.config = {
                 configUtils.createFolder(fullPath);
             });
 
-            console.log("Done processing config.");
+            console.log('Done processing config.');
         });
     }
 };

@@ -1,14 +1,9 @@
-// Ionic Starter App
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
 
-function mahrioRun ($rootScope, $state, $ionicPlatform, localStorageService) {
+function mahrioRun ($rootScope, $ionicPlatform, $location, Users) {
 
   $ionicPlatform.ready(function(){
+
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     console.log("ionicPlatform is ready");
@@ -23,17 +18,26 @@ function mahrioRun ($rootScope, $state, $ionicPlatform, localStorageService) {
       StatusBar.styleDefault();
     }
 
-    if(window.analytics != undefined) {
+    if (window.analytics != undefined) {
       console.log("windows.analytics loading...");
       window.analytics.startTrackerWithId('UA-YOURCODEHERE');
       window.analytics.trackView('Testing')
     } else {
       console.log("window.analytics is undefined");
     }
+
+    if (Users.checkLoggedIn()) {
+      $location.path('/tab/dash');
+    } else {
+      $location.path('/offline');
+    }
+
+    $rootScope.$apply();
+
   });
 }
 
-mahrioRun.$inject=['$rootScope', '$state', '$ionicPlatform'];
+mahrioRun.$inject=['$rootScope', '$ionicPlatform', '$location', 'Users'];
 
 angular.module('starter', [
   'ionic',
@@ -216,6 +220,6 @@ angular.module('starter', [
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/offline');
 
 });

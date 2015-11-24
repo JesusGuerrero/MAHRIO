@@ -1,19 +1,17 @@
 <ion-view view-title="Account">
   <ion-content>
     <ion-list>
-    <ion-toggle ng-model="settings.enableFriends">
-        Show me online
-    </ion-toggle>
+      <ion-toggle ng-model="settings.enableFriends">
+          Show me online
+      </ion-toggle>
     </ion-list>
 
-    <div class="row" ng-if="currentUser">
-      <div class="col">&nbsp;</div>
-      <div class="col col-50">
-        <button class="button button-assertive" style="width: 100%" ng-click="signOut()">
+    <div class="row">
+      <div class="col col-50 col-offset-25">
+        <a class="button button-assertive button-block" ng-click="logout()">
           Sign Out
-        </button>
+        </a>
       </div>
-      <div class="col">&nbsp;</div>
     </div>
 
   </ion-content>

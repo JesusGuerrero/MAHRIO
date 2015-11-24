@@ -1,0 +1,23 @@
+<div class="modal">
+  <ion-header-bar class="bar-header">
+    <button class="button button-clear" ng-click="previous()" ng-show="state">Previous</button>
+    <h1 class="title" ng-click="closeAndReset()">WhichDegree</h1>
+    <button class="button button-clear" ng-click="next()" ng-show="state < 2">Next</button>
+  </ion-header-bar>
+  <ion-content id="offline">
+    <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)">
+      <ion-slide>
+          <h1 style="text-align: center;">First Slide</h1>
+      </ion-slide>
+      <ion-slide>
+          <h1 style="text-align: center;">Second Slide</h1>
+      </ion-slide>
+      <ion-slide>
+        <div id="view" style="bottom: 10%">
+          <login-button></login-button>
+          <register-button></register-button>
+        </div>
+      </ion-slide>
+    </ion-slide-box>
+  </ion-content>
+</div>

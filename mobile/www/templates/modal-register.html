@@ -1,0 +1,40 @@
+<div class="modal">
+  <ion-header-bar class="bar-header">
+    <h1 class="title">Register</h1>
+    <button class="button button-clear" ng-click="closeAndReset()">Cancel</button>
+  </ion-header-bar>
+  <ion-content>
+    <div class="padding">
+      <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">First Name</span>
+          <input ng-model="form.firstName" type="text" placeholder="John" />
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Last Name</span>
+          <input ng-model="form.lastName" type="text" placeholder="Lopez" />
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Email</span>
+          <input ng-model="form.email" type="text" placeholder="you@domain.com" />
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Password</span>
+          <input ng-model="form.password" type="password" placeholder="******" />
+        </label>
+      </div>
+    </div>
+  </ion-content>
+  <ion-footer-bar align-title="left">
+    <div class="row" style="padding: 0;">
+      <div class="col col-50 col-offset-50">
+        <div class="footer-primary" ng-click="register()">
+          <button class="button button-block" style="margin:0;"
+                  ng-disabled="!form.email || !form.password || !form.firstName || !form.lastName">
+            Register
+          </button>
+        </div>
+      </div>
+    </div>
+  </ion-footer-bar>
+</div>
