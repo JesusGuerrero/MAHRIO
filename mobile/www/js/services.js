@@ -148,7 +148,8 @@ angular.module('starter.services', [])
         Users.addNetwork( networkId );
       },
       leave: function( networkId, memberId ){
-        delete networks[ networkId ].members[ memberId ];
+        var network = api.get( networkId );
+        delete network.members[ memberId ];
         Users.removeNetwork( networkId );
       },
       get: function(networkIds, inverse) {
@@ -455,9 +456,9 @@ angular.module('starter.services', [])
       },
       face: 'img/users/2/user-profile.jpg',
       networks: [2]
-    }], currentUser = null;
+    }], currentUser = null, counter = 4;
 
-    return {
+    var api = {
       addNetwork: function(networkId){
         currentUser.networks.push( networkId );
       },
@@ -480,6 +481,25 @@ angular.module('starter.services', [])
           return false;
         }
       },
+      register: function( user ) {
+        if( _.find( users, function(usr){ return usr.email === user.email; }) ) {
+          return false;
+        } else {
+          users.push({
+            id: counter,
+            profile: {
+              firstName: user.firstName,
+              lastName: user.lastName
+            },
+            email: user.email,
+            face: 'img/max.png',
+            password: user.password,
+            networks: []
+          });
+          counter++;
+          return api.login( user.email );
+        }
+      },
       logout: function(){
         $localstorage.setObject( 'currentUser', null );
       },
@@ -494,5 +514,6 @@ angular.module('starter.services', [])
         }
         return false;
       }
-    }
+    };
+    return api;
   });

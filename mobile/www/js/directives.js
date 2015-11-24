@@ -92,7 +92,7 @@ angular.module('starter.directives', [])
               scope.form = {};
               scope.state = 'Log in';
             }, 200);
-          })
+          });
         };
         scope.closeAndReset = function(){
           scope.$emit('modal:destroy');
@@ -102,15 +102,16 @@ angular.module('starter.directives', [])
           }, 200);
         };
         scope.resetPasswordSlide = function(){
+          scope.form = {};
           scope.state = 'Reset password';
           $ionicSlideBoxDelegate.next();
         };
         scope.loginSlide = function(){
+          scope.form = {};
           scope.state = 'Log in';
           $ionicSlideBoxDelegate.previous();
         };
         scope.loginModal = function(){
-          console.log(scope);
           scope.$emit('provision:modal:login',{
             scope: scope
           });
@@ -118,7 +119,7 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('registerButton', function(Users, $state, $ionicHistory){
+  .directive('registerButton', function(Users, $state, $ionicHistory, $ionicPopup){
     return {
       restrict: 'E',
       replace: true,
@@ -127,17 +128,24 @@ angular.module('starter.directives', [])
       link: function(scope){
         scope.form = {};
         scope.registerModal = function(){
-          console.log(scope);
           scope.$emit('provision:modal:register',{
             scope: scope
           });
         };
         scope.register = function(){
-          $ionicHistory.nextViewOptions({
-            disableBack: true
-          });
-          $state.go('tab.dash');
-          scope.$emit('modal:destroy');
+          if( Users.register( scope.form ) ) {
+            $ionicHistory.nextViewOptions({
+              disableBack: true
+            });
+            $state.go('tab.dash');
+            scope.$emit('modal:destroy');
+          } else {
+            $ionicPopup.alert({
+              title: 'Registration Error',
+              template: 'Email exists.'
+            });
+          }
+
         };
         scope.closeAndReset = function(){
           scope.$emit('modal:destroy');

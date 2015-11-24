@@ -8,7 +8,7 @@ angular.module('starter.controllers', [])
       $state.go('offline');
     }
   })
-  .controller('ChatsCtrl', function($scope, Users, Chats, Messages ) {
+  .controller('ChatsCtrl', function($scope, Users, Chats, Messages, $ionicActionSheet ) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
@@ -38,6 +38,23 @@ angular.module('starter.controllers', [])
         if( Chats.remove(chatId) ) {
           $scope.chats = Chats.all();
         }
+      };
+      $scope.menu = function(){
+        $ionicActionSheet.show({
+          buttons: [
+            { text: 'Insert Image' },
+            { text: 'Insert Video' },
+            { text: 'Insert File' }
+          ],
+          titleText: 'Options',
+          cancelText: 'Cancel',
+          cancel: function() {
+            // add cancel code..
+          },
+          buttonClicked: function(index) {
+            return true;
+          }
+        });
       };
       $scope.provisionChatModal = function( id ){
         if( typeof id !== 'undefined'){
@@ -158,19 +175,12 @@ angular.module('starter.controllers', [])
   .controller('OfflineCtrl', function($scope){
 
   })
-  .controller('DemoCtrl', function($scope){
-
-  })
-  .controller('WelcomeCtrl', function($scope){
-
-  })
   .controller('ArticlesCtrl', function($scope, $stateParams, Networks ){
     $scope.networkId = $stateParams.network;
     $scope.articles = Networks.get($scope.networkId).articles;
   })
   .controller('ArticleDetailCtrl', function($scope, $stateParams, Articles){
     $scope.article = Articles.get( $stateParams.articleId );
-    console.log( $scope.article );
   })
   .controller('BoardsCtrl', function($scope, $stateParams, Networks){
     $scope.networkId = $stateParams.network;
