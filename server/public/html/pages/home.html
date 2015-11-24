@@ -1,5 +1,6 @@
 
-<div render-video-bg="render-video-bg" class="row text-white">
+<div render-video-bg="render-video-bg" class="row"></div>
+<div ng-controller="PagesCtrl" class="row text-white">
   <div class="col-md-7 col-sm-12 text-left">
     <div id="intro-section">
       <h1>  Candid and Experienced Degree Knowledge</h1>
@@ -14,29 +15,32 @@
   <div class="col-md-5 col-sm-12 col-right">
     <div id="registration-form">
       <h4 class="text-center">  Free Domain-Knowledge News</h4>
+      <feedback-box success="success"></feedback-box>
       <form name="newsletter" id="newsletter" ng-submit="newsletterSignup()">
-        <div class="form-group">
-          <div role="alert" id="error" style="display: none" class="alert alert-danger">  Please Try Again!</div>
-          <div role="alert" id="valid" style="display: none" class="alert alert-success text-center">  Thank You! We'll reach out soon.</div>
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="form-group input-group-lg">
+              <input type="text" placeholder="First Name" ng-model="f.firstName" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="form-group input-group-lg">
+              <input type="text" placeholder="Last Name" ng-model="f.lastName" class="form-control"/>
+            </div>
+          </div>
         </div>
         <div class="form-group input-group-lg">
-          <input type="text" name="name" placeholder="Name" ng-model="entry.name" class="form-control"/>
+          <input type="email" name="email" placeholder="Email" ng-model="f.email" class="form-control"/>
         </div>
         <div class="form-group input-group-lg">
-          <input type="email" name="email" placeholder="Email" ng-model="entry.email" class="form-control"/>
-        </div>
-        <div class="form-group input-group-lg">
-          <select name="domain" id="domain" ng-model="domain" class="form-control">
+          <select name="domain" id="domain" ng-model="f.message" class="form-control">
             <option value="" selected="selected" disabled="disabled">  Domain</option>
-            <option value="Information Technology">  Information Technology</option>
-            <option value="custom">  Other...</option>
+            <option value="Finance">  Finance</option>
+            <option value="Technology">  Technology</option>
           </select>
         </div>
-        <div id="otherDomain" style="display: none" class="form-group input-group-lg">
-          <input type="text" name="other" placeholder="Tell Us Your Domain..." class="form-control"/><small>  We are working on extending into other domain</small>
-        </div>
         <div class="form-group input-group-lg">
-          <button type="submit" class="btn btn-primary btn-block btn-lg">  Sign Me Up!</button>
+          <button type="submit" ng-disabled="!f.firstName || !f.lastName || !f.email || !f.message" class="btn btn-primary btn-block btn-lg">  Sign Me Up!</button>
         </div>
       </form>
     </div>

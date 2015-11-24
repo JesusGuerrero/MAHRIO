@@ -1,4 +1,5 @@
-.row.text-white( render-video-bg )
+.row( render-video-bg )
+.row.text-white(ng-controller="PagesCtrl")
     .col-md-7.col-sm-12.text-left
         div( id="intro-section")
             h1
@@ -14,28 +15,26 @@
         div( id="registration-form")
             h4.text-center
                 |   Free Domain-Knowledge News
+            feedback-box(success="success")
             form( name="newsletter" id="newsletter" ng-submit="newsletterSignup()")
-                .form-group
-                    div.alert.alert-danger( role="alert" id="error" style="display: none")
-                        |   Please Try Again!
-                    div.alert.alert-success.text-center( role="alert" id="valid" style="display: none")
-                        |   Thank You! We'll reach out soon.
+                .row
+                    .col-xs-6
+                        .form-group.input-group-lg
+                            input.form-control( type="text" placeholder="First Name" ng-model="f.firstName")
+                    .col-xs-6
+                        .form-group.input-group-lg
+                            input.form-control( type="text" placeholder="Last Name" ng-model="f.lastName")
                 .form-group.input-group-lg
-                    input.form-control( type="text" name="name" placeholder="Name" ng-model="entry.name")
+                    input.form-control( type="email" name="email" placeholder="Email" ng-model="f.email")
                 .form-group.input-group-lg
-                    input.form-control( type="email" name="email" placeholder="Email" ng-model="entry.email")
-                .form-group.input-group-lg
-                    select.form-control( name="domain" id="domain" ng-model="domain")
+                    select.form-control( name="domain" id="domain" ng-model="f.message")
                         option( value="" selected disabled)
                             |   Domain
-                        option( value="Information Technology")
-                            |   Information Technology
-                        option( value="custom")
-                            |   Other...
-                .form-group.input-group-lg(id="otherDomain" style="display: none" )
-                    input.form-control( type="text" name="other" placeholder="Tell Us Your Domain...")
-                    small
-                        |   We are working on extending into other domain
+                        option( value="Finance")
+                            |   Finance
+                        option( value="Technology")
+                            |   Technology
                 .form-group.input-group-lg
-                    button.btn.btn-primary.btn-block.btn-lg(type="submit")
+                    button.btn.btn-primary.btn-block.btn-lg(type="submit"
+                        ng-disabled="!f.firstName || !f.lastName || !f.email || !f.message")
                         |   Sign Me Up!

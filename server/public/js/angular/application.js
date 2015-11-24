@@ -84,7 +84,13 @@ angular.module('baseApp', [
       .state('contact', {
         url: '/contact',
         templateUrl: '/assets/html/pages/contact',
-        title: 'Contact Us'
+        title: 'Contact Us',
+        controller: 'PagesCtrl'
+      })
+      .state('questions', {
+        url: '/questions',
+        templateUrl: '/assets/html/pages/questions',
+        controller: 'PagesCtrl'
       })
       .state('terms', {
         url: '/terms',
@@ -127,11 +133,11 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/admin_newsletter/newsletters',
         controller: 'adminNewslettersController'
       })
-      .state('questions', {
-        url: '/questions',
-        templateUrl: '/assets/html/questions/index',
-        controller: 'QuestionsController'
-      })
+      //.state('questions', {
+      //  url: '/questions',
+      //  templateUrl: '/assets/html/questions/index',
+      //  controller: 'QuestionsController'
+      //})
       .state('conversations', {
         url: '/conversations',
         templateUrl: '/assets/html/chat/index',

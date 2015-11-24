@@ -19793,7 +19793,25 @@ ul.sharebar li i {
 .skin-green .nav-stacked > li.active > a {
   border-left-color: #008d4c;
 }
-.skin-green .btn-primary {
+.skin-green .btn-primary,
+.skin-green .btn-primary.disabled,
+.skin-green .btn-primary[disabled],
+.skin-green fieldset[disabled] .btn-primary,
+.skin-green .btn-primary.disabled:hover,
+.skin-green .btn-primary[disabled]:hover,
+.skin-green fieldset[disabled] .btn-primary:hover,
+.skin-green .btn-primary.disabled:focus,
+.skin-green .btn-primary[disabled]:focus,
+.skin-green fieldset[disabled] .btn-primary:focus,
+.skin-green .btn-primary.disabled.focus,
+.skin-green .btn-primary[disabled].focus,
+.skin-green fieldset[disabled] .btn-primary.focus,
+.skin-green .btn-primary.disabled:active,
+.skin-green .btn-primary[disabled]:active,
+.skin-green fieldset[disabled] .btn-primary:active,
+.skin-green .btn-primary.disabled.active,
+.skin-green .btn-primary[disabled].active,
+.skin-green fieldset[disabled] .btn-primary.active {
   background-color: #00a65a;
   border-color: #008d4c;
   color: #fff;
@@ -19814,7 +19832,25 @@ ul.sharebar li i {
 .skin-red .nav-stacked > li.active > a {
   border-left-color: #d73925;
 }
-.skin-red .btn-primary {
+.skin-red .btn-primary,
+.skin-red .btn-primary.disabled,
+.skin-red .btn-primary[disabled],
+.skin-red fieldset[disabled] .btn-primary,
+.skin-red .btn-primary.disabled:hover,
+.skin-red .btn-primary[disabled]:hover,
+.skin-red fieldset[disabled] .btn-primary:hover,
+.skin-red .btn-primary.disabled:focus,
+.skin-red .btn-primary[disabled]:focus,
+.skin-red fieldset[disabled] .btn-primary:focus,
+.skin-red .btn-primary.disabled.focus,
+.skin-red .btn-primary[disabled].focus,
+.skin-red fieldset[disabled] .btn-primary.focus,
+.skin-red .btn-primary.disabled:active,
+.skin-red .btn-primary[disabled]:active,
+.skin-red fieldset[disabled] .btn-primary:active,
+.skin-red .btn-primary.disabled.active,
+.skin-red .btn-primary[disabled].active,
+.skin-red fieldset[disabled] .btn-primary.active {
   background-color: #d73925;
   border-color: #dd4b39;
   color: #fff;
@@ -19835,7 +19871,25 @@ ul.sharebar li i {
 .skin-purple .nav-stacked > li.active > a {
   border-left-color: #555299;
 }
-.skin-purple .btn-primary {
+.skin-purple .btn-primary,
+.skin-purple .btn-primary.disabled,
+.skin-purple .btn-primary[disabled],
+.skin-purple fieldset[disabled] .btn-primary,
+.skin-purple .btn-primary.disabled:hover,
+.skin-purple .btn-primary[disabled]:hover,
+.skin-purple fieldset[disabled] .btn-primary:hover,
+.skin-purple .btn-primary.disabled:focus,
+.skin-purple .btn-primary[disabled]:focus,
+.skin-purple fieldset[disabled] .btn-primary:focus,
+.skin-purple .btn-primary.disabled.focus,
+.skin-purple .btn-primary[disabled].focus,
+.skin-purple fieldset[disabled] .btn-primary.focus,
+.skin-purple .btn-primary.disabled:active,
+.skin-purple .btn-primary[disabled]:active,
+.skin-purple fieldset[disabled] .btn-primary:active,
+.skin-purple .btn-primary.disabled.active,
+.skin-purple .btn-primary[disabled].active,
+.skin-purple fieldset[disabled] .btn-primary.active {
   background-color: #605ca8;
   border-color: #555299;
   color: #fff;
@@ -19856,7 +19910,25 @@ ul.sharebar li i {
 .skin-yellow .nav-stacked > li.active > a {
   border-left-color: #e08e0b;
 }
-.skin-yellow .btn-primary {
+.skin-yellow .btn-primary,
+.skin-yellow .btn-primary.disabled,
+.skin-yellow .btn-primary[disabled],
+.skin-yellow fieldset[disabled] .btn-primary,
+.skin-yellow .btn-primary.disabled:hover,
+.skin-yellow .btn-primary[disabled]:hover,
+.skin-yellow fieldset[disabled] .btn-primary:hover,
+.skin-yellow .btn-primary.disabled:focus,
+.skin-yellow .btn-primary[disabled]:focus,
+.skin-yellow fieldset[disabled] .btn-primary:focus,
+.skin-yellow .btn-primary.disabled.focus,
+.skin-yellow .btn-primary[disabled].focus,
+.skin-yellow fieldset[disabled] .btn-primary.focus,
+.skin-yellow .btn-primary.disabled:active,
+.skin-yellow .btn-primary[disabled]:active,
+.skin-yellow fieldset[disabled] .btn-primary:active,
+.skin-yellow .btn-primary.disabled.active,
+.skin-yellow .btn-primary[disabled].active,
+.skin-yellow fieldset[disabled] .btn-primary.active {
   background-color: #f39c12;
   border-color: #e08e0b;
   color: #fff;
