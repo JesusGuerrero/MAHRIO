@@ -112570,6 +112570,9 @@ angular.module('baseApp.directives')
         };
 
         FormHelper.setupFormHelper(scope, 'network', Network );
+        scope.mediaActions.remove = function( ){
+          return Network.removeCoverImage( scope.network._id, scope.network.coverImage._id );
+        };
 
         scope.save = function(){
           if( scope.network._id ) {
@@ -112624,6 +112627,13 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
             mediaInsert: media
           }
         }).$promise;
+    },
+    removeCoverImage: function( networkId, imageId ){
+      return NetworkResource.remove({
+        id: networkId,
+        action: 'coverImage',
+        imageId: imageId
+      }).$promise;
     },
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
@@ -112727,7 +112737,7 @@ angular.module('baseApp.directives')
           });
 
           return $(element).iCheck({
-            checkboxClass: 'icheckbox_flat-'+window.localStorage.skin.split('-')[1],
+            checkboxClass: 'icheckbox_flat-'+ (window.localStorage.skin ? window.localStorage.skin.split('-')[1] : 'blue'),
             radioClass: 'iradio_flat-aero'
 
           }).on('ifChanged', function (event) {
@@ -113075,6 +113085,12 @@ angular.module('baseApp.directives')
             scope.file = {
               filename: ''
             };
+          };
+          scope.proceedRemove = function(){
+            scope.actions.remove()
+              .then(function(){
+                scope.media = null;
+              });
           };
         }
       };
