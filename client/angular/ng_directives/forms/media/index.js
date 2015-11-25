@@ -55,6 +55,12 @@ angular.module('baseApp.directives')
               filename: ''
             };
           };
+          scope.proceedRemove = function(){
+            scope.actions.remove()
+              .then(function(){
+                scope.media = null;
+              });
+          };
         }
       };
     }]);

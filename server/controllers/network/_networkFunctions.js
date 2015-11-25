@@ -80,6 +80,7 @@ function _getNetworkMembers( network, callback ) {
 function _getAllNetworks( request, reply, callback ) {
   Network
     .find( request.payload.access )
+    .populate('coverImage')
     .exec( function(err, networks){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -140,7 +141,7 @@ function getNetwork( request, reply, callback ) {
       });
   }
 }
-function _updateImage( request, reply ) {
+function _createImage(request, reply){
   Media
     .create( request.payload.network.mediaInsert, function(err, media){
       if( err ) { return reply( Boom.badRequest(err) ); }
@@ -151,6 +152,19 @@ function _updateImage( request, reply ) {
 
           return reply({media: media});
         });
+    });
+}
+function _updateImage( request, reply ) {
+  Network
+    .findOne( {_id: request.params.id} )
+    .exec( function(err, network){
+      if( network.coverImage ) {
+        Media.remove({_id: network.coverImage}, function(){
+          return _createImage( request, reply );
+        });
+      } else {
+        return _createImage( request, reply );
+      }
     });
 }
 function updateNetwork( request, reply ) {
@@ -317,6 +331,17 @@ function removeNetwork( request, reply ){
     return reply( Boom.badRequest() );
   }
 }
+function removeCoverImage( request, reply ) {
+  if( !request.query.imageId ) {
+    return reply( Boom.badRequest() );
+  }
+  Media.remove({_id: request.query.imageId }, function(){
+    Network.update({_id: request.params.id}, {$set: {coverImage: null}}, function(err){
+      if( err ){ return reply(Boom.badRequest()); }
+      return reply({removed: true});
+    });
+  });
+}
 
 module.exports = {
   create: createNetwork,
@@ -326,5 +351,6 @@ module.exports = {
   join: joinNetwork,
   leave: leaveNetwork,
   media: addMediaNetwork,
-  remove: removeNetwork
+  remove: removeNetwork,
+  removeCoverImage: removeCoverImage
 };

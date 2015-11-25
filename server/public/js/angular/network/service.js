@@ -35,6 +35,13 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
           }
         }).$promise;
     },
+    removeCoverImage: function( networkId, imageId ){
+      return NetworkResource.remove({
+        id: networkId,
+        action: 'coverImage',
+        imageId: imageId
+      }).$promise;
+    },
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
     },
