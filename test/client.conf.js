@@ -4,7 +4,7 @@ var configUtils = require('./client/Utils/configUtils.js');
 exports.config = {
 
     suites: {
-        sanityTests: './e2e/frontend/sanityTests.spec.js',
+        sanityTests: './client/sanityTests.spec.js',
     },
     params: {
         targetServerName: 'ADT Pulse Test',
