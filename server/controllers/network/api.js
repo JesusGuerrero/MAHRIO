@@ -54,6 +54,14 @@ module.exports = function(config, server) {
     },
     {
       method: ['DELETE'],
+      path: '/api/networks/{id}/coverImage',
+      config: {
+        handler: NetworkCtrl.removeCoverImage,
+        auth: 'simple'
+      }
+    },
+    {
+      method: ['DELETE'],
       path: '/api/networks/{id?}',
       config: {
         handler: NetworkCtrl.remove,

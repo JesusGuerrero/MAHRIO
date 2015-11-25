@@ -2,9 +2,11 @@
 
 var mongoose = require('mongoose'),
   schema = mongoose.Schema({
-    name: {type: String, required: true},
+    firstName: {type: String, required: true},
+    lastName: {type: String, required: true},
     email: {type: String, required: true},
-    lists: [{type: mongoose.Schema.Types.ObjectId, ref: 'List' }]
+    type: {type: String, required: true}, // contact, newsletter, question
+    message: {type: String, required: true}
   }),
   Contact = mongoose.model( 'Contact', schema);
 

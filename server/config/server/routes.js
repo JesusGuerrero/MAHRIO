@@ -16,8 +16,9 @@ function requireControllers(config, server){
   require('../../controllers/media/api')(config, server);
   require('../../controllers/network/api')(config, server);
   require('../../controllers/task/api')(config, server);
-  require('../../controllers/contact/newsletter')(config, server);
-  require('../../controllers/contact/knowledge')(config, server);
+  require('../../controllers/contact/api')(config, server);
+  //require('../../controllers/contact/newsletter')(config, server);
+  //require('../../controllers/contact/knowledge')(config, server);
   require('../../controllers/socket/api')(config, server);
   require('../../controllers/hardware/api')(config, server);
 }

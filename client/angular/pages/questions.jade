@@ -1,0 +1,31 @@
+.row(render-video-bg )
+.row.text-white
+    .col-md-7.col-sm-12.text-left
+        #intro-section
+            h1
+                |  Free Consulting
+            p.transparent-text
+                |  Our values put the knowledge seeker first. We want to connect our experiences, even if it means
+                |  hiring a domain-expert, because we value the knowledge, reward, and happiness that can be achieved.
+                |  Ask us all your questions.
+    .col-md-5.col-sm-12.col-right
+        #registration-form
+            h4.text-center
+                | Ask About Anything Degree-Related
+            feedback-box(success="success")
+            form( ng-submit="askUsQuestion()")
+                .row
+                    .col-xs-6
+                        .form-group.input-group-lg
+                            input.form-control( type="text" placeholder="First Name" ng-model="f.firstName")
+                    .col-xs-6
+                        .form-group.input-group-lg
+                            input.form-control( type="text" placeholder="Last Name" ng-model="f.lastName")
+                .form-group.input-group-lg
+                    input( type="email" class="form-control" placeholder="Email" ng-model="f.email" )
+                .form-group.input-group-lg
+                    input( class="form-control" rows="8" placeholder="Question" ng-model="f.message")
+                .form-group.input-group-lg
+                    button.btn.btn-primary.btn-block.btn-lg(type="submit"
+                        ng-disabled="!f.firstName || !f.lastName || !f.email || !f.message")
+                        |   Ask Question

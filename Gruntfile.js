@@ -210,7 +210,7 @@ module.exports = function (grunt) {
                 tasks: ['less']
             },
             angularJade: {
-                files: ['client/angular/**/*.jade', '!**/_*.jade'],
+                files: ['client/angular/**/*.jade', '!client/**/_*.jade'],
                 tasks: ['newer:jade'],
                 options: {
                     interrupt: true

@@ -31,7 +31,7 @@ angular.module('baseApp.directives')
           });
 
           return $(element).iCheck({
-            checkboxClass: 'icheckbox_flat-'+window.localStorage.skin.split('-')[1],
+            checkboxClass: 'icheckbox_flat-'+ (window.localStorage.skin ? window.localStorage.skin.split('-')[1] : 'blue'),
             radioClass: 'iradio_flat-aero'
 
           }).on('ifChanged', function (event) {

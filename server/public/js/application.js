@@ -109321,7 +109321,13 @@ angular.module('baseApp', [
       .state('contact', {
         url: '/contact',
         templateUrl: '/assets/html/pages/contact',
-        title: 'Contact Us'
+        title: 'Contact Us',
+        controller: 'PagesCtrl'
+      })
+      .state('questions', {
+        url: '/questions',
+        templateUrl: '/assets/html/pages/questions',
+        controller: 'PagesCtrl'
       })
       .state('terms', {
         url: '/terms',
@@ -109364,11 +109370,11 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/admin_newsletter/newsletters',
         controller: 'adminNewslettersController'
       })
-      .state('questions', {
-        url: '/questions',
-        templateUrl: '/assets/html/questions/index',
-        controller: 'QuestionsController'
-      })
+      //.state('questions', {
+      //  url: '/questions',
+      //  templateUrl: '/assets/html/questions/index',
+      //  controller: 'QuestionsController'
+      //})
       .state('conversations', {
         url: '/conversations',
         templateUrl: '/assets/html/chat/index',
@@ -109670,10 +109676,11 @@ angular.module('baseApp', [
         title: 'Mailbox',
         subTitle: 'View'
       })
-      .state('raspberrys', {
-        url: '/raspberry',
-        controller: 'RaspberryController',
-        templateUrl: '/assets/html/raspberry/index'
+      .state('hardware', {
+        url: '/hardware',
+        controller: 'HardwareController',
+        templateUrl: '/assets/html/hardware/list',
+        title: 'Hardware'
       });
 
     $urlRouterProvider.otherwise('/');
@@ -109752,7 +109759,7 @@ angular.module('baseApp.controllers', [])
       };
 
       $rootScope.access = ['any'];
-      $rootScope.settings = { skin: window.localStorage.skin || 'skin-blue' };
+      $rootScope.settings = { skin: window.localStorage.skin || 'skin-green' };
       $rootScope.getThemeClass = function(){
         return $rootScope.settings.skin;
       };
@@ -111194,6 +111201,100 @@ angular.module('baseApp.controllers')
       //console.log( $scope.networks );
     }]);
 angular.module('baseApp.controllers')
+  .controller( 'HardwareController', [ '$scope', '$http', 'Socket','Hardware', 'Notification', '$state',
+    function( $scope, $http, Socket, Hardware, Notification, $state ){
+      'use strict'; /* global alert */
+      var namespaces;
+      Socket.setIp( '192.168.0.10' );
+      $scope.sendMessage = function( ) {
+        Socket.queryIp( $scope.msg );
+        if( namespaces.indexOf( $scope.namespace ) === -1 ) {
+          namespaces.push( $scope.namespace );
+          Socket.receiveMessage( $scope.namespace, function( data ) {
+            console.log( data );
+            alert( data );
+          });
+        }
+      };
+      $scope.hardware = {};
+      Hardware.get( 'raspberry' )
+        .then( function( res ) {
+          $scope.hardware = res.devices;
+        });
+      //$scope.socketEvent = function() {
+      //  Socket.receiveMessage('192.168.0.10:question:active', function (res) {
+      //    $scope.isActive = res.active;
+      //  });
+      //};
+      $scope.newHardware = function(){
+        $('#modalHardwareForm' ).modal().show();
+      };
+      $scope.editHardware = function( hardware ){
+        $scope.edit = hardware;
+        $('#modalHardwareForm' ).modal().show();
+      };
+
+      $scope.remove = function( id ){
+        Notification.id = id;
+        Notification.confirm = 'Are you sure you want to delete?' + id;
+        Notification.confirmed = false;
+      };
+      $scope.$watch( function(){ return Notification.confirmed; }, function(newVal) {
+        if (newVal) {
+          Notification.confirmed = null;
+          Hardware.remove( Notification.id )
+            .then( function(){
+              $state.reload();
+            });
+        }
+      });
+
+    }]);
+angular.module('baseApp.directives')
+  .directive('modalHardwareForm', [ 'Hardware','FormHelper', function(Hardware, FormHelper){
+    'use strict';
+
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/assets/html/hardware/form',
+      scope: {
+        hardwareId: '=',
+        edit: '=',
+        name: '@'
+      },
+      link: function( scope ){
+
+        var formSetup = function(){
+          FormHelper.setupFormHelper( scope, 'hardware', Hardware );
+        };
+
+        scope.$watch( function(){ return scope.edit; }, function(newVal){
+          if( newVal ) {
+            scope.hardware = newVal;
+          } else {
+            scope.hardware = { };
+          }
+        });
+        scope.save = function(){
+          if( scope.hardware._id ) {
+            Hardware.update( scope.hardware )
+              .then( function(){
+                scope.$emit('closeModal');
+              });
+          } else {
+            Hardware.add( scope.hardware, scope.name )
+              .then( function( res ){
+                console.log( res );
+                scope.$emit('closeModal');
+              });
+          }
+        };
+        formSetup();
+      }
+    };
+  }]);
+angular.module('baseApp.controllers')
   .controller('KnowledgeController', ['$scope',
     function($scope) {
       'use strict';
@@ -111504,15 +111605,6 @@ angular.module('baseApp.directives')
           } else {
             return '/assets/html/pages/home';
           }
-        },
-        link: function( scope ){
-          scope.entry = {};
-          scope.newsletterSignup = function(){
-            Newsletter.add( scope.entry).then( function(){
-              //alert('thank you for sign up');
-              scope.entry = {};
-            });
-          };
         }
       };
     }
@@ -112478,6 +112570,9 @@ angular.module('baseApp.directives')
         };
 
         FormHelper.setupFormHelper(scope, 'network', Network );
+        scope.mediaActions.remove = function( ){
+          return Network.removeCoverImage( scope.network._id, scope.network.coverImage._id );
+        };
 
         scope.save = function(){
           if( scope.network._id ) {
@@ -112532,6 +112627,13 @@ angular.module('baseApp.services').factory('Network', [ 'NetworkResource', funct
             mediaInsert: media
           }
         }).$promise;
+    },
+    removeCoverImage: function( networkId, imageId ){
+      return NetworkResource.remove({
+        id: networkId,
+        action: 'coverImage',
+        imageId: imageId
+      }).$promise;
     },
     get: function( id ) {
       return NetworkResource.read( id ? {id: id} : {} ).$promise;
@@ -112635,7 +112737,7 @@ angular.module('baseApp.directives')
           });
 
           return $(element).iCheck({
-            checkboxClass: 'icheckbox_flat-'+window.localStorage.skin.split('-')[1],
+            checkboxClass: 'icheckbox_flat-'+ (window.localStorage.skin ? window.localStorage.skin.split('-')[1] : 'blue'),
             radioClass: 'iradio_flat-aero'
 
           }).on('ifChanged', function (event) {
@@ -112984,6 +113086,12 @@ angular.module('baseApp.directives')
               filename: ''
             };
           };
+          scope.proceedRemove = function(){
+            scope.actions.remove()
+              .then(function(){
+                scope.media = null;
+              });
+          };
         }
       };
     }]);
@@ -113165,7 +113273,11 @@ angular.module('baseApp.services')
                     mediaDetails.url = res.url;
                     media.addCoverImage( {_id: $scope[resource]._id}, mediaDetails )
                       .then( function(res){
-                        $scope[resource].media.push( res.media );
+                        if( $scope[resource].media ) {
+                          $scope[resource].media.push( res.media );
+                        } else {
+                          $scope[resource].media = [ res.media ];
+                        }
                         defer.resolve({url: res.media.url});
                       }, function(){
                         defer.reject();
@@ -113222,6 +113334,44 @@ angular.module('baseApp.services')
 
       return this;
     }]);
+angular.module('baseApp.services').factory('HardwareResource', [ '$resource', function($resource) {
+  'use strict';
+  return $resource('/api/hardware/:id',
+    { id: '@id' },
+    {
+      create: { method: 'POST' },
+      read:   { method: 'GET' },
+      update: { method: 'PUT' },
+      remove: { method: 'DELETE' }
+    });
+}]);
+angular.module('baseApp.services').factory('Hardware', [ 'HardwareResource', function( HardwareResource ) {
+  'use strict';
+  return {
+    add: function( hardware ) {
+      return HardwareResource.create( {hardware: hardware} ).$promise; },
+    addCoverImage: function( hardware, media ){
+      return HardwareResource.update(
+        {
+          id: hardware._id
+        },{
+          hardware: {
+            mediaInsert: media
+          }
+        }).$promise;
+    },
+    update: function( hardware ) { return HardwareResource.update( {id: hardware._id}, {hardware: hardware} ) .$promise; },
+    remove: function( id ){ return HardwareResource.remove( {id: id} ).$promise; },
+    get: function( name, id, hardwareId  ) {
+      var options = id ? {id: id} : {};
+      if( hardwareId ) {
+        options.hardwareId = hardwareId;
+      }
+      return HardwareResource.read( options ).$promise;
+    }
+
+  };
+}]);
 angular.module('baseApp.services')
   .factory('NotificationResource', [ '$resource', function($resource) {
     'use strict';
@@ -113368,19 +113518,30 @@ angular.module('baseApp')
 //}
 /* global io */
 
-angular.module('baseApp.services').factory('Socket', [ function() {
+angular.module('baseApp.services').factory('Socket', [ '$http', function( $http ) {
   'use strict';
 
   //var mySocket = socket();
   ////mySocket.forward('socket:pong');
   //return mySocket;
-  var socket = io();
+  var socket = io(), ip = '';
   //socket.on('event:restroom', function(socket){
   //  console.log('message: ' + socket);
   //});
 
   return {
-    get: socket
+    get: socket,
+    sendMessage: function(){},
+    receiveMessage: function( msg, cb ){
+      socket.on( msg, cb || function(){});
+    },
+    setIp: function( ipParam ) {
+      ip = ipParam;
+    },
+    queryIp: function( cmd, cb ) {
+      $http.get( '/api/raspberrys/' + ip + '/' + cmd )
+        .success( cb || function(){} );
+    }
   };
 
 }]);
@@ -113705,6 +113866,35 @@ angular.module('baseApp.controllers')
   .controller('NotificationsController', [ function( ) {
     'use strict';
 
+  }]);
+angular.module('baseApp.controllers')
+  .controller('PagesCtrl', ['$scope', '$http', '$state', function($scope, $http){
+    'use strict';
+    $scope.f = { };
+    $scope.contactUs = function(){
+      $scope.f.type = 'contact';
+      $http.post( '/api/contact', {contact: $scope.f })
+        .then( function(){
+          $scope.success = 'Thank you! We will be in contact with you soon.';
+          $scope.f = {};
+        });
+    };
+    $scope.newsletterSignup = function(){
+      $scope.f.type = 'newsletter';
+      $http.post( '/api/contact', {contact: $scope.f })
+        .then( function(){
+          $scope.success = 'Thank you! You have successfully been added.';
+          $scope.f = {};
+        });
+    };
+    $scope.askUsQuestion = function(){
+      $scope.f.type = 'question';
+      $http.post( '/api/contact', {contact: $scope.f })
+        .then( function(){
+          $scope.success = 'Thank you! Your question will be answered promtly.';
+          $scope.f = {};
+        });
+    };
   }]);
 angular.module('baseApp.controllers')
   .controller('ProfileController', ['$scope', '$state', 'currentUser', function( $scope, $state, currentUser ) {
@@ -114417,19 +114607,6 @@ angular.module('baseApp.services')
     };
   }]);
 
-angular.module('baseApp.controllers')
-  .controller( 'SocketController', [ '$scope', '$http', 'Socket', function( $scope, $http, Socket ){
-    'use strict';
-    $scope.emitSocketEvent = function(){
-      $http.get( '/api/sockets')
-        .success( function(res){
-          console.log( res );
-        });
-    };
-    Socket.get.on('event:testing', function(){
-      console.log('socket tested');
-    });
-  }]);
 /* global confirm */
 /* global $ */
 

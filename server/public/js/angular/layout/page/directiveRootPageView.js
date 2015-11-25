@@ -14,15 +14,6 @@ angular.module('baseApp.directives')
           } else {
             return '/assets/html/pages/home';
           }
-        },
-        link: function( scope ){
-          scope.entry = {};
-          scope.newsletterSignup = function(){
-            Newsletter.add( scope.entry).then( function(){
-              //alert('thank you for sign up');
-              scope.entry = {};
-            });
-          };
         }
       };
     }

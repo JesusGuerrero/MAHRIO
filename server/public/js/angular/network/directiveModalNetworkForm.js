@@ -34,6 +34,9 @@ angular.module('baseApp.directives')
         };
 
         FormHelper.setupFormHelper(scope, 'network', Network );
+        scope.mediaActions.remove = function( ){
+          return Network.removeCoverImage( scope.network._id, scope.network.coverImage._id );
+        };
 
         scope.save = function(){
           if( scope.network._id ) {
