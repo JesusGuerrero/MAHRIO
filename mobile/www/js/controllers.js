@@ -70,7 +70,13 @@ angular.module('starter.controllers', [])
       };
     });
   })
-  .controller('DashCtrl', function($scope) {})
+  .controller('DashCtrl', function($scope, Users) {
+    $scope.$on('$ionicView.enter', function() {
+      if( Users.hasCurrent() ) {
+        console.log( 'has current user' );
+      }
+    });
+  })
   .controller('HomeCtrl', function($scope, Users, Modal){
 
     $scope.modal = {};
@@ -118,32 +124,43 @@ angular.module('starter.controllers', [])
       });
     });
   })
-  .controller('NetworksCtrl', function( $scope, Networks, Users) {
+  .controller('NetworksCtrl', function( $scope, Networks, Users, _) {
     $scope.$on('$ionicView.enter', function() {
-      $scope.networks = Networks.get( Users.getCurrent().networks );
+      if( Users.hasCurrent() ) {
+        $scope.networks = Users.getNetworks( );
+      } else {
+        $scope.$on('provision:currentUser', function(){
+          $scope.networks = Users.getNetworks( );
+        });
+      }
     });
     $scope.provisionNetworksModal = function(){
-      $scope.otherNetworks = Networks.get( Users.getCurrent().networks, true);
-      $scope.joinNetwork = function( networkId ) {
-        var joined = $scope.otherNetworks[ networkId ];
-        $scope.networks[ networkId ] = joined;
-        delete $scope.otherNetworks[ networkId ];
-        Networks.join( networkId, Users.getCurrent().id );
-      };
-      $scope.leaveNetwork = function( networkId ) {
-        var left = $scope.networks[ networkId ];
-        $scope.otherNetworks[ networkId ] = left;
-        delete $scope.networks[ networkId ];
-        Networks.leave( networkId, Users.getCurrent().id );
-      };
-      $scope.$emit('provision:modal:networks',{
-        scope: $scope
+      Networks.get().then( function(res){
+        var currNetworks = Object.keys( _.indexBy($scope.networks, '_id') );
+        var otherNetworks = _.filter(res.data.networks, function(network){ return !_.contains(currNetworks, network._id)});
+        $scope.otherNetworks = _.indexBy( otherNetworks, '_id');
+
+        $scope.$emit('provision:modal:networks',{
+          scope: $scope
+        });
       });
+      $scope.joinNetwork = function( network ) {
+        Networks.join( network ).then( function(){
+          $scope.networks[ network._id ] = network;
+          delete $scope.otherNetworks[ network._id ];
+        });
+      };
+      $scope.leaveNetwork = function( network ) {
+        Networks.leave( network).then( function(){
+          $scope.otherNetworks[ network._id ] = network;
+          delete $scope.networks[ network._id ];
+        });
+      };
     };
 
   })
-  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Networks) {
-    $scope.network = Networks.get( $stateParams.networkId );
+  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Users) {
+    $scope.network = Users.getOneNetwork( $stateParams.networkId );
 
     $scope.confirmStatusChanges = function() {
       $scope.data = {};
@@ -203,11 +220,13 @@ angular.module('starter.controllers', [])
   .controller('HardwareDetailCtrl', function($scope, $stateParams, Networks){
     $scope.hardware = Networks.getHardware( $stateParams.network, $stateParams.hardwareId );
   })
-  .controller('MembersCtrl', function($scope, $stateParams, Networks){
-    $scope.networkId = $stateParams.network;
-    $scope.members = Networks.getMembers( $stateParams.network );
+  .controller('MembersCtrl', function($scope, $stateParams, Users){
+    $scope.network = Users.getOneNetwork( $stateParams.network );
+    Users.getFromNetwork( $scope.network.members).then( function(members){
+      $scope.members = members;
+    });
   })
-  .controller('MembersDetailCtrl', function($scope, $stateParams, Networks){
+  .controller('MemberDetailCtrl', function($scope, $stateParams, Networks){
     $scope.member = Networks.getMembers( $stateParams.network, $stateParams.memberId );
   })
   .controller('SearchCtrl', function( $scope) {

@@ -9,14 +9,11 @@
       <ion-slide>
         <div class="padding">
           <div class="list">
-            <label class="item item-input item-stacked-label">
-              <span class="input-label">Email</span>
-              <input ng-model="form.email" type="text" placeholder="you@domain.com" />
-            </label>
-            <label class="item item-input item-stacked-label">
-              <span class="input-label">Password</span>
-              <input ng-model="form.password" type="password" placeholder="******" />
-            </label>
+
+            <form novalidate="novalidate" ng-submit="login()">
+              <form-input-tag model="form.email" label="Email" required="true" icon="" placeholder="you@domain.com"></form-input-tag>
+              <form-input-tag model="form.password" type="password" label="Password" required="true" icon="" placeholder="*******"></form-input-tag>
+            </form>
           </div>
         </div>
       </ion-slide>

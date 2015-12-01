@@ -79,7 +79,7 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Networks', function( _, Util, Articles, Users ){
+  .factory('Networks', function( _, Util, Articles, Users, $http, proxy, $q ){
     var networks = [{
         id: 1,
         title: 'Viviana Jade Rocha',
@@ -142,20 +142,53 @@ angular.module('starter.services', [])
     }];
 
     var api = {
-      join: function( networkId, memberId ){
-        var network = api.get( networkId );
-        network.members[ memberId ] = null;
-        Users.addNetwork( networkId );
+      join: function( network ){
+        var defer = $q.defer();
+
+        $http.put( proxy.url+'/api/networks/'+ network._id + '/join').then( function(res){
+          Users.addNetwork( network );
+          defer.resolve();
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
       },
-      leave: function( networkId, memberId ){
+      leave: function( network ){
+        var defer = $q.defer();
+
+        $http.put( proxy.url+'/api/networks/'+ network._id + '/leave').then( function(res){
+          Users.removeNetwork( network );
+          defer.resolve();
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+
         var network = api.get( networkId );
         delete network.members[ memberId ];
         Users.removeNetwork( networkId );
       },
-      get: function(networkIds, inverse) {
+      get: function(){
+        var defer = $q.defer();
+
+        $http.get( proxy.url+'/api/networks').then( function(res){
+          networks = res.data.networks;
+          defer.resolve(res);
+        }, function(res){
+          defer.reject(res);
+        });
+
+        return defer.promise;
+      },
+      getOne: function(networkId){
+        return _.find( networks, function(network) { return network._id === networkId; });
+      },
+      getAll: function(networkIds, inverse) {
         var allNetworks = Util.populateAll( networks, {articles: api.getArticles });
         // get all
-        if( typeof networkIds === 'undefined') { return allNetworks; }
+        if( typeof networkIds === 'undefined') { return $http.get( proxy.url+'/api/networks'); }
         // get all that belong to network through articleIds
         if( _.isArray(networkIds) ){
           var list = _.filter(allNetworks, function(network){
@@ -425,7 +458,10 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Users', function($localstorage){
+  .service('proxy', function(APP_IP){
+    this.url = APP_IP;
+  })
+  .factory('Users', function($localstorage, proxy, $http, $q, $timeout ){
     var users = [{
       id: 1,
       email: 'jesus.rocha@whichdegree.co',
@@ -456,14 +492,18 @@ angular.module('starter.services', [])
       },
       face: 'img/users/2/user-profile.jpg',
       networks: [2]
-    }], currentUser = null, counter = 4;
+    }], currentUser = null, counter = 4, currentLock = false;
 
     var api = {
-      addNetwork: function(networkId){
-        currentUser.networks.push( networkId );
+      addNetwork: function( network ){
+        network.members[ currentUser._id ] = null;
+        currentUser.networks.push( network );
+        $localstorage.setObject( 'currentUser', currentUser );
       },
-      removeNetwork: function(networkId){
-        currentUser.networks.splice( currentUser.networks.indexOf(networkId), 1);
+      removeNetwork: function( network ){
+        delete network.members[ currentUser._id ];
+        currentUser.networks.splice( currentUser.networks.indexOf(network), 1);
+        $localstorage.setObject( 'currentUser', currentUser );
       },
       getUsers: function( chatIds ) {
         return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
@@ -471,15 +511,23 @@ angular.module('starter.services', [])
       getXother: function(){
         return _.filter( users, function(user) { return user.id !== currentUser.id; });
       },
-      login: function(email){
-        var current = _.findWhere( users, {email: email});
-        if( current ) {
-          currentUser = current;
-          $localstorage.setObject( 'currentUser', currentUser );
-          return true;
-        } else {
-          return false;
-        }
+      login: function( user ){
+        var defer = $q.defer();
+        $http.post(proxy.url + '/api/session/login', user)
+          .then( function(res){
+            if( res.data.success ) {
+              $http.defaults.headers.common.Authorization = res.headers('Authorization');
+              $localstorage.set( 'Authorization', res.headers('Authorization') );
+              api.getCurrent().then( function( user ){
+                console.log( user );
+                currentUser = user;
+                defer.resolve( user );
+              });
+            } else {
+              defer.reject();
+            }
+          }, function(){ defer.reject(); });
+        return defer.promise;
       },
       register: function( user ) {
         if( _.find( users, function(usr){ return usr.email === user.email; }) ) {
@@ -501,18 +549,61 @@ angular.module('starter.services', [])
         }
       },
       logout: function(){
+        $localstorage.set('Authorization', null);
         $localstorage.setObject( 'currentUser', null );
+        delete $http.defaults.headers.common.Authorization;
+        currentUser = null;
       },
       getCurrent: function(){
-        return currentUser;
-      },
-      checkLoggedIn: function(){
-        var user = $localstorage.getObject( 'currentUser' );
-        if( user && user.id ) {
-          currentUser = user;
-          return true;
+        if( !currentLock ) {
+          var defer = $q.defer();
+          currentLock = defer;
+
+          $timeout( function(){
+            if( typeof $http.defaults.headers.common.Authorization === 'undefined' ) {
+              if( $localstorage.get('Authorization', 'null') !== 'null' ) {
+                $http.defaults.headers.common.Authorization = $localstorage.get('Authorization');
+                $http.get(proxy.url + '/api/users/me').then( function(res){
+                  currentUser = res.data.user;
+                  $localstorage.setObject( 'currentUser', currentUser );
+                  currentLock = false;
+                  defer.resolve( currentUser );
+                }, function() { currentLock = false; defer.reject(); });
+              } else {
+                currentLock = false; defer.reject();
+              }
+            } else {
+              $http.get(proxy.url + '/api/users/me').then( function(res){
+                currentUser = res.data.user;
+                $localstorage.setObject( 'currentUser', currentUser );
+                currentLock = false;
+                defer.resolve( currentUser );
+              }, function() { currentLock = false; defer.reject(); });
+            }
+          }, 100);
+
+          return defer.promise;
+        } else {
+          return currentLock.promise;
         }
-        return false;
+      },
+      hasCurrent: function() { return currentUser !== null; },
+      getNetworks: function(){
+        return _.indexBy( currentUser.networks, '_id');
+      },
+      getOneNetwork: function( networkId ){
+        return _.find( currentUser.networks, function(network){ return network._id === networkId; });
+      },
+      getFromNetwork: function( userIds ){
+        var defer = $q.defer();
+
+        $http.get( proxy.url + '/api/autocomplete/users').then( function(res){
+          defer.resolve(_.filter(res.data.users, function(user){ return _.contains(userIds, user._id); }));
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
       }
     };
     return api;

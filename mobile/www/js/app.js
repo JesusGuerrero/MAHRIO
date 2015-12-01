@@ -26,14 +26,14 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users) {
       console.log("window.analytics is undefined");
     }
 
-    if (Users.checkLoggedIn()) {
+    Users.getCurrent().then( function(){
+      $rootScope.$broadcast('provision:currentUser');
       $location.path('/tab/dash');
-    } else {
+      //$rootScope.$apply();
+    }, function(){
       $location.path('/offline');
-    }
-
-    $rootScope.$apply();
-
+      //$rootScope.$apply();
+    });
   });
 }
 
@@ -45,7 +45,7 @@ angular.module('starter', [
   'starter.services',
   'starter.directives',
   'angular-underscore'])
-  .constant('APP_IP', 'http://192.168.0.4:8042')
+  .constant('APP_IP', 'https://mahrio.herokuapp.com')
   .constant('_', window._)
   .run(mahrioRun)
   .config(function($stateProvider, $urlRouterProvider) {

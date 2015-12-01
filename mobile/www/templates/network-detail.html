@@ -1,70 +1,66 @@
+<!--<ion-nav-view>-->
+  <!--<ion-view>-->
+
+      <!--&lt;!&ndash;<div class="tabs tabs-top" style="margin-top: 35px;">&ndash;&gt;-->
+        <!--&lt;!&ndash;<a class="tab-item"  ng-click="alert(0);">&ndash;&gt;-->
+          <!--&lt;!&ndash;<i class="ion-ios-home"></i>&ndash;&gt;-->
+          <!--&lt;!&ndash;Home&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;<a class="tab-item" href="#/tab/articles" >&ndash;&gt;-->
+          <!--&lt;!&ndash;<i class="ion-ios-book"></i>&ndash;&gt;-->
+          <!--&lt;!&ndash;Articles&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;<a class="tab-item" ng-click="alert(2);">&ndash;&gt;-->
+          <!--&lt;!&ndash;<i class="ion-ios-calendar"></i>&ndash;&gt;-->
+          <!--&lt;!&ndash;Events&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;<a class="tab-item" style="border-right: none;"  ng-click="alert(3);">&ndash;&gt;-->
+          <!--&lt;!&ndash;<i class="ion-ios-people"></i>&ndash;&gt;-->
+          <!--&lt;!&ndash;Members&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--<ion-nav-title>-->
+      <!--{{network.title}}-->
+    <!--</ion-nav-title>-->
+  <!--</ion-view>-->
+<!--</ion-nav-view>-->
 <ion-view>
-  <ion-nav-title>
-    {{network.title}}
-    <!--<div class="tabs tabs-top" style="margin-top: 35px;">-->
-      <!--<a class="tab-item"  ng-click="alert(0);">-->
-        <!--<i class="ion-ios-home"></i>-->
-        <!--Home-->
-      <!--</a>-->
-      <!--<a class="tab-item" href="#/tab/articles" >-->
-        <!--<i class="ion-ios-book"></i>-->
-        <!--Articles-->
-      <!--</a>-->
-      <!--<a class="tab-item" ng-click="alert(2);">-->
-        <!--<i class="ion-ios-calendar"></i>-->
-        <!--Events-->
-      <!--</a>-->
-      <!--<a class="tab-item" style="border-right: none;"  ng-click="alert(3);">-->
-        <!--<i class="ion-ios-people"></i>-->
-        <!--Members-->
-      <!--</a>-->
-    <!--</div>-->
-  </ion-nav-title>
-
-  <ion-nav-buttons side="secondary">
-
-  </ion-nav-buttons>
-
-  <ion-content>
-    <div class="row bg-faces">
-      <div class="col col-50">
+    <ion-nav-title>{{network.name}}</ion-nav-title>
+    <ion-content>
+      <div class="row bg-faces">
+        <div class="col col-50">
+        </div>
+        <div class="col col-25">
+        </div>
+        <div class="col col-25">
+        </div>
       </div>
-      <div class="col col-25">
-      </div>
-      <div class="col col-25">
-        <button-secondary on="JOIN" off="LEAVE" click="confirmStatusChanges"
-                          icon="ion-ios-arrow-forward" id="2" type="1">
-        </button-secondary>
-
-      </div>
-    </div>
-    <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/articles?network={{network.id}}">
-        <i class="item-icon-label ion-ios-book"></i>
-        <h2 class="network-detail">Articles</h2>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/boards?network={{network.id}}">
-        <i class="item-icon-label ion-ios-list"></i>
-        <h2 class="network-detail">Boards</h2>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/events?network={{network.id}}">
-        <i class="item-icon-label ion-ios-calendar"></i>
-        <h2 class="network-detail">Events</h2>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/appliances?network={{network.id}}">
-        <i class="item-icon-label ion-flash"></i>
-        <h2 class="network-detail">Hardware</h2>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/members?network={{network.id}}">
-        <i class="item-icon-label ion-ios-people"></i>
-        <h2 class="network-detail">Members</h2>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-    </ion-list>
-  </ion-content>
-
+      <ion-list>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/articles?network={{network.id}}">
+          <i class="item-icon-label ion-ios-book"></i>
+          <h2 class="network-detail">Articles</h2>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/boards?network={{network.id}}">
+          <i class="item-icon-label ion-ios-list"></i>
+          <h2 class="network-detail">Boards</h2>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/events?network={{network.id}}">
+          <i class="item-icon-label ion-ios-calendar"></i>
+          <h2 class="network-detail">Events</h2>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/appliances?network={{network.id}}">
+          <i class="item-icon-label ion-flash"></i>
+          <h2 class="network-detail">Hardware</h2>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/members?network={{network._id}}">
+          <i class="item-icon-label ion-ios-people"></i>
+          <h2 class="network-detail">Members</h2>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+      </ion-list>
+    </ion-content>
 </ion-view>
