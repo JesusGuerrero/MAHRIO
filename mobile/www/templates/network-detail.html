@@ -27,16 +27,11 @@
 <ion-view>
     <ion-nav-title>{{network.name}}</ion-nav-title>
     <ion-content>
-      <div class="row bg-faces">
-        <div class="col col-50">
-        </div>
-        <div class="col col-25">
-        </div>
-        <div class="col col-25">
-        </div>
+      <div class="row" ng-show="network.coverImage && network.coverImage.url"
+           style="min-height: 200px;" ng-style="{background: 'url('+network.coverImage.url+')', backgroundSize: 'cover'}">
       </div>
       <ion-list>
-        <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/articles?network={{network.id}}">
+        <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#/tab/articles?network={{network._id}}">
           <i class="item-icon-label ion-ios-book"></i>
           <h2 class="network-detail">Articles</h2>
           <i class="icon ion-chevron-right icon-accessory"></i>

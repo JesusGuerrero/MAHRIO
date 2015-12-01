@@ -125,37 +125,37 @@ angular.module('starter.controllers', [])
     });
   })
   .controller('NetworksCtrl', function( $scope, Networks, Users, _) {
+    var networks, networkIds;
     $scope.$on('$ionicView.enter', function() {
-      if( Users.hasCurrent() ) {
-        $scope.networks = Users.getNetworks( );
-      } else {
-        $scope.$on('provision:currentUser', function(){
-          $scope.networks = Users.getNetworks( );
-        });
-      }
+      networkIds = Object.keys( _.indexBy( Users.getNetworks( ), '_id') );
+      Networks.get().then( function(res){
+        networks = res.data.networks;
+        var myNetworks = _.filter( networks, function(network){ return _.contains(networkIds, network._id);})
+        $scope.networks = _.indexBy( myNetworks, '_id');
+      })
     });
     $scope.provisionNetworksModal = function(){
-      Networks.get().then( function(res){
-        var currNetworks = Object.keys( _.indexBy($scope.networks, '_id') );
-        var otherNetworks = _.filter(res.data.networks, function(network){ return !_.contains(currNetworks, network._id)});
-        $scope.otherNetworks = _.indexBy( otherNetworks, '_id');
+      console.log( networks );
+      var otherNetworks = _.filter(networks, function(network){ return !_.contains(networkIds, network._id)});
+      $scope.otherNetworks = _.indexBy( otherNetworks, '_id');
 
-        $scope.$emit('provision:modal:networks',{
-          scope: $scope
-        });
-      });
       $scope.joinNetwork = function( network ) {
         Networks.join( network ).then( function(){
+          networkIds.push( network._id );
           $scope.networks[ network._id ] = network;
           delete $scope.otherNetworks[ network._id ];
         });
       };
       $scope.leaveNetwork = function( network ) {
-        Networks.leave( network).then( function(){
+        Networks.leave( network ).then( function(){
+          networks.splice( networkIds.indexOf( network._id ), 1);
           $scope.otherNetworks[ network._id ] = network;
           delete $scope.networks[ network._id ];
         });
       };
+      $scope.$emit('provision:modal:networks',{
+        scope: $scope
+      });
     };
 
   })
@@ -192,12 +192,14 @@ angular.module('starter.controllers', [])
   .controller('OfflineCtrl', function($scope){
 
   })
-  .controller('ArticlesCtrl', function($scope, $stateParams, Networks ){
-    $scope.networkId = $stateParams.network;
-    $scope.articles = Networks.get($scope.networkId).articles;
+  .controller('ArticlesCtrl', function($scope, $stateParams, Users, Networks ){
+    $scope.network = Users.getOneNetwork( $stateParams.network );
+    Networks.getArticles( $scope.network ).then( function(articles){
+      $scope.articles = articles;
+    });
   })
-  .controller('ArticleDetailCtrl', function($scope, $stateParams, Articles){
-    $scope.article = Articles.get( $stateParams.articleId );
+  .controller('ArticleDetailCtrl', function($scope, $stateParams, Networks){
+    $scope.article = Networks.getArticle( $stateParams.articleId );
   })
   .controller('BoardsCtrl', function($scope, $stateParams, Networks){
     $scope.networkId = $stateParams.network;

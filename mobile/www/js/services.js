@@ -31,7 +31,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Articles', function(_, Util, Sections){
+  .factory('Articles', function(_, $http, proxy, Util, Sections){
     var articles = [{
         id: 1,
         title: 'Birth Story',
@@ -60,18 +60,30 @@ angular.module('starter.services', [])
         }
     }];
     var api = {
-      get: function(articleIds) {
-        var allArticles = Util.populateAll( articles, {sections: api.getSections });
-        // get all
-        if( typeof articleIds === 'undefined') { return allArticles; }
-        // get all that belong to network through articleIds
-        if( _.isArray(articleIds) ){
-          return _.filter(allArticles, function(article){
-            return _.contains(articleIds, String(article.id) )
-          });
-        }
-        // get one
-        return _.find( allArticles, function(article){ return articleIds == article.id; });
+      get: function( networkId ) {
+        return $http.get( proxy.url + '/api/articles?networkId=' + networkId);
+        //var defer = $q.defer();
+        //
+        //.then( function(res){
+        //  var articles = _.indexBy( res.data.articles, '_id');
+        //  Users.saveArticles( articles );
+        //  defer.resolve( articles );
+        //}, function(){
+        //  defer.reject();
+        //});
+        //
+        //return defer.promise;
+        //var allArticles = Util.populateAll( articles, {sections: api.getSections });
+        //// get all
+        //if( typeof articleIds === 'undefined') { return allArticles; }
+        //// get all that belong to network through articleIds
+        //if( _.isArray(articleIds) ){
+        //  return _.filter(allArticles, function(article){
+        //    return _.contains(articleIds, String(article.id) )
+        //  });
+        //}
+        //// get one
+        //return _.find( allArticles, function(article){ return articleIds == article.id; });
       },
       getSections: function( article ) {
         return _.indexBy( Sections.get( Object.keys( article.sections) ), 'id');
@@ -139,7 +151,7 @@ angular.module('starter.services', [])
         events: {},
         hardware: {},
         members: {}
-    }];
+    }], articles = null;
 
     var api = {
       join: function( network ){
@@ -200,7 +212,19 @@ angular.module('starter.services', [])
         return _.find( allNetworks, function(network){ return networkIds == network.id; });
       },
       getArticles: function( network ) {
-        return _.indexBy( Articles.get( Object.keys( network.articles ) ), 'id' );
+        var defer = $q.defer();
+
+        Articles.get( network._id ).then( function(res){
+          articles = _.indexBy( res.data.articles, '_id');
+          defer.resolve( articles );
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+      },
+      getArticle: function( articleId ) {
+        return articles[ articleId ];
       },
       //get: function(networkId) {
       //  var allNetworks = api.all(), saveNetwork = null;

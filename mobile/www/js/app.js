@@ -27,7 +27,6 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users) {
     }
 
     Users.getCurrent().then( function(){
-      $rootScope.$broadcast('provision:currentUser');
       $location.path('/tab/dash');
       //$rootScope.$apply();
     }, function(){

@@ -13,7 +13,7 @@
 
       <div class="item item-thumbnail-left" ng-repeat="network in networks">
         <img ng-src="{{network.coverImage.url}}" ng-show="network.coverImage && network.coverImage.url">
-        <i class="item-icon-label ion-ios-cloud" style="font-size: 84px"></i>
+        <i class="item-icon-label ion-ios-cloud" ng-show="!network.coverImage" style="font-size: 84px"></i>
         <h2>{{network.name}}</h2>
         <p>{{network.deck}}</p>
         <button class="button button-small button-block" ng-click="leaveNetwork(network)">
@@ -27,7 +27,7 @@
 
       <div class="item item-thumbnail-left" ng-repeat="network in otherNetworks">
         <img ng-src="{{network.coverImage.url}}" ng-show="network.coverImage && network.coverImage.url">
-        <i class="item-icon-label ion-ios-cloud" style="font-size: 84px"></i>
+        <i class="item-icon-label ion-ios-cloud" ng-show="!network.coverImage" style="font-size: 84px"></i>
         <h2>{{network.name}}</h2>
         <p>{{network.deck}}</p>
         <div class="row" style="padding-top: 0">
