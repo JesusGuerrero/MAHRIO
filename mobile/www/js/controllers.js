@@ -124,31 +124,39 @@ angular.module('starter.controllers', [])
       });
     });
   })
-  .controller('NetworksCtrl', function( $scope, Networks, Users, _) {
-    var networks, networkIds;
-    $scope.$on('$ionicView.enter', function() {
-      networkIds = Object.keys( _.indexBy( Users.getNetworks( ), '_id') );
-      Networks.get().then( function(res){
-        networks = res.data.networks;
-        var myNetworks = _.filter( networks, function(network){ return _.contains(networkIds, network._id);})
-        $scope.networks = _.indexBy( myNetworks, '_id');
-      })
+  .controller('NetworksCtrl', function( $scope, $ionicLoading, Networks, Users, _) {
+    var networks, myNetworkIds = Object.keys( _.indexBy( Users.getNetworks( ), '_id') );
+    $ionicLoading.show({
+      template: 'Loading...'
+    });
+    Networks.get().then( function(data){
+      $ionicLoading.hide();
+      networks = data;
+      var myNetworks = _.filter( networks, function(network){ return _.contains( myNetworkIds, network._id ); });
+      $scope.networks = _.indexBy( myNetworks, '_id');
     });
     $scope.provisionNetworksModal = function(){
-      console.log( networks );
-      var otherNetworks = _.filter(networks, function(network){ return !_.contains(networkIds, network._id)});
+      var otherNetworks = _.filter(networks, function(network){ return !_.contains( myNetworkIds, network._id ); });
       $scope.otherNetworks = _.indexBy( otherNetworks, '_id');
 
       $scope.joinNetwork = function( network ) {
+        $ionicLoading.show({
+          template: 'Joining...'
+        });
         Networks.join( network ).then( function(){
-          networkIds.push( network._id );
+          $ionicLoading.hide();
+          myNetworkIds.push( network._id );
           $scope.networks[ network._id ] = network;
           delete $scope.otherNetworks[ network._id ];
         });
       };
       $scope.leaveNetwork = function( network ) {
+        $ionicLoading.show({
+          template: 'Leaving...'
+        });
         Networks.leave( network ).then( function(){
-          networks.splice( networkIds.indexOf( network._id ), 1);
+          $ionicLoading.hide();
+          myNetworkIds.splice( myNetworkIds.indexOf( network._id ), 1);
           $scope.otherNetworks[ network._id ] = network;
           delete $scope.networks[ network._id ];
         });
@@ -159,8 +167,8 @@ angular.module('starter.controllers', [])
     };
 
   })
-  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Users) {
-    $scope.network = Users.getOneNetwork( $stateParams.networkId );
+  .controller('NetworkDetailCtrl', function( $scope, $stateParams, Networks) {
+    $scope.network = Networks.getOne( $stateParams.networkId );
 
     $scope.confirmStatusChanges = function() {
       $scope.data = {};
@@ -192,9 +200,13 @@ angular.module('starter.controllers', [])
   .controller('OfflineCtrl', function($scope){
 
   })
-  .controller('ArticlesCtrl', function($scope, $stateParams, Users, Networks ){
-    $scope.network = Users.getOneNetwork( $stateParams.network );
-    Networks.getArticles( $scope.network ).then( function(articles){
+  .controller('ArticlesCtrl', function($scope, $stateParams, $ionicLoading, Networks ) {
+    $scope.networkId = $stateParams.network;
+    $ionicLoading.show({
+      template: 'Loading...'
+    });
+    Networks.getArticles( $scope.networkId ).then( function(articles) {
+      $ionicLoading.hide();
       $scope.articles = articles;
     });
   })
@@ -208,12 +220,18 @@ angular.module('starter.controllers', [])
   .controller('BoardDetailCtrl', function($scope, $stateParams, Networks){
     $scope.board = Networks.getBoards( $stateParams.network, $stateParams.boardId );
   })
-  .controller('EventsCtrl', function($scope, $stateParams, Networks){
+  .controller('EventsCtrl', function($scope, $stateParams, $ionicLoading, Networks){
     $scope.networkId = $stateParams.network;
-    $scope.events = Networks.getEvents( $stateParams.network );
+    $ionicLoading.show({
+      template: 'Loading...'
+    });
+    Networks.getEvents( $scope.networkId ).then( function(events) {
+      $ionicLoading.hide();
+      $scope.events = events;
+    });
   })
   .controller('EventDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.event = Networks.getEvents( $stateParams.network, $stateParams.eventId );
+    $scope.event = Networks.getEvent( $stateParams.eventId );
   })
   .controller('HardwareCtrl', function($scope, $stateParams, Networks){
     $scope.networkId = $stateParams.network;
@@ -222,14 +240,22 @@ angular.module('starter.controllers', [])
   .controller('HardwareDetailCtrl', function($scope, $stateParams, Networks){
     $scope.hardware = Networks.getHardware( $stateParams.network, $stateParams.hardwareId );
   })
-  .controller('MembersCtrl', function($scope, $stateParams, Users){
-    $scope.network = Users.getOneNetwork( $stateParams.network );
-    Users.getFromNetwork( $scope.network.members).then( function(members){
+  .controller('MembersCtrl', function($scope, $stateParams, $ionicLoading, Networks ){
+    $scope.networkId = $stateParams.network;
+    $ionicLoading.show({
+      template: 'Loading...'
+    });
+    Networks.getMembers( $scope.networkId ).then( function(members) {
+      $ionicLoading.hide();
+      console.log( members );
       $scope.members = members;
     });
+
+    //$scope.network = Users.getOneNetwork( $stateParams.network );
+
   })
   .controller('MemberDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.member = Networks.getMembers( $stateParams.network, $stateParams.memberId );
+    $scope.member = Networks.getMember( $stateParams.memberId );
   })
   .controller('SearchCtrl', function( $scope) {
 

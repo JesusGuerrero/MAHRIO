@@ -91,7 +91,16 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Networks', function( _, Util, Articles, Users, $http, proxy, $q ){
+  .factory('Events', function( _, $http, proxy) {
+    var api = {
+      get: function( networkId ) {
+        return $http.get(proxy.url + '/api/events?networkId=' + networkId);
+      }
+    };
+
+    return api;
+  })
+  .factory('Networks', function( _, Util, Articles, Events, Users, $http, proxy, $q ){
     var networks = [{
         id: 1,
         title: 'Viviana Jade Rocha',
@@ -151,7 +160,7 @@ angular.module('starter.services', [])
         events: {},
         hardware: {},
         members: {}
-    }], articles = null;
+    }], articles = null, events = null, members = null;
 
     var api = {
       join: function( network ){
@@ -187,9 +196,9 @@ angular.module('starter.services', [])
 
         $http.get( proxy.url+'/api/networks').then( function(res){
           networks = res.data.networks;
-          defer.resolve(res);
-        }, function(res){
-          defer.reject(res);
+          defer.resolve(networks);
+        }, function(){
+          defer.reject();
         });
 
         return defer.promise;
@@ -211,10 +220,10 @@ angular.module('starter.services', [])
         // get one
         return _.find( allNetworks, function(network){ return networkIds == network.id; });
       },
-      getArticles: function( network ) {
+      getArticles: function( networkId ) {
         var defer = $q.defer();
 
-        Articles.get( network._id ).then( function(res){
+        Articles.get( api.getOne(networkId)._id ).then( function(res){
           articles = _.indexBy( res.data.articles, '_id');
           defer.resolve( articles );
         }, function(){
@@ -225,6 +234,36 @@ angular.module('starter.services', [])
       },
       getArticle: function( articleId ) {
         return articles[ articleId ];
+      },
+      getMembers: function( networkId ) {
+        var defer = $q.defer();
+
+        Users.getFromNetwork( Object.keys( api.getOne(networkId).members ) ).then( function(users){
+          members = _.indexBy( users, '_id');
+          defer.resolve( members );
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+      },
+      getMember: function( memberId ) {
+        return members[ memberId ];
+      },
+      getEvents: function( networkId ) {
+        var defer = $q.defer();
+
+        Events.get( api.getOne( networkId )._id ).then( function(res) {
+          events = _.indexBy(res.data.events, '_id');
+          defer.resolve( events );
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+      },
+      getEvent: function( eventId ) {
+        return events[ eventId ];
       },
       //get: function(networkId) {
       //  var allNetworks = api.all(), saveNetwork = null;
@@ -271,18 +310,6 @@ angular.module('starter.services', [])
           return [];
         }
       },
-      getEvents: function( networkId, eventId ){
-        var network = this.get(networkId);
-        if( network && network.events ) {
-          if( eventId ) {
-            return  _.findById( network.events, eventId);
-          } else {
-            return network.events;
-          }
-        } else {
-          return [];
-        }
-      },
       getHardware: function( networkId, hardwareId ){
         var network = this.get(networkId);
         if( network && network.hardware ) {
@@ -290,18 +317,6 @@ angular.module('starter.services', [])
             return  _.findById( network.events, hardwareId);
           } else {
             return network.hardware;
-          }
-        } else {
-          return [];
-        }
-      },
-      getMembers: function( networkId, memberId ){
-        var network = this.get(networkId);
-        if( network && network.members ) {
-          if( memberId ) {
-            return  _.findById( network.members, memberId);
-          } else {
-            return network.members;
           }
         } else {
           return [];
@@ -520,6 +535,7 @@ angular.module('starter.services', [])
 
     var api = {
       addNetwork: function( network ){
+        network.members = network.members || {};
         network.members[ currentUser._id ] = null;
         currentUser.networks.push( network );
         $localstorage.setObject( 'currentUser', currentUser );

@@ -1,10 +1,13 @@
 <ion-view>
   <ion-nav-title>
-    {{event.name}}
+    {{event.title}}
   </ion-nav-title>
 
   <ion-content>
-    <h2>{{event.name}}</h2>
+    <h2>Name: {{event.title}}</h2>
+    <p>Description: {{event.description}}</p>
+    <p>Start: {{event.start | date : 'medium' }}</p>
+    <p>End: {{event.end | date : 'medium' }}</p>
   </ion-content>
 
 </ion-view>

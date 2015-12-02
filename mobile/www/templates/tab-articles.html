@@ -10,7 +10,7 @@
 
   <ion-content ng-controller="ArticlesCtrl">
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="article in articles" type="item-text-wrap" href="#/tab/article/{{article._id}}?network={{network._id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="article in articles" type="item-text-wrap" href="#/tab/article/{{article._id}}?network={{networkId}}">
         <img ng-src="{{article.coverImage.url}}" ng-show="article.coverImage && article.coverImage.url">
         <i class="item-icon-label book" style="font-size: 84px"></i>
         <h2>{{article.title}}</h2>

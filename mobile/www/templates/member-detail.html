@@ -3,8 +3,16 @@
     {{member.profile.firstName}}
   </ion-nav-title>
 
+  <ion-nav-buttons side="secondary">
+    <button class="button button-stable">
+      <i class="icon ion-ios-chatboxes"></i>
+      Chat
+    </button>
+  </ion-nav-buttons>
+
   <ion-content>
-    <h2>{{member.profile.firstName}}</h2>
+    <h2>{{member.profile.firstName}} {{member.profile.lastName}}</h2>
+
   </ion-content>
 
 </ion-view>
