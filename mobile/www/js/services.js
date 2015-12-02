@@ -415,6 +415,38 @@ angular.module('starter.services', [])
           var index = chats.indexOf( obj[0] );
           chats[ index ].messages[ msgId ] = null;
         }
+      },
+      sendMessage: function( chatId, users, msg ) {
+        var defer = $q.defer();
+
+        $http.post( proxy.url+'/api/chats/messages/private?conversationId='+chatId, {message: {content: msg}, users: users} )
+          .then( function(res) {
+            chats[ chatId].messages[ res.data.message._id ] = res.data.message;
+            defer.resolve( res.data.message );
+          }, function(){
+            defer.reject();
+          });
+
+        return defer.promise;
+      },
+      startConversation: function( members, msg ){
+        var defer = $q.defer();
+
+        var payload = {
+          conversation: {
+            members: members,
+            message: {
+              content: msg
+            }
+          }
+        };
+        $http.post(proxy.url+'/api/chats/conversations/private', payload).then( function() {
+          defer.resolve();
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
       }
     };
     return api;
@@ -560,9 +592,9 @@ angular.module('starter.services', [])
         currentUser.networks.splice( currentUser.networks.indexOf(network), 1);
         $localstorage.setObject( 'currentUser', currentUser );
       },
-      getUsers: function( chatIds ) {
-        return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
-      },
+      //getUsers: function( chatIds ) {
+      //  return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
+      //},
       getXother: function(users){
         return _.filter( users, function(user) { return user._id !== currentUser._id; });
       },
@@ -642,6 +674,9 @@ angular.module('starter.services', [])
           return currentLock.promise;
         }
       },
+      getCurrentId: function(){
+        return currentUser._id;
+      },
       hasCurrent: function() { return currentUser !== null; },
       getNetworks: function(){
         return _.indexBy( currentUser.networks, '_id');
@@ -649,14 +684,17 @@ angular.module('starter.services', [])
       getOneNetwork: function( networkId ){
         return _.find( currentUser.networks, function(network){ return network._id === networkId; });
       },
+      getAll: function(){
+        return $http.get( proxy.url + '/api/autocomplete/users');
+      },
       getFromNetwork: function( userIds ){
         var defer = $q.defer();
 
-        $http.get( proxy.url + '/api/autocomplete/users').then( function(res){
-          defer.resolve(_.filter(res.data.users, function(user){ return _.contains(userIds, user._id); }));
-        }, function(){
-          defer.reject();
-        });
+        api.getUsers().then( function(res){
+            defer.resolve(_.filter(res.data.users, function(user){ return _.contains(userIds, user._id); }));
+          }, function(){
+            defer.reject();
+          });
 
         return defer.promise;
       }

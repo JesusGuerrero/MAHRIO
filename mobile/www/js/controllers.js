@@ -8,27 +8,38 @@ angular.module('starter.controllers', [])
       $state.go('offline');
     }
   })
-  .controller('ChatsCtrl', function($scope, Users, Chats, Messages, $ionicActionSheet ) {
+  .controller('ChatsCtrl', function($scope, Users, Chats, Messages, $ionicActionSheet, $ionicLoading ) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
     // listen for the $ionicView.enter event:
     //
-    $scope.$on('$ionicView.enter', function(e) {
+    $scope.currentId = Users.getCurrentId();
+    $scope.$on('$ionicView.enter', function() {
+      $ionicLoading.show({
+        template: 'Loading...'
+      });
       Chats.all().then( function(chats){
+        $ionicLoading.hide();
         $scope.chats = chats;
       });
-      $scope.create = function( ) {
-        if( $scope.chat.id ) {
-          var message = Messages.add( $scope.chat.id, $scope.current.id, $scope.chat.newMessage );
-          $scope.chat.messages[ message.id ] = message;
+      $scope.sendMessage = function( ) {
+        if( $scope.chat._id ) {
+          Chats.sendMessage( $scope.chat._id, Object.keys( $scope.chat.members ), $scope.chat.newMessage ).then( function(msg) {
+            $scope.chat.messages.splice( 0, 0, msg );
+          });
         } else {
-          var chat = Chats.add( [$scope.current.id, $scope.chat.otherMember], [] );
-          var msg = Messages.add( chat.id, $scope.current.id, $scope.chat.newMessage );
-          Chats.updateMessages( chat.id, msg.id );
-          Messages.updateChat( msg.id, chat.id );
-          $scope.chat = Chats.get( chat.id );
-          $scope.chats = Chats.all();
+          Chats.startConversation( [$scope.chat.otherMember, $scope.currentId], $scope.chat.newMessage).then( function(){
+            $scope.$emit('modal:destroy');
+          });
+
+          //
+          //var chat = Chats.add( [$scope.current.id, $scope.chat.otherMember], [] );
+          //var msg = Messages.add( chat.id, $scope.current.id, $scope.chat.newMessage );
+          //Chats.updateMessages( chat.id, msg.id );
+          //Messages.updateChat( msg.id, chat.id );
+          //$scope.chat = Chats.get( chat.id );
+          //$scope.chats = Chats.all();
         }
         $scope.chat.newMessage = '';
       };
@@ -49,22 +60,35 @@ angular.module('starter.controllers', [])
           cancel: function() {
             // add cancel code..
           },
-          buttonClicked: function(index) {
+          buttonClicked: function() {
             return true;
           }
         });
       };
       $scope.provisionChatModal = function( id ){
         if( typeof id !== 'undefined'){
-          $scope.chat = Chats.get( id );
+          $scope.chat = $scope.chats[ id ];
+          $scope.$emit('provision:modal:chat', {
+            id: id,
+            scope: $scope,
+            chat: $scope.chat
+          });
         } else {
+          $ionicLoading.show({
+            template: 'Loading...'
+          });
           $scope.chat = {};
+          Users.getAll().then( function(res) {
+            $ionicLoading.hide();
+            $scope.users = _.indexBy( res.data.users, '_id' );
+            delete $scope.users[ $scope.currentId ];
+            $scope.$emit('provision:modal:chat', {
+              id: id,
+              scope: $scope,
+              chat: $scope.chat
+            });
+          });
         }
-        $scope.$emit('provision:modal:chat', {
-          id: id,
-          scope: $scope,
-          chat: $scope.chat
-        });
       };
     });
   })
