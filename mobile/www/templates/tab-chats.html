@@ -11,7 +11,7 @@
         ng-click="provisionChatModal( chat.id );">
         <img ng-src="{{chat.otherMember.face}}">
         <h2>
-          {{chat.otherMember.profile.firstName}}
+          {{chat.otherMember.profile.firstName}} {{chat.otherMember.profile.lastName}}
         </h2>
         <p>{{chat.lastMessage.content}}</p>
         <i class="icon ion-chatbubble-working icon-accessory" style="font-size: 21pt;"></i>

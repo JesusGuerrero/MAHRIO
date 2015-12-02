@@ -15,11 +15,9 @@ angular.module('starter.controllers', [])
     // listen for the $ionicView.enter event:
     //
     $scope.$on('$ionicView.enter', function(e) {
-      $scope.chats = Chats.all();
-      $scope.chat = {};
-      $scope.users = Users.getXother();
-      $scope.current = Users.getCurrent();
-      console.log( $scope.chats );
+      Chats.all().then( function(chats){
+        $scope.chats = chats;
+      });
       $scope.create = function( ) {
         if( $scope.chat.id ) {
           var message = Messages.add( $scope.chat.id, $scope.current.id, $scope.chat.newMessage );

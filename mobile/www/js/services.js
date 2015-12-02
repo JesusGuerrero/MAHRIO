@@ -325,7 +325,7 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Chats', function(Users, Messages, _) {
+  .factory('Chats', function( _, $http, $q, proxy, Users ) {
     // Might use a resource here that returns a JSON array
 
     // Some fake testing data
@@ -353,18 +353,33 @@ angular.module('starter.services', [])
 
     var api = {
       all: function() {
-        var _chats = [], currentUser = Users.getCurrent();
-        _.each( _.filter( chats, function(chat){ return chat.members.hasOwnProperty( currentUser.id ); }), function(chat){
-          var _chat = chat,
-            members = Users.getUsers( Object.keys(_chat.members)),
-            messages = Messages.getMessages( _chat.id );
-          _chat.members = _.indexBy( members, 'id');
-          _chat.messages = _.indexBy( messages, 'id');
-          _chat.lastMessage = _.filter( _chat.messages, function(msg, key) { return !key; })[0];
-          _chat.otherMember = _.filter( _chat.members, function(usr){ return currentUser.id !== usr.id; })[0];
-          _chats.push( _chat );
+        //var _chats = [], currentUser = Users.getCurrent();
+        //_.each( _.filter( chats, function(chat){ return chat.members.hasOwnProperty( currentUser.id ); }), function(chat){
+        //  var _chat = chat,
+        //    members = Users.getUsers( Object.keys(_chat.members)),
+        //    messages = Messages.getMessages( _chat.id );
+        //  _chat.members = _.indexBy( members, 'id');
+        //  _chat.messages = _.indexBy( messages, 'id');
+        //  _chat.lastMessage = _.filter( _chat.messages, function(msg, key) { return !key; })[0];
+        //  _chat.otherMember = _.filter( _chat.members, function(usr){ return currentUser.id !== usr.id; })[0];
+        //  _chats.push( _chat );
+        //});
+        //return _.indexBy( _chats, 'id');
+        var defer = $q.defer();
+
+        $http.get( proxy.url + '/api/chats/conversations').then( function(res) {
+          _.map( res.data.conversations, function(chat){
+            chat.otherMember = Users.getXother( chat.members )[0];
+            chat.lastMessage = chat.messages[ chat.messages.length - 1];
+            return chat;
+          });
+          chats = _.indexBy( res.data.conversations, '_id' );
+          defer.resolve( chats );
+        }, function(){
+          defer.reject();
         });
-        return _.indexBy( _chats, 'id');
+
+        return defer.promise;
       },
       remove: function(chatId) {
         var obj = _.where( chats, {id: chatId});
@@ -548,8 +563,8 @@ angular.module('starter.services', [])
       getUsers: function( chatIds ) {
         return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
       },
-      getXother: function(){
-        return _.filter( users, function(user) { return user.id !== currentUser.id; });
+      getXother: function(users){
+        return _.filter( users, function(user) { return user._id !== currentUser._id; });
       },
       login: function( user ){
         var defer = $q.defer();
