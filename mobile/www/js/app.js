@@ -212,6 +212,15 @@ angular.module('starter', [
         }
       }
     })
+    .state('tab.profile', {
+      url: '/profile',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/member-detail.html',
+          controller: 'MemberDetailCtrl'
+        }
+      }
+    })
     .state('offline', {
       url: '/offline',
       templateUrl: 'templates/offline.html',

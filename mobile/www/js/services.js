@@ -392,7 +392,6 @@ angular.module('starter.services', [])
       get: function(chatId) {
         var allChats = api.all(), saveChat = null;
         _.each( allChats, function(chat){
-          console.log( chat.id, chatId );
           if( chat.id == chatId ) {
             saveChat = chat;
           }
@@ -606,7 +605,6 @@ angular.module('starter.services', [])
               $http.defaults.headers.common.Authorization = res.headers('Authorization');
               $localstorage.set( 'Authorization', res.headers('Authorization') );
               api.getCurrent().then( function( user ){
-                console.log( user );
                 currentUser = user;
                 defer.resolve( user );
               });
@@ -674,6 +672,9 @@ angular.module('starter.services', [])
           return currentLock.promise;
         }
       },
+      getCurrentUser: function(){
+        return currentUser;
+      },
       getCurrentId: function(){
         return currentUser._id;
       },
@@ -685,12 +686,12 @@ angular.module('starter.services', [])
         return _.find( currentUser.networks, function(network){ return network._id === networkId; });
       },
       getAll: function(){
-        return $http.get( proxy.url + '/api/autocomplete/users');
+        return $http.get( proxy.url + '/api/users/all');
       },
       getFromNetwork: function( userIds ){
         var defer = $q.defer();
 
-        api.getUsers().then( function(res){
+        api.getAll().then( function(res){
             defer.resolve(_.filter(res.data.users, function(user){ return _.contains(userIds, user._id); }));
           }, function(){
             defer.reject();

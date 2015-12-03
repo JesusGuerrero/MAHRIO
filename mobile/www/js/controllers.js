@@ -269,15 +269,20 @@ angular.module('starter.controllers', [])
     });
     Networks.getMembers( $scope.networkId ).then( function(members) {
       $ionicLoading.hide();
-      console.log( members );
       $scope.members = members;
     });
 
     //$scope.network = Users.getOneNetwork( $stateParams.network );
 
   })
-  .controller('MemberDetailCtrl', function($scope, $stateParams, Networks){
-    $scope.member = Networks.getMember( $stateParams.memberId );
+  .controller('MemberDetailCtrl', function($scope, $stateParams, Networks, Users ){
+    $scope.currentId = Users.getCurrentId();
+    if( typeof $stateParams.memberId !== 'undefined' ) {
+      $scope.member = Networks.getMember( $stateParams.memberId );
+    } else {
+      $scope.member = Users.getCurrentUser();
+    }
+
   })
   .controller('SearchCtrl', function( $scope) {
 

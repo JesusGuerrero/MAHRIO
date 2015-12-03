@@ -1,6 +1,5 @@
 angular.module('starter.directives', [])
   .directive('tabbedNavigation', function( $state ) {
-    console.log(1);
     return {
       restrict: 'A',
       link: function( scope, elem ) {
