@@ -7,10 +7,11 @@
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-thumbnail-left item-icon-right network" ng-repeat="network in networks" type="item-text-wrap" href="#/tab/network/{{network.id}}">
-        <img ng-src="{{network.cover}}">
-        <h2>{{network.title}}</h2>
-        <p>{{network.deck}}</p>
+      <ion-item class="item-remove-animate item-thumbnail-left item-icon-right network" ng-repeat="network in networks" type="item-text-wrap" href="#/tab/network/{{network._id}}">
+        <img ng-src="{{network.coverImage.url}}" ng-show="network.coverImage && network.coverImage.url">
+        <i class="item-icon-label ion-ios-cloud" style="font-size: 84px" ng-show="!network.coverImage"></i>
+        <h2>{{network.name}}</h2>
+        <p style="white-space: normal">{{network.deck}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </ion-list>

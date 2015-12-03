@@ -1,10 +1,23 @@
 <ion-view>
   <ion-nav-title>
-    {{member.profile.firstName}}
+    <span ng-show="currentId === member._id">My Profile</span>
+    <span ng-show="currentId !== member._id">{{member.profile.firstName}}</span>
   </ion-nav-title>
 
+  <ion-nav-buttons side="secondary">
+    <button class="button button-stable" ng-show="currentId !== member._id">
+      <i class="icon ion-ios-chatboxes"></i>
+      Chat
+    </button>
+  </ion-nav-buttons>
+
   <ion-content>
-    <h2>{{member.profile.firstName}}</h2>
+    <div class="row" ng-show="member.avatarImage && member.avatarImage.url"
+         style="min-height: 200px;" ng-style="{background: 'url('+member.avatarImage.url+')', backgroundSize: 'cover'}">
+    </div>
+    <h2>{{member.profile.firstName}} {{member.profile.lastName}}</h2>
+    <p>Member since: {{member.created | date : 'medium' }}</p>
+
   </ion-content>
 
 </ion-view>

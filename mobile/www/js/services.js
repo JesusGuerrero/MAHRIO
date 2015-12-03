@@ -31,7 +31,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Articles', function(_, Util, Sections){
+  .factory('Articles', function(_, $http, proxy, Util, Sections){
     var articles = [{
         id: 1,
         title: 'Birth Story',
@@ -60,18 +60,30 @@ angular.module('starter.services', [])
         }
     }];
     var api = {
-      get: function(articleIds) {
-        var allArticles = Util.populateAll( articles, {sections: api.getSections });
-        // get all
-        if( typeof articleIds === 'undefined') { return allArticles; }
-        // get all that belong to network through articleIds
-        if( _.isArray(articleIds) ){
-          return _.filter(allArticles, function(article){
-            return _.contains(articleIds, String(article.id) )
-          });
-        }
-        // get one
-        return _.find( allArticles, function(article){ return articleIds == article.id; });
+      get: function( networkId ) {
+        return $http.get( proxy.url + '/api/articles?networkId=' + networkId);
+        //var defer = $q.defer();
+        //
+        //.then( function(res){
+        //  var articles = _.indexBy( res.data.articles, '_id');
+        //  Users.saveArticles( articles );
+        //  defer.resolve( articles );
+        //}, function(){
+        //  defer.reject();
+        //});
+        //
+        //return defer.promise;
+        //var allArticles = Util.populateAll( articles, {sections: api.getSections });
+        //// get all
+        //if( typeof articleIds === 'undefined') { return allArticles; }
+        //// get all that belong to network through articleIds
+        //if( _.isArray(articleIds) ){
+        //  return _.filter(allArticles, function(article){
+        //    return _.contains(articleIds, String(article.id) )
+        //  });
+        //}
+        //// get one
+        //return _.find( allArticles, function(article){ return articleIds == article.id; });
       },
       getSections: function( article ) {
         return _.indexBy( Sections.get( Object.keys( article.sections) ), 'id');
@@ -79,7 +91,16 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Networks', function( _, Util, Articles, Users ){
+  .factory('Events', function( _, $http, proxy) {
+    var api = {
+      get: function( networkId ) {
+        return $http.get(proxy.url + '/api/events?networkId=' + networkId);
+      }
+    };
+
+    return api;
+  })
+  .factory('Networks', function( _, Util, Articles, Events, Users, $http, proxy, $q ){
     var networks = [{
         id: 1,
         title: 'Viviana Jade Rocha',
@@ -139,23 +160,56 @@ angular.module('starter.services', [])
         events: {},
         hardware: {},
         members: {}
-    }];
+    }], articles = null, events = null, members = null;
 
     var api = {
-      join: function( networkId, memberId ){
-        var network = api.get( networkId );
-        network.members[ memberId ] = null;
-        Users.addNetwork( networkId );
+      join: function( network ){
+        var defer = $q.defer();
+
+        $http.put( proxy.url+'/api/networks/'+ network._id + '/join').then( function(res){
+          Users.addNetwork( network );
+          defer.resolve();
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
       },
-      leave: function( networkId, memberId ){
+      leave: function( network ){
+        var defer = $q.defer();
+
+        $http.put( proxy.url+'/api/networks/'+ network._id + '/leave').then( function(res){
+          Users.removeNetwork( network );
+          defer.resolve();
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+
         var network = api.get( networkId );
         delete network.members[ memberId ];
         Users.removeNetwork( networkId );
       },
-      get: function(networkIds, inverse) {
+      get: function(){
+        var defer = $q.defer();
+
+        $http.get( proxy.url+'/api/networks').then( function(res){
+          networks = res.data.networks;
+          defer.resolve(networks);
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+      },
+      getOne: function(networkId){
+        return _.find( networks, function(network) { return network._id === networkId; });
+      },
+      getAll: function(networkIds, inverse) {
         var allNetworks = Util.populateAll( networks, {articles: api.getArticles });
         // get all
-        if( typeof networkIds === 'undefined') { return allNetworks; }
+        if( typeof networkIds === 'undefined') { return $http.get( proxy.url+'/api/networks'); }
         // get all that belong to network through articleIds
         if( _.isArray(networkIds) ){
           var list = _.filter(allNetworks, function(network){
@@ -166,8 +220,50 @@ angular.module('starter.services', [])
         // get one
         return _.find( allNetworks, function(network){ return networkIds == network.id; });
       },
-      getArticles: function( network ) {
-        return _.indexBy( Articles.get( Object.keys( network.articles ) ), 'id' );
+      getArticles: function( networkId ) {
+        var defer = $q.defer();
+
+        Articles.get( api.getOne(networkId)._id ).then( function(res){
+          articles = _.indexBy( res.data.articles, '_id');
+          defer.resolve( articles );
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+      },
+      getArticle: function( articleId ) {
+        return articles[ articleId ];
+      },
+      getMembers: function( networkId ) {
+        var defer = $q.defer();
+
+        Users.getFromNetwork( Object.keys( api.getOne(networkId).members ) ).then( function(users){
+          members = _.indexBy( users, '_id');
+          defer.resolve( members );
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+      },
+      getMember: function( memberId ) {
+        return members[ memberId ];
+      },
+      getEvents: function( networkId ) {
+        var defer = $q.defer();
+
+        Events.get( api.getOne( networkId )._id ).then( function(res) {
+          events = _.indexBy(res.data.events, '_id');
+          defer.resolve( events );
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
+      },
+      getEvent: function( eventId ) {
+        return events[ eventId ];
       },
       //get: function(networkId) {
       //  var allNetworks = api.all(), saveNetwork = null;
@@ -214,18 +310,6 @@ angular.module('starter.services', [])
           return [];
         }
       },
-      getEvents: function( networkId, eventId ){
-        var network = this.get(networkId);
-        if( network && network.events ) {
-          if( eventId ) {
-            return  _.findById( network.events, eventId);
-          } else {
-            return network.events;
-          }
-        } else {
-          return [];
-        }
-      },
       getHardware: function( networkId, hardwareId ){
         var network = this.get(networkId);
         if( network && network.hardware ) {
@@ -237,23 +321,11 @@ angular.module('starter.services', [])
         } else {
           return [];
         }
-      },
-      getMembers: function( networkId, memberId ){
-        var network = this.get(networkId);
-        if( network && network.members ) {
-          if( memberId ) {
-            return  _.findById( network.members, memberId);
-          } else {
-            return network.members;
-          }
-        } else {
-          return [];
-        }
       }
     };
     return api;
   })
-  .factory('Chats', function(Users, Messages, _) {
+  .factory('Chats', function( _, $http, $q, proxy, Users ) {
     // Might use a resource here that returns a JSON array
 
     // Some fake testing data
@@ -281,18 +353,33 @@ angular.module('starter.services', [])
 
     var api = {
       all: function() {
-        var _chats = [], currentUser = Users.getCurrent();
-        _.each( _.filter( chats, function(chat){ return chat.members.hasOwnProperty( currentUser.id ); }), function(chat){
-          var _chat = chat,
-            members = Users.getUsers( Object.keys(_chat.members)),
-            messages = Messages.getMessages( _chat.id );
-          _chat.members = _.indexBy( members, 'id');
-          _chat.messages = _.indexBy( messages, 'id');
-          _chat.lastMessage = _.filter( _chat.messages, function(msg, key) { return !key; })[0];
-          _chat.otherMember = _.filter( _chat.members, function(usr){ return currentUser.id !== usr.id; })[0];
-          _chats.push( _chat );
+        //var _chats = [], currentUser = Users.getCurrent();
+        //_.each( _.filter( chats, function(chat){ return chat.members.hasOwnProperty( currentUser.id ); }), function(chat){
+        //  var _chat = chat,
+        //    members = Users.getUsers( Object.keys(_chat.members)),
+        //    messages = Messages.getMessages( _chat.id );
+        //  _chat.members = _.indexBy( members, 'id');
+        //  _chat.messages = _.indexBy( messages, 'id');
+        //  _chat.lastMessage = _.filter( _chat.messages, function(msg, key) { return !key; })[0];
+        //  _chat.otherMember = _.filter( _chat.members, function(usr){ return currentUser.id !== usr.id; })[0];
+        //  _chats.push( _chat );
+        //});
+        //return _.indexBy( _chats, 'id');
+        var defer = $q.defer();
+
+        $http.get( proxy.url + '/api/chats/conversations').then( function(res) {
+          _.map( res.data.conversations, function(chat){
+            chat.otherMember = Users.getXother( chat.members )[0];
+            chat.lastMessage = chat.messages[ chat.messages.length - 1];
+            return chat;
+          });
+          chats = _.indexBy( res.data.conversations, '_id' );
+          defer.resolve( chats );
+        }, function(){
+          defer.reject();
         });
-        return _.indexBy( _chats, 'id');
+
+        return defer.promise;
       },
       remove: function(chatId) {
         var obj = _.where( chats, {id: chatId});
@@ -305,7 +392,6 @@ angular.module('starter.services', [])
       get: function(chatId) {
         var allChats = api.all(), saveChat = null;
         _.each( allChats, function(chat){
-          console.log( chat.id, chatId );
           if( chat.id == chatId ) {
             saveChat = chat;
           }
@@ -328,6 +414,38 @@ angular.module('starter.services', [])
           var index = chats.indexOf( obj[0] );
           chats[ index ].messages[ msgId ] = null;
         }
+      },
+      sendMessage: function( chatId, users, msg ) {
+        var defer = $q.defer();
+
+        $http.post( proxy.url+'/api/chats/messages/private?conversationId='+chatId, {message: {content: msg}, users: users} )
+          .then( function(res) {
+            chats[ chatId].messages[ res.data.message._id ] = res.data.message;
+            defer.resolve( res.data.message );
+          }, function(){
+            defer.reject();
+          });
+
+        return defer.promise;
+      },
+      startConversation: function( members, msg ){
+        var defer = $q.defer();
+
+        var payload = {
+          conversation: {
+            members: members,
+            message: {
+              content: msg
+            }
+          }
+        };
+        $http.post(proxy.url+'/api/chats/conversations/private', payload).then( function() {
+          defer.resolve();
+        }, function(){
+          defer.reject();
+        });
+
+        return defer.promise;
       }
     };
     return api;
@@ -425,7 +543,10 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Users', function($localstorage){
+  .service('proxy', function(APP_IP){
+    this.url = APP_IP;
+  })
+  .factory('Users', function($localstorage, proxy, $http, $q, $timeout ){
     var users = [{
       id: 1,
       email: 'jesus.rocha@whichdegree.co',
@@ -456,30 +577,42 @@ angular.module('starter.services', [])
       },
       face: 'img/users/2/user-profile.jpg',
       networks: [2]
-    }], currentUser = null, counter = 4;
+    }], currentUser = null, counter = 4, currentLock = false;
 
     var api = {
-      addNetwork: function(networkId){
-        currentUser.networks.push( networkId );
+      addNetwork: function( network ){
+        network.members = network.members || {};
+        network.members[ currentUser._id ] = null;
+        currentUser.networks.push( network );
+        $localstorage.setObject( 'currentUser', currentUser );
       },
-      removeNetwork: function(networkId){
-        currentUser.networks.splice( currentUser.networks.indexOf(networkId), 1);
+      removeNetwork: function( network ){
+        delete network.members[ currentUser._id ];
+        currentUser.networks.splice( currentUser.networks.indexOf(network), 1);
+        $localstorage.setObject( 'currentUser', currentUser );
       },
-      getUsers: function( chatIds ) {
-        return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
+      //getUsers: function( chatIds ) {
+      //  return _.filter( users, function(user) { return _.indexOf(chatIds, String(user.id)) !== -1; });
+      //},
+      getXother: function(users){
+        return _.filter( users, function(user) { return user._id !== currentUser._id; });
       },
-      getXother: function(){
-        return _.filter( users, function(user) { return user.id !== currentUser.id; });
-      },
-      login: function(email){
-        var current = _.findWhere( users, {email: email});
-        if( current ) {
-          currentUser = current;
-          $localstorage.setObject( 'currentUser', currentUser );
-          return true;
-        } else {
-          return false;
-        }
+      login: function( user ){
+        var defer = $q.defer();
+        $http.post(proxy.url + '/api/session/login', user)
+          .then( function(res){
+            if( res.data.success ) {
+              $http.defaults.headers.common.Authorization = res.headers('Authorization');
+              $localstorage.set( 'Authorization', res.headers('Authorization') );
+              api.getCurrent().then( function( user ){
+                currentUser = user;
+                defer.resolve( user );
+              });
+            } else {
+              defer.reject();
+            }
+          }, function(){ defer.reject(); });
+        return defer.promise;
       },
       register: function( user ) {
         if( _.find( users, function(usr){ return usr.email === user.email; }) ) {
@@ -501,18 +634,70 @@ angular.module('starter.services', [])
         }
       },
       logout: function(){
+        $localstorage.set('Authorization', null);
         $localstorage.setObject( 'currentUser', null );
+        delete $http.defaults.headers.common.Authorization;
+        currentUser = null;
       },
       getCurrent: function(){
+        if( !currentLock ) {
+          var defer = $q.defer();
+          currentLock = defer;
+
+          $timeout( function(){
+            if( typeof $http.defaults.headers.common.Authorization === 'undefined' ) {
+              if( $localstorage.get('Authorization', 'null') !== 'null' ) {
+                $http.defaults.headers.common.Authorization = $localstorage.get('Authorization');
+                $http.get(proxy.url + '/api/users/me').then( function(res){
+                  currentUser = res.data.user;
+                  $localstorage.setObject( 'currentUser', currentUser );
+                  currentLock = false;
+                  defer.resolve( currentUser );
+                }, function() { currentLock = false; defer.reject(); });
+              } else {
+                currentLock = false; defer.reject();
+              }
+            } else {
+              $http.get(proxy.url + '/api/users/me').then( function(res){
+                currentUser = res.data.user;
+                $localstorage.setObject( 'currentUser', currentUser );
+                currentLock = false;
+                defer.resolve( currentUser );
+              }, function() { currentLock = false; defer.reject(); });
+            }
+          }, 100);
+
+          return defer.promise;
+        } else {
+          return currentLock.promise;
+        }
+      },
+      getCurrentUser: function(){
         return currentUser;
       },
-      checkLoggedIn: function(){
-        var user = $localstorage.getObject( 'currentUser' );
-        if( user && user.id ) {
-          currentUser = user;
-          return true;
-        }
-        return false;
+      getCurrentId: function(){
+        return currentUser._id;
+      },
+      hasCurrent: function() { return currentUser !== null; },
+      getNetworks: function(){
+        return _.indexBy( currentUser.networks, '_id');
+      },
+      getOneNetwork: function( networkId ){
+        return _.find( currentUser.networks, function(network){ return network._id === networkId; });
+      },
+      getAll: function(){
+        return $http.get( proxy.url + '/api/users/all');
+      },
+      getFromNetwork: function( userIds ){
+        var defer = $q.defer();
+
+        api.getAll().then( function(res){
+            defer.resolve(_.filter(res.data.users, function(user){ return _.contains(userIds, user._id); }));
+          }, function(){
+            defer.reject();
+          });
+
+        return defer.promise;
       }
     };
     return api;

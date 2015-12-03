@@ -1,6 +1,5 @@
 angular.module('starter.directives', [])
   .directive('tabbedNavigation', function( $state ) {
-    console.log(1);
     return {
       restrict: 'A',
       link: function( scope, elem ) {
@@ -13,6 +12,33 @@ angular.module('starter.directives', [])
         });
       }
     };
+  })
+  .directive('formInputTag', function(){
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'templates/directives/form-input-tag.html',
+        scope: {
+          dataEntry: '=model',
+          minLength: '=',
+          required: '=',
+          regex: '=',
+          maxLength: '='
+        },
+        link: function( scope, elem, attr ) {
+          scope.placeholder = attr.placeholder || '';
+          scope.label = attr.label || false;
+          scope.id = attr.id || new Date().getTime();
+          scope.type = attr.type || 'text';
+          scope.icon = attr.icon || '';
+
+          scope.regx = typeof scope.regex !== 'undefined' ? scope.regex : { pattern: new RegExp('') };
+
+          scope.hasError = function() {
+            return scope.$parent.submitted && elem.hasClass( 'ng-invalid' );
+          };
+        }
+      };
   })
   .directive('buttonSecondary', function(Networks, Users){
     return {
@@ -67,12 +93,22 @@ angular.module('starter.directives', [])
         scope.form = {};
         scope.state = 'Log in';
         scope.login = function( ){
-          if( scope.form.email && Users.login( scope.form.email) ) {
-            $ionicHistory.nextViewOptions({
-              disableBack: true
-            });
-            $state.go('tab.dash');
-            scope.$emit('modal:destroy');
+          if( scope.form.email ) {
+            Users.login( scope.form )
+              .then( function(){
+                $ionicHistory.nextViewOptions({
+                  disableBack: true
+                });
+                $state.go('tab.dash');
+                scope.$emit('modal:destroy');
+              }, function(){
+                $ionicPopup.alert({
+                  title: 'Login Error',
+                  template: 'Email and/or Password incorrect. Try again!'
+                }).then( function(){
+                  scope.form = {};
+                });
+              })
           } else {
             $ionicPopup.alert({
               title: 'Login Error',
