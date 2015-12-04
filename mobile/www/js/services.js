@@ -1,19 +1,9 @@
 angular.module('starter.services', [])
-  .factory('Util', function( _ ){
-    var api = {
-      populateAll: function( resource, attributes ){
-        var _resources = [];
-        _.each( resource, function(res){
-          var _res = res;
-          for( var key in attributes){
-            _res[  key ] = attributes[key]( _res );
-          }
-          _resources.push( _res );
-        });
-        return _resources;
-      }
+  .factory('Socket', function( proxy ) {
+    var socket = io( proxy.url );
+    return {
+      get: socket
     };
-    return api;
   })
   .factory('$localstorage', function($window) {
     return {
@@ -31,7 +21,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Articles', function(_, $http, proxy, Util, Sections){
+  .factory('Articles', function(_, $http, proxy, Sections){
     var articles = [{
         id: 1,
         title: 'Birth Story',
@@ -62,28 +52,6 @@ angular.module('starter.services', [])
     var api = {
       get: function( networkId ) {
         return $http.get( proxy.url + '/api/articles?networkId=' + networkId);
-        //var defer = $q.defer();
-        //
-        //.then( function(res){
-        //  var articles = _.indexBy( res.data.articles, '_id');
-        //  Users.saveArticles( articles );
-        //  defer.resolve( articles );
-        //}, function(){
-        //  defer.reject();
-        //});
-        //
-        //return defer.promise;
-        //var allArticles = Util.populateAll( articles, {sections: api.getSections });
-        //// get all
-        //if( typeof articleIds === 'undefined') { return allArticles; }
-        //// get all that belong to network through articleIds
-        //if( _.isArray(articleIds) ){
-        //  return _.filter(allArticles, function(article){
-        //    return _.contains(articleIds, String(article.id) )
-        //  });
-        //}
-        //// get one
-        //return _.find( allArticles, function(article){ return articleIds == article.id; });
       },
       getSections: function( article ) {
         return _.indexBy( Sections.get( Object.keys( article.sections) ), 'id');
@@ -100,7 +68,7 @@ angular.module('starter.services', [])
 
     return api;
   })
-  .factory('Networks', function( _, Util, Articles, Events, Users, $http, proxy, $q ){
+  .factory('Networks', function( _, Articles, Events, Users, $http, proxy, $q ){
     var networks = [{
         id: 1,
         title: 'Viviana Jade Rocha',
@@ -206,19 +174,8 @@ angular.module('starter.services', [])
       getOne: function(networkId){
         return _.find( networks, function(network) { return network._id === networkId; });
       },
-      getAll: function(networkIds, inverse) {
-        var allNetworks = Util.populateAll( networks, {articles: api.getArticles });
-        // get all
-        if( typeof networkIds === 'undefined') { return $http.get( proxy.url+'/api/networks'); }
-        // get all that belong to network through articleIds
-        if( _.isArray(networkIds) ){
-          var list = _.filter(allNetworks, function(network){
-            return !inverse ? _.contains(networkIds, network.id) : !_.contains(networkIds, network.id);
-          });
-          return _.indexBy( list, 'id');
-        }
-        // get one
-        return _.find( allNetworks, function(network){ return networkIds == network.id; });
+      getAll: function() {
+        return $http.get( proxy.url+'/api/networks');
       },
       getArticles: function( networkId ) {
         var defer = $q.defer();
@@ -265,39 +222,6 @@ angular.module('starter.services', [])
       getEvent: function( eventId ) {
         return events[ eventId ];
       },
-      //get: function(networkId) {
-      //  var allNetworks = api.all(), saveNetwork = null;
-      //  _.each( allNetworks, function(network){
-      //    if( network.id == networkId ) {
-      //      saveNetwork = network;
-      //    }
-      //  });
-      //  return saveNetwork;
-      //},
-      //all: function(){
-      //  var _networks = [];
-      //  _.each( networks, function(network){
-      //    var _network = network,
-      //      articles = Articles.get( Object.keys(_network.articles));
-      //    _network.articles = _.indexBy( articles, 'id');
-      //
-      //    _networks.push( _network );
-      //  });
-      //  return _.indexBy( _networks, 'id');
-      //},
-      //getArticles: function( networkId, articleId ){
-      //  var network = api.get(networkId);
-      //  if( network && network.articles ) {
-      //    if( articleId ) {
-      //      var articles = _.indexBy( network.articles, 'id');
-      //      return articles[ articleId ];
-      //    } else {
-      //      return network.articles;
-      //    }
-      //  } else {
-      //    return [];
-      //  }
-      //},
       getBoards: function( networkId, boardId ){
         var network = this.get(networkId);
         if( network && network.boards ) {
@@ -353,18 +277,6 @@ angular.module('starter.services', [])
 
     var api = {
       all: function() {
-        //var _chats = [], currentUser = Users.getCurrent();
-        //_.each( _.filter( chats, function(chat){ return chat.members.hasOwnProperty( currentUser.id ); }), function(chat){
-        //  var _chat = chat,
-        //    members = Users.getUsers( Object.keys(_chat.members)),
-        //    messages = Messages.getMessages( _chat.id );
-        //  _chat.members = _.indexBy( members, 'id');
-        //  _chat.messages = _.indexBy( messages, 'id');
-        //  _chat.lastMessage = _.filter( _chat.messages, function(msg, key) { return !key; })[0];
-        //  _chat.otherMember = _.filter( _chat.members, function(usr){ return currentUser.id !== usr.id; })[0];
-        //  _chats.push( _chat );
-        //});
-        //return _.indexBy( _chats, 'id');
         var defer = $q.defer();
 
         $http.get( proxy.url + '/api/chats/conversations').then( function(res) {
@@ -449,6 +361,23 @@ angular.module('starter.services', [])
       }
     };
     return api;
+  })
+  .factory('Notification', function($http, proxy){
+    var chat = false, notifications = {
+      chat: []
+    };
+    return {
+      getChat: function(){ return chat; },
+      resetChat: function(){ chat = false; },
+      fetchAll: function(){
+        $http.get( proxy.url + '/api/notifications').then( function(res) {
+          if( res.data.notifications.chat ) {
+            notifications.chat = res.data.notifications.chat;
+            chat = Object.keys( notifications.chat ).length;
+          }
+        });
+      }
+    };
   })
   .factory('Messages', function( _ ){
     var messages = [{
