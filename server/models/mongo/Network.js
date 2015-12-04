@@ -3,14 +3,15 @@
 var mongoose = require('mongoose'),
   schema = mongoose.Schema({
     name: { type: String, required: true },
+    deck: { type: String, required: true },
     type: { type: String },   // internal, external
     domain: { type: String }, // finance, technology, etc
     location: { type: String }, // greater area, country, city, high school, etc.
     created: { type: Date, default: Date.now },
     start: { type: Date },
     end: { type: Date },
-    isPrivate: { type: Boolean, default: false },
-    isProtected: { type: Boolean, default: false },
+    isPrivate: { type: Boolean, default: false }, //cannot be searched and requires approval
+    isProtected: { type: Boolean, default: false }, //can be searched with a key and self-serviced join
     coverImage: { type: mongoose.Schema.Types.ObjectId , ref: 'Media' },
     boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }],
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CalendarEvent' }],
