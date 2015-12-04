@@ -91,7 +91,7 @@ angular.module('baseApp.directives')
                   scope.hasConversations = false;
                 }
 
-                if( typeof current !== 'undefined'){
+                if( typeof current !== 'undefined' && current !== ''){
                   if( scope.conversations.hasOwnProperty( current ) ) {
                     scope.conversation = scope.conversations[ current ];
                     scope.isPrivate = scope.conversation.isPrivate;
