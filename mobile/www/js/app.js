@@ -1,6 +1,6 @@
 
 
-function mahrioRun ($rootScope, $ionicPlatform, $location, Users) {
+function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket, Notification) {
 
   $ionicPlatform.ready(function(){
 
@@ -28,15 +28,19 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users) {
 
     Users.getCurrent().then( function(){
       $location.path('/tab/dash');
-      //$rootScope.$apply();
+      Notification.fetchAll();
+      Socket.get.on('event:notification:chat:'+Users.getCurrentId(), function(){
+        $rootScope.$apply( function(){
+          Notification.fetchAll();
+        });
+      });
     }, function(){
       $location.path('/offline');
-      //$rootScope.$apply();
     });
   });
 }
 
-mahrioRun.$inject=['$rootScope', '$ionicPlatform', '$location', 'Users'];
+mahrioRun.$inject=['$rootScope', '$ionicPlatform', '$location', 'Users', 'Socket', 'Notification'];
 
 angular.module('starter', [
   'ionic',
@@ -44,7 +48,7 @@ angular.module('starter', [
   'starter.services',
   'starter.directives',
   'angular-underscore'])
-  .constant('APP_IP', 'https://mahrio.herokuapp.com')
+  .constant('APP_IP', 'http://123.456.789.0:8042')
   .constant('_', window._)
   .run(mahrioRun)
   .config(function($stateProvider, $urlRouterProvider) {

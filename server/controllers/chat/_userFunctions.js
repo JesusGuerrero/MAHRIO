@@ -190,6 +190,17 @@ function postPrivateConversation( request, reply ) {
           if (err) {
             return reply(Boom.badRequest(err));
           }
+          async.forEach( request.payload.conversation.members, function(user){
+            if( user !== request.auth.credentials.id ) {
+              emitMessage( 'event:notification:chat:'+user );
+              Notification.create({
+                resource: 'chat',
+                id: conv.id,
+                _user: user
+              });
+            }
+          });
+
           reply( { success: true });
         });
       });
