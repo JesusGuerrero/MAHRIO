@@ -70,7 +70,7 @@ angular.module('starter.controllers', [])
   .controller('DashCtrl', function($scope, Users) {
     $scope.$on('$ionicView.enter', function() {
       if( Users.hasCurrent() ) {
-        console.log( 'has current user' );
+        $scope.hideLoading = true;
       }
     });
   })
