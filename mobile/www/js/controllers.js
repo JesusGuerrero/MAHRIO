@@ -36,7 +36,6 @@ angular.module('starter.controllers', [])
       Modal.provisionModal(eventObject.scope, 'templates/modal-chat.html').then(function(modal){
         $scope.modal.chat = modal;
         $scope.modal.chat.show();
-        console.log( $scope.modal.chat );
       });
     });
     $scope.$on('provision:modal:networks', function(event, eventObject){
@@ -48,13 +47,19 @@ angular.module('starter.controllers', [])
 
     //console.log( 'im in here' + Users.getCurrentId() );
   })
-  .controller('TabNotificationCtrl', function($scope, Notification){
+  .controller('TabNotificationCtrl', function($scope, $rootScope, Notification){
     $scope.chatBadge = 0;
     $scope.$watch( function(){ return Notification.getChat(); }, function(newVal){
       if( newVal ) {
-        $scope.chatBadge = newVal;
         $scope.$broadcast('event:chat:badge');
         Notification.resetChat();
+        console.log( 'broadcast event chat badge');
+        $scope.chatBadge = newVal;
+      }
+    });
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState){
+      if( toState.name === 'tab.chats' && fromState.name == 'chat-detail') {
+       $scope.chatBadge = Notification.getChat() || 0;
       }
     });
   })
@@ -214,9 +219,11 @@ angular.module('starter.controllers', [])
     //
     $scope.currentId = Users.getCurrentId();
     $scope.$on('event:chat:badge', function(){
+      console.log('$on observed event chat badge');
       Chats.all().then( function(chats){ $scope.chats = chats; });
     });
-    $scope.$on('$ionicView.enter', function() {
+
+    $scope.$on('$ionicView.enter', function(){
       $ionicLoading.show({
         template: 'Loading...'
       });
@@ -224,75 +231,98 @@ angular.module('starter.controllers', [])
         $ionicLoading.hide();
         $scope.chats = chats;
       });
-      $scope.sendMessage = function( ) {
-        if( $scope.chat._id ) {
-          Chats.sendMessage( $scope.chat._id, Object.keys( $scope.chat.members ), $scope.chat.newMessage ).then( function(msg) {
-            $scope.chat.messages.splice( 0, 0, msg );
-          });
-        } else {
-          Chats.startConversation( [$scope.chat.otherMember, $scope.currentId], $scope.chat.newMessage).then( function(){
-            $scope.$emit('modal:destroy');
-          });
-
-          //
-          //var chat = Chats.add( [$scope.current.id, $scope.chat.otherMember], [] );
-          //var msg = Messages.add( chat.id, $scope.current.id, $scope.chat.newMessage );
-          //Chats.updateMessages( chat.id, msg.id );
-          //Messages.updateChat( msg.id, chat.id );
-          //$scope.chat = Chats.get( chat.id );
-          //$scope.chats = Chats.all();
-        }
-        $scope.chat.newMessage = '';
-      };
-      $scope.remove = function(chatId) {
-        if( Chats.remove(chatId) ) {
-          $scope.chats = Chats.all();
-        }
-      };
-      $scope.menu = function(){
-        $ionicActionSheet.show({
-          buttons: [
-            { text: 'Insert Image' },
-            { text: 'Insert Video' },
-            { text: 'Insert File' }
-          ],
-          titleText: 'Options',
-          cancelText: 'Cancel',
-          cancel: function() {
-            // add cancel code..
-          },
-          buttonClicked: function() {
-            return true;
-          }
-        });
-      };
-      $scope.provisionChatModal = function( id ){
-        if( typeof id !== 'undefined'){
-          $scope.chat = $scope.chats[ id ];
-          $scope.$emit('provision:modal:chat', {
-            id: id,
-            scope: $scope,
-            chat: $scope.chat
-          });
-        } else {
-          $ionicLoading.show({
-            template: 'Loading...'
-          });
-          $scope.chat = {};
-          Users.getAll().then( function(res) {
-            $ionicLoading.hide();
-            $scope.users = _.indexBy( res.data.users, '_id' );
-            delete $scope.users[ $scope.currentId ];
-            $scope.$emit('provision:modal:chat', {
-              id: id,
-              scope: $scope,
-              chat: $scope.chat
-            });
-          });
-        }
-      };
     });
+    $scope.sendMessage = function( ) {
+      if( $scope.chat._id ) {
+        Chats.sendMessage( $scope.chat._id, Object.keys( $scope.chat.members ), $scope.chat.newMessage ).then( function(msg) {
+          $scope.chat.messages.splice( 0, 0, msg );
+        });
+      } else {
+        Chats.startConversation( [$scope.chat.otherMember], $scope.chat.newMessage).then( function(chats){
+          $scope.chats = chats;
+          $scope.$emit('modal:destroy');
+        });
+
+        //
+        //var chat = Chats.add( [$scope.current.id, $scope.chat.otherMember], [] );
+        //var msg = Messages.add( chat.id, $scope.current.id, $scope.chat.newMessage );
+        //Chats.updateMessages( chat.id, msg.id );
+        //Messages.updateChat( msg.id, chat.id );
+        //$scope.chat = Chats.get( chat.id );
+        //$scope.chats = Chats.all();
+      }
+      $scope.chat.newMessage = '';
+    };
+    $scope.remove = function(chatId) {
+      if( Chats.remove(chatId) ) {
+        $scope.chats = Chats.all();
+      }
+    };
+
+    $scope.provisionChatModal = function(){
+      $ionicLoading.show({
+        template: 'Loading...'
+      });
+      $scope.chat = {};
+      Users.getAll().then( function(res) {
+        $ionicLoading.hide();
+        $scope.users = _.indexBy( res.data.users, '_id' );
+        delete $scope.users[ $scope.currentId ];
+        $scope.$emit('provision:modal:chat', {
+          scope: $scope,
+          chat: $scope.chat
+        });
+      });
+    }
   })
+  .controller('ChatsDetailCtrl', function( $scope, $state, Chats, Users, Notification, $ionicHistory, $rootScope, $ionicActionSheet ) {
+    $scope.$on('$ionicView.enter', function() {
+      $scope.chat = Chats.getOne($state.params.chatId);
+      Notification.ifHasChatRemove( $state.params.chatId );
+    });
+    $scope.currentId = Users.getCurrentId();
+    $scope.$on('event:chat:badge', function(){
+      console.log('$on observed event chat badge');
+      Chats.all().then( function(chats){
+        Notification.ifHasChatRemove( $state.params.chatId );
+        // remove notificationt the $scope.chat = ...
+        $scope.chat = chats[ $state.params.chatId ];
+      });
+    });
+    //$scope.$watch( function(){ return Notification.getChat(); }, function(newVal){
+    //  if( newVal ) {
+    //    $scope.chat = Chats.getOne($state.params.chatId);
+    //    Notification.resetChat();
+    //  }
+    //});
+    $scope.goBack = function() {
+      $ionicHistory.goBack();
+      $rootScope.hideTabs = 0;
+    };
+    $scope.sendMessage = function( ) {
+      if ($scope.chat._id) {
+        Chats.sendMessage($scope.chat._id, Object.keys($scope.chat.members), $scope.chat.newMessage).then(function (msg) {
+          $scope.chat.messages.splice(0, 0, msg);
+          $scope.chat.newMessage = '';
+        });
+      }
+    };
+    $scope.menu = function(){
+      $ionicActionSheet.show({
+        buttons: [
+          { text: 'Take Photo or Video' }
+        ],
+        cancelText: 'Cancel',
+        cancel: function() {
+          // add cancel code..
+        },
+        buttonClicked: function() {
+          return true;
+        }
+      });
+    };
+  })
+
   .controller('SearchCtrl', function( $scope) {
 
   })

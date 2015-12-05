@@ -27,11 +27,16 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket, Notifi
     }
 
     Users.getCurrent().then( function(){
+      console.log('current user loaded');
       $location.path('/tab/dash');
       Notification.fetchAll();
       Socket.get.on('event:notification:chat:'+Users.getCurrentId(), function(){
-        $rootScope.$apply( function(){
-          Notification.fetchAll();
+        console.log('i reveceive chat notice');
+
+        Notification.fetchAll().then( function(count){
+          if( count ){
+            $rootScope.$broadcast('event:chat:badge');
+          }
         });
       });
     }, function(){
@@ -189,14 +194,10 @@ angular.module('starter', [
         }
       }
     })
-    .state('tab.chat-detail', {
+    .state('chat-detail', {
       url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
+      templateUrl: 'templates/chat-detail.html',
+      controller: 'ChatsDetailCtrl'
     })
     .state('tab.search', {
       url: '/search',
