@@ -60,8 +60,15 @@ body.tabbed-nav .scroll-content {
 .right img {
   float: right;
 }
+.right i {
+  right: 15px;
+  left: auto;
+}
 .right .direct-chat-text {
   margin: 5px 50px 0 0;
+  background: #387ef5;
+  border-color: #387ef5;
+  color: #fff;
 }
 .pull-left {
   float: left;
