@@ -104,32 +104,21 @@ angular.module('starter.directives', [])
         scope.form = {};
         scope.state = 'Log in';
         scope.login = function( ){
-          if( scope.form.email ) {
-            Users.login( scope.form )
-              .then( function(){
-                $ionicHistory.nextViewOptions({
-                  disableBack: true
-                });
-                Notification.fetchAll().then( function(){
-                  $state.go('tab.dash');
-                  scope.$emit('modal:destroy');
-                });
-              }, function(){
-                $ionicPopup.alert({
-                  title: 'Login Error',
-                  template: 'Email and/or Password incorrect. Try again!'
-                }).then( function(){
-                  scope.form = {};
-                });
-              })
-          } else {
-            $ionicPopup.alert({
-              title: 'Login Error',
-              template: 'Email and/or Password incorrect. Try again!'
-            }).then( function(){
-              scope.form = {};
+          Users.login( scope.form )
+            .then( function(){
+              $ionicHistory.nextViewOptions({
+                disableBack: true
+              });
+              $state.go('tab.dash');
+              scope.$emit('modal:destroy');
+            }, function(){
+              $ionicPopup.alert({
+                title: 'Login Error',
+                template: 'Email and/or Password incorrect. Try again!'
+              }).then( function(){
+                scope.form = {};
+              });
             });
-          }
         };
         scope.resetPassword = function(){
           $ionicPopup.alert({
@@ -182,19 +171,18 @@ angular.module('starter.directives', [])
           });
         };
         scope.register = function(){
-          if( Users.register( scope.form ) ) {
+          Users.register( scope.form ).then( function(){
             $ionicHistory.nextViewOptions({
               disableBack: true
             });
             $state.go('tab.dash');
             scope.$emit('modal:destroy');
-          } else {
+          }, function(){
             $ionicPopup.alert({
               title: 'Registration Error',
-              template: 'Email exists.'
-            });
-          }
-
+              template: 'Please check your email, it may be registered already.'
+            })
+          });
         };
         scope.closeAndReset = function(){
           scope.$emit('modal:destroy');

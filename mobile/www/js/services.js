@@ -542,6 +542,18 @@ angular.module('starter.services', [])
       networks: [2]
     }], currentUser = null, counter = 4, currentLock = false;
 
+    var processAuthenticatedUser = function( res, defer ){
+      $http.defaults.headers.common.Authorization = res.headers('Authorization');
+      $localstorage.set( 'Authorization', res.headers('Authorization') );
+      api.getCurrent().then( function( user ){
+        currentUser = user;
+        Socket.watchNotificationEvents( currentUser._id, function(){
+          defer.resolve( user );
+        });
+      }, function(){
+        defer.reject();
+      });
+    };
     var api = {
       addNetwork: function( network ){
         network.members = network.members || {};
@@ -564,39 +576,25 @@ angular.module('starter.services', [])
         var defer = $q.defer();
         $http.post(proxy.url + '/api/session/login', user)
           .then( function(res){
-            if( res.data.success ) {
-              $http.defaults.headers.common.Authorization = res.headers('Authorization');
-              $localstorage.set( 'Authorization', res.headers('Authorization') );
-              api.getCurrent().then( function( user ){
-                currentUser = user;
-                Socket.watchNotificationEvents( currentUser._id, function(){
-                  defer.resolve( user );
-                });
-              });
-            } else {
-              defer.reject();
-            }
+            processAuthenticatedUser( res, defer );
           }, function(){ defer.reject(); });
         return defer.promise;
       },
       register: function( user ) {
-        if( _.find( users, function(usr){ return usr.email === user.email; }) ) {
-          return false;
-        } else {
-          users.push({
-            id: counter,
-            profile: {
-              firstName: user.firstName,
-              lastName: user.lastName
-            },
-            email: user.email,
-            face: 'img/max.png',
-            password: user.password,
-            networks: []
-          });
-          counter++;
-          return api.login( user.email );
-        }
+        var obj = {
+          email: user.email,
+          password: user.password,
+          profile: {
+            firstName: user.firstName,
+            lastName: user.lastName
+          }
+        };
+        var defer = $q.defer();
+        $http.post(proxy.url + '/api/users/register', obj)
+          .then( function(res){
+            processAuthenticatedUser( res, defer );
+          }, function(){ defer.reject(); });
+        return defer.promise;
       },
       logout: function(){
         $localstorage.set('Authorization', null);
