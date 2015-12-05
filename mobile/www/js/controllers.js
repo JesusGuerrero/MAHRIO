@@ -68,11 +68,17 @@ angular.module('starter.controllers', [])
   })
 
   .controller('DashCtrl', function($scope, Users) {
-    $scope.$on('$ionicView.enter', function() {
+    function hideLoading(){
       if( Users.hasCurrent() ) {
         $scope.hideLoading = true;
       }
+    }
+    $scope.$on('$ionicView.enter', function() {
+      hideLoading();
     });
+    $scope.$on('event:user:loaded', function(){
+      hideLoading();
+    })
   })
 
   .controller('NetworksCtrl', function( $scope, $ionicLoading, Networks, Users, _) {
