@@ -249,31 +249,32 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Chats', function( _, $http, $q, proxy, Users ) {
+  .factory('Chats', function( _, $http, $q, proxy, Users, Notification ) {
     // Might use a resource here that returns a JSON array
 
     // Some fake testing data
-    var chats = [{
-      id: 1,
-      members: {
-        '1': null,
-        '2': null
-      },
-      messages: {
-        '1': null,
-        '3': null
-      }
-    }, {
-      id: 2,
-      members: {
-        '1': null,
-        '3': null
-      },
-      messages: {
-        '2': null,
-        '4': null
-      }
-    }], counter = 3;
+    //var chats = [{
+    //  id: 1,
+    //  members: {
+    //    '1': null,
+    //    '2': null
+    //  },
+    //  messages: {
+    //    '1': null,
+    //    '3': null
+    //  }
+    //}, {
+    //  id: 2,
+    //  members: {
+    //    '1': null,
+    //    '3': null
+    //  },
+    //  messages: {
+    //    '2': null,
+    //    '4': null
+    //  }
+    //}], counter = 3;
+    var chats = {};
 
     var api = {
       all: function() {
@@ -286,6 +287,11 @@ angular.module('starter.services', [])
             return chat;
           });
           chats = _.indexBy( res.data.conversations, '_id' );
+          for( var chat in Notification.getChatNotifications() ) {
+            if( chats.hasOwnProperty(chat) ){
+              chats[ chat ].isNew = true;
+            }
+          }
           defer.resolve( chats );
         }, function(){
           defer.reject();
@@ -301,14 +307,8 @@ angular.module('starter.services', [])
         }
         return false;
       },
-      get: function(chatId) {
-        var allChats = api.all(), saveChat = null;
-        _.each( allChats, function(chat){
-          if( chat.id == chatId ) {
-            saveChat = chat;
-          }
-        });
-        return saveChat;
+      getOne: function(chatId) {
+        return chats[ chatId ];
       },
       add: function( members, messages ) {
         var chatObj = {id: counter, members: {}, messages: messages, created: new Date() };
@@ -351,8 +351,9 @@ angular.module('starter.services', [])
             }
           }
         };
-        $http.post(proxy.url+'/api/chats/conversations/private', payload).then( function() {
-          defer.resolve();
+        $http.post(proxy.url+'/api/chats/conversations/private', payload).then( function(res) {
+          chats[ res.data.conversation._id ] = res.data.conversation;
+          defer.resolve( chats );
         }, function(){
           defer.reject();
         });
@@ -362,20 +363,36 @@ angular.module('starter.services', [])
     };
     return api;
   })
-  .factory('Notification', function($http, proxy){
+  .factory('Notification', function($http, proxy, $q){
     var chat = false, notifications = {
-      chat: []
+      chat: {}
     };
     return {
       getChat: function(){ return chat; },
       resetChat: function(){ chat = false; },
       fetchAll: function(){
+        var defer = $q.defer();
         $http.get( proxy.url + '/api/notifications').then( function(res) {
           if( res.data.notifications.chat ) {
             notifications.chat = res.data.notifications.chat;
             chat = Object.keys( notifications.chat ).length;
           }
+          defer.resolve( chat );
+        }, function(){
+          defer.reject();
         });
+        return defer.promise;
+      },
+      ifHasChatRemove: function(id){
+        if( notifications.chat.hasOwnProperty( id ) ) {
+          $http.delete( proxy.url + '/api/notifications/chat?id='+id);
+          console.log('removing notice from server');
+          delete notifications.chat[ id ];
+          chat = Object.keys( notifications.chat).length ? Object.keys( notifications.chat).length : false;
+        }
+      },
+      getChatNotifications: function(){
+        return notifications.chat;
       }
     };
   })
@@ -433,9 +450,9 @@ angular.module('starter.services', [])
   .factory('Modal', function($ionicModal){
     var currentModal = null;
     return {
-      provisionModal: function( $scope, url ){
+      provisionModal: function( $scope, url, anim ){
         currentModal = $ionicModal.fromTemplateUrl(url, {
-          animation: 'slide-in-up',
+          animation: anim || 'slide-in-up',
           scope: $scope
         });
         return currentModal;

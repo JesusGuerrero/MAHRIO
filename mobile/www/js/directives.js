@@ -13,6 +13,17 @@ angular.module('starter.directives', [])
       }
     };
   })
+  .directive('hideTabs', function($rootScope) {
+    return {
+      restrict: 'A',
+      link: function($scope, $el) {
+        $rootScope.hideTabs = true;
+        $scope.$on('$destroy', function() {
+          $rootScope.hideTabs = false;
+        });
+      }
+    };
+  })
   .directive('formInputTag', function(){
       return {
         restrict: 'E',
@@ -83,7 +94,7 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('loginButton', function(Users, $state, $ionicSlideBoxDelegate, $ionicPopup, $timeout, $ionicHistory){
+  .directive('loginButton', function(Users, Notification, $state, $ionicSlideBoxDelegate, $ionicPopup, $timeout, $ionicHistory){
     return {
       restrict: 'E',
       replace: true,
@@ -99,8 +110,10 @@ angular.module('starter.directives', [])
                 $ionicHistory.nextViewOptions({
                   disableBack: true
                 });
-                $state.go('tab.dash');
-                scope.$emit('modal:destroy');
+                Notification.fetchAll().then( function(){
+                  $state.go('tab.dash');
+                  scope.$emit('modal:destroy');
+                });
               }, function(){
                 $ionicPopup.alert({
                   title: 'Login Error',

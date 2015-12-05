@@ -4,11 +4,49 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{chat.name}}">
-  <ion-content class="padding">
-    <img ng-src="{{chat.face}}" style="width: 64px; height: 64px">
-    <p>
-      {{chat.lastText}}
-    </p>
+<ion-view hide-tabs>
+  <ion-nav-buttons side="primary">
+    <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
+      <i class="icon ion-ios-arrow-back"></i>
+      Back
+    </button>
+  </ion-nav-buttons>
+  <ion-nav-title>{{chat.otherMember.profile.firstName}}</ion-nav-title>
+
+  <ion-content>
+    <div class="row" ng-show="network.coverImage && network.coverImage.url"
+         style="min-height: 200px;" ng-style="{background: 'url('+network.coverImage.url+')', backgroundSize: 'cover'}">
+    </div>
+    <ion-list>
+
+      <ion-item ng-repeat="message in chat.messages" type="item-text-wrap" ng-class="currentId===chat.members[message._user]._id ? 'right' : 'left'" style="border:none;">
+        <div class="direct-chat-info">
+          <span class="direct-chat-name" ng-class="currentId===chat.members[message._user]._id ? 'pull-right' : 'pull-left'" >
+          <strong>{{currentUser.id}}
+            {{chat.members[message._user].profile.firstName}} {{chat.members[message._user].profile.lastName}}
+          </strong>
+          </span>
+          <small class="direct-chat-timestamp" ng-class="currentId===chat.members[message._user]._id ? 'pull-left' : 'pull-right'">
+            {{message.created | date: 'short' }}
+          </small>
+        </div>
+        <img class="direct-chat-img" ng-src="{{chat.members[message._user].avatarImage.url}}" width="40" ng-show="chat.members[message._user].avatarImage">
+        <i class="item-icon-label ion-android-person" ng-show="!chat.members[message._user].avatarImage" style="font-size: 40px"></i>
+        <p class="direct-chat-text" ng-bind-html="message.content"></p>
+
+      </ion-item>
+    </ion-list>
   </ion-content>
+  <ion-footer-bar>
+    <button class="button button-clear" style="width: 30px; margin-right: 10px;" ng-click="menu()">
+      <i class="ion-android-camera ion" style="font-size: 20pt; line-height: 34px;"></i>
+    </button>
+    <label class="item-input-wrapper">
+      <i class="icon ion-ios-chatboxes placeholder-icon"></i>
+      <input type="search" placeholder="Messages..." style="background: transparent; width: 100%;" ng-model="chat.newMessage">
+    </label>
+    <button class="button button-clear" ng-click="sendMessage()" ng-disabled="!chat.otherMember || !chat.newMessage">
+      Send
+    </button>
+  </ion-footer-bar>
 </ion-view>
