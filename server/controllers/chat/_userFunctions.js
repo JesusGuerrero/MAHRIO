@@ -132,17 +132,22 @@ function getPrivateConversations( request, reply, callback ) {
     });
 }
 // request.query.userId
-function getPrivateConversation( request, reply, callback ) {
+function getPrivateConversation( request, reply, callback, convId ) {
   if( typeof callback === 'undefined' && !request.query.userId ) {
     return getPrivateConversations( request, reply );
   }
 
+  var findOneObj = {
+    $or: [
+      { members: [request.auth.credentials.id, request.query.userId]},
+      { members: [request.query.userId,request.auth.credentials.id]}
+    ]
+  };
+  if( typeof convId !== 'undefined') {
+    findOneObj = { _id: convId };
+  }
   Conversation
-    .findOne({
-      $or: [
-        { members: [request.auth.credentials.id, request.query.userId]},
-        { members: [request.query.userId,request.auth.credentials.id]}]
-    })
+    .findOne( findOneObj )
     .populate([{
       path: 'messages',
       options: {
@@ -200,8 +205,7 @@ function postPrivateConversation( request, reply ) {
               });
             }
           });
-
-          reply( { success: true });
+          return getPrivateConversation(request, reply, null, conv.id);
         });
       });
     });
@@ -266,12 +270,9 @@ function sendPrivateMessage( request, reply ){
                   resource: 'chat',
                   id: conversation._id,
                   _user: user
-                }, function() {
-                  callback();
                 });
-              } else {
-                callback();
               }
+              callback();
             }, function(){
               return reply( {message: msg} );
             });
