@@ -1,8 +1,25 @@
 angular.module('starter.services', [])
-  .factory('Socket', function( proxy ) {
+  .factory('Socket', function( $rootScope, proxy, Notification ) {
     var socket = io( proxy.url );
+    var fetchAllNotifications = function( callback ){
+      Notification.fetchAll().then( function(count){
+        if( count ){
+          $rootScope.$broadcast('event:chat:badge');
+        }
+        if( typeof callback == 'function'){
+          callback();
+        }
+      });
+    };
     return {
-      get: socket
+      get: socket,
+      watchNotificationEvents: function( userId, callback ){
+        socket.on('event:notification:chat:'+userId, function(){
+          console.log('i reveceive chat notice');
+          fetchAllNotifications();
+        });
+        fetchAllNotifications( callback );
+      }
     };
   })
   .factory('$localstorage', function($window) {
@@ -492,7 +509,7 @@ angular.module('starter.services', [])
   .service('proxy', function(APP_IP){
     this.url = APP_IP;
   })
-  .factory('Users', function($localstorage, proxy, $http, $q, $timeout ){
+  .factory('Users', function($localstorage, proxy, $http, $q, $timeout, Socket ){
     var users = [{
       id: 1,
       email: 'jesus.rocha@whichdegree.co',
@@ -552,7 +569,9 @@ angular.module('starter.services', [])
               $localstorage.set( 'Authorization', res.headers('Authorization') );
               api.getCurrent().then( function( user ){
                 currentUser = user;
-                defer.resolve( user );
+                Socket.watchNotificationEvents( currentUser._id, function(){
+                  defer.resolve( user );
+                });
               });
             } else {
               defer.reject();
