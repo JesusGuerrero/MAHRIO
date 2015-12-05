@@ -29,6 +29,7 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket, Notifi
     Users.getCurrent().then( function(){
       console.log('current user loaded');
       $location.path('/tab/dash');
+      $rootScope.$broadcast('event:user:loaded');
       Notification.fetchAll();
       Socket.get.on('event:notification:chat:'+Users.getCurrentId(), function(){
         console.log('i reveceive chat notice');
@@ -233,6 +234,6 @@ angular.module('starter', [
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/offline');
+  $urlRouterProvider.otherwise('/tab/dash');
 
 });
