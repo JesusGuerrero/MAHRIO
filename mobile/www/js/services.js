@@ -300,7 +300,7 @@ angular.module('starter.services', [])
         $http.get( proxy.url + '/api/chats/conversations').then( function(res) {
           _.map( res.data.conversations, function(chat){
             chat.otherMember = Users.getXother( chat.members )[0];
-            chat.lastMessage = chat.messages[ chat.messages.length - 1];
+            chat.lastMessage = chat.messages[ 0 ];
             return chat;
           });
           chats = _.indexBy( res.data.conversations, '_id' );
@@ -381,7 +381,7 @@ angular.module('starter.services', [])
     return api;
   })
   .factory('Notification', function($http, proxy, $q){
-    var chat = false, notifications = {
+    var chat = false, noticeRemoved = false, notifications = {
       chat: {}
     };
     return {
@@ -406,7 +406,15 @@ angular.module('starter.services', [])
           console.log('removing notice from server');
           delete notifications.chat[ id ];
           chat = Object.keys( notifications.chat).length ? Object.keys( notifications.chat).length : false;
+          noticeRemoved = true;
         }
+      },
+      wasRemoved: function(){
+        if( noticeRemoved ) {
+          noticeRemoved = false;
+          return true;
+        }
+        return false;
       },
       getChatNotifications: function(){
         return notifications.chat;

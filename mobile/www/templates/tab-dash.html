@@ -6,5 +6,9 @@
     <div style="text-align: center" ng-hide="hideLoading">
       <ion-spinner icon="spiral" style="margin: 0 auto;"></ion-spinner>
     </div>
+    <div ng-hide="!hideLoading" style="text-align: center">
+      Welcome, {{currentUser.profile.firstName}} {{currentUser.profile.lastName}}<br/>
+      {{currentUser.email}}
+    </div>
   </ion-content>
 </ion-view>

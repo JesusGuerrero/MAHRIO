@@ -19,7 +19,7 @@
     </div>
     <ion-list>
 
-      <ion-item ng-repeat="message in chat.messages" type="item-text-wrap" ng-class="currentId===chat.members[message._user]._id ? 'right' : 'left'" style="border:none;">
+      <ion-item ng-repeat="message in chat.messages | orderBy:message.created:true" type="item-text-wrap" ng-class="currentId===chat.members[message._user]._id ? 'right' : 'left'" style="border:none;">
         <div class="direct-chat-info">
           <span class="direct-chat-name" ng-class="currentId===chat.members[message._user]._id ? 'pull-right' : 'pull-left'" >
           <strong>{{currentUser.id}}
