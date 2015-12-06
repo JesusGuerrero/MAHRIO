@@ -59,7 +59,7 @@ angular.module('starter.controllers', [])
     });
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState){
       if( toState.name === 'tab.chats' && fromState.name == 'chat-detail') {
-       $scope.chatBadge = Notification.getChat() || 0;
+       $scope.chatBadge = Notification.wasRemoved() ? ($scope.chatBadge - 1) : $scope.chatBadge;
       }
     });
   })
@@ -71,6 +71,7 @@ angular.module('starter.controllers', [])
     function hideLoading(){
       if( Users.hasCurrent() ) {
         $scope.hideLoading = true;
+        $scope.currentUser = Users.getCurrentUser();
       }
     }
     $scope.$on('$ionicView.enter', function() {
@@ -241,7 +242,7 @@ angular.module('starter.controllers', [])
     $scope.sendMessage = function( ) {
       if( $scope.chat._id ) {
         Chats.sendMessage( $scope.chat._id, Object.keys( $scope.chat.members ), $scope.chat.newMessage ).then( function(msg) {
-          $scope.chat.messages.splice( 0, 0, msg );
+          $scope.chat.messages.push( msg );
         });
       } else {
         Chats.startConversation( [$scope.chat.otherMember], $scope.chat.newMessage).then( function(chats){
@@ -281,7 +282,7 @@ angular.module('starter.controllers', [])
       });
     }
   })
-  .controller('ChatsDetailCtrl', function( $scope, $state, Chats, Users, Notification, $ionicHistory, $rootScope, $ionicActionSheet ) {
+  .controller('ChatsDetailCtrl', function( $scope, $state, Chats, Users, Notification, $ionicHistory, $rootScope, $ionicActionSheet, $ionicScrollDelegate ) {
     $scope.$on('$ionicView.enter', function() {
       $scope.chat = Chats.getOne($state.params.chatId);
       Notification.ifHasChatRemove( $state.params.chatId );
@@ -305,13 +306,14 @@ angular.module('starter.controllers', [])
       $ionicHistory.goBack();
       $rootScope.hideTabs = 0;
     };
+    $scope.scrollBottom = function(){
+      $ionicScrollDelegate.scrollBottom(true);
+    };
     $scope.sendMessage = function( ) {
-      if ($scope.chat._id) {
-        Chats.sendMessage($scope.chat._id, Object.keys($scope.chat.members), $scope.chat.newMessage).then(function (msg) {
-          $scope.chat.messages.splice(0, 0, msg);
-          $scope.chat.newMessage = '';
-        });
-      }
+      Chats.sendMessage($scope.chat._id, Object.keys($scope.chat.members), $scope.chat.newMessage).then(function (msg) {
+        $scope.chat.messages.splice(0, 0, msg);
+        $scope.chat.newMessage = '';
+      });
     };
     $scope.menu = function(){
       $ionicActionSheet.show({

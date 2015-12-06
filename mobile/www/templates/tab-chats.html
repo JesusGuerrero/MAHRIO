@@ -7,7 +7,7 @@
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap"
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats | orderObjectBy:'update':true" type="item-text-wrap"
         href="#/chats/{{chat._id}}">
         <img ng-src="{{chat.otherMember.avatarImage.url}}" ng-show="chat.otherMember.avatarImage">
         <i class="item-icon-label ion-android-person" ng-show="!chat.otherMember.avatarImage" style="font-size: 40px"></i>

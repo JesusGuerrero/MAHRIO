@@ -1,8 +1,25 @@
 angular.module('starter.services', [])
-  .factory('Socket', function( proxy ) {
+  .factory('Socket', function( $rootScope, proxy, Notification ) {
     var socket = io( proxy.url );
+    var fetchAllNotifications = function( callback ){
+      Notification.fetchAll().then( function(count){
+        if( count ){
+          $rootScope.$broadcast('event:chat:badge');
+        }
+        if( typeof callback == 'function'){
+          callback();
+        }
+      });
+    };
     return {
-      get: socket
+      get: socket,
+      watchNotificationEvents: function( userId, callback ){
+        socket.on('event:notification:chat:'+userId, function(){
+          console.log('i reveceive chat notice');
+          fetchAllNotifications();
+        });
+        fetchAllNotifications( callback );
+      }
     };
   })
   .factory('$localstorage', function($window) {
@@ -283,7 +300,7 @@ angular.module('starter.services', [])
         $http.get( proxy.url + '/api/chats/conversations').then( function(res) {
           _.map( res.data.conversations, function(chat){
             chat.otherMember = Users.getXother( chat.members )[0];
-            chat.lastMessage = chat.messages[ chat.messages.length - 1];
+            chat.lastMessage = chat.messages[ 0 ];
             return chat;
           });
           chats = _.indexBy( res.data.conversations, '_id' );
@@ -352,6 +369,8 @@ angular.module('starter.services', [])
           }
         };
         $http.post(proxy.url+'/api/chats/conversations/private', payload).then( function(res) {
+          res.data.conversation.otherMember = Users.getXother( res.data.conversation.members )[0];
+          res.data.conversation.lastMessage = res.data.conversation.messages[ 0 ];
           chats[ res.data.conversation._id ] = res.data.conversation;
           defer.resolve( chats );
         }, function(){
@@ -364,7 +383,7 @@ angular.module('starter.services', [])
     return api;
   })
   .factory('Notification', function($http, proxy, $q){
-    var chat = false, notifications = {
+    var chat = false, noticeRemoved = false, notifications = {
       chat: {}
     };
     return {
@@ -389,7 +408,15 @@ angular.module('starter.services', [])
           console.log('removing notice from server');
           delete notifications.chat[ id ];
           chat = Object.keys( notifications.chat).length ? Object.keys( notifications.chat).length : false;
+          noticeRemoved = true;
         }
+      },
+      wasRemoved: function(){
+        if( noticeRemoved ) {
+          noticeRemoved = false;
+          return true;
+        }
+        return false;
       },
       getChatNotifications: function(){
         return notifications.chat;
@@ -492,7 +519,7 @@ angular.module('starter.services', [])
   .service('proxy', function(APP_IP){
     this.url = APP_IP;
   })
-  .factory('Users', function($localstorage, proxy, $http, $q, $timeout ){
+  .factory('Users', function($localstorage, proxy, $http, $q, $timeout, Socket ){
     var users = [{
       id: 1,
       email: 'jesus.rocha@whichdegree.co',
@@ -525,6 +552,18 @@ angular.module('starter.services', [])
       networks: [2]
     }], currentUser = null, counter = 4, currentLock = false;
 
+    var processAuthenticatedUser = function( res, defer ){
+      $http.defaults.headers.common.Authorization = res.headers('Authorization');
+      $localstorage.set( 'Authorization', res.headers('Authorization') );
+      api.getCurrent().then( function( user ){
+        currentUser = user;
+        Socket.watchNotificationEvents( currentUser._id, function(){
+          defer.resolve( user );
+        });
+      }, function(){
+        defer.reject();
+      });
+    };
     var api = {
       addNetwork: function( network ){
         network.members = network.members || {};
@@ -547,37 +586,25 @@ angular.module('starter.services', [])
         var defer = $q.defer();
         $http.post(proxy.url + '/api/session/login', user)
           .then( function(res){
-            if( res.data.success ) {
-              $http.defaults.headers.common.Authorization = res.headers('Authorization');
-              $localstorage.set( 'Authorization', res.headers('Authorization') );
-              api.getCurrent().then( function( user ){
-                currentUser = user;
-                defer.resolve( user );
-              });
-            } else {
-              defer.reject();
-            }
+            processAuthenticatedUser( res, defer );
           }, function(){ defer.reject(); });
         return defer.promise;
       },
       register: function( user ) {
-        if( _.find( users, function(usr){ return usr.email === user.email; }) ) {
-          return false;
-        } else {
-          users.push({
-            id: counter,
-            profile: {
-              firstName: user.firstName,
-              lastName: user.lastName
-            },
-            email: user.email,
-            face: 'img/max.png',
-            password: user.password,
-            networks: []
-          });
-          counter++;
-          return api.login( user.email );
-        }
+        var obj = {
+          email: user.email,
+          password: user.password,
+          profile: {
+            firstName: user.firstName,
+            lastName: user.lastName
+          }
+        };
+        var defer = $q.defer();
+        $http.post(proxy.url + '/api/users/register', obj)
+          .then( function(res){
+            processAuthenticatedUser( res, defer );
+          }, function(){ defer.reject(); });
+        return defer.promise;
       },
       logout: function(){
         $localstorage.set('Authorization', null);

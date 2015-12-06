@@ -28,17 +28,9 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket, Notifi
 
     Users.getCurrent().then( function(){
       console.log('current user loaded');
-      $location.path('/tab/dash');
       $rootScope.$broadcast('event:user:loaded');
-      Notification.fetchAll();
-      Socket.get.on('event:notification:chat:'+Users.getCurrentId(), function(){
-        console.log('i reveceive chat notice');
-
-        Notification.fetchAll().then( function(count){
-          if( count ){
-            $rootScope.$broadcast('event:chat:badge');
-          }
-        });
+      Socket.watchNotificationEvents( Users.getCurrentId(), function(){
+        $location.path('/tab/dash');
       });
     }, function(){
       $location.path('/offline');
