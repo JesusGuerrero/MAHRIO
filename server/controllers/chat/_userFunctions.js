@@ -259,7 +259,7 @@ function sendPrivateMessage( request, reply ){
         if( err ) { return reply(Boom.badRequest(err)); }
 
         Conversation
-          .update({_id: conversation._id}, {$push: {messages: mongoose.Types.ObjectId(msg.id)}}, function(err){
+          .update({_id: conversation._id}, {$push: {messages: mongoose.Types.ObjectId(msg.id)}, update: Date.now()}, {multi: false}, function(err){
             if( err ) { return reply(Boom.badRequest(err)); }
 
             emitMessage( 'event:conversation:'+conversation._id );
@@ -378,6 +378,7 @@ function sendPublicMessage( request, reply ){
       if( err ) { return reply(Boom.badRequest(err)); }
 
       conversation.messages = _.map(conversation.messages, function(item){ return item.id;});
+      conversation.update = Date.now();
       conversation.messages.push( msg.id );
       conversation.save( function(err){
         if( err ) { return reply(Boom.badRequest(err)); }
