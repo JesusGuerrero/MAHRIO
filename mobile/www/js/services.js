@@ -369,6 +369,8 @@ angular.module('starter.services', [])
           }
         };
         $http.post(proxy.url+'/api/chats/conversations/private', payload).then( function(res) {
+          res.data.conversation.otherMember = Users.getXother( res.data.conversation.members )[0];
+          res.data.conversation.lastMessage = res.data.conversation.messages[ 0 ];
           chats[ res.data.conversation._id ] = res.data.conversation;
           defer.resolve( chats );
         }, function(){
