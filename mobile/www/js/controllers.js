@@ -282,7 +282,7 @@ angular.module('starter.controllers', [])
       });
     }
   })
-  .controller('ChatsDetailCtrl', function( $scope, $state, Chats, Users, Notification, $ionicHistory, $rootScope, $ionicActionSheet ) {
+  .controller('ChatsDetailCtrl', function( $scope, $state, Chats, Users, Notification, $ionicHistory, $rootScope, $ionicActionSheet, $ionicScrollDelegate ) {
     $scope.$on('$ionicView.enter', function() {
       $scope.chat = Chats.getOne($state.params.chatId);
       Notification.ifHasChatRemove( $state.params.chatId );
@@ -306,13 +306,14 @@ angular.module('starter.controllers', [])
       $ionicHistory.goBack();
       $rootScope.hideTabs = 0;
     };
+    $scope.scrollBottom = function(){
+      $ionicScrollDelegate.scrollBottom(true);
+    };
     $scope.sendMessage = function( ) {
-      if ($scope.chat._id) {
-        Chats.sendMessage($scope.chat._id, Object.keys($scope.chat.members), $scope.chat.newMessage).then(function (msg) {
-          $scope.chat.messages.splice(0, 0, msg);
-          $scope.chat.newMessage = '';
-        });
-      }
+      Chats.sendMessage($scope.chat._id, Object.keys($scope.chat.members), $scope.chat.newMessage).then(function (msg) {
+        $scope.chat.messages.splice(0, 0, msg);
+        $scope.chat.newMessage = '';
+      });
     };
     $scope.menu = function(){
       $ionicActionSheet.show({
