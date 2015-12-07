@@ -1,6 +1,6 @@
 
 
-function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket, Notification) {
+function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
 
   $ionicPlatform.ready(function(){
 
@@ -45,12 +45,14 @@ angular.module('starter', [
   'starter.controllers',
   'starter.services',
   'starter.directives',
+  'starter.filters',
   'angular-underscore'])
   .constant('APP_IP', 'http://123.456.789.0:8042')
   .constant('_', window._)
   .run(mahrioRun)
-  .config(function($stateProvider, $urlRouterProvider) {
+  .config(function($stateProvider, $urlRouterProvider, $compileProvider) {
 
+    $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.

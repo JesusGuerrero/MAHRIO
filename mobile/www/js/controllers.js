@@ -208,12 +208,46 @@ angular.module('starter.controllers', [])
     //$scope.network = Users.getOneNetwork( $stateParams.network );
 
   })
-  .controller('MemberDetailCtrl', function($scope, $stateParams, Networks, Users ){
+  .controller('MemberDetailCtrl', function($scope, $stateParams, Networks, Users, Camera, Media, $ionicLoading ){
     $scope.currentId = Users.getCurrentId();
     if( typeof $stateParams.memberId !== 'undefined' ) {
       $scope.member = Networks.getMember( $stateParams.memberId );
     } else {
       $scope.member = Users.getCurrentUser();
+      $scope.editProfile = function(){
+        $scope.editting = true;
+        angular.extend( $scope.form, $scope.member.profile);
+        $scope.form.email = $scope.member.email;
+        $scope.form.avatarImage = $scope.member.avatarImage;
+        $scope.addPicture = function(){
+          if( navigator.camera ) {
+            $ionicLoading.show({
+              template: 'Uploading...'
+            });
+            Camera.getPicture( { object: 'users', container: 'profile' },
+              { quality: 50,
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                cameraDirection: 1,
+                correctOrientation: true,
+                encodingType: 0
+              }).then( function(res){
+                $scope.form.avatarImage = {
+                  url: res.url
+                };
+              $ionicLoading.hide();
+              }, function(){
+              $ionicLoading.hide();
+            });
+          }
+        };
+        $scope.closeAndReset = function(){
+          $scope.$emit('modal:destroy');
+          $scope.form = {};
+        };
+        $scope.$emit('provision:modal:register',{
+          scope: $scope
+        });
+      };
     }
 
   })
