@@ -22,6 +22,24 @@ angular.module('starter.services', [])
       }
     };
   })
+  .factory('Camera', ['$q','Media', function($q, Media) {
+
+    return {
+      getPicture: function(media, options) {
+        var defer = $q.defer();
+
+        navigator.camera.getPicture(function(imagePath) {
+          Media.getKey( media, imagePath).then( function(res){
+            defer.resolve(res);
+          });
+        }, function(err) {
+          defer.reject(err);
+        }, options);
+
+        return defer.promise;
+      }
+    }
+  }])
   .factory('$localstorage', function($window) {
     return {
       set: function(key, value) {
@@ -519,6 +537,54 @@ angular.module('starter.services', [])
   .service('proxy', function(APP_IP){
     this.url = APP_IP;
   })
+  .factory('Media', function($http, $q, proxy, Users){
+    return {
+      getKey: function( media, file ) {
+        var defer = $q.defer();
+        media.filename = file.split('/').pop();
+        $http({
+            url: proxy.url+'/api/media/key',
+            method: 'GET',
+            params: media,
+            headers : {
+              'x-amz-acl': 'public-read'
+            }
+          }).then( function(res){
+            var ft = new FileTransfer();
+            var options = new FileUploadOptions();
+            options.mimeType = 'image/jpeg';
+            options.httpMethod = 'PUT';
+            options.filename = media.filename;
+            options.headers = {
+              'x-amz-acl': 'public-read',
+              'Content-Type': 'image/jpeg'
+            };
+            ft.upload(file, res.data.signedRequest, function(){
+              delete media.id;
+              delete media.object;
+              media.type = 'image/jpeg';
+              media.url = res.data.url;
+              window.resolveLocalFileSystemURI(file, function(fileEntry) {
+                fileEntry.file(function(fileObj) {
+                  media.size = fileObj.size;
+                  Users.addAvatar( media )
+                    .then( function(){
+                      defer.resolve({url: res.data.url});
+                    }, function(){
+                      defer.reject();
+                    });
+                });
+              });
+            }, function(){
+              defer.reject();
+            }, options);
+          }, function(){
+            defer.reject();
+          });
+        return defer.promise;
+      }
+    }
+  })
   .factory('Users', function($localstorage, proxy, $http, $q, $timeout, Socket ){
     var users = [{
       id: 1,
@@ -611,6 +677,16 @@ angular.module('starter.services', [])
         $localstorage.setObject( 'currentUser', null );
         delete $http.defaults.headers.common.Authorization;
         currentUser = null;
+      },
+      addAvatar: function( media ){
+        var defer = $q.defer();
+        $http.post( proxy.url + '/api/users/avatar', {media: media}).then( function(res){
+          currentUser.avatarImage = {
+            url: res.url
+          };
+          defer.resolve();
+        });
+        return defer.promise;
       },
       getCurrent: function(){
         if( !currentLock ) {
