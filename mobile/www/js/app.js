@@ -2,6 +2,11 @@
 
 function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
 
+  $rootScope.triggerAnalyticEvent = function(event, toState) {
+      var viewName = toState.name;
+      window.analytics.trackView(viewName);
+  };
+
   $ionicPlatform.ready(function(){
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -22,6 +27,12 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
       console.log("windows.analytics loading...");
       window.analytics.startTrackerWithId('UA-YOURCODEHERE');
       window.analytics.trackView('Testing')
+
+      $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+        setTimeout(function(){
+          $rootScope.triggerAnalyticEvent(event, toState);
+        }, 1000);
+      })
     } else {
       console.log("window.analytics is undefined");
     }
