@@ -9,6 +9,7 @@ var mongoose = require('mongoose'),
   });
 
   schema.pre('save', function(done) {
+    'use strict';
     this.updated = Date.now();
     done();
   });

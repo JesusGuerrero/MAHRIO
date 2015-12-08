@@ -40,18 +40,31 @@ module.exports = function (grunt) {
         },
 
         jade: {
-            compile: {
-                options: {
-                    client: false,
-                    pretty: true
-                },
-                files: [{
-                    cwd: 'client/angular/',
-                    src: ['**/*.jade'],
-                    dest: 'server/public/html',
-                    expand: true,
-                    ext: '.html'
-                }]
+            angular: {
+              options: {
+                client: false,
+                pretty: true
+              },
+              files: [{
+                cwd: 'client/angular/',
+                src: ['**/*.jade'],
+                dest: 'server/public/html',
+                expand: true,
+                ext: '.html'
+              }]
+            },
+            static: {
+              options: {
+                client: false,
+                pretty: true
+              },
+              files: [{
+                cwd: 'client/static/',
+                src: ['*.jade'],
+                dest: 'server/public/static',
+                expand: true,
+                ext: '.html'
+              }]
             }
         },
 
@@ -211,9 +224,16 @@ module.exports = function (grunt) {
             },
             angularJade: {
                 files: ['client/angular/**/*.jade', '!client/**/_*.jade'],
-                tasks: ['newer:jade'],
+                tasks: ['newer:jade:angular'],
                 options: {
                     interrupt: true
+                }
+            },
+            staticJade: {
+                files:['client/static/*.jade'],
+                tasks:['newer:jade:static'],
+                options: {
+                  interrupt: true
                 }
             },
             protractor: {
