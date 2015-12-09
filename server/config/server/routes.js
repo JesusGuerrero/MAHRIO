@@ -63,9 +63,19 @@ module.exports = function (config, server) {
   var notDefined;
   server.route({
     method: 'GET',
+    path: '/home',
+    handler: {
+      file: '../public/static/home.html'
+    }
+  });
+  server.route({
+    method: 'GET',
     path: '/{page?}',
     handler: function(request, reply){
       switch( request.params.page ){
+        case 'home':
+          reply.view('pages/_home');
+          break;
         case notDefined:
           reply.view('_mahrio', {
             develop: request.query.develop
