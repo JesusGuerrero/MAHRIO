@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.mobile193884" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>mobile</name>
+  <name>app_by_mahrio</name>
   <description>
-        An Ionic Framework and Cordova project.
+        A MAHR.IO project powered by Ionic and Cordova.
     </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+  <author email="hi@ionicframework" href="http://mah.rio/">
+      MAHRIO Team
     </author>
   <content src="index.html"/>
   <access origin="*"/>
