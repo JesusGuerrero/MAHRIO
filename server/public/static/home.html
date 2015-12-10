@@ -18,7 +18,8 @@
     <link href="http://fonts.googleapis.com/css?family=Cardo:400,400italic,700" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Sanchez:400italic,400" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Cardo:400,400italic,700" rel="stylesheet" type="text/css">
-    <!--link(rel="stylesheet" href="/assets/css/application.css")-->
+    <link href="/assets/static/assets/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="/assets/static/assets/css/reset.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css">
@@ -27,6 +28,7 @@
     <link href="/assets/static/assets/css/plugins/magnific-popup.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/jquery.fs.wallpaper.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/animate.css" rel="stylesheet" type="text/css">
+    <link href="/assets/static/assets/css/plugins/hero-carousel.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/vitality-orange.css" rel="stylesheet" type="text/css"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -42,23 +44,73 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="hidden"><a href="#page-top"></a></li>
             <li><a href="#about">  About</a></li>
-            <li><a href="#process">  Process</a></li>
-            <li><a href="#work">  Work</a></li>
-            <li><a href="#pricing">  Pricing</a></li>
+            <!--li
+            a(href="#process")
+                |   Process
+            -->
+            <!--li
+            a(href="#work")
+                |   Work
+            -->
+            <!--li
+            a(href="#pricing")
+                |   Pricing
+            -->
             <li><a href="#contact">  Contact</a></li>
+            <li><a href="/app#/login"><i class="fa fa-lock"></i>  Login</a></li>
           </ul>
         </div>
       </div>
     </nav>
-    <header class="video">
-      <div class="overlay"></div>
-      <div class="intro-content"><img src="/assets/static/assets/img/profile.png" class="img-responsive img-centered">
-        <div class="brand-name">  Vitality</div>
-        <hr class="colored">
-        <div class="brand-name-subtext">  by Start Bootstrap</div>
+    <!--include includes/header-->
+    <section style="padding:0" class="cd-hero">
+      <ul class="cd-hero-slider">
+        <li class="selected">
+          <div class="cd-full-width">
+            <h2>  Hero slider</h2>
+            <p>  A simple, responsive slideshow in CSS &amp; jQuery.</p><a href="http://codyhouse.co/?p=675" class="cd-btn">  Article &amp; Download</a>
+          </div>
+        </li>
+        <li>
+          <div class="cd-half-width">
+            <h2>  Slide title here</h2>
+            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+          </div>
+          <div class="cd-half-width cd-img-container"><img src="/assets/static/assets/img/portfolio/mobile-screens.png" alt="tech 1"></div>
+        </li>
+        <li>
+          <div class="cd-half-width cd-img-container"><img src="/assets/static/assets/img/portfolio/tablet-screens.png" alt="tech 2"></div>
+          <div class="cd-half-width">
+            <h2>  Slide title here</h2>
+            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+          </div>
+        </li>
+        <li class="cd-bg-video">
+          <div class="cd-full-width">
+            <h2>  Slide title here</h2>
+            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Learn more</a>
+          </div>
+          <div data-video="assets/static/assets/mp4/clouds" class="cd-bg-video-wrapper"></div>
+        </li>
+        <li style="background-image: url('/assets/static/assets/img/portfolio/bg-4.jpg')">
+          <div class="cd-full-width">
+            <h2>  Slide title here</h2>
+            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+          </div>
+        </li>
+      </ul>
+      <div class="cd-slider-nav">
+        <nav><span class="cd-marker item-1"></span>
+          <ul>
+            <li class="selected"><i class="fa fa-home fa-2x"></i><br>  Intro</li>
+            <li><i class="fa fa-share-alt fa-2x"></i><br>  Networks</li>
+            <li><i class="fa fa-book fa-2x"></i><br>  Articles</li>
+            <li><i class="fa fa-calendar fa-2x"></i><br>  Events</li>
+            <li><i class="fa fa-comments fa-2x"></i><br>  Chats</li>
+          </ul>
+        </nav>
       </div>
-      <div class="scroll-down page-scroll"><a href="#about" class="btn"><i class="fa fa-angle-down"></i></a></div>
-    </header>
+    </section>
     <style>
       .featurette { overflow: hidden; }
       .featurette-divider { margin: 40px 0; }
@@ -67,17 +119,17 @@
       .featurette-image.pull-left { margin-right: 40px; margin-bottom: 10px }
     </style>
     <section class="container heading"><!-- First Featurette -->
-      <div data-wow-delay=".2s" class="featurette wow fadeIn"><img src="http://placehold.it/500x500" class="featurette-image img-circle img-responsive pull-right">
+      <div data-wow-delay=".2s" class="featurette wow fadeIn"><img src="http://placehold.it/500x300" class="featurette-image img-circle img-responsive pull-right">
         <h2 class="featurette-heading">  This First Heading<span class="text-muted">  Will Catch Your Eye</span></h2>
         <p>  Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
       </div>
       <hr class="featurette-divider"><!-- Second Featurette -->
-      <div data-wow-delay=".2s" class="featurette wow fadeIn"><img src="http://placehold.it/500x500" class="featurette-image img-circle img-responsive pull-left">
+      <div data-wow-delay=".2s" class="featurette wow fadeIn"><img src="http://placehold.it/500x300" class="featurette-image img-circle img-responsive pull-left">
         <h2 class="featurette-heading">  This Second Heading<span class="text-muted">  Is Pretty Cool Too.</span></h2>
         <p>  Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
       </div>
       <hr class="featurette-divider"><!-- Third Featurette -->
-      <div data-wow-delay=".2s" class="featurette wow fadeIn"><img src="http://placehold.it/500x500" class="featurette-image img-circle img-responsive pull-right">
+      <div data-wow-delay=".2s" class="featurette wow fadeIn"><img src="http://placehold.it/500x300" class="featurette-image img-circle img-responsive pull-right">
         <h2 class="featurette-heading">  This Third Heading<span class="text-muted">  Will Seal the Deal.</span></h2>
         <p>  Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
       </div>
@@ -119,652 +171,64 @@
         </div>
       </div>
     </section>
-    <style>
-      .timeline {
-          list-style: none;
-          padding: 0;
-          position: relative
-      }
-      .timeline:before {
-          top: 0;
-          bottom: 0;
-          position: absolute;
-          content: "";
-          width: 2px;
-          background-color: #f1f1f1;
-          left: 40px;
-          margin-left: -1.5px
-      }
-      .timeline > li {
-          margin-bottom: 50px;
-          position: relative;
-          min-height: 50px
-      }
-      .timeline > li:before, .timeline > li:after {
-          content: " ";
-          display: table
-      }
-      .timeline > li:after {
-          clear: both
-      }
-      .timeline > li .timeline-panel {
-          width: 100%;
-          float: right;
-          padding: 0 20px 0 100px;
-          position: relative;
-          text-align: left
-      }
-      .timeline > li .timeline-panel:before {
-          border-left-width: 0;
-          border-right-width: 15px;
-          left: -15px;
-          right: auto
-      }
-      .timeline > li .timeline-panel:after {
-          border-left-width: 0;
-          border-right-width: 14px;
-          left: -14px;
-          right: auto
-      }
-      .timeline > li .timeline-image {
-          left: 0;
-          margin-left: 0;
-          width: 80px;
-          height: 80px;
-          position: absolute;
-          z-index: 100;
-          background-color: #f26f21;
-          color: #fff;
-          border-radius: 100%;
-          border: 7px solid #f1f1f1;
-          text-align: center
-      }
-      .timeline > li .timeline-image h4 {
-          font-size: 10px;
-          margin-top: 12px;
-          line-height: 14px
-      }
-      .timeline > li.timeline-inverted > .timeline-panel {
-          float: right;
-          text-align: left;
-          padding: 0 20px 0 100px
-      }
-      .timeline > li.timeline-inverted > .timeline-panel:before {
-          border-left-width: 0;
-          border-right-width: 15px;
-          left: -15px;
-          right: auto
-      }
-      .timeline > li.timeline-inverted > .timeline-panel:after {
-          border-left-width: 0;
-          border-right-width: 14px;
-          left: -14px;
-          right: auto
-      }
-      .timeline > li:last-child {
-          margin-bottom: 0
-      }
-      .timeline .timeline-heading h4 {
-          margin-top: 0;
-          color: inherit
-      }
-      .timeline .timeline-heading h4.subheading {
-          text-transform: none
-      }
-      .timeline .timeline-body > p, .timeline .timeline-body > ul {
-          margin-bottom: 0
-      }
-      @media (min-width: 768px) {
-          .timeline:before {
-              left: 50%
-          }
-          .timeline > li {
-              margin-bottom: 100px;
-              min-height: 100px
-          }
-          .timeline > li .timeline-panel {
-              width: 41%;
-              float: left;
-              padding: 0 20px 20px 30px;
-              text-align: right
-          }
-          .timeline > li .timeline-image {
-              width: 100px;
-              height: 100px;
-              left: 50%;
-              margin-left: -50px
-          }
-          .timeline > li .timeline-image h4 {
-              font-size: 13px;
-              margin-top: 16px;
-              line-height: 18px
-          }
-          .timeline > li.timeline-inverted > .timeline-panel {
-              float: right;
-              text-align: left;
-              padding: 0 30px 20px 20px
-          }
-      }
-      @media (min-width: 992px) {
-          .timeline > li {
-              min-height: 150px
-          }
-          .timeline > li .timeline-panel {
-              padding: 0 20px 20px
-          }
-          .timeline > li .timeline-image {
-              width: 150px;
-              height: 150px;
-              margin-left: -75px
-          }
-          .timeline > li .timeline-image h4 {
-              font-size: 18px;
-              margin-top: 30px;
-              line-height: 26px
-          }
-          .timeline > li.timeline-inverted > .timeline-panel {
-              padding: 0 20px 20px
-          }
-      }
-      @media (min-width: 1200px) {
-          .timeline > li {
-              min-height: 170px
-          }
-          .timeline > li .timeline-panel {
-              padding: 0 20px 20px 100px
-          }
-          .timeline > li .timeline-image {
-              width: 170px;
-              height: 170px;
-              margin-left: -85px
-          }
-          .timeline > li .timeline-image h4 {
-              margin-top: 40px
-          }
-          .timeline > li.timeline-inverted > .timeline-panel {
-              padding: 0 100px 20px 20px
-          }
-      }
-    </style>
-    <section id="timeline">
-      <div class="container">
-        <div class="row text-center">
-          <div class="col-lg-12 wow fadeIn">
-            <h1>  Timeline</h1>
-            <p>  Lorem ipsum dolor sit amet consectetur.</p>
-            <hr class="colored">
-          </div>
-        </div>
-        <div class="row content-row">
-          <div class="col-lg-12">
-            <ul class="timeline">
-              <li data-wow-delay=".4s" class="wow fadeIn">
-                <div class="timeline-image"><img src="http://placehold.it/170x170" class="img-circle img-responsive"></div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4>  2009-2011</h4>
-                    <h4 class="subheading">  Our Humble Beginnings</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p class="text-muted">  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
-                  </div>
-                </div>
-              </li>
-              <li data-wow-delay=".4s" class="timeline-inverted wow fadeIn">
-                <div class="timeline-image"><img src="http://placehold.it/170x170" class="img-circle img-responsive"></div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4>  March 2011</h4>
-                    <h4 class="subheading">  An Agency is Born</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p class="text-muted">  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
-                  </div>
-                </div>
-              </li>
-              <li data-wow-delay=".4s" class="wow fadeIn">
-                <div class="timeline-image"><img src="http://placehold.it/170x170" class="img-circle img-responsive"></div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4>  2009-2011</h4>
-                    <h4 class="subheading">  Our Humble Beginnings</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p class="text-muted">  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
-                  </div>
-                </div>
-              </li>
-              <li data-wow-delay=".4s" class="timeline-inverted wow fadeIn">
-                <div class="timeline-image"><img src="http://placehold.it/170x170" class="img-circle img-responsive"></div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4>  March 2011</h4>
-                    <h4 class="subheading">  An Agency is Born</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p class="text-muted">  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
-                  </div>
-                </div>
-              </li>
-              <li data-wow-delay=".4s" class="timeline-inverted wow fadeIn">
-                <div class="timeline-image">
-                  <h4>  Be part<br>  of our<br>  story!</h4>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!--include includes/timeline-->
+    <!--include includes/team-->
     <section class="bg-gray">
       <div class="container text-center wow fadeIn">
         <div class="row">
           <div class="col-lg-12"></div>
-          <h2>  Our Team</h2>
-          <p>  We are a group of digital marketers with a passion for great art that serves a practical purpose.</p>
+          <h2>  Latest Articles</h2>
+          <p>  Here's what the talk is all about.</p>
           <hr class="colored">
         </div>
-        <div class="row content-row">
-          <div class="col-lg-12">
-            <div class="about-carousel">
-              <div class="item"><img src="assets/static/assets/img/people/5.jpg" class="img-responsive">
-                <div class="caption">
-                  <h3>  Erik Peterson</h3>
-                  <hr class="colored">
-                  <p>  Co-founder / CEO</p>
-                  <ul class="list-inline social">
-                    <li><a href="#"><i class="fa fa-facebook fa-fw"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter fa-fw"></i></a></li>
-                    <li><a href="#"><i class="fa fa-linkedin fa-fw"></i></a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="item"><img src="/assets/static/assets/img/people/2.jpg" class="img-responsive">
-                <div class="caption">
-                  <h3>  Jesus Rocha</h3>
-                  <hr class="colored">
-                  <p>  Co-founder / CTO</p>
-                  <ul class="list-inline social">
-                    <li><a href="#"><i class="fa fa-facebook fa-fw"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter fa-fw"></i></a></li>
-                    <li><a href="#"><i class="fa fa-linkedin fa-fw"></i></a></li>
-                    <li><a href="#"><i class="fa fa-github fa-fw"></i></a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <aside style="background-image: url('/assets/static/assets/img/bg-aside.jpg');" class="cta-quote">
-      <div class="container wow fadeIn">
-        <div class="row">
-          <div class="col-md-10 col-md-offset-1"><span class="quote">  Good<span class="text-primary">  design</span>  is finding that perfect balance between the way something<span class="text-primary">  looks</span>  and how it<span class="text-primary">  functions</span>  .</span>
-            <hr class="colored"><a href="#contact" class="btn btn-outline-light">  Let's Find It</a>
-          </div>
-        </div>
-      </div>
-    </aside>
-    <section id="process" class="services">
-      <div class="container">
-        <div class="row text-center">
-          <div class="col-lg-12 wow fadeIn">
-            <h2>  Our Process</h2>
-            <hr class="colored">
-            <p>  Here is an overview of how we approach each new project.</p>
-          </div>
-        </div>
-        <div class="row content-row">
-          <div data-wow-delay=".2s" class="col-md-4 wow fadeIn">
-            <div class="media">
-              <div class="pull-left"><i class="fa fa-clipboard"></i></div>
-            </div>
-            <div class="media-body">
-              <h3 class="media-heading">  Plan</h3>
-              <ul>
-                <li>  Client interview</li>
-                <li>  Gather consumer data</li>
-                <li>  Create content strategy</li>
-                <li>  Analyze research</li>
+        <div class="row text-left">
+          <div class="col-md-4 col-lg-4"><a href="#articleModal1" data-toggle="modal" class="blog-preview-img"><img src="assets/static/assets/img/people/5.jpg" class="img-responsive"></a>
+            <div class="blog-preview-content">
+              <h3><a href="#">  Article Title</a></h3>
+              <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam, quisquam, sunt, corporis.</p>
+              <div class="continue"><a href="#">  Read More →</a></div>
+              <ul class="meta list-inline">
+                <li>  April 10, 2014</li>
+                <li>  |</li>
+                <li>  By Jesus Rocha</li>
               </ul>
             </div>
           </div>
-          <div data-wow-delay=".4s" class="col-md-4 wow fadeIn">
-            <div class="media">
-              <div class="pull-left"><i class="fa fa-pencil"></i></div>
-            </div>
-            <div class="media-body">
-              <h3 class="media-heading">  Create</h3>
-              <ul>
-                <li>  Build wireframe</li>
-                <li>  Gather client feedback</li>
-                <li>  Code Development</li>
-                <li>  Market review</li>
+          <div class="col-md-4 col-lg-4 blog-col"><a href="#articleModal1" data-toggle="modal" class="blog-preview-img"><img src="assets/static/assets/img/people/5.jpg" class="img-responsive"></a>
+            <div class="blog-preview-content">
+              <h3><a href="#">  Article Title</a></h3>
+              <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam, quisquam, sunt, corporis.</p>
+              <div class="continue"><a href="#">  Read More →</a></div>
+              <ul class="meta list-inline">
+                <li>  April 10, 2014</li>
+                <li>  |</li>
+                <li>  Jesus Rocha</li>
               </ul>
             </div>
           </div>
-          <div data-wow-delay=".6s" class="col-md-4 wow fadeIn">
-            <div class="media">
-              <div class="pull-left"><i class="fa fa-rocket"></i></div>
-            </div>
-            <div class="media-body">
-              <h3 class="media-heading">  Launch</h3>
-              <ul>
-                <li>  Deploy mahrio</li>
-                <li>  Market product launch</li>
-                <li>  Collect UX data</li>
-                <li>  Quarterly maintenance</li>
+          <div class="col-md-4 col-lg-4 blog-col"><a href="#articleModal1" data-toggle="modal" class="blog-preview-img"><img src="assets/static/assets/img/people/5.jpg" class="img-responsive"></a>
+            <div class="blog-preview-content">
+              <h3><a href="#">  Article Title</a></h3>
+              <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam, quisquam, sunt, corporis.</p>
+              <div class="continue"><a href="#">  Read More →</a></div>
+              <ul class="meta list-inline">
+                <li>  April 10, 2014</li>
+                <li>  |</li>
+                <li>  Jesus Rocha</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
     </section>
-    <section id="work" class="bg-gray">
-      <div class="container text-center wow fadeIn">
-        <h2>  Our Work</h2>
-        <hr class="colored">
-        <p>  Examples of our work which represent our design and marketing capabilities.</p>
-      </div>
-    </section>
-    <section class="portfolio-carousel wow fadeIn">
-      <div style="background-image: url('/assets/static/assets/img/portfolio/bg-1.jpg')" class="item">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-4 col-md-push-8">
-              <div class="project-details"><img src="/assets/static/assets/img/client-logos/logo-1.png" class="img-responsive client-logo"><span class="project-name">  Project Name</span><span class="project-description">  Branding, Website Design I</span>
-                <hr class="colored"><a href="#portfolioModal1" data-toggle="modal" class="btn btn-outline-light">  View Details<i class="fa fa-long-arrow-right fa-fw"></i></a>
-              </div>
-            </div>
-            <div class="col-md-8 col-md-pull-4 hidden-xs"><img src="/assets/static/assets/img/portfolio/mobile-screens.png" class="img-responsive portfolio-image"></div>
-          </div>
-        </div>
-      </div>
-      <div style="background-image: url('/assets/static/assets/img/portfolio/bg-2.jpg')" class="item">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-4 col-md-push-8">
-              <div class="project-details"><img src="/assets/static/assets/img/client-logos/logo-2.png" class="img-responsive client-logo"><span class="project-name">  Project Name</span><span class="project-description">  Branding, Website Design II</span>
-                <hr class="colored"><a href="#portfolioModal2" data-toggle="modal" class="btn btn-outline-light">  View Details<i class="fa fa-long-arrow-right fa-fw"></i></a>
-              </div>
-            </div>
-            <div class="col-md-8 col-md-pull-4 hidden-xs"><img src="/assets/static/assets/img/portfolio/tablet-screens.png" class="img-responsive portfolio-image"></div>
-          </div>
-        </div>
-      </div>
-      <div style="background-image: url('/assets/static/assets/img/portfolio/bg-3.jpg')" class="item">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-4 col-md-push-8">
-              <div class="project-details"><img src="/assets/static/assets/img/client-logos/logo-1.png" class="img-responsive client-logo"><span class="project-name">  Project Name</span><span class="project-description">  Branding, Website Design III</span>
-                <hr class="colored"><a href="#portfolioModal3" data-toggle="modal" class="btn btn-outline-light">  View Details<i class="fa fa-long-arrow-right fa-fw"></i></a>
-              </div>
-            </div>
-            <div class="col-md-8 col-md-pull-4 hidden-xs"><img src="/assets/static/assets/img/portfolio/mobile-screens.png" class="img-responsive portfolio-image"></div>
-          </div>
-        </div>
-      </div>
-      <div style="background-image: url('/assets/static/assets/img/portfolio/bg-4.jpg')" class="item">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-4 col-md-push-8">
-              <div class="project-details"><img src="/assets/static/assets/img/client-logos/logo-2.png" class="img-responsive client-logo"><span class="project-name">  Project Name</span><span class="project-description">  Branding, Website Design IV</span>
-                <hr class="colored"><a href="#portfolioModal4" data-toggle="modal" class="btn btn-outline-light">  View Details<i class="fa fa-long-arrow-right fa-fw"></i></a>
-              </div>
-            </div>
-            <div class="col-md-8 col-md-pull-4 hidden-xs"><img src="/assets/static/assets/img/portfolio/tablet-screens.png" class="img-responsive portfolio-image"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section>
-      <div class="container text-center wow fadeIn">
-        <h2>  Portfolio</h2>
-        <hr class="colored">
-        <p>  Here are some other projects that I've worked on.</p>
-        <div class="row content-row">
-          <div class="col-lg-12">
-            <div class="portfolio-filter">
-              <ul id="filters" class="clearfix">
-                <li><span data-filter="identity graphic logo web" class="filter active">  All</span></li>
-                <li><span data-filter="identity" class="filter">  Identity</span></li>
-                <li><span data-filter="graphic" class="filter">  Graphic</span></li>
-                <li><span data-filter="web" class="filter">  Web</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12">
-            <div id="portfoliolist">
-              <div data-cat="identity" href="#portfolioModal1" data-toggle="modal" class="portfolio identity">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/identity/1.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Generic Inc.</a><span class="text-category">  Brand Identity</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="web" href="#portfolioModal2" data-toggle="modal" class="portfolio web">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/web/1.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Brands</a><span class="text-category">  Web Development</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="graphic" href="#portfolioModal3" data-toggle="modal" class="portfolio graphic">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/graphic/1.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Excellence</a><span class="text-category">  Poster Design</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="web" href="#portfolioModal4" data-toggle="modal" class="portfolio web">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/web/2.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  YouTV</a><span class="text-category">  Web Development</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="graphic" href="#portfolioModal1" data-toggle="modal" class="portfolio graphic">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/graphic/2.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Office Supplies</a><span class="text-category">  Graphic Design</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="web" href="#portfolioModal2" data-toggle="modal" class="portfolio web">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/web/3.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Fooder</a><span class="text-category">  Mobile App</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="graphic" href="#portfolioModal3" data-toggle="modal" class="portfolio graphic">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/graphic/3.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Mountain Tea</a><span class="text-category">  Graphic Design</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="graphic" href="#portfolioModal4" data-toggle="modal" class="portfolio graphic">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/graphic/4.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Checkmark</a><span class="text-category">  Graphic Design</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="identity" href="#portfolioModal1" data-toggle="modal" class="portfolio identity">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/identity/2.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Demish</a><span class="text-category">  Brand Identity</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="web" href="#portfolioModal2" data-toggle="modal" class="portfolio web">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/web/4.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  OneRepublic</a><span class="text-category">  Web Development</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="graphic" href="#portfolioModal3" data-toggle="modal" class="portfolio graphic">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/graphic/5.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Postable</a><span class="text-category">  Graphic Design</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div data-cat="identity" href="#portfolioModal4" data-toggle="modal" class="portfolio identity">
-                <div class="portfolio-wrapper"><img src="/assets/static/assets/img/creative/portfolio/items/identity/3.jpg">
-                  <div class="caption">
-                    <div class="caption-text"><a class="text-title">  Simpli Nota</a><span class="text-category">  Brand Identity</span></div>
-                    <div class="caption-bg"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="testimonials bg-gray">
-      <div class="container wow fadeIn">
-        <div class="row">
-          <div class="col-lg-10 col-lg-offset-1">
-            <div class="testimonials-carousel">
-              <div class="item">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <p class="lead">  "Working with Vitality was both a valuable and rewarding experience."</p>
-                    <hr class="colored">
-                    <p class="quote">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Reprehenderit, temporibus, laborum, dignissimos doloremque corporis alias
-                        nostrum recusandae culpa id quisquam harum impedit sed sunt non obcaecati
-                        vero ipsam aut fugit?
-                    </p>
-                    <div class="testimonial-info">
-                      <div class="testimonial-img"><img src="/assets/static/assets/img/testimonials/1.jpg" class="img-circle img-responsive"></div>
-                      <div class="testimonial-author"><span class="name">  Jim Walker</span>
-                        <p class="small">  CEO of GeneriCorp</p>
-                        <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <p class="lead">  "Working with Vitality was both a valuable and rewarding experience."</p>
-                    <hr class="colored">
-                    <p class="quote">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Reprehenderit, temporibus, laborum, dignissimos doloremque corporis alias
-                        nostrum recusandae culpa id quisquam harum impedit sed sunt non obcaecati
-                        vero ipsam aut fugit?
-                    </p>
-                    <div class="testimonial-info">
-                      <div class="testimonial-img"><img src="/assets/static/assets/img/testimonials/1.jpg" class="img-circle img-responsive"></div>
-                      <div class="testimonial-author"><span class="name">  Jim Walker</span>
-                        <p class="small">  CEO of GeneriCorp</p>
-                        <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="pricing" style="background-image: url('/assets/static/assets/img/bg-pricing.jpg')" class="pricing">
-      <div class="container wow fadeIn">
-        <div class="row text-center">
-          <div class="col-lg-12">
-            <h2>  Pricing</h2>
-            <hr class="colored">
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Eum, quae, laborum, voluptate delectus odio doloremque error porro obcaecati nemo animi
-                ducimus quaerat nostrum? Ab molestiae eaque et atque architecto reiciendis.
-            </p>
-          </div>
-        </div>
-        <div class="row content-row">
-          <div class="col-md-4">
-            <div class="pricing-item featured-first">
-              <h3>  Basic</h3>
-              <hr class="colored">
-              <div class="price"><span class="number"><sup>  $</sup>25</span>  / month</div>
-              <ul class="list-group">
-                <li class="list-group-item">  60 Users</li>
-                <li class="list-group-item">  Unlimited Forums</li>
-                <li class="list-group-item">  Unlimited Reports</li>
-                <li class="list-group-item">  3,000 Entries per Month</li>
-                <li class="list-group-item">  200 MB Storage</li>
-                <li class="list-group-item">  Unlimited Support</li>
-              </ul><a href="#" class="btn btn-outline-dark">  Sign Up</a>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="pricing-item featured">
-              <h3>  Plus</h3>
-              <hr class="colored">
-              <div class="price"><span class="number"><sup>  $</sup>50</span>  / month</div>
-              <ul class="list-group">
-                <li class="list-group-item"><b>  60</b>  Users</li>
-                <li class="list-group-item">  Unlimited Forums</li>
-                <li class="list-group-item">  Unlimited Reports</li>
-                <li class="list-group-item"><b>  3,000</b>  Entries per Month</li>
-                <li class="list-group-item"><b>  200 MB</b>   Storage</li>
-                <li class="list-group-item">  Unlimited Support</li>
-              </ul><a href="#" class="btn btn-outline-dark">  Sign Up</a>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="pricing-item featured-last">
-              <h3>  Premium</h3>
-              <hr class="colored">
-              <div class="price"><span class="number"><sup>  $</sup>150</span>  / month</div>
-              <ul class="list-group">
-                <li class="list-group-item">  60 Users</li>
-                <li class="list-group-item">  Unlimited Forums</li>
-                <li class="list-group-item">  Unlimited Reports</li>
-                <li class="list-group-item">  3,000 Entries per Month</li>
-                <li class="list-group-item">  200 MB Storage</li>
-                <li class="list-group-item">  Unlimited Support</li>
-              </ul><a href="#" class="btn btn-outline-dark">  Sign Up</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <style>aside.clients img { margin: 50px auto; }</style>
-    <aside class="clients">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-2 col-sm-6 col-md-offset-1"><a href="#"><img src="http://placehold.it/100x100" class="img-responsive img-centered"></a></div>
-          <div class="col-md-2 col-sm-6"><a href="#"><img src="http://placehold.it/100x100" class="img-responsive img-centered"></a></div>
-          <div class="col-md-2 col-sm-6"><a href="#"><img src="http://placehold.it/100x100" class="img-responsive img-centered"></a></div>
-          <div class="col-md-2 col-sm-6"><a href="#"><img src="http://placehold.it/100x100" class="img-responsive img-centered"></a></div>
-          <div class="col-md-2 col-sm-6"><a href="#"><img src="http://placehold.it/100x100" class="img-responsive img-centered"></a></div>
-        </div>
-      </div>
-    </aside>
+    <!--include includes/block-quote-->
+    <!--include includes/services-->
+    <!--include includes/work-intro-->
+    <!--include includes/work-carousel-->
+    <!--include includes/portfolio-->
+    <!--include includes/testimonials-->
+    <!--include includes/pricing-->
+    <!--include includes/technology-->
     <style>
       section#contact { background-color: #222; background-position: center; background-repeat: no-repeat; color: #fff;}
       .help-block.text-danger { color: #a94442; }
@@ -868,7 +332,7 @@
         </div>
       </div>
     </footer><!-- MODALS -->
-    <div id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true" style="background-image: url('/assets/static/assets/img/portfolio/bg-1.jpg')" class="portfolio-modal modal fade">
+    <div id="articleModal1" tabindex="-1" role="dialog" aria-hidden="true" style="background-image: url('/assets/static/assets/img/portfolio/bg-1.jpg')" class="portfolio-modal modal fade">
       <div class="modal-content">
         <div data-dismiss="modal" class="close-modal">
           <div class="lr">
@@ -897,93 +361,10 @@
         </div>
       </div>
     </div>
-    <div id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true" style="background-image: url('/assets/static/assets/img/portfolio/bg-2.jpg')" class="portfolio-modal modal fade">
-      <div class="modal-content">
-        <div data-dismiss="modal" class="close-modal">
-          <div class="lr">
-            <div class="rl"></div>
-          </div>
-        </div>
-        <div class="modal-body">
-          <div class="container">
-            <div class="row">
-              <div class="col-lg-8 col-lg-offset-2"><img src="/assets/static/assets/img/client-logos/logo-2.png" class="img-responsive img-centered">
-                <h2>  Portfolio II</h2>
-                <hr class="colored">
-                <p>  What's in here?</p>
-              </div>
-              <div class="col-lg-12"><img src="/assets/static/assets/img/portfolio/tablet-screens.png" class="img-responsive img-centered"></div>
-              <div class="col-lg-8 col-lg-offset-2">
-                <ul class="list-inline item-details">
-                  <li>  Client:<strong><a href="http://startbootstrap.com">  Start Bootstrap</a></strong></li>
-                  <li>  Date:<strong><a href="http://startbootstrap.com">  April 2014</a></strong></li>
-                  <li>  Service:<strong><a href="http://startbootstrap.com">  Web Development</a></strong></li>
-                </ul>
-                <button type="button" data-dismiss="modal" class="btn btn-default"><i class="fa fa-times"></i>  Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true" style="background-image: url('/assets/static/assets/img/portfolio/bg-3.jpg')" class="portfolio-modal modal fade">
-      <div class="modal-content">
-        <div data-dismiss="modal" class="close-modal">
-          <div class="lr">
-            <div class="rl"></div>
-          </div>
-        </div>
-        <div class="modal-body">
-          <div class="container">
-            <div class="row">
-              <div class="col-lg-8 col-lg-offset-2"><img src="/assets/static/assets/img/client-logos/logo-1.png" class="img-responsive img-centered">
-                <h2>  Portfolio III</h2>
-                <hr class="colored">
-                <p>  What's in here?</p>
-              </div>
-              <div class="col-lg-12"><img src="/assets/static/assets/img/portfolio/mobile-screens.png" class="img-responsive img-centered"></div>
-              <div class="col-lg-8 col-lg-offset-2">
-                <ul class="list-inline item-details">
-                  <li>  Client:<strong><a href="http://startbootstrap.com">  Start Bootstrap</a></strong></li>
-                  <li>  Date:<strong><a href="http://startbootstrap.com">  April 2014</a></strong></li>
-                  <li>  Service:<strong><a href="http://startbootstrap.com">  Web Development</a></strong></li>
-                </ul>
-                <button type="button" data-dismiss="modal" class="btn btn-default"><i class="fa fa-times"></i>  Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true" style="background-image: url('/assets/static/assets/img/portfolio/bg-4.jpg')" class="portfolio-modal modal fade">
-      <div class="modal-content">
-        <div data-dismiss="modal" class="close-modal">
-          <div class="lr">
-            <div class="rl"></div>
-          </div>
-        </div>
-        <div class="modal-body">
-          <div class="container">
-            <div class="row">
-              <div class="col-lg-8 col-lg-offset-2"><img src="/assets/static/assets/img/client-logos/logo-2.png" class="img-responsive img-centered">
-                <h2>  Portfolio IV</h2>
-                <hr class="colored">
-                <p>  What's in here?</p>
-              </div>
-              <div class="col-lg-12"><img src="/assets/static/assets/img/portfolio/tablet-screens.png" class="img-responsive img-centered"></div>
-              <div class="col-lg-8 col-lg-offset-2">
-                <ul class="list-inline item-details">
-                  <li>  Client:<strong><a href="http://startbootstrap.com">  Start Bootstrap</a></strong></li>
-                  <li>  Date:<strong><a href="http://startbootstrap.com">  April 2014</a></strong></li>
-                  <li>  Service:<strong><a href="http://startbootstrap.com">  Web Development</a></strong></li>
-                </ul>
-                <button type="button" data-dismiss="modal" class="btn btn-default"><i class="fa fa-times"></i>  Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!--include includes/modal-work1-->
+    <!--include includes/modal-work2-->
+    <!--include includes/modal-work3-->
+    <!--include includes/modal-work4-->
   </body>
   <!--script(src="/assets/js/utils.js")-->
   <script src="/assets/static/assets/js/jquery.js"></script>
@@ -998,5 +379,6 @@
   <script src="/assets/static/assets/js/plugins/wow/wow.min.js"></script>
   <script src="/assets/static/assets/js/plugins/jqBootstrapValidation.js"></script>
   <script src="/assets/static/assets/js/contact_me.js"></script>
+  <script src="/assets/static/assets/js/plugins/hero-carousel.js"></script>
   <script src="/assets/static/assets/js/vitality.js"></script>
 </html>

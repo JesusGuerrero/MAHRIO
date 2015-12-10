@@ -60,31 +60,20 @@ module.exports = function (config, server) {
   });
 
   // MAIN ROUTER
-  var notDefined;
   server.route({
     method: 'GET',
-    path: '/home',
+    path: '/',
     handler: {
       file: '../public/static/home.html'
     }
   });
   server.route({
     method: 'GET',
-    path: '/{page?}',
-    handler: function(request, reply){
-      switch( request.params.page ){
-        case 'home':
-          reply.view('pages/_home');
-          break;
-        case notDefined:
-          reply.view('_mahrio', {
-            develop: request.query.develop
-          });
-          break;
-        default:
-          reply.view('pages/_notFound');
-          break;
-      }
+    path: '/app',
+    handler: function(request, reply) {
+      reply.view('_mahrio', {
+        develop: request.query.develop
+      });
     }
   });
 

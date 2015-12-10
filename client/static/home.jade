@@ -22,7 +22,8 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
         link(href='http://fonts.googleapis.com/css?family=Sanchez:400italic,400' rel='stylesheet' type='text/css')
         link(href='http://fonts.googleapis.com/css?family=Cardo:400,400italic,700' rel='stylesheet' type='text/css')
 
-        //link(rel="stylesheet" href="/assets/css/application.css")
+        link( href="/assets/static/assets/css/reset.css" rel="stylesheet" type="text/css")
+        link( href="/assets/static/assets/css/reset.css" rel="stylesheet" type="text/css")
         link( href="/assets/static/assets/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css")
         link( href="/assets/static/assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css")
 
@@ -32,6 +33,7 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
         link( href="/assets/static/assets/css/plugins/magnific-popup.css" rel="stylesheet" type="text/css")
         link( href="/assets/static/assets/css/plugins/jquery.fs.wallpaper.css" rel="stylesheet" type="text/css")
         link( href="/assets/static/assets/css/plugins/animate.css" rel="stylesheet" type="text/css")
+        link( href="/assets/static/assets/css/plugins/hero-carousel.css" rel="stylesheet" type="text/css")
 
         link( href="/assets/static/assets/css/vitality-orange.css" rel="stylesheet" type="text/css")
 
@@ -43,31 +45,34 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
     body( id="page-top")
         include includes/navigation
 
-        include includes/header
+        //include includes/header
+        include includes/header2
 
         include includes/heading
 
         include includes/about
 
-        include includes/timeline
+        //include includes/timeline
 
-        include includes/team
+        //include includes/team
 
-        include includes/block-quote
+        include includes/articles
 
-        include includes/services
+        //include includes/block-quote
 
-        include includes/work-intro
+        //include includes/services
 
-        include includes/work-carousel
+        //include includes/work-intro
 
-        include includes/portfolio
+        //include includes/work-carousel
 
-        include includes/testimonials
+        //include includes/portfolio
 
-        include includes/pricing
+        //include includes/testimonials
 
-        include includes/technology
+        //include includes/pricing
+
+        //include includes/technology
 
         include includes/contact
 
@@ -76,10 +81,11 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
         include includes/footer
 
         <!-- MODALS -->
-        include includes/modal-work1
-        include includes/modal-work2
-        include includes/modal-work3
-        include includes/modal-work4
+        include includes/modal-article1
+        //include includes/modal-work1
+        //include includes/modal-work2
+        //include includes/modal-work3
+        //include includes/modal-work4
 
     //script(src="/assets/js/utils.js")
     script( src="/assets/static/assets/js/jquery.js")
@@ -96,7 +102,9 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
     script( src="/assets/static/assets/js/plugins/wow/wow.min.js")
     script( src="/assets/static/assets/js/plugins/jqBootstrapValidation.js")
     script( src="/assets/static/assets/js/contact_me.js")
+    script( src="/assets/static/assets/js/plugins/hero-carousel.js")
     script( src="/assets/static/assets/js/vitality.js")
+
 
 
 
