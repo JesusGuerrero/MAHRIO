@@ -7,26 +7,16 @@ header.main-header
                         a( ui-sref="login" )
                             |   Login
             .navbar-header
-                a.navbar-brand(ui-sref="root" ui-sref-options="{reload: true}" style="transform: scale(-1,1); font-family: fantasy; font-size: 40px; font-weight: bold; padding: 0 15px;letter-spacing:-5px; line-height: 58px;-webkit-transform: scale(-1, 1)")
+                a.navbar-brand(href="/" style="transform: scale(-1,1); font-family: fantasy; font-size: 40px; font-weight: bold; padding: 0 15px;letter-spacing:-5px; line-height: 58px;-webkit-transform: scale(-1, 1)")
                     |   3C
                 button.navbar-toggle.collapsed( type="button" data-toggle="collapse" data-target="#navbar-collapse")
                     i.fa.fa-bars
 
             .collapse.navbar-collapse.pull-left( id="navbar-collapse")
                 ul.nav.navbar-nav
-                    //li.dropdown
-                    //    a( href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false")
-                    //        |   Domains
-                    //        span.caret
-                    //    ul( class="dropdown-menu" role="menu")
-                    //        li
-                    //            a( ui-sref="knowledge")
-                    //                |   Knowledge 2
-                    //        li.divider
-                    //        li.text-center
-                    //            a( ui-sref="knowledge")
-                    //                small
-                    //                    |   See All
+                    li
+                        a(href="/")
+                            |   Home
                     li
                         a(ui-sref="questions")
                             |   Questions?
