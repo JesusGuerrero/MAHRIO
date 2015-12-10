@@ -3,9 +3,16 @@
 function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
 
   $rootScope.triggerAnalyticEvent = function(event, toState) {
+      console.log("analytic event triggered" + toState.name);
       var viewName = toState.name;
       window.analytics.trackView(viewName);
   };
+
+  $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+    setTimeout(function(){
+      $rootScope.triggerAnalyticEvent(event, toState);
+    }, 1000);
+  });
 
   $ionicPlatform.ready(function(){
 
@@ -25,14 +32,8 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
 
     if (window.analytics != undefined) {
       console.log("windows.analytics loading...");
-      window.analytics.startTrackerWithId('UA-YOURCODEHERE');
-      window.analytics.trackView('Testing')
-
-      $rootScope.$on('$stateChangeSuccess', function(event, toState) {
-        setTimeout(function(){
-          $rootScope.triggerAnalyticEvent(event, toState);
-        }, 1000);
-      })
+      window.analytics.startTrackerWithId('UA-YOUR_MOBILE_GA_CODE_HERE');
+      window.analytics.trackView('Testing');
     } else {
       console.log("window.analytics is undefined");
     }
