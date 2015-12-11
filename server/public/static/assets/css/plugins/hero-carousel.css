@@ -124,7 +124,7 @@ Slider
 
 .cd-hero-slider {
     position: relative;
-    height: 360px;
+    height: 100%;
     overflow: hidden;
 }
 .cd-hero-slider li {
@@ -162,15 +162,32 @@ Slider
     -moz-transition: -moz-transform 0.5s;
     transition: transform 0.5s;
 }
+@media only screen and (max-width: 767px){
+    .featurette img {
+        float: none !important;
+        margin: 0 auto !important;
+    }
+    .featurette h2 {
+        clear: both;
+    }
+}
 @media only screen and (min-width: 768px) {
-    .cd-hero-slider {
-        height: 500px;
+    .cd-hero-slider li {
+        padding-top: 25px;
     }
 }
 @media only screen and (min-width: 1170px) {
-    .cd-hero-slider {
-        height: 100%;
+    .cd-hero-slider li {
+        padding-top: 25px;
     }
+}
+.col-data {
+    position: absolute;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-60%);
+    left:0;
+    right:0;
 }
 
 /* --------------------------------
@@ -554,7 +571,7 @@ Slider navigation
 .cd-slider-nav li {
     display: block;
     position: relative;
-    padding-top: 25px;
+    padding-top: 13px;
     font-size: 1rem;
     font-weight: 700;
     color: #a8b4be;

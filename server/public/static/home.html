@@ -67,35 +67,45 @@
       <ul class="cd-hero-slider">
         <li class="selected">
           <div class="cd-full-width">
-            <h2>  Hero slider</h2>
-            <p>  A simple, responsive slideshow in CSS &amp; jQuery.</p><a href="http://codyhouse.co/?p=675" class="cd-btn">  Article &amp; Download</a>
+            <div class="col-data">
+              <h2>  Hero slider</h2>
+              <p>  A simple, responsive slideshow in CSS &amp; jQuery.</p><a href="http://codyhouse.co/?p=675" class="cd-btn">  Article &amp; Download</a>
+            </div>
           </div>
         </li>
         <li>
           <div class="cd-half-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+            <div class="col-data">
+              <h2>  Slide title here</h2>
+              <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+            </div>
           </div>
           <div class="cd-half-width cd-img-container"><img src="/assets/static/assets/img/portfolio/mobile-screens.png" alt="tech 1"></div>
         </li>
         <li>
           <div class="cd-half-width cd-img-container"><img src="/assets/static/assets/img/portfolio/tablet-screens.png" alt="tech 2"></div>
           <div class="cd-half-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+            <div class="col-data">
+              <h2>  Slide title here</h2>
+              <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+            </div>
           </div>
         </li>
         <li class="cd-bg-video">
           <div class="cd-full-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Learn more</a>
+            <div class="col-data">
+              <h2>  Slide title here</h2>
+              <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Learn more</a>
+            </div>
           </div>
           <div data-video="assets/static/assets/mp4/clouds" class="cd-bg-video-wrapper"></div>
         </li>
         <li style="background-image: url('/assets/static/assets/img/portfolio/bg-4.jpg')">
           <div class="cd-full-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+            <div class="col-data">
+              <h2>  Slide title here</h2>
+              <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+            </div>
           </div>
         </li>
       </ul>
@@ -277,11 +287,9 @@
               </div>
             </div>
             <div class="col-lg-12 text-center">
-              <div id="success" class="content-row"></div>
-              <div class="content-row">
-                <div class="form-group col-xs-4 col-xs-offset-4">
-                  <button type="submit" class="btn btn-outline-dark btn-block">  Send</button>
-                </div>
+              <div id="success" class="content-row form-group col-xs-12"></div>
+              <div class="row form-group col-xs-6 col-xs-offset-3">
+                <button type="submit" class="btn btn-outline-dark btn-block">  Send</button>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -292,10 +300,12 @@
     <style>
       .banner{ background: #f26f21; padding: 30px 0; color: #f8f8f8;}
       .banner h2 { font-size: 30px; margin: 0; line-height: 49px; }
+      @media only screen and (max-width: 1199px) { .social-media-list{ text-align: center; } }
+      @media only screen and (max-width: 767px) { .social-media-list li { margin: 10px auto; display: block; } .social-media-list a { min-width: 200px; } }
     </style>
     <div class="banner">
       <div class="container">
-        <div class="row">
+        <div class="row social-media-list">
           <div class="col-lg-6">
             <h2>  Connect to Start Bootstrap:</h2>
           </div>
