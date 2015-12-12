@@ -1,0 +1,87 @@
+style
+    |.login-form .btn { border-radius: 10px; }
+    |.login-form .banner-social-buttons .btn { background: #3D5A98; color: #fff;border-radius: 50%; padding: 5px 10px; border: none; }
+
+.auth-modal.modal.fade( id="authModal" tabindex="-1" role="dialog" aria-hidden="true" )
+    .modal-content(style="width: 320px; margin: 50px auto 0; border-radius: 10px;" ng-app="mahrio")
+        .modal-body(ng-controller="AuthenticationController")
+            .login-form(ng-hide="view!=='login'")
+                error-message-box( validation-errors="validationErrors" )
+                h3.text-center
+                    | Login
+                form(novalidate ng-submit="login()")
+                    .alert.alert-danger(ng-show='failed')
+                        button.close( type="button" data-dismiss="alert" aria-hidden="true")
+                            |   ×
+                        strong
+                            |   Email and/or password incorrect. Please try again.
+                    .form-group
+                        input.form-control( type="text" placeholder="User ID" ng-model="user.email")
+                    .form-group
+                        input.form-control( type="password" placeholder="Password" ng-model="user.password")
+                    .form-group
+                        label
+                            input( type="checkbox" ng-model="rememberMe" )
+                            |  Remember me
+                    .col-xs-12.text-center.no-padding
+                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+                            | Login
+                    .col-xs-12.form-group.small.no-padding
+                        a.text-muted( ng-click="view='reset'")
+                            | I forgot my password
+
+                    .col-xs-12.text-center.small
+                        |   Login using social media?
+                        ul.list-inline.banner-social-buttons
+                            li
+                                a.btn.btn-default
+                                    i.fa.fa-facebook
+                            li
+                                a.btn.btn-default( style="background: #1883BB;")
+                                    i.fa.fa-linkedin
+                .clearfix
+                br
+                .form-group.text-center
+                    p.text-center.small.no-margin
+                        | Need to Signup?
+                    button.btn.btn-default( ng-click="view='register'")
+                        | Register Now
+            .login-form(ng-hide="view!=='register'")
+                error-message-box( validation-errors="validationErrors" )
+                h3.text-center
+                    | Register
+                form(novalidate ng-submit="login()")
+                    .form-group
+                        input.form-control( type="text" name="firstName" placeholder="First Name")
+                    .form-group
+                        input.form-control( type="text" name="lastName" placeholder="Last Name")
+                    .form-group
+                        input.form-control( type="text" name="email" placeholder="Email")
+                    .form-group
+                        input.form-control( type="password" name="password" placeholder="Password")
+                    .form-group
+                        p.small
+                            |By clicking Register, you agree to our Terms & Conditions, and have read our Privacy Policy, as well as our Cookie Policy
+                    .col-xs-12.text-center.no-padding
+                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+                            | Register
+                    .col-xs-12.form-group.small.no-padding
+                        a.text-muted( ng-click="view='login'")
+                            | I have an account
+                .clearfix
+
+            .login-form(ng-hide="view!=='reset'")
+                error-message-box( validation-errors="validationErrors" )
+                h3.text-center
+                    | Reset Password
+                form(novalidate ng-submit="login()")
+                    .form-group
+                        input.form-control( type="text" name="email" placeholder="Email")
+                    .col-xs-12.text-center.no-padding
+                        button.btn.btn-block.btn-primary.btn-lg( type="submit" )
+                            | Reset
+                    .col-xs-12.form-group.text-center
+                        p
+                            a.text-muted( ng-click="view='login'")
+                                | Cancel
+                .clearfix

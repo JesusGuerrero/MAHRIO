@@ -151,3 +151,23 @@ $(document).ready(function() {
         wow.init();
     }
 });
+
+angular.module('mahrio', [])
+  .controller('AuthenticationController', ['$scope', '$http',
+      function($scope, $http){
+          $scope.view = 'login';
+          $scope.user = {};
+          $scope.login = function(){
+              $http.post( '/api/session/login', $scope.user)
+                .then( function(res){
+                    $http.defaults.headers.common.Authorization = res.headers('Authorization');
+                    window.localStorage.Authorization = res.headers('Authorization');
+                    //window.localStorage.Access = res.data.user.access;
+                    window.location.href = window.location.protocol + '//' + window.location.host + '/app';
+                }, function(){
+                    $scope.failed = true;
+                    $scope.user = {};
+                });
+          };
+        }]);
+

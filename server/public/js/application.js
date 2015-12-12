@@ -109759,7 +109759,7 @@ angular.module('baseApp.controllers', [])
       };
 
       $rootScope.access = ['any'];
-      $rootScope.settings = { skin: window.localStorage.skin || 'skin-green' };
+      $rootScope.settings = { skin: window.localStorage.skin || 'skin-blue' };
       $rootScope.getThemeClass = function(){
         return $rootScope.settings.skin;
       };
@@ -111164,7 +111164,7 @@ angular.module('baseApp.directives')
                   scope.hasConversations = false;
                 }
 
-                if( typeof current !== 'undefined'){
+                if( typeof current !== 'undefined' && current !== ''){
                   if( scope.conversations.hasOwnProperty( current ) ) {
                     scope.conversation = scope.conversations[ current ];
                     scope.isPrivate = scope.conversation.isPrivate;
@@ -113668,7 +113668,7 @@ angular.module('baseApp.services')
         .then( function(){
           currentUser = {access: ['any']};
           $rootScope.setAccess( ['any'] );
-          $state.transitionTo('root');
+          //$state.transitionTo('root');
           defer.resolve();
         });
       return defer.promise;
