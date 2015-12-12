@@ -19951,6 +19951,9 @@ ul.sharebar li i {
   display: inline-block;
   margin: 0 5px 5px 0;
 }
+.info-box span {
+  overflow: hidden;
+}
 .header {
   background: #eeeeee;
 }
