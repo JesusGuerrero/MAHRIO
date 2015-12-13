@@ -20,8 +20,7 @@
     <link href="http://fonts.googleapis.com/css?family=Cardo:400,400italic,700" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/reset.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/reset.css" rel="stylesheet" type="text/css">
-    <link href="/assets/static/assets/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/static/assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/application.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/owl-carousel/owl.theme.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/owl-carousel/owl.transitions.css" rel="stylesheet" type="text/css">
@@ -29,7 +28,8 @@
     <link href="/assets/static/assets/css/plugins/jquery.fs.wallpaper.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/animate.css" rel="stylesheet" type="text/css">
     <link href="/assets/static/assets/css/plugins/hero-carousel.css" rel="stylesheet" type="text/css">
-    <link href="/assets/static/assets/css/vitality-orange.css" rel="stylesheet" type="text/css"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <link href="/assets/static/assets/css/vitality-orange.css" rel="stylesheet" type="text/css">
+    <script src="/assets/static/assets/js/plugins/angular.js"></script><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
@@ -38,7 +38,9 @@
     <nav class="navbar navbar-inverse navbar-fixed-top navbar-expanded">
       <div class="container"><!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <button data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" type="button" class="navbar-toggle"><span class="sr-only">  Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#page-top" class="navbar-brand"><img src="/assets/static/assets/img/logo.png" class="img-resposive"></a>
+          <button data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" type="button" class="navbar-toggle"><span class="sr-only">  Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#page-top" class="navbar-brand">
+            <h1 style="text-transform: none;margin: 12px 0;font-size: 21pt;">  Which Degree</h1>
+            <!--img.img-resposive( src="/assets/static/assets/img/logo.png")--></a>
         </div><!-- Collect the nav links, forms, and other content for toggling -->
         <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -57,7 +59,7 @@
                 |   Pricing
             -->
             <li><a href="#contact">  Contact</a></li>
-            <li><a href="/app#/login"><i class="fa fa-lock"></i>  Login</a></li>
+            <li><a href="#authModal" data-toggle="modal"><i class="fa fa-lock"></i>  Account</a></li>
           </ul>
         </div>
       </div>
@@ -65,37 +67,48 @@
     <!--include includes/header-->
     <section style="padding:0" class="cd-hero">
       <ul class="cd-hero-slider">
-        <li class="selected">
-          <div class="cd-full-width">
-            <h2>  Hero slider</h2>
-            <p>  A simple, responsive slideshow in CSS &amp; jQuery.</p><a href="http://codyhouse.co/?p=675" class="cd-btn">  Article &amp; Download</a>
+        <li style="background-image: url('http://www.edushine.in/wp-content/uploads/2014/12/Higher-Education.jpg')" class="selected">
+          <div style="background: rgba(0,0,0,.8)" class="cd-full-width">
+            <div class="col-data">
+              <h2 style="max-width: 100%">  Higher Education Insights</h2>
+              <p>  Let us provide you educational intelligence, virtual job shadowing &amp; direct networking to domain-experts.</p><a href="#" style="background: url('https://slack.global.ssl.fastly.net/66f9/img/ios_app_store_badge.png') no-repeat;padding: 9px 63px 10px 64px"></a>&nbsp;<a href="#" style="background: url('https://slack.global.ssl.fastly.net/66f9/img/google_play_badge.png') no-repeat;padding: 10px 55px;"></a>
+            </div>
           </div>
         </li>
-        <li>
+        <li style="background-image: url('http://uxhow.com/wp-content/uploads/2014/08/partnership2.jpg')">
+          <div style="background: rgba(0,0,0,.4)" class="cd-full-width">
+            <div style="text-shadow: 1px 1px 1px #000" class="col-data">
+              <h2 style="max-width: 100%;">  Grow Your Connections</h2>
+              <p>  We are sourcing business &amp; financial networks, along with computer technology, to cultivate a community.</p>
+              <div style="position: absolute; width: 100%; left: 0;"><a href="#" style="margin: 0 auto; width: 200px" class="cd-btn">  Check us out</a></div>
+            </div>
+          </div>
+        </li>
+        <li style="background: url('http://marketingland.com/wp-content/ml-loads/2014/08/writing-blogging-content-ss-1920.jpg');background-size:cover;">
           <div class="cd-half-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
-          </div>
-          <div class="cd-half-width cd-img-container"><img src="/assets/static/assets/img/portfolio/mobile-screens.png" alt="tech 1"></div>
-        </li>
-        <li>
-          <div class="cd-half-width cd-img-container"><img src="/assets/static/assets/img/portfolio/tablet-screens.png" alt="tech 2"></div>
-          <div class="cd-half-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. In consequatur cumque natus!</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+            <div class="col-data">
+              <h2>  Discovery</h2>
+              <p>  You can depend on us to provide expert, unopinionated, content. We are obsessive researchers.</p>
+              <div style="position: absolute; width: 100%; left: 0;"><a href="#" style="margin: 0 auto; width: 200px" class="cd-btn">  READ MORE</a></div>
+            </div>
           </div>
         </li>
-        <li class="cd-bg-video">
-          <div class="cd-full-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Learn more</a>
+        <li style="background: url('http://www.al.com/events/img/category/76.jpg'); background-size: cover;">
+          <div style="background: rgba(0,0,0,.8)" class="cd-full-width">
+            <div class="col-data">
+              <h2 style="max-width: 100%;">  Get Involved</h2>
+              <p>  Learn about local and regional gatherings.</p>
+              <div style="position: absolute; width: 100%; left: 0;"><a href="#" style="margin: 0 auto; width: 200px" class="cd-btn">  View Events</a></div>
+            </div>
           </div>
-          <div data-video="assets/static/assets/mp4/clouds" class="cd-bg-video-wrapper"></div>
         </li>
-        <li style="background-image: url('/assets/static/assets/img/portfolio/bg-4.jpg')">
-          <div class="cd-full-width">
-            <h2>  Slide title here</h2>
-            <p>  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, explicabo.</p><a href="#0" class="cd-btn">  Start</a><a href="#0" class="cd-btn secondary">  Learn More</a>
+        <li style="background: url('http://www.esteco.com/sites/default/files/Users_collaboration-world.png') no-repeat center center #000; background-size: contain">
+          <div style="background: rgba(0,0,0,.1)" class="cd-full-width">
+            <div class="col-data">
+              <h2 style="max-width: 100%;">  Conversations For Good</h2>
+              <p>  Connect to domain-experts who work in a wide variety of industries.</p>
+              <div style="position: absolute; width: 100%; left: 0;"><a href="#" style="margin: 0 auto; width: 200px" class="cd-btn">  Meet the Experts</a></div>
+            </div>
           </div>
         </li>
       </ul>
@@ -243,59 +256,58 @@
           </div>
         </div>
         <div class="row content-row">
-          <form name="sentMessage" id="contactForm" novalidate style="background: #fff">
-            <div class="col-md-6">
-              <div class="control-group">
-                <div class="form-group col-xs-12 floating-label-form-group controls">
-                  <label>  Name</label>
-                  <input type="text" placeholder="Name" id="name" required data-validation-required-message="Please enter your name." class="form-control">
-                  <p class="help-block text-danger"></p>
-                </div>
-              </div>
-              <div class="control-group">
-                <div class="form-group col-xs-12 floating-label-form-group controls">
-                  <label>  Email Address</label>
-                  <input type="email" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address." class="form-control">
-                  <p class="help-block text-danger"></p>
-                </div>
-              </div>
-              <div class="control-group">
-                <div class="form-group col-xs-12 floating-label-form-group controls">
-                  <label>  Phone Number</label>
-                  <input type="text" placeholder="Phone Number" id="phone" required data-validation-required-message="Please enter your phone number." class="form-control">
-                  <p class="help-block text-danger"></p>
-                </div>
+          <!--form( name="sentMessage" id="contactForm" novalidate style="background: #fff")-->
+          <div class="col-md-6">
+            <div class="control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>  Name</label>
+                <input type="text" placeholder="Name" id="name" required data-validation-required-message="Please enter your name." class="form-control">
+                <p class="help-block text-danger"></p>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="control-group">
-                <div style="min-height: 231px" class="form-group col-xs-12 floating-label-form-group controls">
-                  <label>  Message</label>
-                  <textarea rows="5" placeholder="Message" id="message" required data-validation-required-message="Please enter your a message." class="form-control"></textarea>
-                  <p class="help-block text-danger"></p>
-                </div>
+            <div class="control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>  Email Address</label>
+                <input type="email" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address." class="form-control">
+                <p class="help-block text-danger"></p>
               </div>
             </div>
-            <div class="col-lg-12 text-center">
-              <div id="success" class="content-row"></div>
-              <div class="content-row">
-                <div class="form-group col-xs-4 col-xs-offset-4">
-                  <button type="submit" class="btn btn-outline-dark btn-block">  Send</button>
-                </div>
+            <div class="control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>  Phone Number</label>
+                <input type="text" placeholder="Phone Number" id="phone" required data-validation-required-message="Please enter your phone number." class="form-control">
+                <p class="help-block text-danger"></p>
               </div>
             </div>
-            <div class="clearfix"></div>
-          </form>
+          </div>
+          <div class="col-md-6">
+            <div class="control-group">
+              <div style="min-height: 231px" class="form-group col-xs-12 floating-label-form-group controls">
+                <label>  Message</label>
+                <textarea rows="5" placeholder="Message" id="message" required data-validation-required-message="Please enter your a message." class="form-control"></textarea>
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 text-center">
+            <div id="success" class="content-row form-group col-xs-12"></div>
+            <div class="row form-group col-xs-6 col-xs-offset-3">
+              <button type="submit" class="btn btn-outline-dark btn-block">  Send</button>
+            </div>
+          </div>
+          <div class="clearfix"></div>
         </div>
       </div>
     </section>
     <style>
       .banner{ background: #f26f21; padding: 30px 0; color: #f8f8f8;}
       .banner h2 { font-size: 30px; margin: 0; line-height: 49px; }
+      @media only screen and (max-width: 1199px) { .social-media-list{ text-align: center; } }
+      @media only screen and (max-width: 767px) { .social-media-list li { margin: 10px auto; display: block; } .social-media-list a { min-width: 200px; } }
     </style>
     <div class="banner">
       <div class="container">
-        <div class="row">
+        <div class="row social-media-list">
           <div class="col-lg-6">
             <h2>  Connect to Start Bootstrap:</h2>
           </div>
@@ -365,6 +377,93 @@
     <!--include includes/modal-work2-->
     <!--include includes/modal-work3-->
     <!--include includes/modal-work4-->
+    <style>
+      .login-form .btn { border-radius: 10px; }
+      .login-form .banner-social-buttons .btn { background: #3D5A98; color: #fff;border-radius: 50%; padding: 5px 10px; border: none; }
+    </style>
+    <div id="authModal" tabindex="-1" role="dialog" aria-hidden="true" class="auth-modal modal fade">
+      <div style="width: 320px; margin: 50px auto 0; border-radius: 10px;" ng-app="mahrio" class="modal-content">
+        <div ng-controller="AuthenticationController" class="modal-body">
+          <div ng-hide="view!=='login'" class="login-form">
+            <error-message-box validation-errors="validationErrors"></error-message-box>
+            <h3 class="text-center">Login</h3>
+            <form novalidate ng-submit="login()">
+              <div ng-show="failed" class="alert alert-danger">
+                <button type="button" data-dismiss="alert" aria-hidden="true" class="close">  ×</button><strong>  Email and/or password incorrect. Please try again.</strong>
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="User ID" ng-model="user.email" class="form-control">
+              </div>
+              <div class="form-group">
+                <input type="password" placeholder="Password" ng-model="user.password" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" ng-model="rememberMe"> Remember me
+                </label>
+              </div>
+              <div class="col-xs-12 text-center no-padding">
+                <button type="submit" class="btn btn-block btn-primary btn-lg">Login</button>
+              </div>
+              <div class="col-xs-12 form-group small no-padding"><a ng-click="view='reset'" class="text-muted">I forgot my password</a></div>
+              <div class="col-xs-12 text-center small">  Login using social media?
+                <ul class="list-inline banner-social-buttons">
+                  <li><a class="btn btn-default"><i class="fa fa-facebook"></i></a></li>
+                  <li><a style="background: #1883BB;" class="btn btn-default"><i class="fa fa-linkedin"></i></a></li>
+                </ul>
+              </div>
+            </form>
+            <div class="clearfix"></div><br>
+            <div class="form-group text-center">
+              <p class="text-center small no-margin">Need to Signup?</p>
+              <button ng-click="view='register'" class="btn btn-default">Register Now</button>
+            </div>
+          </div>
+          <div ng-hide="view!=='register'" class="login-form">
+            <error-message-box validation-errors="validationErrors"></error-message-box>
+            <h3 class="text-center">Register</h3>
+            <form novalidate ng-submit="login()">
+              <div class="form-group">
+                <input type="text" name="firstName" placeholder="First Name" class="form-control">
+              </div>
+              <div class="form-group">
+                <input type="text" name="lastName" placeholder="Last Name" class="form-control">
+              </div>
+              <div class="form-group">
+                <input type="text" name="email" placeholder="Email" class="form-control">
+              </div>
+              <div class="form-group">
+                <input type="password" name="password" placeholder="Password" class="form-control">
+              </div>
+              <div class="form-group">
+                <p class="small">By clicking Register, you agree to our Terms & Conditions, and have read our Privacy Policy, as well as our Cookie Policy</p>
+              </div>
+              <div class="col-xs-12 text-center no-padding">
+                <button type="submit" class="btn btn-block btn-primary btn-lg">Register</button>
+              </div>
+              <div class="col-xs-12 form-group small no-padding"><a ng-click="view='login'" class="text-muted">I have an account</a></div>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+          <div ng-hide="view!=='reset'" class="login-form">
+            <error-message-box validation-errors="validationErrors"></error-message-box>
+            <h3 class="text-center">Reset Password</h3>
+            <form novalidate ng-submit="login()">
+              <div class="form-group">
+                <input type="text" name="email" placeholder="Email" class="form-control">
+              </div>
+              <div class="col-xs-12 text-center no-padding">
+                <button type="submit" class="btn btn-block btn-primary btn-lg">Reset</button>
+              </div>
+              <div class="col-xs-12 form-group text-center">
+                <p><a ng-click="view='login'" class="text-muted">Cancel</a></p>
+              </div>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
   <!--script(src="/assets/js/utils.js")-->
   <script src="/assets/static/assets/js/jquery.js"></script>

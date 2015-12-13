@@ -13,38 +13,37 @@ section( id="contact" style="background-image: url('/assets/static/assets/img/bg
                     |   Please tell us about your next project and we will let you know what we can do to help you.
 
         .row.content-row
-            form( name="sentMessage" id="contactForm" novalidate style="background: #fff")
-                .col-md-6
-                    .control-group
-                        .form-group.col-xs-12.floating-label-form-group.controls
-                            label
-                                |   Name
-                            input.form-control( type="text" placeholder="Name" id="name" required data-validation-required-message="Please enter your name.")
-                            p.help-block.text-danger
-                    .control-group
-                        .form-group.col-xs-12.floating-label-form-group.controls
-                            label
-                                |   Email Address
-                            input.form-control( type="email" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.")
-                            p.help-block.text-danger
+            //form( name="sentMessage" id="contactForm" novalidate style="background: #fff")
+            .col-md-6
+                .control-group
+                    .form-group.col-xs-12.floating-label-form-group.controls
+                        label
+                            |   Name
+                        input.form-control( type="text" placeholder="Name" id="name" required data-validation-required-message="Please enter your name.")
+                        p.help-block.text-danger
+                .control-group
+                    .form-group.col-xs-12.floating-label-form-group.controls
+                        label
+                            |   Email Address
+                        input.form-control( type="email" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.")
+                        p.help-block.text-danger
 
-                    .control-group
-                        .form-group.col-xs-12.floating-label-form-group.controls
-                            label
-                                |   Phone Number
-                            input.form-control( type="text" placeholder="Phone Number" id="phone" required data-validation-required-message="Please enter your phone number.")
-                            p.help-block.text-danger
-                .col-md-6
-                    .control-group
-                        .form-group.col-xs-12.floating-label-form-group.controls(style="min-height: 231px")
-                            label
-                                |   Message
-                            textarea.form-control( rows="5" placeholder="Message" id="message" required data-validation-required-message="Please enter your a message.")
-                            p.help-block.text-danger
-                .col-lg-12.text-center
-                    .content-row( id="success")
-                    .content-row
-                        .form-group.col-xs-4.col-xs-offset-4
-                            button.btn.btn-outline-dark.btn-block( type="submit")
-                                |   Send
-                .clearfix
+                .control-group
+                    .form-group.col-xs-12.floating-label-form-group.controls
+                        label
+                            |   Phone Number
+                        input.form-control( type="text" placeholder="Phone Number" id="phone" required data-validation-required-message="Please enter your phone number.")
+                        p.help-block.text-danger
+            .col-md-6
+                .control-group
+                    .form-group.col-xs-12.floating-label-form-group.controls(style="min-height: 231px")
+                        label
+                            |   Message
+                        textarea.form-control( rows="5" placeholder="Message" id="message" required data-validation-required-message="Please enter your a message.")
+                        p.help-block.text-danger
+            .col-lg-12.text-center
+                .content-row.form-group.col-xs-12( id="success")
+                .row.form-group.col-xs-6.col-xs-offset-3
+                    button.btn.btn-outline-dark.btn-block( type="submit")
+                        |   Send
+            .clearfix

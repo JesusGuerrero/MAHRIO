@@ -64,8 +64,17 @@ angular.module('starter', [
   .constant('APP_IP', 'http://123.456.789.0:8042')
   .constant('_', window._)
   .run(mahrioRun)
-  .config(function($stateProvider, $urlRouterProvider, $compileProvider) {
+  .config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
 
+    $ionicConfigProvider.tabs.position('bottom');
+    $ionicConfigProvider.navBar.alignTitle('center');
+    $ionicConfigProvider.navBar.positionPrimaryButtons('left');
+    $ionicConfigProvider.navBar.positionSecondaryButtons('right');
+    $ionicConfigProvider.tabs.style('standard');
+    $ionicConfigProvider.form.toggle('large');
+    $ionicConfigProvider.form.checkbox('circle');
+    $ionicConfigProvider.backButton.text('Back');
+    $ionicConfigProvider.views.transition('ios');
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
