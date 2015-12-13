@@ -127,16 +127,6 @@ body.tabbed-nav .scroll-content {
 .bg-faces div {
   position: relative;
 }
-#offline, #offline .scroll {
-  height: 100%;
-}
-#offline h3 {
-  position: absolute;
-  bottom: 75%;
-  width: 80%;
-  left: 10%;
-  text-align: center;
-}
 #view {
   position: absolute; bottom: 5%; width: 90%; left: 5%; text-align: center;
 }
@@ -157,4 +147,37 @@ body.tabbed-nav .scroll-content {
   line-height: 23px;
   font-size: 13px !important;
   min-height: 10px;
+}
+.button.button-stable {
+  border-radius: 10px;
+  box-shadow: 0px 2px 3px rgba(0,0,0,.6);
+  border-color: #e3e3e3;
+  background-color: #f8f8f8;
+  border-bottom: 5px solid #e3e3e3;
+}
+.button.button-positive {
+  border-color: #3B7EAD;
+  background-color: #428CC0;
+  border-radius: 10px;
+  color: #fff;
+  border-bottom: 5px solid #3B7EAD;
+  box-shadow: 0px 2px 3px rgba(0,0,0,.6);
+}
+#offline {
+  background: url('../img/offline/Higher-Education.jpg');
+  background-size: cover;
+  background-position: center center;
+}
+#offline, #offline .scroll {
+  height: 100%;
+}
+#offline h3 {
+  position: absolute;
+  bottom: 75%;
+  width: 100%;
+  left: 0%;
+  text-align: center;
+  background: rgba(0,0,0,.7);
+  color: #fff;
+  padding: 10px 0;
 }

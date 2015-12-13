@@ -1,21 +1,44 @@
 <div class="modal">
-  <ion-header-bar class="bar-header">
+  <ion-header-bar class="bar-header" style="background: #222; border-bottom: none">
     <button class="button button-clear" ng-click="previous()" ng-show="state">Previous</button>
-    <h1 class="title" ng-click="closeAndReset()">WhichDegree</h1>
-    <button class="button button-clear" ng-click="next()" ng-show="state < 2">Next</button>
+    <h1 class="title" ng-click="closeAndReset()" style="color: #fff">Which Degree</h1>
+    <button class="button button-clear" ng-click="next()" ng-show="state < 3">Next</button>
   </ion-header-bar>
   <ion-content id="offline">
     <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)">
-      <ion-slide>
-          <h1 style="text-align: center;">First Slide</h1>
+      <ion-slide style="background: url('img/offline/partnership.jpg') no-repeat center center #fff; background-size: contain">
+        <div style="background: rgba(0,0,0,.6); height: 100%">
+          <h3 style="text-align: center;color:#fff">Grow Your Connections</h3>
+          <div id="view" style="bottom: 15%; color: #fff">
+            We are sourcing business & financial networks, along with computer technology, to cultivate a community.
+          </div>
+        </div>
+
       </ion-slide>
-      <ion-slide>
-          <h1 style="text-align: center;">Second Slide</h1>
+      <ion-slide style="background: url('img/offline/articles.jpg') no-repeat 65% 50% #fff; background-size: cover">
+        <div style="background: rgba(0,0,0,.6); height: 100%">
+          <h3 style="text-align: center;color:#fff">Discovery</h3>
+          <div id="view" style="bottom: 15%; color: #fff">
+            You can depend on us to provide expert, unopinionated, content. We are obsessive researchers.
+          </div>
+        </div>
       </ion-slide>
-      <ion-slide>
-        <div id="view" style="bottom: 10%">
-          <login-button></login-button>
-          <register-button></register-button>
+      <ion-slide style="background: url('img/offline/calendar.jpg') no-repeat 10% 50% #fff; background-size: cover">
+        <div style="background: rgba(0,0,0,.6); height: 100%">
+          <h3 style="text-align: center;color:#fff">Get Involved</h3>
+          <div id="view" style="bottom: 15%; color: #fff">
+            Learn about local and regional gatherings. Get in the action to establish physical connections.
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide style="background: url('img/offline/chat.png') no-repeat 50% 35% #fff; background-size: contain">
+        <div style="background: rgba(0,0,0,.6); height: 100%">
+          <h3 style="text-align: center;color:#fff">Conversations for Good</h3>
+          <div id="view" style="bottom: 15%; color: #fff">
+            Connect to domain-experts who work in a variety of industries.
+            <login-button></login-button>
+            <register-button></register-button>
+          </div>
         </div>
       </ion-slide>
     </ion-slide-box>
