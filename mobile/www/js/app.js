@@ -47,7 +47,7 @@ angular.module('starter', [
   'starter.directives',
   'starter.filters',
   'angular-underscore'])
-  .constant('APP_IP', 'http://123.456.789.0:8042')
+  .constant('APP_IP', 'https://mahrio.herokuapp.com')
   .constant('_', window._)
   .run(mahrioRun)
   .config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {

@@ -108,7 +108,7 @@ angular.module('starter.directives', [])
     return {
       restrict: 'E',
       replace: true,
-      template: '<button class="button button-block" ng-click="loginModal();">Log in</button>',
+      template: '<button class="button button-block button-positive" ng-click="loginModal();">Log in</button>',
       scope: {},
       link: function(scope){
         scope.form = {};
@@ -171,7 +171,7 @@ angular.module('starter.directives', [])
     return {
       restrict: 'E',
       replace: true,
-      template: '<a class="button button-block" ng-click="registerModal()">Register</a>',
+      template: '<a class="button button-block button-stable" ng-click="registerModal()">Register</a>',
       scope: {},
       link: function(scope){
         scope.form = {};
@@ -205,7 +205,7 @@ angular.module('starter.directives', [])
     return {
       restrict: 'E',
       replace: true,
-      template: '<a class="button button-block" ng-click="demoModal()">Demo</a>',
+      template: '<a class="button button-block button-stable" ng-click="demoModal()">Demo</a>',
       scope: {},
       link: function(scope){
         scope.state = 0;
