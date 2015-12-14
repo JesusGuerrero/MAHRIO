@@ -9,10 +9,10 @@
       <ion-slide>
         <div class="padding">
           <div class="list">
-
             <form novalidate="novalidate" ng-submit="login()">
               <form-input-tag model="form.email" type="email" label="Email" required="true" icon="" placeholder="you@domain.com"></form-input-tag>
               <form-input-tag model="form.password" type="password" label="Password" required="true" icon="" placeholder="*******"></form-input-tag>
+              <button type="submit" style="visibility: hidden"></button>
             </form>
           </div>
         </div>
@@ -38,7 +38,7 @@
       </div>
       <div class="col col-50" style="float: right;">
         <div class="footer-primary" ng-click="login()">
-          <button class="button button-block" style="margin: 0" ng-disabled="!form.password || !form.email">Log in</button>
+          <button class="button button-block button-positive" style="margin: 0" ng-disabled="!form.password || !form.email">Log in</button>
         </div>
       </div>
     </div>
