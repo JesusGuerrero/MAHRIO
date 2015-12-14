@@ -140,15 +140,28 @@ angular.module('starter.directives', [])
             });
         };
         scope.resetPassword = function(){
-          $ionicPopup.alert({
-            title: 'Password Reset Success',
-            template: 'Now check your email for further instructions.'
-          }).then( function(){
-            scope.$emit('modal:destroy');
-            $timeout( function(){
-              scope.form = {};
-              scope.state = 'Log in';
-            }, 200);
+          Users.recoverPassword().then(function(){
+            $ionicPopup.alert({
+              title: 'Password Reset Success',
+              template: 'Now check your email for further instructions.'
+            }).then( function(){
+              scope.$emit('modal:destroy');
+              $timeout( function(){
+                scope.form = {};
+                scope.state = 'Log in';
+              }, 200);
+            });
+          }, function(){
+            $ionicPopup.alert({
+              title: 'Password Reset Success',
+              template: 'Now check your email for further instructions.'
+            }).then( function(){
+              scope.$emit('modal:destroy');
+              $timeout( function(){
+                scope.form = {};
+                scope.state = 'Log in';
+              }, 200);
+            });
           });
         };
         scope.closeAndReset = function(){
