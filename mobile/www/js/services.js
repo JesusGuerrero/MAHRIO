@@ -702,7 +702,11 @@ angular.module('starter.services', [])
                   $localstorage.setObject( 'currentUser', currentUser );
                   currentLock = false;
                   defer.resolve( currentUser );
-                }, function() { currentLock = false; defer.reject(); });
+                }, function() {
+                  currentLock = false;
+                  api.logout();
+                  defer.reject();
+                });
               } else {
                 currentLock = false; defer.reject();
               }
