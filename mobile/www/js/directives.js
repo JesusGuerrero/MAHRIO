@@ -104,7 +104,7 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('loginButton', function(Users, Notification, $state, $ionicSlideBoxDelegate, $ionicPopup, $timeout, $ionicHistory){
+  .directive('loginButton', function(Users, $state, $ionicSlideBoxDelegate, $ionicPopup, $timeout, $ionicHistory, $ionicLoading){
     return {
       restrict: 'E',
       replace: true,
@@ -114,6 +114,12 @@ angular.module('starter.directives', [])
         scope.form = {};
         scope.state = 'Log in';
         scope.login = function( ){
+          if( !scope.form.email || !scope.form.password ) {
+            return;
+          }
+          $ionicLoading.show({
+            template: 'Loading...'
+          });
           Users.login( scope.form )
             .then( function(){
               $ionicHistory.nextViewOptions({
@@ -121,7 +127,10 @@ angular.module('starter.directives', [])
               });
               $state.go('tab.dash');
               scope.$emit('modal:destroy');
+              scope.form = {};
+              $ionicLoading.hide();
             }, function(){
+              $ionicLoading.hide();
               $ionicPopup.alert({
                 title: 'Login Error',
                 template: 'Email and/or Password incorrect. Try again!'
@@ -131,15 +140,28 @@ angular.module('starter.directives', [])
             });
         };
         scope.resetPassword = function(){
-          $ionicPopup.alert({
-            title: 'Password Reset Success',
-            template: 'Now check your email for further instructions.'
-          }).then( function(){
-            scope.$emit('modal:destroy');
-            $timeout( function(){
-              scope.form = {};
-              scope.state = 'Log in';
-            }, 200);
+          Users.recoverPassword().then(function(){
+            $ionicPopup.alert({
+              title: 'Password Reset Success',
+              template: 'Now check your email for further instructions.'
+            }).then( function(){
+              scope.$emit('modal:destroy');
+              $timeout( function(){
+                scope.form = {};
+                scope.state = 'Log in';
+              }, 200);
+            });
+          }, function(){
+            $ionicPopup.alert({
+              title: 'Password Reset Success',
+              template: 'Now check your email for further instructions.'
+            }).then( function(){
+              scope.$emit('modal:destroy');
+              $timeout( function(){
+                scope.form = {};
+                scope.state = 'Log in';
+              }, 200);
+            });
           });
         };
         scope.closeAndReset = function(){
@@ -167,7 +189,7 @@ angular.module('starter.directives', [])
       }
     }
   })
-  .directive('registerButton', function(Users, $state, $ionicHistory, $ionicPopup){
+  .directive('registerButton', function(Users, $state, $ionicHistory, $ionicPopup, $ionicLoading){
     return {
       restrict: 'E',
       replace: true,
@@ -181,13 +203,21 @@ angular.module('starter.directives', [])
           });
         };
         scope.register = function(){
+          if( !scope.form.firstName || !scope.form.lastName || !scope.form.email || !scope.form.password ){
+            return;
+          }
+          $ionicLoading.show({
+            template: 'Loading...'
+          });
           Users.register( scope.form ).then( function(){
             $ionicHistory.nextViewOptions({
               disableBack: true
             });
             $state.go('tab.dash');
             scope.$emit('modal:destroy');
+            $ionicLoading.hide();
           }, function(){
+            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Registration Error',
               template: 'Please check your email, it may be registered already.'

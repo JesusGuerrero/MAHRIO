@@ -11,25 +11,28 @@
         <button class="button button-stable" style="position: absolute; right: 10px; bottom: 10px;" ng-click="addPicture()">Change</button>
       </div>
       <div class="list">
-        <label ng-hide="!editting">
-          <button class="button button-stable button-block" ng-hide="form.avatarImage" ng-click="addPicture()">Add Picture</button>
-        </label>
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">First Name</span>
-          <input ng-model="form.firstName" type="text" placeholder="John" />
-        </label>
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">Last Name</span>
-          <input ng-model="form.lastName" type="text" placeholder="Lopez" />
-        </label>
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">Email</span>
-          <input ng-model="form.email" type="text" placeholder="you@domain.com" />
-        </label>
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">Password</span>
-          <input ng-model="form.password" type="password" placeholder="******" />
-        </label>
+        <form novalidate="novalidate" ng-submit="register()">
+          <label ng-hide="!editting">
+            <button class="button button-stable button-block" ng-hide="form.avatarImage" ng-click="addPicture()">Add Picture</button>
+          </label>
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">First Name</span>
+            <input ng-model="form.firstName" type="text" placeholder="John" />
+          </label>
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">Last Name</span>
+            <input ng-model="form.lastName" type="text" placeholder="Lopez" />
+          </label>
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">Email</span>
+            <input ng-model="form.email" type="email" placeholder="you@domain.com" />
+          </label>
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">Password</span>
+            <input ng-model="form.password" type="password" placeholder="******" />
+          </label>
+          <button type="submit" style="visibility: hidden"></button>
+        </form>
       </div>
       <div class="list" ng-hide="!editting">
         <label class="item item-input item-stacked-label">
@@ -43,7 +46,7 @@
     <div class="row" style="padding: 0;">
       <div class="col col-50 col-offset-50">
         <div class="footer-primary">
-          <button class="button button-block" style="margin:0;" ng-click="register()" ng-hide="editting"
+          <button class="button button-block button-positive" style="margin:0;" ng-click="register()" ng-hide="editting"
                   ng-disabled="!form.email || !form.password || !form.firstName || !form.lastName">
             Register
           </button>
