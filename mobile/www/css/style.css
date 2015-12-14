@@ -154,14 +154,24 @@ body.tabbed-nav .scroll-content {
   border-color: #e3e3e3;
   background-color: #f8f8f8;
   border-bottom: 5px solid #e3e3e3;
+  background: linear-gradient(#f8f8f8, #f9f9f9, #e3e3e3);
 }
-.button.button-positive {
+.button.button-stable.activated {
+  border-color: #d3d3d3;
+  background-color: #f8f8f8;
+}
+.button.button-positive{
   border-color: #3B7EAD;
   background-color: #428CC0;
   border-radius: 10px;
   color: #fff;
   border-bottom: 5px solid #3B7EAD;
   box-shadow: 0px 2px 3px rgba(0,0,0,.6);
+  background: linear-gradient(#428CC0, #5996CA, #3B7EAD);
+}
+.button.button-positive.activated {
+  border-color: #3B7EAD;
+  background: #428CC0;
 }
 #offline {
   background: url('../img/offline/Higher-Education.jpg');
