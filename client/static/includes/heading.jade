@@ -1,45 +1,51 @@
 style
     | .featurette { overflow: hidden; }
-    | .featurette-divider { margin: 40px 0; }
+    | .featurette-divider { margin: 40px 0; border-color: #428CC0; max-width: 100%; }
     | .heading h2 { text-transform: inherit; }
+    | .featurette-image { max-width: 500px; border-radius: 50px; }
     | .featurette-image.pull-right { margin-left: 40px; margin-bottom: 10px }
     | .featurette-image.pull-left { margin-right: 40px; margin-bottom: 10px }
 
-section.container.heading
+section.heading(style="border-top: 10px solid #000")
+    .container
 
-    <!-- First Featurette -->
-    .featurette.wow.fadeIn( data-wow-delay=".2s")
-        img.featurette-image.img-circle.img-responsive.pull-right( src="http://placehold.it/500x300" )
-        h2.featurette-heading
-            |   This First Heading
-            span.text-muted
-                |   Will Catch Your Eye
+        <!-- First Featurette -->
+        .featurette.wow.fadeIn( data-wow-delay=".2s")
+            img.featurette-image.img-responsive.pull-right( src="http://stepsfinancialservices.com/Images/Financial-plan-review.jpg")
+            h2.featurette-heading
+                |   Financial Planning:
+                span.text-muted
+                    |   How much debt to incur?
 
-        p
-            |   Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+            p
+                |   Benevolence doesn't usually translate to wealth, therefore you need to question where the education dollar is spent.
+                |   More and more graduates are faced with years of paying staggering monthly payments, and many are starting to ask themselves, "Is it worth it?"
 
-    hr.featurette-divider
+        hr.featurette-divider
 
-    <!-- Second Featurette -->
-    .featurette.wow.fadeIn( data-wow-delay=".2s")
-        img.featurette-image.img-circle.img-responsive.pull-left( src="http://placehold.it/500x300" )
-        h2.featurette-heading
-            |   This Second Heading
-            span.text-muted
-                |   Is Pretty Cool Too.
+        <!-- Second Featurette -->
+        .featurette.wow.fadeIn( data-wow-delay=".2s")
+            img.featurette-image.img-responsive.pull-left( src="http://dev.at.scitexas.edu/wp-content/uploads/2015/08/hvac-technical-school-in-san-antonio-texas.jpg")
+            h2.featurette-heading
+                |   Job Prospectives:
+                span.text-muted
+                    |   Will they follow the Dodo?
 
-        p
-            |   Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+            p
+                |   Jobs that require a particularly high level of task flexibility, or creativity, or empathy may continue to employ people (for a while). Yet most office jobs will eventually be replaced by software automation.
+                |   The world is always changing and technology is constantly making our lives easier. But with this great technology comes great job loss. (Ouch.)
 
-    hr.featurette-divider
+        hr.featurette-divider
 
-    <!-- Third Featurette -->
-    .featurette.wow.fadeIn( data-wow-delay=".2s")
-        img.featurette-image.img-circle.img-responsive.pull-right( src="http://placehold.it/500x300" )
-        h2.featurette-heading
-            |   This Third Heading
-            span.text-muted
-                |   Will Seal the Deal.
+        <!-- Third Featurette -->
+        .featurette.wow.fadeIn( data-wow-delay=".2s")
+            img.featurette-image.img-circle.img-responsive.pull-right( src="https://goodprospects.goodwill.org/sites/default/files/CON-3.108_0.jpg" )
+            h2.featurette-heading
+                |   Been there, done that!
+                span.text-muted
+                    |   Find what's learned
 
-        p
-            |   Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+            p
+                |   If you have any interest in mathematics, engineering, or the hard sciences, now is the time to explore it. Many subjects you can study in college — like history, literature, languages, business, law, or art — are also subjects you could learn later, through personal or professional experience, or through independent reading.
+                |   Start working through difficult problems. If you don't tackle them now, the odds are strongly against you ever doing so in the future. We engineered the Which Degree product, and we'd like to share that with you.
+

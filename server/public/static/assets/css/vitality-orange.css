@@ -104,7 +104,7 @@ hr.right {
 }
 
 hr.colored {
-    border-color: #f26f21;
+    border-color: #428CC0;
 }
 
 @media(min-width:768px) {
@@ -1110,7 +1110,7 @@ footer.footer .copyright p.small {
 .btn-outline-dark {
     border: 1px solid #222;
     color: #222;
-    background: 0 0;
+    background: #f8f8f8;
     -webkit-transition: all .5s;
     -moz-transition: all .5s;
     transition: all .5s;
@@ -1118,10 +1118,10 @@ footer.footer .copyright p.small {
 
 .btn-outline-dark:hover,
 .btn-outline-dark:focus {
-    border-color: #f26f21;
+    border-color: rgba(66, 140, 192,1);
     outline: 0;
     color: #fff;
-    background: #f26f21;
+    background: rgba(66, 140, 192,1);
 }
 
 .btn {
