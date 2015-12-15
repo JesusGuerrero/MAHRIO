@@ -1,6 +1,20 @@
-
-
 function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
+
+  $rootScope.triggerAnalyticEvent = function(event, toState) {
+    console.log("analytic event triggered" + toState.name);
+    var viewName = toState.name;
+    if (window.analytics != undefined) {
+      window.analytics.trackView(viewName);
+    } else {
+      console.log("window.analytics is undefined");
+    }
+  };
+
+  $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+    setTimeout(function(){
+      $rootScope.triggerAnalyticEvent(event, toState);
+    }, 1000);
+  });
 
   $ionicPlatform.ready(function(){
 
@@ -21,7 +35,7 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
     if (window.analytics != undefined) {
       console.log("windows.analytics loading...");
       window.analytics.startTrackerWithId('UA-YOURCODEHERE');
-      window.analytics.trackView('Testing')
+      window.analytics.trackView('Initializing_Ready');
     } else {
       console.log("window.analytics is undefined");
     }
@@ -62,6 +76,7 @@ angular.module('starter', [
     $ionicConfigProvider.backButton.text('Back');
     $ionicConfigProvider.views.transition('ios');
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
@@ -245,7 +260,7 @@ angular.module('starter', [
       controller: 'OfflineCtrl'
     });
 
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+    // if none of the above states are matched, use this as the fallback
+    $urlRouterProvider.otherwise('/tab/dash');
 
-});
+  });
