@@ -8,7 +8,7 @@
     <div class="padding">
       <div class="row" ng-show="form.avatarImage && form.avatarImage.url" ng-hide="!editting"
            style="min-height: 200px;position:relative" ng-style="{background: 'url('+form.avatarImage.url+')', backgroundSize: 'cover'}">
-        <button class="button button-stable" style="position: absolute; right: 10px; bottom: 10px;" ng-click="addPicture()">Change</button>
+        <button class="button" style="position: absolute; right: 10px; bottom: 10px;" ng-click="addPicture()">Change</button>
       </div>
       <div class="list">
         <form novalidate="novalidate" ng-submit="register()">

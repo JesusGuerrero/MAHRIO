@@ -60,11 +60,12 @@ angular.module('starter', [
   'starter.services',
   'starter.directives',
   'starter.filters',
-  'angular-underscore'])
+  'angular-underscore',
+  'angular-stripe'])
   .constant('APP_IP', 'https://XXXXX.herokuapp.com')
   .constant('_', window._)
   .run(mahrioRun)
-  .config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
+  .config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider, stripeProvider) {
 
     $ionicConfigProvider.tabs.position('bottom');
     $ionicConfigProvider.navBar.alignTitle('center');
@@ -77,6 +78,7 @@ angular.module('starter', [
     $ionicConfigProvider.views.transition('ios');
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 
+    stripeProvider.setPublishableKey('set_stripe_publishable_key');
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.

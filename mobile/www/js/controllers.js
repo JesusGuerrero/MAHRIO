@@ -378,9 +378,44 @@ angular.module('starter.controllers', [])
       $state.go('offline');
     }
   })
-  .controller('PaymentCtrl', function($scope, Users){
+  .controller('PaymentCtrl', function($scope, Users, Payments, $ionicPopup, stripe, Payments){
     $scope.currentUser = Users.getCurrentUser();
-    $scope.editPayment = function(){
-
+    $scope.adFree = true;
+    $scope.form = {
+      number: '4242424242424242',
+      exp: '12/2016',
+      cvc: '123'
     };
+    $scope.editPayment = function(){
+      $scope.currentUser.hasPayment = false;
+    };
+    $scope.savePayment = function(){
+      stripe.card.createToken( $scope.form )
+        .then(function (response) {
+          console.log('token created for card ending in ', response);
+          Payments.startSubscription( {stripeToken: response.id} ).then( function(){
+            console.log('successfully submitted payment for $');
+            $scope.currentUser.hasPayment = true;
+          });
+        }, function(err){
+          console.log('err: ' + err);
+        });
+    };
+    $scope.confirmRemoval = function(){
+      $ionicPopup.confirm({
+        title: 'Payment Removal',
+        template: 'Are you sure you want to remove?',
+        buttons: [{
+          text: 'Cancel'
+        },{
+          text: 'Remove',
+          type: 'button-assertive',
+          onTap: function(){
+            console.log( 'Removing Item' );
+            $scope.form = {};
+            $scope.currentUser.hasPayment = false;
+          }
+        }]
+      });
+    }
   });
