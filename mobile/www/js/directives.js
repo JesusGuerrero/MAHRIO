@@ -133,7 +133,11 @@ angular.module('starter.directives', [])
               $ionicLoading.hide();
               $ionicPopup.alert({
                 title: 'Login Error',
-                template: 'Email and/or Password incorrect. Try again!'
+                template: 'Email and/or Password incorrect. Try again!',
+                buttons: [{
+                  text: 'OK',
+                  type: 'button-calm'
+                }]
               }).then( function(){
                 scope.form = {};
               });
@@ -143,7 +147,11 @@ angular.module('starter.directives', [])
           Users.recoverPassword().then(function(){
             $ionicPopup.alert({
               title: 'Password Reset Success',
-              template: 'Now check your email for further instructions.'
+              template: 'Now check your email for further instructions.',
+              buttons: [{
+                text: 'OK',
+                type: 'button-calm'
+              }]
             }).then( function(){
               scope.$emit('modal:destroy');
               $timeout( function(){
@@ -154,7 +162,11 @@ angular.module('starter.directives', [])
           }, function(){
             $ionicPopup.alert({
               title: 'Password Reset Success',
-              template: 'Now check your email for further instructions.'
+              template: 'Now check your email for further instructions.',
+              buttons: [{
+                text: 'OK',
+                type: 'button-calm'
+              }]
             }).then( function(){
               scope.$emit('modal:destroy');
               $timeout( function(){
@@ -220,7 +232,11 @@ angular.module('starter.directives', [])
             $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Registration Error',
-              template: 'Please check your email, it may be registered already.'
+              template: 'Please check your email, it may be registered already.',
+              buttons: [{
+                text: 'OK',
+                type: 'button-calm'
+              }]
             })
           });
         };
