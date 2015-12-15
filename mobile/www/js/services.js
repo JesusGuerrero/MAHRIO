@@ -686,8 +686,8 @@ angular.module('starter.services', [])
         delete $http.defaults.headers.common.Authorization;
         currentUser = null;
       },
-      recoverPassword: function(){
-        return $http.post( proxy.url + '/api/session/recover-password');
+      recoverPassword: function( email ){
+        return $http.post( proxy.url + '/api/session/recover-password', {email: email});
       },
       addAvatar: function( media ){
         var defer = $q.defer();
