@@ -3,6 +3,7 @@
 function requireControllers(config, server){
 
   require('../../controllers/oauth/api')(config, server);
+  require('../../controllers/billing/api')(config, server);
   require('../../controllers/admin/api')(config, server);
   require('../../controllers/user/api')(config, server);
   require('../../controllers/profile/api')(config, server);

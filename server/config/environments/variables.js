@@ -48,6 +48,8 @@ module.exports = function( env ) {
   baseSetup.AWS_SECRET_KEY = env.AWS_SECRET;
   baseSetup.S3_BUCKET = env.S3_BUCKET;
 
+  baseSetup.STRIPE_SECRET_KEY = env.STRIPE_SECRET_KEY;
+
   if ( baseSetup.env === 'production' ) {
     baseSetup.port = env.PORT || env.NODE_PORT || 8140;
   }
