@@ -31,7 +31,7 @@ function isValidToken( request, reply ){
 function recoverPassword( request, reply, config, server ){
   User.recoverPassword( request.payload.email, function(err, user){
     if( user && user.token ){
-      var link = config.DOMAIN + '/#/passwordreset/'+user.token;
+      var link = config.DOMAIN + '/app#/passwordreset/'+user.token;
       console.log( link );
       server.mailer( {to: request.payload.email, subject: 'Password Reset', html: link});
     }
