@@ -28,7 +28,7 @@ function register (request, reply, config, server) {
       newUser.save(function (err, user) {
         if (err) { return reply(Boom.badRequest(err)); }
 
-        var confirmAccountLink = config.DOMAIN + '/#/confirm/';
+        var confirmAccountLink = config.DOMAIN + '/app#/confirm/';
         confirmAccountLink += user.resetPasswordToken+'?user=true';
         server.mailer( {to: user.email, subject: 'Activate Account', html: confirmAccountLink});
         console.log( confirmAccountLink );
