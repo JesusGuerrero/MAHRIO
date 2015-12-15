@@ -369,6 +369,7 @@ angular.module('starter.controllers', [])
 
   })
   .controller('AccountCtrl', function($scope, $state, Users) {
+    $scope.currentUser = Users.getCurrentUser();
     $scope.settings = {
       enableFriends: true
     };
@@ -376,4 +377,10 @@ angular.module('starter.controllers', [])
       Users.logout();
       $state.go('offline');
     }
+  })
+  .controller('PaymentCtrl', function($scope, Users){
+    $scope.currentUser = Users.getCurrentUser();
+    $scope.editPayment = function(){
+
+    };
   });

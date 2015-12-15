@@ -47,7 +47,7 @@ angular.module('starter', [
   'starter.directives',
   'starter.filters',
   'angular-underscore'])
-  .constant('APP_IP', 'https://mahrio.herokuapp.com')
+  .constant('APP_IP', 'https://XXXXX.herokuapp.com')
   .constant('_', window._)
   .run(mahrioRun)
   .config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
@@ -227,6 +227,15 @@ angular.module('starter', [
         'tab-account': {
           templateUrl: 'templates/member-detail.html',
           controller: 'MemberDetailCtrl'
+        }
+      }
+    })
+    .state('tab.payment', {
+      url: '/payment',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/payment-detail.html',
+          controller: 'PaymentCtrl'
         }
       }
     })
