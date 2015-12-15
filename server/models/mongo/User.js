@@ -34,7 +34,8 @@ schema = mongoose.Schema({
   status:     {type: String},
   notifications: [{type: mongoose.Schema.Types.ObjectId, ref: 'Notification'}],
   profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' },
-  disabled: {type: Boolean}
+  disabled: {type: Boolean},
+  stripeId: {type: String, default: null}
 });
 
 schema.methods.authenticate = function(passwordToMatch) {

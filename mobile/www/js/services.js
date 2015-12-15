@@ -585,6 +585,14 @@ angular.module('starter.services', [])
       }
     }
   })
+  .factory('Payments', function($http, proxy){
+    var api = {
+      startSubscription: function( payment ){
+        return $http.post( proxy.url + '/api/billing', payment);
+      }
+    };
+    return api;
+  })
   .factory('Users', function($localstorage, proxy, $http, $q, $timeout, Socket ){
     var users = [{
       id: 1,

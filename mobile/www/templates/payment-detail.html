@@ -3,27 +3,55 @@
     Payments
   </ion-nav-title>
 
-  <ion-nav-buttons side="secondary">
-    <button class="button button-stable" ng-click="editPayment()">
-      <i class="icon ion-card"></i>
-      Edit
-    </button>
-  </ion-nav-buttons>
+  <!--<ion-nav-buttons side="secondary">-->
+    <!--<button class="button" ng-click="editPayment()">-->
+      <!--<i class="icon ion-card"></i>-->
+      <!--Edit-->
+    <!--</button>-->
+  <!--</ion-nav-buttons>-->
 
   <ion-content>
-    <div class="card-row">
-      <span class="visa"></span>
-      <span class="mastercard"></span>
-      <span class="amex"></span>
-      <span class="discover"></span>
+    <div ng-show="!currentUser.hasPayment">
+      <form ng-submit="savePayment()" novalidate>
+        <div class="row">
+          <div class="col">
+            <ion-checkbox ng-model="adFree" ng-click="adFree=true;">Ad Free: $0.99 / month</ion-checkbox>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col" style="position: relative">
+            <img style="position:absolute;right: 10px;width: 150px;top: 16px;" src="https://assets.democrats.org/imgs/donate-cards-trans.png">
+            <form-input-tag model="form.number" type="text" label="Card Number" required="true" icon="" placeholder="XXXX-XXXX-XXXX-XXXX"></form-input-tag>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-50">
+            <form-input-tag model="form.exp" type="text" label="Expiration" required="true" icon="" placeholder="MM / YY"></form-input-tag>
+          </div>
+          <div class="col col-50">
+            <form-input-tag model="form.cvc" type="text" label="Security code" required="true" icon="" placeholder="***"></form-input-tag>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-50 col-offset-25">
+            <button class="button button-balanced button-block" type="submit">Save</button>
+          </div>
+        </div>
+      </form>
     </div>
-    <form>
-      <form-input-tag model="form.name" type="text" label="Name on card" required="true" icon="" placeholder="First Last"></form-input-tag>
-      <form-input-tag model="form.card" type="text" label="Card Number" required="true" icon="" placeholder="XXXX-XXXX-XXXX-XXXX"></form-input-tag>
-      <form-input-tag model="form.expiration" type="text" label="Expiry date" required="true" icon="" placeholder="MM / YY"></form-input-tag>
-      <form-input-tag model="form.code" type="text" label="Security code" required="true" icon="" placeholder="***"></form-input-tag>
-      <form-input-tag model="form.zip" type="text" label="ZIP/Postal code" required="true" icon="" placeholder="94123"></form-input-tag>
-    </form>
+    <div ng-show="currentUser.hasPayment" style="text-align: center;">
+      <i class="ion-checkmark-circled balanced" style="display: block;font-size: 50pt;margin: 20px auto;"></i>
+      <h3>Payment has been setup.</h3>
+      <br/>
+      <br/>
+      <br/>
+      <div class="row">
+        <div class="col col-50 col-offset-25">
+          <button ng-click="confirmRemoval()" class="button button-assertive button-block">Remove</button>
+        </div>
+      </div>
+
+    </div>
   </ion-content>
 
 </ion-view>
