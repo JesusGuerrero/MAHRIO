@@ -1,0 +1,29 @@
+<ion-view>
+  <ion-nav-title>
+    Payments
+  </ion-nav-title>
+
+  <ion-nav-buttons side="secondary">
+    <button class="button button-stable" ng-click="editPayment()">
+      <i class="icon ion-card"></i>
+      Edit
+    </button>
+  </ion-nav-buttons>
+
+  <ion-content>
+    <div class="card-row">
+      <span class="visa"></span>
+      <span class="mastercard"></span>
+      <span class="amex"></span>
+      <span class="discover"></span>
+    </div>
+    <form>
+      <form-input-tag model="form.name" type="text" label="Name on card" required="true" icon="" placeholder="First Last"></form-input-tag>
+      <form-input-tag model="form.card" type="text" label="Card Number" required="true" icon="" placeholder="XXXX-XXXX-XXXX-XXXX"></form-input-tag>
+      <form-input-tag model="form.expiration" type="text" label="Expiry date" required="true" icon="" placeholder="MM / YY"></form-input-tag>
+      <form-input-tag model="form.code" type="text" label="Security code" required="true" icon="" placeholder="***"></form-input-tag>
+      <form-input-tag model="form.zip" type="text" label="ZIP/Postal code" required="true" icon="" placeholder="94123"></form-input-tag>
+    </form>
+  </ion-content>
+
+</ion-view>
