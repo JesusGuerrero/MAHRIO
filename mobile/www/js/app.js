@@ -52,7 +52,7 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
   });
 }
 
-mahrioRun.$inject=['$rootScope', '$ionicPlatform', '$location', 'Users', 'Socket', 'Notification'];
+mahrioRun.$inject=['$rootScope', '$ionicPlatform', '$location', 'Users', 'Socket'];
 
 angular.module('starter', [
   'ionic',

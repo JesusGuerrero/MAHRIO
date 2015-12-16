@@ -378,7 +378,7 @@ angular.module('starter.controllers', [])
       $state.go('offline');
     }
   })
-  .controller('PaymentCtrl', function($scope, Users, Payments, $ionicPopup, stripe, Payments){
+  .controller('PaymentCtrl', function($scope, Users, Payments, $ionicPopup, $ionicLoading, stripe){
     $scope.currentUser = Users.getCurrentUser();
     $scope.adFree = true;
     $scope.form = {
@@ -390,15 +390,22 @@ angular.module('starter.controllers', [])
       $scope.currentUser.hasPayment = false;
     };
     $scope.savePayment = function(){
+      $ionicLoading.show({
+        template: 'Making payment...'
+      });
       stripe.card.createToken( $scope.form )
         .then(function (response) {
           console.log('token created for card ending in ', response);
           Payments.startSubscription( {stripeToken: response.id} ).then( function(){
             console.log('successfully submitted payment for $');
             $scope.currentUser.hasPayment = true;
+            $ionicLoading.hide();
+          }, function(){
+            $ionicLoading.hide();
           });
         }, function(err){
           console.log('err: ' + err);
+          $ionicLoading.hide();
         });
     };
     $scope.confirmRemoval = function(){
