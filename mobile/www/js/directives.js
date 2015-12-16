@@ -144,7 +144,7 @@ angular.module('starter.directives', [])
             });
         };
         scope.resetPassword = function(){
-          Users.recoverPassword().then(function(){
+          Users.recoverPassword( scope.form.email ).then(function(){
             $ionicPopup.alert({
               title: 'Password Reset Success',
               template: 'Now check your email for further instructions.',
