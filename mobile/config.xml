@@ -79,4 +79,5 @@
     <plugin name="cordova-plugin-file" spec="~3.0.0" />
     <plugin name="cordova-plugin-file-transfer" spec="~1.4.0" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
+    <plugin name="de.appplant.cordova.plugin.local-notification-ios9-fix" spec="https://github.com/willyboy/cordova-plugin-local-notifications.git" />
 </widget>

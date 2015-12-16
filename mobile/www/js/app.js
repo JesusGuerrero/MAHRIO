@@ -21,10 +21,33 @@ function mahrioRun ($rootScope, $ionicPlatform, $location, Users, Socket) {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     console.log("ionicPlatform is ready");
-    if(window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
-
+    if(window.cordova && window.cordova.plugins) {
+      if( window.cordova.plugins.Keyboard ) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        cordova.plugins.Keyboard.disableScroll(true);
+      }
+      if( window.cordova.plugins.backgroundMode ) {
+        window.cordova.plugins.backgroundMode.enable();
+        var interval, time;
+        window.cordova.plugins.backgroundMode.onactivate = function() {
+          console.log('activating background mode');
+          time = new Date().getTime();
+          interval = setInterval( function(){
+            console.log('im not sleeping', new Date().getTime() - time);
+            time = new Date().getTime();
+          }, 10000);
+        };
+        cordova.plugins.backgroundMode.ondeactivate = function() {
+          console.log('deactivating background mode');
+          clearInterval( interval );n
+        };
+      }
+      if( window.cordova.plugins.notification ) {
+        window.cordova.plugins.notification.local.on('schedule', function (notification) {
+          console.log('onschedule', arguments);
+          // showToast('scheduled: ' + notification.id);
+        });
+      }
     }
 
     if (window.StatusBar) {
@@ -61,7 +84,8 @@ angular.module('starter', [
   'starter.directives',
   'starter.filters',
   'angular-underscore',
-  'angular-stripe'])
+  'angular-stripe',
+  'ngCordova'])
   .constant('APP_IP', 'https://XXXXX.herokuapp.com')
   .constant('_', window._)
   .run(mahrioRun)

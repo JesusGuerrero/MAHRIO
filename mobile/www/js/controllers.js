@@ -47,7 +47,7 @@ angular.module('starter.controllers', [])
 
     //console.log( 'im in here' + Users.getCurrentId() );
   })
-  .controller('TabNotificationCtrl', function($scope, $rootScope, Notification){
+  .controller('TabNotificationCtrl', function($scope, $rootScope, Notification, $cordovaLocalNotification){
     $scope.chatBadge = 0;
     $scope.$watch( function(){ return Notification.getChat(); }, function(newVal){
       if( newVal ) {
@@ -55,6 +55,13 @@ angular.module('starter.controllers', [])
         Notification.resetChat();
         console.log( 'broadcast event chat badge');
         $scope.chatBadge = newVal;
+        $cordovaLocalNotification.schedule({
+          id: 1,
+          title: "MAHRIO",
+          text: "This is a message"
+        }).then(function () {
+          console.log("The notification has been set");
+        });
       }
     });
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState){
