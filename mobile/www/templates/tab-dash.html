@@ -2,13 +2,54 @@
   <!--<ion-nav-buttons side="secondary">-->
     <!--<input type="text" class="search" placeholder="Search..." style="width: 75px; margin-top: 2px;" />-->
   <!--</ion-nav-buttons>-->
-  <ion-content class="padding">
+  <ion-content>
     <div style="text-align: center" ng-hide="hideLoading">
       <ion-spinner icon="spiral" style="margin: 0 auto;"></ion-spinner>
     </div>
-    <div ng-hide="!hideLoading" style="text-align: center">
-      Welcome, {{currentUser.profile.firstName}} {{currentUser.profile.lastName}}<br/>
-      {{currentUser.email}}
+    <div ng-hide="!hideLoading">
+      <div  class="row" style="text-align: center">
+        <div class="col">
+          Welcome, {{currentUser.profile.firstName}} {{currentUser.profile.lastName}}<br/>
+          {{currentUser.email}}
+        </div>
+      </div>
+      <div class="list">
+
+        <div class="item item-divider">
+          Recent Articles
+        </div>
+        <div class="card">
+          <div class="item item-avatar">
+            <img src="img/networks/2/mahrio-network.png">
+            <h2>What is mahrio?</h2>
+            <p>December 21, 2015</p>
+          </div>
+
+          <div class="item item-body">
+            <img class="full-image" src="img/networks/3/the-flamingo-network.png">
+            <p>
+              Discover what mahrio is? how it evolved? the motivation behind it? the future for it?
+              <br/>
+              <br/>
+              All these questions and more are answered in this article.
+            </p>
+            <p>
+              <a href="#" class="subdued">Network 1</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="item item-divider">
+          Upcoming Events
+        </div>
+        <a class="item item-avatar item-icon-right" href="#">
+          <img src="img/networks/4/swedish-cadillac-network.png">
+          <h2>Car Club</h2>
+          <p><small>01/03/2016 05:00pm Hollister CA</small></p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
     </div>
+
   </ion-content>
 </ion-view>
