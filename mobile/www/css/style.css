@@ -191,7 +191,7 @@ body.tabbed-nav .scroll-content {
   color: #fff;
   padding: 10px 0;
 }
-#dashboard {
+#dashboard  {
   background: #F8F8F8;
 }
 #dashboard .card {
@@ -238,4 +238,59 @@ body.tabbed-nav .scroll-content {
 }
 #dashboard .item.row {
   border-top: none;
+}
+#article-detail .header {
+  text-align: center;
+  background: #f8f8f8;
+}
+#article-detail .header h2 {
+  padding: 10px 16px;
+  margin: 0;
+  font-size: 25px;
+}
+#article-detail .header .image-caption {
+  font-size: 10px;
+  line-height: 12px;
+  margin: 0 10px;
+  text-align: right;
+}
+#article-detail .header .network {
+  position: absolute;
+  background: #f8f8f8;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 5px;
+  right: 5px;
+  border: 1px solid rgba(0,0,0,0.5);
+  color: #444;
+}
+#article-detail .header p.deck {
+  padding: 0 16px 10px;
+  margin: 0;
+}
+#article-detail .meta {
+  font-size: 12px;
+  line-height: 16px;
+  margin: 0;
+  text-align: center;
+  background: #fff;
+}
+#article-detail .meta .creator {
+  padding: 16px 0 0;
+  margin: 0 16px;
+
+}
+#article-detail .meta .details {
+  border-bottom: 1px solid #f8f8f8;
+  padding: 0 0 16px;
+  margin: 0 16px;
+}
+#article-detail .body {
+  padding: 16px;
+  background: #fff;
+}
+#article-detail .body p.first::first-letter{
+  font-size: 38px;
+  float: left;
+  margin: 10px 5px 0px 0;
 }
