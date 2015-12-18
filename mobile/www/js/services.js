@@ -56,7 +56,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Articles', function(_, $http, proxy, Sections){
+  .factory('Articles', function(_, $http, proxy, $q, Sections){
     var articles = [{
         id: 1,
         title: 'Birth Story',
@@ -87,6 +87,25 @@ angular.module('starter.services', [])
     var api = {
       get: function( networkId ) {
         return $http.get( proxy.url + '/api/articles?networkId=' + networkId);
+      },
+      getByIds: function( articleIds ) {
+        var defer = $q.defer();
+        $http.get( proxy.url + '/api/articles', {
+          params: { ids: articleIds }
+        }).then( function(res){
+          articles = _.indexBy( res.data.articles, '_id' );
+          defer.resolve(res);
+        }, function(err){
+          defer.reject(err);
+        });
+        return defer.promise;
+      },
+      getOne: function( id ){
+        if( articles.hasOwnProperty(id) ) {
+          return articles[ id ];
+        } else {
+          return false;
+        }
       },
       getSections: function( article ) {
         return _.indexBy( Sections.get( Object.keys( article.sections) ), 'id');
@@ -225,7 +244,11 @@ angular.module('starter.services', [])
         return defer.promise;
       },
       getArticle: function( articleId ) {
-        return articles[ articleId ];
+        if( articles && articles.hasOwnProperty( articleId ) ) {
+          return articles[ articleId ];
+        } else {
+          return Articles.getOne( articleId );
+        }
       },
       getMembers: function( networkId ) {
         var defer = $q.defer();

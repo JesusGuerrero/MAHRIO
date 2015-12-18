@@ -191,10 +191,14 @@ body.tabbed-nav .scroll-content {
   color: #fff;
   padding: 10px 0;
 }
+#dashboard {
+  background: #F8F8F8;
+}
 #dashboard .card {
   margin: 0;
   padding-bottom: 20px;
-  border-bottom: 10px solid #efefef;
+  border-bottom: 10px solid #F8F8F8;
+  box-shadow: none;
 }
 #dashboard .item.item-avatar {
   min-height: inherit;
@@ -219,10 +223,14 @@ body.tabbed-nav .scroll-content {
 }
 #dashboard .item.item-body {
   padding: 0 0 16px;
+  border-bottom-width: 0;
 }
 #dashboard .item.item-body p {
   padding: 0 16px;
 }
 #dashboard .item.tabs {
   padding: 0 16px;
+}
+#dashboard .item.row {
+  border-top: none;
 }

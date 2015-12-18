@@ -74,11 +74,20 @@ angular.module('starter.controllers', [])
 
   })
 
-  .controller('DashCtrl', function($scope, Users) {
+  .controller('DashCtrl', function($scope, $state, $ionicHistory, Users, Articles, _) {
     function hideLoading(){
       if( Users.hasCurrent() ) {
-        $scope.hideLoading = true;
         $scope.currentUser = Users.getCurrentUser();
+        var articleIds = [];
+        _.forEach( $scope.currentUser.networks, function(network){
+          articleIds = articleIds.concat( network.articles );
+        });
+        Articles.getByIds().then( function(res){
+          $scope.articles = res.data.articles;
+          $scope.hideLoading = true;
+        }, function(){
+          $scope.hideLoading = true;
+        });
       }
     }
     $scope.$on('$ionicView.enter', function() {
@@ -86,7 +95,7 @@ angular.module('starter.controllers', [])
     });
     $scope.$on('event:user:loaded', function(){
       hideLoading();
-    })
+    });
   })
 
   .controller('NetworksCtrl', function( $scope, $ionicLoading, Networks, Users, _) {
