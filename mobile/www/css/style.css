@@ -225,6 +225,11 @@ body.tabbed-nav .scroll-content {
   padding: 0 0 16px;
   border-bottom-width: 0;
 }
+#dashboard .item.item-body h2 {
+  padding: 0 16px;
+  font-size: 18px;
+  text-align: center;
+}
 #dashboard .item.item-body p {
   padding: 0 16px;
 }
