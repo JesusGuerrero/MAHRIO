@@ -198,11 +198,22 @@ body.tabbed-nav .scroll-content {
 }
 #dashboard .item.item-avatar {
   min-height: inherit;
-  padding: 12px 16px;
+  padding: 6px 16px 6px 65px;
 }
 #dashboard .item.item-avatar > img:first-child {
   top: 4px;
 }
 #dashboard .item.item-avatar h2 {
-  line-height: 25px;
+  line-height: 20px;
+  margin: 0;
+}
+#dashboard .item.item-avatar p.time {
+  line-height: 36px;
+  float: right;
+  margin: 0;
+}
+#dashboard .item.item-avatar p.network {
+  line-height: 12px;
+  font-size: 12px;
+  margin-top: 5px;
 }
