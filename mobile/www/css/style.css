@@ -217,3 +217,12 @@ body.tabbed-nav .scroll-content {
   font-size: 12px;
   margin-top: 5px;
 }
+#dashboard .item.item-body {
+  padding: 0 0 16px;
+}
+#dashboard .item.item-body p {
+  padding: 0 16px;
+}
+#dashboard .item.tabs {
+  padding: 0 16px;
+}
