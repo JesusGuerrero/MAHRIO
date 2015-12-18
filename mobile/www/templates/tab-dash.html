@@ -13,13 +13,13 @@
 
     <div ng-hide="!hideLoading">
         <div class="list card" ng-repeat="article in articles">
-          <div class="item item-avatar" ion-affix data-affix-within-parent-with-class="card">
+          <a class="item item-avatar" ion-affix data-affix-within-parent-with-class="card" href="#/tab/dashArticle/{{article._id}}">
             <img ng-src="{{article.owner.avatarImage.url}}" ng-show="article.owner.avatarImage.url">
             <i class="item-icon-label ion-android-person" ng-show="!article.owner.avatarImage.url" style="font-size: 40px"></i>
             <p class="time" style="float: right"><small>{{article.timeAgo}}</small></p>
             <h2>{{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</h2>
             <p class="network">{{article.network.name}} - {{article.created | date : 'medium'}}</p>
-          </div>
+          </a>
           <a class="item item-body" href="#/tab/dashArticle/{{article._id}}">
             <h2>{{article.title}}</h2>
             <img class="full-image" ng-src="{{article.coverImage.url}}" ng-show="article.coverImage.url">
