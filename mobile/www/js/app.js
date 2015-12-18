@@ -85,7 +85,8 @@ angular.module('starter', [
   'starter.filters',
   'angular-underscore',
   'angular-stripe',
-  'ngCordova'])
+  'ngCordova',
+  'ion-affix'])
   .constant('APP_IP', 'https://XXXXX.herokuapp.com')
   .constant('_', window._)
   .run(mahrioRun)
