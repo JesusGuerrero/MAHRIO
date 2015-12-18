@@ -86,7 +86,8 @@ angular.module('starter', [
   'angular-underscore',
   'angular-stripe',
   'ngCordova',
-  'ion-affix'])
+  'ion-affix'
+])
   .constant('APP_IP', 'https://XXXXX.herokuapp.com')
   .constant('_', window._)
   .run(mahrioRun)
@@ -125,6 +126,15 @@ angular.module('starter', [
         'tab-dash': {
           templateUrl: 'templates/tab-dash.html',
           controller: 'DashCtrl'
+        }
+      }
+    })
+    .state('tab.dashArticle', {
+      url: '/dashArticle/:articleId',
+      views: {
+        'tab-dash': {
+          templateUrl: 'templates/article-detail.html',
+          controller: 'ArticleDetailCtrl'
         }
       }
     })

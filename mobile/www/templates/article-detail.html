@@ -1,16 +1,24 @@
 <ion-view>
-  <ion-nav-title>
-    {{article.title}}
-  </ion-nav-title>
-
-  <ion-content>
-    <div class="row" ng-show="article.coverImage && article.coverImage.url"
-         style="min-height: 200px;" ng-style="{background: 'url('+article.coverImage.url+')', backgroundSize: 'cover'}">
+  <ion-content id="article-detail">
+    <div class="header">
+      <div ng-show="article.coverImage && article.coverImage.url">
+        <div class="row"
+             style="min-height: 200px;" ng-style="{background: 'url('+article.coverImage.url+')', backgroundSize: 'cover'}">
+          <p class="network">{{article.network.name}}</p>
+        </div>
+        <p class="image-caption">Istimages / Shutterstock / Jesus Rocha / Which Degree</p>
+      </div>
+      <h2>{{article.title}}</h2>
+      <p class="deck">{{article.deck}}</p>
     </div>
-    <h2>{{article.title}}</h2>
-    <p>{{article.deck}}</p>
-    <p ng-repeat="section in article.sections" ng-bind-html="section.body">
-    </p>
+    <div class="meta">
+      <div class="creator">{{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</div>
+      <div class="details">{{article.created | date : 'mediumDate'}} | {{article.network.name}}</div>
+    </div>
+    <div class="body">
+      <p ng-repeat="section in article.sections" ng-bind-html="section.body" ng-class="{true: 'first'}[!$index]"></p>
+    </div>
+
   </ion-content>
 
 </ion-view>
