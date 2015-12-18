@@ -2,53 +2,184 @@
   <!--<ion-nav-buttons side="secondary">-->
     <!--<input type="text" class="search" placeholder="Search..." style="width: 75px; margin-top: 2px;" />-->
   <!--</ion-nav-buttons>-->
-  <ion-content>
+  <div class="item item-divider" style="display: none;">
+    Recent Articles
+  </div>
+  <ion-content scroll-event-interval="5" id="dashboard">
+
     <div style="text-align: center" ng-hide="hideLoading">
       <ion-spinner icon="spiral" style="margin: 0 auto;"></ion-spinner>
     </div>
     <div ng-hide="!hideLoading">
-      <div  class="row" style="text-align: center">
-        <div class="col">
-          Welcome, {{currentUser.profile.firstName}} {{currentUser.profile.lastName}}<br/>
-          {{currentUser.email}}
-        </div>
-      </div>
-      <div class="list">
-
-        <div class="item item-divider">
-          Recent Articles
-        </div>
-        <div class="card">
-          <div class="item item-avatar">
+        <div class="list card">
+          <div class="item item-avatar" ion-affix data-affix-within-parent-with-class="card">
             <img src="img/networks/2/mahrio-network.png">
-            <h2>What is mahrio?</h2>
-            <p>December 21, 2015</p>
+            <p style="float: right"><small>3m</small></p>
+            <h2>Marty McFly</h2>
+          </div>
+          <div class="item item-body">
+            <img class="full-image" src="img/networks/3/the-flamingo-network.png">
+            <p>
+              This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+              the content is from a card-body consisting of an image and paragraph text. The footer
+              consists of tabs, icons aligned left, within the card-footer.
+            </p>
+          </div>
+          <div class="item tabs tabs-secondary tabs-icon-left">
+            <a class="tab-item" href="#">
+              <i class="icon ion-thumbsup"></i>
+              Like
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-chatbox"></i>
+              Comment
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-share"></i>
+              Share
+            </a>
+          </div>
+        </div>
+        <div class="list card">
+
+          <div class="item item-avatar" ion-affix data-affix-within-parent-with-class="card">
+            <img src="img/networks/2/mahrio-network.png">
+
+            <h2>Marty McFly</h2>
+
+            <p>Network 1</p>
           </div>
 
           <div class="item item-body">
             <img class="full-image" src="img/networks/3/the-flamingo-network.png">
+
             <p>
-              Discover what mahrio is? how it evolved? the motivation behind it? the future for it?
-              <br/>
-              <br/>
-              All these questions and more are answered in this article.
+              This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+              the content is from a card-body consisting of an image and paragraph text. The footer
+              consists of tabs, icons aligned left, within the card-footer.
             </p>
-            <p>
-              <a href="#" class="subdued">Network 1</a>
-            </p>
+          </div>
+          <div class="item tabs tabs-secondary tabs-icon-left">
+            <a class="tab-item" href="#">
+              <i class="icon ion-thumbsup"></i>
+              Like
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-chatbox"></i>
+              Comment
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-share"></i>
+              Share
+            </a>
           </div>
         </div>
 
-        <div class="item item-divider">
-          Upcoming Events
+        <div class="list card">
+
+          <div class="item item-avatar" ion-affix data-affix-within-parent-with-class="card">
+            <img src="img/networks/2/mahrio-network.png">
+
+            <h2>Marty McFly</h2>
+
+            <p>Network 1</p>
+          </div>
+
+          <div class="item item-body">
+            <img class="full-image" src="img/networks/3/the-flamingo-network.png">
+
+            <p>
+              This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+              the content is from a card-body consisting of an image and paragraph text. The footer
+              consists of tabs, icons aligned left, within the card-footer.
+            </p>
+          </div>
+          <div class="item tabs tabs-secondary tabs-icon-left">
+            <a class="tab-item" href="#">
+              <i class="icon ion-thumbsup"></i>
+              Like
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-chatbox"></i>
+              Comment
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-share"></i>
+              Share
+            </a>
+          </div>
         </div>
-        <a class="item item-avatar item-icon-right" href="#">
-          <img src="img/networks/4/swedish-cadillac-network.png">
-          <h2>Car Club</h2>
-          <p><small>01/03/2016 05:00pm Hollister CA</small></p>
-          <i class="icon ion-chevron-right icon-accessory"></i>
-        </a>
-      </div>
+        <div class="list card">
+
+          <div class="item item-avatar" ion-affix data-affix-within-parent-with-class="card">
+            <img src="img/networks/2/mahrio-network.png">
+
+            <h2>Marty McFly</h2>
+
+            <p>Network 2</p>
+          </div>
+
+          <div class="item item-body">
+            <img class="full-image" src="img/networks/3/the-flamingo-network.png">
+
+            <p>
+              This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+              the content is from a card-body consisting of an image and paragraph text. The footer
+              consists of tabs, icons aligned left, within the card-footer.
+            </p>
+          </div>
+          <div class="item tabs tabs-secondary tabs-icon-left">
+            <a class="tab-item" href="#">
+              <i class="icon ion-thumbsup"></i>
+              Like
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-chatbox"></i>
+              Comment
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-share"></i>
+              Share
+            </a>
+          </div>
+        </div>
+
+      <!--<div style="display:none" class="list">-->
+
+        <!--<div class="item item-divider">-->
+          <!--Recent Articles-->
+        <!--</div>-->
+        <!--<div class="card">-->
+          <!--<div class="item item-avatar">-->
+            <!--<img src="img/networks/2/mahrio-network.png">-->
+            <!--<h2>What is mahrio?</h2>-->
+            <!--<p>December 21, 2015</p>-->
+          <!--</div>-->
+
+          <!--<div class="item item-body">-->
+            <!--<img class="full-image" src="img/networks/3/the-flamingo-network.png">-->
+            <!--<p>-->
+              <!--Discover what mahrio is? how it evolved? the motivation behind it? the future for it?-->
+              <!--<br/>-->
+              <!--<br/>-->
+              <!--All these questions and more are answered in this article.-->
+            <!--</p>-->
+            <!--<p>-->
+              <!--<a href="#" class="subdued">Network 1</a>-->
+            <!--</p>-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="item item-divider">-->
+          <!--Upcoming Events-->
+        <!--</div>-->
+        <!--<a class="item item-avatar item-icon-right" href="#">-->
+          <!--<img src="img/networks/4/swedish-cadillac-network.png">-->
+          <!--<h2>Car Club</h2>-->
+          <!--<p><small>01/03/2016 05:00pm Hollister CA</small></p>-->
+          <!--<i class="icon ion-chevron-right icon-accessory"></i>-->
+        <!--</a>-->
+      <!--</div>-->
     </div>
 
   </ion-content>
