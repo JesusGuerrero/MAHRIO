@@ -13,25 +13,20 @@
 
     <div ng-hide="!hideLoading">
         <div class="list card" ng-repeat="article in articles">
-          <a class="item item-avatar item-icon-right" ion-affix data-affix-within-parent-with-class="card" href="#/tab/dashArticle/{{article._id}}">
+          <a class="item item-avatar" ion-affix data-affix-within-parent-with-class="card" href="#/tab/dashArticle/{{article._id}}">
             <img ng-src="{{article.owner.avatarImage.url}}" ng-show="article.owner.avatarImage.url">
             <i class="item-icon-label ion-android-person" ng-show="!article.owner.avatarImage.url" style="font-size: 40px"></i>
             <p class="time" style="float: right"><small>{{article.timeAgo}}</small></p>
             <h2>{{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</h2>
             <p class="network">{{article.network.name}} - {{article.created | date : 'medium'}}</p>
-            <i class="icon ion-chevron-right icon-accessory"></i>
           </a>
-          <div class="item item-body">
+          <a class="item item-body" href="#/tab/dashArticle/{{article._id}}">
+            <h2>{{article.title}}</h2>
             <img class="full-image" ng-src="{{article.coverImage.url}}" ng-show="article.coverImage.url">
             <p>
               {{article.deck}}
             </p>
-          </div>
-          <div class="item row">
-            <a class="button col-50 col-offset-25" href="#/tab/dashArticle/{{article._id}}">
-              Continue Reading
-            </a>
-          </div>
+          </a>
         </div>
     </div>
 
