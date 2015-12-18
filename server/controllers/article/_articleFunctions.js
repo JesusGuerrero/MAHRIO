@@ -49,7 +49,7 @@ function _getArticleOwner( article, callback ) {
 function _getAllArticles( request, reply, callback ) {
   Article
     .find( request.query.networkId ? {network: request.query.networkId} : {} )
-    .populate('widgets sections media coverImage')
+    .populate('widgets sections media coverImage network')
     .exec( function(err, articles){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
