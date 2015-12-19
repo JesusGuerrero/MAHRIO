@@ -264,6 +264,15 @@ angular.module('starter', [
         }
       }
     })
+    .state('tab.searchDetail', {
+      url: '/searchDetail/:eventId?network',
+      views: {
+        'tab-search': {
+          templateUrl: 'templates/event-detail.html',
+          controller: 'EventDetailCtrl'
+        }
+      }
+    })
     .state('tab.account', {
       url: '/account',
       views: {

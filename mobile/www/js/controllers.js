@@ -381,13 +381,53 @@ angular.module('starter.controllers', [])
     };
   })
 
-  .controller('SearchCtrl', function( $scope) {
+  .controller('SearchCtrl', function( $scope, Networks ) {
 
+    Networks.getEvents().then( function( events ){
+      $scope.events = events;
+    })
   })
-  .controller('AccountCtrl', function($scope, $state, Users) {
+  .controller('AccountCtrl', function($scope, $state, $ionicLoading, Users, Networks, _) {
     $scope.currentUser = Users.getCurrentUser();
     $scope.settings = {
       enableFriends: true
+    };
+
+    var networks, myNetworkIds = Object.keys( _.indexBy( Users.getNetworks( ), '_id') );
+    Networks.get().then( function(data){
+      networks = data;
+      var myNetworks = _.filter( networks, function(network){ return _.contains( myNetworkIds, network._id ); });
+      $scope.networks = _.indexBy( myNetworks, '_id');
+    });
+    $scope.provisionNetworksModal = function(){
+      var otherNetworks = _.filter(networks, function(network){ return !_.contains( myNetworkIds, network._id ); });
+      $scope.otherNetworks = _.indexBy( otherNetworks, '_id');
+
+      $scope.joinNetwork = function( network ) {
+        $ionicLoading.show({
+          template: 'Joining...'
+        });
+        Networks.join( network ).then( function(){
+          $ionicLoading.hide();
+          myNetworkIds.push( network._id );
+          $scope.networks[ network._id ] = network;
+          delete $scope.otherNetworks[ network._id ];
+        });
+      };
+      $scope.leaveNetwork = function( network ) {
+        $ionicLoading.show({
+          template: 'Leaving...'
+        });
+        Networks.leave( network ).then( function(){
+          $ionicLoading.hide();
+          myNetworkIds.splice( myNetworkIds.indexOf( network._id ), 1);
+          $scope.otherNetworks[ network._id ] = network;
+          delete $scope.networks[ network._id ];
+        });
+      };
+      $scope.$emit('provision:modal:networks',{
+        scope: $scope
+      });
     };
     $scope.logout = function(){
       Users.logout();

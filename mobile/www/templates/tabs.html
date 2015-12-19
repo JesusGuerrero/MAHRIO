@@ -7,13 +7,13 @@ navigation history that also transitions its views in and out.
   <ion-tabs class="tabs-icon-top tabs-color-active-positive" ng-hide="$root.hideTabs">
 
     <!-- Dashboard Tab -->
-    <ion-tab title="Status" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/tab/dash" >
+    <ion-tab title="Articles" icon-off="ion-ios-paper-outline" icon-on="ion-ios-paper" href="#/tab/dash" >
       <ion-nav-view name="tab-dash"></ion-nav-view>
     </ion-tab>
 
-    <!-- Articles Tab -->
-    <ion-tab title="Networks" icon-off="ion-ios-cloud-outline" icon-on="ion-ios-cloud" href="#/tab/networks" >
-      <ion-nav-view name="tab-networks"></ion-nav-view>
+    <!-- Calendar Tab -->
+    <ion-tab title="Events" icon-off="ion-ios-calendar-outline" icon-on="ion-ios-calendar" href="#/tab/search">
+      <ion-nav-view name="tab-search"></ion-nav-view>
     </ion-tab>
 
     <!-- Chats Tab -->
@@ -21,13 +21,13 @@ navigation history that also transitions its views in and out.
       <ion-nav-view name="tab-chats"></ion-nav-view>
     </ion-tab>
 
-    <!-- Calendar Tab -->
-    <ion-tab title="Search" icon-off="ion-ios-search-strong" icon-on="ion-search" href="#/tab/search">
-      <ion-nav-view name="tab-search"></ion-nav-view>
+    <!-- Articles Tab -->
+    <ion-tab title="Networks" icon-off="ion-ios-cloud-outline" icon-on="ion-ios-cloud" href="#/tab/networks" >
+      <ion-nav-view name="tab-networks"></ion-nav-view>
     </ion-tab>
 
     <!-- Account Tab -->
-    <ion-tab title="Account" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" href="#/tab/account">
+    <ion-tab title="Settings" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" href="#/tab/account">
       <ion-nav-view name="tab-account"></ion-nav-view>
     </ion-tab>
   </ion-tabs>
