@@ -1,10 +1,32 @@
 <ion-view view-title="">
 
-  <ion-content>
-    <h2>Name: {{event.title}}</h2>
-    <p>Description: {{event.description}}</p>
-    <p>Start: {{event.start | date : 'medium' }}</p>
-    <p>End: {{event.end | date : 'medium' }}</p>
+  <ion-content id="event-detail">
+    <div class="header">
+      <h5 class="padding-left"><i class="ion-ios-people"></i>MAHRIO</h5>
+      <h2 class="padding-left">{{event.title}}</h2>
+      <p  class="time">
+        <button class="button button-small">
+          <i class="ion-ios-calendar"></i>
+        </button>
+        {{event.start | date : 'longDate' : '+0'}}
+        <br/>
+        {{event.start | date : 'shortTime' : '+0'}}
+        &mdash;
+        {{event.end | date : 'shortTime' : '+0'}}
+      </p>
+      <p class="location">
+        <button class="button button-small">
+          <i class="ion-map"></i>
+        </button>
+        Which Degree LLC
+        <br/>
+        26514 Flamingo Ave, Hayward, CA
+      </p>
+    </div>
+    <div class="padding-left padding-right description" ng-class="{true: 'showMore'}[showMore]">
+      <i class="ion-chevron-down" ng-show="!showMore && event.description" ng-click="showMore=true"></i>
+      {{event.description}}
+    </div>
   </ion-content>
 
 </ion-view>

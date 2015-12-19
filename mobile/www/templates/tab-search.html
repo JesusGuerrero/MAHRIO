@@ -7,13 +7,7 @@
       </div>
       <div class="list padding-left padding-right">
         <a class="item item-avatar" ng-repeat="event in day" href="#/tab/searchDetail/{{event._id}}">
-          <h4 class="time">
-            {{event.start | date : 'shortTime' : '+0'}}
-            <br/>
-            to
-            <br/>
-            {{event.end | date : 'shortTime' : '+0'}}
-          </h4>
+          <h4 class="time">{{event.start | date : 'shortTime' : '+0'}}<br/>to<br/>{{event.end | date : 'shortTime' : '+0'}}</h4>
           <h3>MAHRIO</h3>
           <h2>{{event.title}}</h2>
           <p>2 geeks going</p>
