@@ -198,7 +198,14 @@ angular.module('starter.controllers', [])
     });
     Networks.getEvents( $scope.networkId ).then( function(events) {
       $ionicLoading.hide();
-      $scope.events = events;
+      var tempEvents = _.map( events, function(event){
+        event.date = event.start.split('T')[0];
+        return event;});
+      tempEvents = _.groupBy( tempEvents, 'date');
+      tempEvents = _.map( tempEvents, function(event){
+        event = _.sortBy( event, function(evt){ return evt.start; });
+        return event; });
+      $scope.days = _.sortBy( tempEvents, function(event){ return event[0].date; });
     });
   })
   .controller('EventDetailCtrl', function($scope, $stateParams, Networks){
