@@ -11,11 +11,11 @@ var crypto = require('crypto');
 function login (request, reply) {
   if (request.auth.isAuthenticated) { return reply(Boom.badRequest('You Logged In')); }
 
-  User.login(request.payload.email, request.payload.password, function (err, user) {
+  User.login(request.payload.email, request.payload.password, function (err, token) {
     if (err) { return reply(Boom.badRequest(err)); }
 
     reply({success: true})
-      .header('Authorization', 'Bearer ' + user.authorizationToken)
+      .header('Authorization', 'Bearer ' + token)
       .header('Access-Control-Expose-Headers', 'authorization');
   });
 }
@@ -51,14 +51,10 @@ function passwordReset( request, reply ){
 }
 function logout (request, reply) {
   if (request.auth.isAuthenticated) {
-    User.findOne( {authorizationToken: request.auth.credentials.token}, function(err, user) {
+    User.update( {authorizationToken: request.auth.credentials.token}, {$pull: {authorizationToken:request.auth.credentials.token}}, {multi: false}, function(err){
       if( err ) { return reply( Boom.badRequest() ); }
 
-      user.authorizationToken = '';
-      user.save( function(err) {
-        if( err ) { return reply( Boom.badRequest()); }
-        reply({logout: true});
-      });
+      reply({logout:true});
     });
   }else{
     reply({logout: true});
