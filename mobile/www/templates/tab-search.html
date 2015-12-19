@@ -1,12 +1,18 @@
 <ion-view view-title="Events">
-  <ion-content>
-    <ion-list>
-      <ion-item class="item item-thumbnail-left item-icon-right" ng-repeat="event in events" type="item-text-wrap" href="#/tab/searchDetail/{{event._id}}">
-        <h2>{{event.title}}</h2>
-        <p>{{event.description}}</p>
-        <p>{{event.start | date : 'medium'}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-    </ion-list>
+  <ion-content id="events">
+    <div class="group stable-bg" ng-repeat="day in days">
+      <div class="item item-divider stable-bg" ion-affix data-affix-within-parent-with-class="group">
+        {{day[0].date | date : 'mediumDate'}}
+        <div class="badge badge-dark">{{day.length}}</div>
+      </div>
+      <div class="list padding-left padding-right">
+        <a class="item item-avatar" ng-repeat="event in day" href="#/tab/searchDetail/{{event._id}}">
+          <h4 class="time">{{event.start | date : 'shortTime' : '+0'}}<br/>to<br/>{{event.end | date : 'shortTime' : '+0'}}</h4>
+          <h3>MAHRIO</h3>
+          <h2>{{event.title}}</h2>
+          <p>2 geeks going</p>
+        </a>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

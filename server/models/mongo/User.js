@@ -25,7 +25,7 @@ schema = mongoose.Schema({
   password:   {type: String },
   resetPasswordToken:   {type: String},
   resetPasswordExpires: {type: Date },
-  authorizationToken:   {type: String},
+  authorizationToken:   [{type: String}],
 
   networks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Network' }], // ACCESS CONTROL
   pending: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Network' }], // ACCESS CONTROL
@@ -99,11 +99,17 @@ schema.statics.login = function(email, passwordToMatch, cb) {
     if (!user.authenticate(passwordToMatch)) {
       return cb('wrong password');
     }
-    user.authorizationToken = crypto.randomBytes(20).toString('hex');
+    var newToken = crypto.randomBytes(20).toString('hex');
+    if( user.authorizationToken.length ) {
+      user.authorizationToken.push( newToken );
+    } else {
+      user.authorizationToken = [ newToken ];
+    }
+
     user.save( function(err, user){
       if( err || typeof user === 'undefined'){ return cb('error'); }
 
-      cb(null, user);
+      cb(null, newToken);
     });
   });
 };

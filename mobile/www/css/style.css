@@ -294,3 +294,59 @@ body.tabbed-nav .scroll-content {
   float: left;
   margin: 10px 5px 0px 0;
 }
+#events .item-divider {
+  border: none;
+  padding: 8px 6px;
+  margin: 0 9px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#events .item.item-divider .badge {
+  right: 25px;
+}
+#events .group .list {
+  border-top: none;
+}
+#events .group .list .item:first-child {
+  border-top: none;
+}
+#events .group .list .item .time {
+  position: absolute;
+  left: 5px;
+  line-height: 16px;
+  font-size: 12px;
+  text-align: center;
+  top: 21px;
+}
+#event-detail .header h5 i {
+  font-size: 28px;
+  padding: 0 10px 0 0;
+  float: left;
+  margin-top: -9px;
+}
+#event-detail .header p.time, #event-detail .header p.location {
+  margin-left: 55px;
+}
+#event-detail .header p.time button, #event-detail .header p.location button {
+  position: absolute;
+  left: 8px;
+  margin-top: 0px;
+  padding: 0px;
+  width: 40px;
+}
+#event-detail .header p.time button i, #event-detail .header p.location button i {
+  font-size: 26px;
+  line-height: 38px;
+}
+#event-detail div.description {
+  max-height: 60px;
+  overflow: hidden;
+}
+#event-detail div.description i {
+  float: right;
+  line-height: 60px;
+  font-size: 20px;
+  margin: 0 10px;
+}
+#event-detail div.description.showMore {
+  max-height: inherit;
+}
