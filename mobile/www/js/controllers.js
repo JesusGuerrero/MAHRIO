@@ -191,7 +191,7 @@ angular.module('starter.controllers', [])
   .controller('BoardDetailCtrl', function($scope, $stateParams, Networks){
     $scope.board = Networks.getBoards( $stateParams.network, $stateParams.boardId );
   })
-  .controller('EventsCtrl', function($scope, $stateParams, $ionicLoading, Networks){
+  .controller('EventsCtrl', function($scope, $stateParams, $ionicLoading, Networks, _){
     $scope.networkId = $stateParams.network;
     $ionicLoading.show({
       template: 'Loading...'
@@ -382,9 +382,15 @@ angular.module('starter.controllers', [])
   })
 
   .controller('SearchCtrl', function( $scope, Networks ) {
-
     Networks.getEvents().then( function( events ){
-      $scope.events = events;
+      var tempEvents = _.map( events, function(event){
+        event.date = event.start.split('T')[0];
+        return event;});
+      tempEvents = _.groupBy( tempEvents, 'date');
+      tempEvents = _.map( tempEvents, function(event){
+        event = _.sortBy( event, function(evt){ return evt.start; });
+        return event; });
+      $scope.days = _.sortBy( tempEvents, function(event){ return event[0].date; });
     })
   })
   .controller('AccountCtrl', function($scope, $state, $ionicLoading, Users, Networks, _) {

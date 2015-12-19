@@ -294,3 +294,25 @@ body.tabbed-nav .scroll-content {
   float: left;
   margin: 10px 5px 0px 0;
 }
+#events .item-divider {
+  border: none;
+  padding: 8px 6px;
+  margin: 0 9px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#events .item.item-divider .badge {
+  right: 25px;
+}
+#events .group .list {
+  border-top: none;
+}
+#events .group .list .item:first-child {
+  border-top: none;
+}
+#events .group .list .item .time {
+  position: absolute;
+  left: 5px;
+  line-height: 16px;
+  font-size: 12px;
+  text-align: center;
+}
