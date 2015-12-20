@@ -361,7 +361,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/calendar/list',
         resolve: {
           events: function($stateParams, Calendar, $q) {
-            return resource.events( null, Calendar, $q.defer() );
+            return resource.events( null, Calendar, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Events'

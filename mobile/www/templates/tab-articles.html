@@ -1,22 +1,21 @@
-<ion-view>
-  <ion-nav-title>
-    Articles
-    <!--<div class="tabs tabs-top" style="margin-top: 35px;">-->
-      <!--<a class="tab-item" href="javascript:void(0)">-->
-        <!--Viviana Jade Rocha-->
-      <!--</a>-->
-    <!--</div>-->
-  </ion-nav-title>
+<ion-view view-title="Articles">
 
-  <ion-content ng-controller="ArticlesCtrl">
-    <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="article in articles" type="item-text-wrap" href="#/tab/article/{{article._id}}?network={{networkId}}">
-        <img ng-src="{{article.coverImage.url}}" ng-show="article.coverImage && article.coverImage.url">
-        <i class="item-icon-label book" style="font-size: 84px"></i>
+  <ion-content scroll-event-interval="5" id="dashboard" ng-controller="ArticlesCtrl">
+    <div class="list card" ng-repeat="article in articles">
+      <a class="item item-avatar" ion-affix data-affix-within-parent-with-class="card">
+        <img ng-src="{{article.owner.avatarImage.url}}" ng-show="article.owner.avatarImage.url">
+        <i class="item-icon-label ion-android-person" ng-show="!article.owner.avatarImage.url" style="font-size: 40px"></i>
+        <p class="time" style="float: right"><small>{{article.timeAgo}}</small></p>
+        <h2>{{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</h2>
+        <p class="network">{{article.network.name}} - {{article.created | date : 'medium'}}</p>
+      </a>
+      <a class="item item-body" href="#/tab/article/{{article._id}}?network={{networkId}}">
         <h2>{{article.title}}</h2>
-        <p>{{article.deck}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-    </ion-list>
+        <img class="full-image" ng-src="{{article.coverImage.url}}" ng-show="article.coverImage.url">
+        <p>
+          {{article.deck}}
+        </p>
+      </a>
+    </div>
   </ion-content>
 </ion-view>

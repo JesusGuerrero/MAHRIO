@@ -14,7 +14,8 @@ var mongoose = require('mongoose'),
     created: { type: Date, default: Date.now },
     invited: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     accepted: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    network: {type: mongoose.Schema.Types.ObjectId, ref: 'Network', required: true}
   });
 
 module.exports = mongoose.model( 'CalendarEvent', schema);

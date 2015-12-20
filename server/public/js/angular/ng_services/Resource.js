@@ -43,8 +43,8 @@ angular.module('baseApp')
             });
           return defer.promise;
         },
-        events: function( id, Calendar, defer ) {
-          Calendar.get( id )
+        events: function( id, Calendar, defer, network ) {
+          Calendar.get( id, network )
             .then( function( res ) {
               if( id ) {
                 defer.resolve(res.event);

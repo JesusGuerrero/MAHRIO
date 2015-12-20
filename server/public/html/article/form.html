@@ -43,7 +43,7 @@
           </div>
           <div class="col-sm-4 col-md-3 col-md-offset-3"><a data-dismiss="modal" aria-label="Close" class="btn btn-block btn-default btn-lg">  Cancel</a></div>
           <div ng-class="{true: 'col-md-offset-3'}[ article._id ]" class="col-sm-4 col-md-3 text-center">
-            <button ng-click="save()" class="btn btn-block btn-primary btn-lg">  {{article._id ? 'Save' : 'Create'}}</button>
+            <button ng-click="save()" ng-disabled="tempSection" class="btn btn-block btn-primary btn-lg">  {{article._id ? 'Save' : 'Create'}}</button>
           </div>
         </div>
       </div>

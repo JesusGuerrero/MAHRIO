@@ -268,7 +268,7 @@ angular.module('starter.services', [])
       getEvents: function( networkId ) {
         var defer = $q.defer();
 
-        Events.get( api.getOne( networkId )._id ).then( function(res) {
+        Events.get( networkId ).then( function(res) {
           events = _.indexBy(res.data.events, '_id');
           defer.resolve( events );
         }, function(){

@@ -43,9 +43,9 @@ callout-info( resource="events" header="Events: empty!" icon="calendar")
                     h3
                         |{{event.title}}
                 p.bg-yellow.label.pull-left
-                    |   {{event.start | date:'medium'}}
+                    |   {{event.start | date : 'medium' : 'UTC'}}
                 p.bg-yellow.label.pull-right
-                    |   {{event.end | date:'medium'}}
+                    |   {{event.end | date : 'medium' : 'UTC'}}
                 br
                 br.hidden-xs.hidden-sm
                 div(class="article-content")

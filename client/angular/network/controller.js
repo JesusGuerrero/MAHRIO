@@ -223,6 +223,7 @@ angular.module('baseApp.controllers')
         $scope.networkId = $state.params.id;
         $scope.events = events.length ? events : null;
         $scope.newEvent = function(){
+          $scope.edit = null;
           $('#modalEventForm' ).modal().show();
         };
         $scope.editEvent = function( event ){
