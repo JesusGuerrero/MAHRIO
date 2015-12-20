@@ -30,8 +30,8 @@
             <!--figcaption(class="credit")-->
           </figure>
           <h3>{{event.title}}</h3></a>
-        <p class="bg-yellow label pull-left">  {{event.start | date:'medium'}}</p>
-        <p class="bg-yellow label pull-right">  {{event.end | date:'medium'}}</p><br/><br class="hidden-xs hidden-sm"/>
+        <p class="bg-yellow label pull-left">  {{event.start | date : 'medium' : 'UTC'}}</p>
+        <p class="bg-yellow label pull-right">  {{event.end | date : 'medium' : 'UTC'}}</p><br/><br class="hidden-xs hidden-sm"/>
         <div class="article-content"> {{event.description}}</div>
         <div ng-show="access.indexOf('admin') !== -1 || access.indexOf('sudo') !== -1" class="row">
           <div class="col-xs-10 col-xs-offset-1">

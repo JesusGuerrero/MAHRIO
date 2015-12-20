@@ -15,7 +15,7 @@ module.exports = function ( config, server ) {
         if (err || !user || typeof user === 'undefined') {
           return callback(null, false, { token: token });
         }
-        callback(null, true, { token: token, access: user.access, id: user.id });
+        callback(null, true, { token: token, access: user.access, id: user.id, networks: user.networks });
       });
     }
   });

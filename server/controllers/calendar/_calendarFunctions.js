@@ -34,9 +34,13 @@ function _getEventInvites( event, callback ) {
     });
 }
 function _getAllEvents( request, reply, callback ) {
+  var networks = {network: request.query.network};
+  if( typeof request.query.network === 'undefined') {
+    networks.network = {$in : request.auth.credentials.networks};
+  }
   CalendarEvent
-    .find( )
-    .populate('coverImage')
+    .find( networks )
+    .populate('coverImage network')
     .exec( function(err, events){
       if( err ) { return reply( Boom.badRequest(err) ); }
 

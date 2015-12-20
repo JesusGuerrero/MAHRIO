@@ -36,8 +36,8 @@ angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', fun
     add: function( obj ) {
       return CalendarResource.create( {event: obj} ).$promise;
     },
-    get: function( id ) {
-      return CalendarResource.read( id ? {id: id} : {} ).$promise;
+    get: function( id, network ) {
+      return CalendarResource.read( id ? {id: id} : {network: network} ).$promise;
     },
     update: function( obj ) {
       return CalendarResource.update( {id: obj._id}, {event: obj} ) .$promise;
