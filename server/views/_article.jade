@@ -8,30 +8,32 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope ng-app="baseApp")
             div( header-navigation-top access="access" )
 
             div( page-layout )
-            if( typeof article !== 'undefined')
-                .row.article-cover(ng-style="article.coverImage ? {} : {marginTop: 0}")
-                    if( typeof article.coverImage !== 'undefined' )
-                        figure
-                            img(src="#{article.coverImage.url}")
-                            figcaption(class="credit")
-                    .article-heading(ng-style="article.coverImage ? {} : {marginTop: 0, height: 'auto', textShadow: 'none', background: '#FFF', color: '#333', padding: '20px 0', fontSize: '13pt'}")
-                        h1= article.title
-                        p= article.deck
-                        sharebar
-                        .row
-                            .col-xs-3.col-xs-offset-3
-                                p.bg-green.label(style="display: block")
-                                    span= article._doc.owner.profile.firstName
-                                    span= article._doc.owner.profile.lastName
-                            .col-xs-3
-                                p.bg-yellow.label.hidden-sm.hidden-xs(style="display: block")= article.created
-                                p.bg-yellow.label.hidden-md.hidden-lg(style="display: block")= article.created
-                        .clearfix
-                .row(style="margin-top: 30px")
-                    .col-sm-10.col-sm-offset-1
-                        div(class="article-content")
-            else
-                |Article Not Found!
+                if( typeof article !== 'undefined')
+                    .row.article-cover(ng-style="article.coverImage ? {} : {marginTop: 0}")
+                        if( typeof article.coverImage !== 'undefined' )
+                            figure
+                                img(src="#{article.coverImage.url}")
+                                figcaption(class="credit")
+                        .article-heading(ng-style="article.coverImage ? {} : {marginTop: 0, height: 'auto', textShadow: 'none', background: '#FFF', color: '#333', padding: '20px 0', fontSize: '13pt'}")
+                            h1= article.title
+                            p= article.deck
+                            sharebar
+                            .row
+                                .col-xs-3.col-xs-offset-3
+                                    p.bg-green.label(style="display: block")
+                                        span= article._doc.owner.profile.firstName
+                                        span= article._doc.owner.profile.lastName
+                                .col-xs-3
+                                    p.bg-yellow.label.hidden-sm.hidden-xs(style="display: block")= article.created
+                                    p.bg-yellow.label.hidden-md.hidden-lg(style="display: block")= article.created
+                            .clearfix
+                    .row(style="margin-top: 30px")
+                        .col-sm-10.col-sm-offset-1
+                            div(class="article-content")
+                                each section in article.sections
+                                    p= section.body
+                else
+                    |Article Not Found!
             div( footer )
 
     if( typeof develop === 'undefined' )
