@@ -18,7 +18,8 @@
                     td
                         img( ng-src='{{article.coverImage.url}}' style="max-height: 40px;")
                     td
-                        |  {{article.title}}
+                        a( href="/article/{{article.link}}" target="_blank")
+                            |  {{article.title}}
                     td
                         |  {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}
                     td
