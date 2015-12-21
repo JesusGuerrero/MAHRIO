@@ -109598,7 +109598,7 @@ angular.module('baseApp', [
         templateUrl: '/assets/html/calendar/list',
         resolve: {
           events: function($stateParams, Calendar, $q) {
-            return resource.events( null, Calendar, $q.defer() );
+            return resource.events( null, Calendar, $q.defer(), $stateParams.id );
           }
         },
         title: 'Network: Events'
@@ -110655,8 +110655,8 @@ angular.module('baseApp.services').factory('Calendar', [ 'CalendarResource', fun
     add: function( obj ) {
       return CalendarResource.create( {event: obj} ).$promise;
     },
-    get: function( id ) {
-      return CalendarResource.read( id ? {id: id} : {} ).$promise;
+    get: function( id, network ) {
+      return CalendarResource.read( id ? {id: id} : {network: network} ).$promise;
     },
     update: function( obj ) {
       return CalendarResource.update( {id: obj._id}, {event: obj} ) .$promise;
@@ -112473,6 +112473,7 @@ angular.module('baseApp.controllers')
         $scope.networkId = $state.params.id;
         $scope.events = events.length ? events : null;
         $scope.newEvent = function(){
+          $scope.edit = null;
           $('#modalEventForm' ).modal().show();
         };
         $scope.editEvent = function( event ){
@@ -113457,8 +113458,8 @@ angular.module('baseApp')
             });
           return defer.promise;
         },
-        events: function( id, Calendar, defer ) {
-          Calendar.get( id )
+        events: function( id, Calendar, defer, network ) {
+          Calendar.get( id, network )
             .then( function( res ) {
               if( id ) {
                 defer.resolve(res.event);
@@ -113668,7 +113669,7 @@ angular.module('baseApp.services')
         .then( function(){
           currentUser = {access: ['any']};
           $rootScope.setAccess( ['any'] );
-          //$state.transitionTo('root');
+          $state.transitionTo('root');
           defer.resolve();
         });
       return defer.promise;
