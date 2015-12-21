@@ -3,6 +3,7 @@
 var mongoose = require('mongoose'),
   schema = mongoose.Schema({
     title: {type: String, required: true},
+    link: {type: String, required: true},
     deck: {type: String},
     coverImage: {type: mongoose.Schema.Types.ObjectId, ref: 'Media'},
     media: [{type: mongoose.Schema.Types.ObjectId, ref: 'Media'}],
