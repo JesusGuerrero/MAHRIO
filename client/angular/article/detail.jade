@@ -32,5 +32,4 @@
 .row(style="margin-top: 30px")
     .col-sm-10.col-sm-offset-1
         div(class="article-content")
-            p(ng-repeat="section in article.sections track by $index")
-                |{{section.body}}
+            p(ng-repeat="section in article.sections track by $index" ng-bind-html="section.body | rawhtml")
