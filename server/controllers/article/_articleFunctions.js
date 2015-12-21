@@ -20,6 +20,9 @@ function createArticle( request, reply ) {
 
     request.payload.article.sections = Object.keys(_.indexBy(sections, '_id'));
     request.payload.article.creator = request.auth.credentials.id;
+    if( typeof request.payload.article.link === 'undefined' || request.payload.article.link === '' ) {
+      request.payload.article.link = request.payload.article.title.replace(' ', '-');
+    }
     Article.create( request.payload.article, function(err, article){
       if( err ) { return reply( Boom.badRequest(err) ); }
 
@@ -61,7 +64,7 @@ function _getAllArticles( request, reply, callback ) {
     });
 }
 function getArticle( request, reply, callback ) {
-  if( typeof request.params.id === 'undefined' ) {
+  if( typeof request.params.id === 'undefined' && typeof request.params.link === 'undefined' ) {
     _getAllArticles( request, reply, function(articles){
       async.each( articles, function(article, callback){
         _getArticleOwner( article, function(err){
@@ -74,19 +77,36 @@ function getArticle( request, reply, callback ) {
       });
     });
   } else {
+    var queryObj = {};
+    if( typeof request.params.id !== 'undefined'){
+      queryObj._id = request.params.id;
+    } else if( typeof request.params.link !== 'undefined' ) {
+      queryObj.link = request.params.link;
+    } else {
+      return reply( Boom.badRequest() );
+    }
     Article
-      .findOne( {_id: request.params.id} )
+      .findOne( queryObj )
       .populate('widgets sections media coverImage')
       .exec( function(err, article){
         if( err ) { return reply( Boom.badRequest(err) ); }
 
+        if( !article ) {
+          return reply.view('_article');
+        }
         _getArticleOwner( article, function(err){
           if( err ) { return reply( Boom.badRequest() ); }
 
           if( typeof callback !== 'undefined' ) {
             callback( article );
           } else {
-            return reply( {article: article} );
+            if( typeof request.params.link !== 'undefined' ) {
+              return reply.view('_article', {
+                article: article
+              });
+            } else {
+              return reply( {article: article} );
+            }
           }
         });
       });
