@@ -6,6 +6,13 @@ module.exports = function(config, server) {
   [
     {
       method: ['GET'],
+      path: '/article/{link?}',
+      config: {
+        handler: ArticleCtrl.get
+      }
+    },
+    {
+      method: ['GET'],
       path: '/api/articles/{id?}',
       config: {
         handler: ArticleCtrl.get
