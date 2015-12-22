@@ -2,9 +2,26 @@ doctype
 html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
     head
         meta(charset="utf-8")
-        title(itemprop="name") Which Degree: Higher Education Insights
+        title(itemprop="name")
+            if( typeof article !== 'undefined')
+                = article.title
+            else
+                |Which Degree: Higher Education Insights
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
-        meta(name="description" content="AdminLTE")
+        if( typeof article !== 'undefined')
+            meta(name="description" content="#{article.deck}")
+            <!-- Open Graph Metatags -->
+            meta( property="og:type" content="article" )
+            meta( property="og:title" content="#{article.title}")
+            meta( property="og:description" content="#{article.deck}")
+            meta( property="og:site_name" content="Which Degree")
+            meta( property="fb:app_id" content="" )
+            meta( property="og:url" content="http://www.whichdegree.com/article/${article.link}" )
+            <!-- Twitter Card Metatags -->
+            meta( name="twitter:creator" content="@whichdegree")
+            meta( name="twitter:title" content="#{article.title}")
+            meta( name="twitter:description" content="#{article.deck}")
+            meta( name="twitter:site" content="@whichdegree")
 
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
         meta(name="mobile-web-app-capable" content="yes")
@@ -86,7 +103,7 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
                         .col-xs-4.col-xs-offset-2
                             p.bg-green
                                 b
-                                    span= article._doc.owner.profile.firstName
+                                    span= article._doc.owner.profile.firstName + ' '
                                     span= article._doc.owner.profile.lastName
                         .col-xs-4
                             p.bg-yellow

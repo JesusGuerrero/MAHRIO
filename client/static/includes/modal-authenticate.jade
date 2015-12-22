@@ -3,7 +3,7 @@ style
     |.login-form .banner-social-buttons .btn { background: #3D5A98; color: #fff;border-radius: 50%; padding: 5px 10px; border: none; }
 
 .auth-modal.modal.fade( id="authModal" tabindex="-1" role="dialog" aria-hidden="true" )
-    .modal-content(style="width: 320px; margin: 50px auto 0; border-radius: 10px;" ng-app="mahrio")
+    .modal-content(style="width: 320px; margin: 50px auto 0; border-radius: 10px;")
         .modal-body(ng-controller="AuthenticationController")
             .login-form(ng-hide="view!=='login'")
                 error-message-box( validation-errors="validationErrors" )
