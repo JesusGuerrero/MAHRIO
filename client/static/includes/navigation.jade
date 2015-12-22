@@ -14,7 +14,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top.navbar-expanded
                 //img.img-resposive( src="/assets/static/assets/img/logo.png")
         <!-- Collect the nav links, forms, and other content for toggling -->
         div.collapse.navbar-collapse( id="bs-example-navbar-collapse-1")
-            ul.nav.navbar-nav.navbar-right
+            ul.nav.navbar-nav.navbar-right(ng-controller="AccountController")
                 li.hidden
                     a(href="#page-top")
                 li
@@ -33,6 +33,6 @@ nav.navbar.navbar-inverse.navbar-fixed-top.navbar-expanded
                     a(href="#contact")
                         |   Contact
                 li
-                    a(href="#authModal" data-toggle="modal")
+                    a( ng-click='accountLink()')
                         i.fa.fa-lock
                         |   Account

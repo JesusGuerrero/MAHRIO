@@ -153,6 +153,15 @@ $(document).ready(function() {
 });
 
 angular.module('mahrio', [])
+  .controller('AccountController', ['$scope', function( $scope ) {
+      $scope.accountLink = function(){
+          if( typeof window.localStorage.Authorization !== 'undefined' ){
+              window.location.href = '/app';
+          } else {
+              $('#authModal').modal('show');
+          }
+      }
+  }])
   .controller('AuthenticationController', ['$scope', '$http',
       function($scope, $http){
           $scope.view = 'login';

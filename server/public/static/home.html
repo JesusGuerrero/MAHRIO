@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" itemtype="http://schema.org/WebPage" itemscope>
+<html lang="en" itemtype="http://schema.org/WebPage" itemscope ng-app="mahrio">
   <head>
     <meta charset="utf-8">
     <title itemprop="name">Which Degree: Higher Education Insights</title>
@@ -44,7 +44,7 @@
             <!--img.img-resposive( src="/assets/static/assets/img/logo.png")--></a>
         </div><!-- Collect the nav links, forms, and other content for toggling -->
         <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">
+          <ul ng-controller="AccountController" class="nav navbar-nav navbar-right">
             <li class="hidden"><a href="#page-top"></a></li>
             <li><a href="#about">  About</a></li>
             <!--li
@@ -60,7 +60,7 @@
                 |   Pricing
             -->
             <li><a href="#contact">  Contact</a></li>
-            <li><a href="#authModal" data-toggle="modal"><i class="fa fa-lock"></i>  Account</a></li>
+            <li><a ng-click="accountLink()"><i class="fa fa-lock"></i>  Account</a></li>
           </ul>
         </div>
       </div>
@@ -410,7 +410,7 @@
       .login-form .banner-social-buttons .btn { background: #3D5A98; color: #fff;border-radius: 50%; padding: 5px 10px; border: none; }
     </style>
     <div id="authModal" tabindex="-1" role="dialog" aria-hidden="true" class="auth-modal modal fade">
-      <div style="width: 320px; margin: 50px auto 0; border-radius: 10px;" ng-app="mahrio" class="modal-content">
+      <div style="width: 320px; margin: 50px auto 0; border-radius: 10px;" class="modal-content">
         <div ng-controller="AuthenticationController" class="modal-body">
           <div ng-hide="view!=='login'" class="login-form">
             <error-message-box validation-errors="validationErrors"></error-message-box>
