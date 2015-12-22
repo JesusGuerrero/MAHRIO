@@ -16,7 +16,7 @@
         </tr>
         <tr ng-repeat="article in articles track by $index">
           <td><img ng-src="{{article.coverImage.url}}" style="max-height: 40px;"/></td>
-          <td> {{article.title}}</td>
+          <td><a href="/article/{{article.link}}" target="_blank"> {{article.title}}</a></td>
           <td> {{article.owner.profile.firstName}} {{article.owner.profile.lastName}}</td>
           <td> {{article.created | date}}</td>
           <td class="text-right">
