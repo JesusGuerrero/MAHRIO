@@ -2,9 +2,14 @@ doctype
 html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
     head
         meta(charset="utf-8")
-        title(itemprop="name") Which Degree: Higher Education Insights
+        title(itemprop="name")
+            if( typeof article !== 'undefined')
+                = article.title
+            else
+                |Which Degree: Higher Education Insights
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
-        meta(name="description" content="AdminLTE")
+        if( typeof article !== 'undefined')
+            meta(name="description" content="#{article.deck}")
 
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
         meta(name="mobile-web-app-capable" content="yes")
