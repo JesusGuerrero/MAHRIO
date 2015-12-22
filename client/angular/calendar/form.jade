@@ -14,10 +14,22 @@
                             |   Image upload available after event created
                         div(ng-show="event._id")
                             media( media="event.coverImage" container='event' actions="mediaActions" icon="fa-photo")
-                    form-input-tag(
-                        model="event.title"
-                        label="Title"
-                        required="true")
+                    .row
+                        .col-md-9
+                            form-input-tag(
+                                model="event.title"
+                                label="Title"
+                                required="true")
+                        .col-md-3
+                            form-input-tag(
+                            model="event.maxRsvp"
+                            label="Max RSVP")
+                    .form-group
+                        label
+                            | Deck/Teaser
+                        textarea( placeholder="Enter text ..." ng-model="event.deck"
+                        style="width: 100%; height: 58px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;")
+
                     .form-group
                         label
                             | Description
@@ -29,21 +41,29 @@
                     .row
                         .col-xs-6
                             .form-group
+                                form-input-tag(
+                                model="event.locationName"
+                                label="Location Name")
+                        .col-xs-6
+                            .form-group
+                                form-input-tag(
+                                model="event.locationAddress"
+                                label="Location Address")
+                    .row
+                        .col-xs-6
+                            div(style="float: right")
                                 label
                                     |  All Day
                                 input( type="checkbox" ng-model="event.allDay" i-check)
-                        .col-xs-6
-                            .form-group
-                                label
-                                    |  Private
-                                input( type="checkbox" ng-model="event.isPrivate" i-check)
-                    .row
-                        .col-xs-6
                             .form-group
                                 label
                                     |  Start Date
                                 input.form-control( type="text" id="eventStart" ng-model="event.start" datepicker="{{event.start}}")
                         .col-xs-6
+                            div(style="float:right")
+                                label
+                                    |  Private
+                                input( type="checkbox" ng-model="event.isPrivate" i-check)
                             .form-group
                                 label
                                     |  End Date

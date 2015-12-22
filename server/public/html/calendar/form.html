@@ -12,7 +12,18 @@
               <media media="event.coverImage" container="event" actions="mediaActions" icon="fa-photo"></media>
             </div>
           </div>
-          <form-input-tag model="event.title" label="Title" required="true"></form-input-tag>
+          <div class="row">
+            <div class="col-md-9">
+              <form-input-tag model="event.title" label="Title" required="true"></form-input-tag>
+            </div>
+            <div class="col-md-3">
+              <form-input-tag model="event.maxRsvp" label="Max RSVP" required="true"></form-input-tag>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Deck/Teaser</label>
+            <textarea placeholder="Enter text ..." ng-model="event.deck" style="width: 100%; height: 58px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;"></textarea>
+          </div>
           <div class="form-group">
             <label>Description</label>
             <textarea id="wysihtml5-content" placeholder="Enter text ..." ng-model="event.description" style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #e3e3e3; padding: 10px;"></textarea>
@@ -21,25 +32,31 @@
           <div class="row">
             <div class="col-xs-6">
               <div class="form-group">
-                <label> All Day</label>
-                <input type="checkbox" ng-model="event.allDay" i-check="i-check"/>
+                <form-input-tag model="event.locationName" label="Location Name"></form-input-tag>
               </div>
             </div>
             <div class="col-xs-6">
               <div class="form-group">
-                <label> Private</label>
-                <input type="checkbox" ng-model="event.isPrivate" i-check="i-check"/>
+                <form-input-tag model="event.locationAddress" label="Location Address"></form-input-tag>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-xs-6">
+              <div style="float: right">
+                <label> All Day</label>
+                <input type="checkbox" ng-model="event.allDay" i-check="i-check"/>
+              </div>
               <div class="form-group">
                 <label> Start Date</label>
                 <input type="text" id="eventStart" ng-model="event.start" datepicker="{{event.start}}" class="form-control"/>
               </div>
             </div>
             <div class="col-xs-6">
+              <div style="float:right">
+                <label> Private</label>
+                <input type="checkbox" ng-model="event.isPrivate" i-check="i-check"/>
+              </div>
               <div class="form-group">
                 <label> End Date</label>
                 <input type="text" id="eventEnd" ng-model="event.end" datepicker="{{event.end}}" class="form-control"/>
