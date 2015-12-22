@@ -21,7 +21,7 @@ function createArticle( request, reply ) {
     request.payload.article.sections = Object.keys(_.indexBy(sections, '_id'));
     request.payload.article.creator = request.auth.credentials.id;
     if( typeof request.payload.article.link === 'undefined' || request.payload.article.link === '' ) {
-      request.payload.article.link = request.payload.article.title.replace(' ', '-');
+      request.payload.article.link = request.payload.article.title.replace(/[^a-zA-Z0-9]/g, '_');
     }
     Article.create( request.payload.article, function(err, article){
       if( err ) { return reply( Boom.badRequest(err) ); }
@@ -102,7 +102,11 @@ function getArticle( request, reply, callback ) {
           } else {
             if( typeof request.params.link !== 'undefined' ) {
               return reply.view('_article', {
-                article: article
+                article: article,
+                created: function( date ){
+                  var date = new Date( date );
+                  return date.toDateString();
+                }
               });
             } else {
               return reply( {article: article} );
