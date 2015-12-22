@@ -10,6 +10,18 @@ html(lang="en", itemtype="http://schema.org/WebPage" itemscope)
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
         if( typeof article !== 'undefined')
             meta(name="description" content="#{article.deck}")
+            <!-- Open Graph Metatags -->
+            meta( property="og:type" content="article" )
+            meta( property="og:title" content="#{article.title}")
+            meta( property="og:description" content="#{article.deck}")
+            meta( property="og:site_name" content="Which Degree")
+            meta( property="fb:app_id" content="" )
+            meta( property="og:url" content="http://www.whichdegree.com/article/${article.link}" )
+            <!-- Twitter Card Metatags -->
+            meta( name="twitter:creator" content="@whichdegree")
+            meta( name="twitter:title" content="#{article.title}")
+            meta( name="twitter:description" content="#{article.deck}")
+            meta( name="twitter:site" content="@whichdegree")
 
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
         meta(name="mobile-web-app-capable" content="yes")
