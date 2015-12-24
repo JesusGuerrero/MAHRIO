@@ -30,13 +30,13 @@ callout-info( resource="events" header="Events: empty!" icon="calendar")
     .col-md-10.col-md-offset-1.col-sm-12
         ul(style="list-style-type: none; padding: 0; margin: 0")
             li( ng-repeat="event in events track by $index")
-                a(ng-if="networkId" ui-sref="networks.article({id: networkId, articleId: article._id})" ui-sref-opts="{reload: true}")
+                a(ng-if="networkId" ui-sref="networks.event({id: networkId, eventId: event._id})" ui-sref-opts="{reload: true}")
                     figure
                         img( ng-src='{{event.coverImage.url}}')
                         figcaption(class="credit")
                     h3
                         |{{event.title}}
-                a(ng-if="!networkId" ui-sref="articles.detail({id: article._id})" ui-sref-opts="{reload: true}")
+                a(ng-if="!networkId" ui-sref="networks.event({id: networkId, eventId: event._id})" ui-sref-opts="{reload: true}")
                     figure
                         //img( ng-src='{{article.coverImage.url}}')
                         //figcaption(class="credit")

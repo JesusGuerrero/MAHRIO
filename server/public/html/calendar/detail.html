@@ -1,4 +1,26 @@
 
 <div id="network-detail" class="row">
-  <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
+  <div style="position: absolute; margin-top: -64px" class="col-xs-12 col-sm-4 col-md-3 col-lg-2"><a ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-chevron-left">  Back</i></a></div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="header">
+      <h5 class="padding-left"><i class="ion-ios-people"></i>{{event.network.name}}</h5>
+      <h2 class="padding-left">{{event.title}}</h2>
+      <p class="time">
+        <button class="button button-small"><i class="ion-ios-calendar"></i></button> {{event.start | date : 'longDate' : 'UTC'}}
+         {{event.start | date : 'shortTime' : 'UTC'}}
+         &mdash;
+         {{event.end | date : 'shortTime' : 'UTC'}}
+      </p>
+      <p ng-show="event.locationAddress &amp;&amp; event.locationName" class="location">
+        <button class="button button-small"><i class="ion-map"></i></button> {{event.locationName}}
+         {{event.locationAddress}}
+      </p>
+    </div>
+    <div class="padding-left padding-right">{{event.deck}}</div>
+    <div class="padding">
+      <div class="description">{{event.description}}</div>
+    </div>
+  </div>
 </div>

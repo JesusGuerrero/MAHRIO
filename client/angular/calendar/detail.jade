@@ -1,5 +1,33 @@
 .row(id="network-detail")
    .col-xs-12.col-sm-4.col-md-3.col-lg-2(style="position: absolute; margin-top: -64px")
-      a.btn.btn-default(ui-sref="networks.boards({id: networkId})" ui-sref-opts="{reload: true}")
+      a.btn.btn-default(ui-sref="networks.events({id: networkId})" ui-sref-opts="{reload: true}")
          i.fa.fa-chevron-left
             |   Back
+
+.row
+   .col-xs-12
+      .header
+         h5.padding-left
+            i.ion-ios-people
+            |{{event.network.name}}
+         h2.padding-left
+            |{{event.title}}
+         p.time
+            button.button.button-small
+               i.ion-ios-calendar
+            |  {{event.start | date : 'longDate' : 'UTC'}}
+            |  {{event.start | date : 'shortTime' : 'UTC'}}
+            |  &mdash;
+            |  {{event.end | date : 'shortTime' : 'UTC'}}
+
+         p.location( ng-show="event.locationAddress && event.locationName")
+            button.button.button-small
+               i.ion-map
+
+            |  {{event.locationName}}
+            |  {{event.locationAddress}}
+      .padding-left.padding-right
+         |{{event.deck}}
+      .padding
+         .description
+            |{{event.description}}
