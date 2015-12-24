@@ -108,6 +108,10 @@ function updateEvent( request, reply ) {
       event.title = request.payload.event.title;
       event.description = request.payload.event.description;
       event.start = request.payload.event.start;
+      event.deck = request.payload.event.deck;
+      event.locationName = request.payload.event.locationName;
+      event.locationAddress = request.payload.event.locationAddress;
+      event.maxRsvp = request.payload.event.maxRsvp;
       event.end = request.payload.event.end;
       event.allDay = request.payload.event.allDay;
       event.url = request.payload.event.url;
