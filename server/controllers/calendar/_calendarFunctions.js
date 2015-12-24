@@ -67,6 +67,7 @@ function getEvent( request, reply, callback ) {
   } else {
     CalendarEvent
       .findOne( {_id: request.params.id} )
+      .populate('network')
       .exec( function(err, event){
         if( err ) { return reply( Boom.badRequest(err) ); }
 

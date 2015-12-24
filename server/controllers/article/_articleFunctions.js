@@ -104,8 +104,8 @@ function getArticle( request, reply, callback ) {
               return reply.view('_article', {
                 article: article,
                 created: function( date ){
-                  var date = new Date( date );
-                  return date.toDateString();
+                  var nDate = new Date( date );
+                  return nDate.toDateString();
                 }
               });
             } else {
