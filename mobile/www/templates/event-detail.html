@@ -14,19 +14,28 @@
         &mdash;
         {{event.end | date : 'shortTime' : '+0'}}
       </p>
-      <p class="location">
+      <p class="location" ng-show="event.locationAddress && event.locationName">
         <button class="button button-small">
           <i class="ion-map"></i>
         </button>
-        Which Degree LLC
+        {{event.locationName}}
         <br/>
-        26514 Flamingo Ave, Hayward, CA
+        {{event.locationAddress}}
       </p>
     </div>
-    <div class="padding-left padding-right description" ng-class="{true: 'showMore'}[showMore]">
-      <i class="ion-chevron-down" ng-show="!showMore && event.description" ng-click="showMore=true"></i>
-      {{event.description}}
+    <div class="padding-left padding-right">
+      {{event.deck}}
     </div>
+    <div class="row padding">
+      <div class="description col-90" ng-class="{true: 'showMore'}[showMore]">
+        {{event.description}}
+      </div>
+      <div class="col-10" style="text-align: center; margin-top: 20px">
+        <i class="ion-chevron-down" ng-style="{true: {visibility: 'hidden'}}[showMore]"
+           ng-click="showMore=true"></i>
+      </div>
+    </div>
+
   </ion-content>
 
 </ion-view>
