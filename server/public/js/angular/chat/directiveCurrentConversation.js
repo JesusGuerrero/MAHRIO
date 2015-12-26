@@ -39,6 +39,10 @@ angular.module('baseApp.directives')
                 });
             }
           };
+          scope.removeConversation = function(){
+            console.log('in here');
+            alert('deleted');
+          };
         }
       };
     }

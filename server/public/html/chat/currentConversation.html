@@ -5,6 +5,12 @@
     <h3 ng-show="!currentConversation.topic &amp;&amp; !currentConversation.isPrivate" class="box-title">  Public Conversation<small><i class="fa fa-edit"></i></small></h3>
     <h3 ng-show="currentConversation.isPrivate" class="box-title">  Direct Chat<small ng-show="otherUser">  {{otherUser}}</small></h3>
     <div class="box-tools pull-right">
+      <div class="btn-group">
+        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default dropdown-toggle"><i class="fa fa-cog"></i><span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><a ng-click="removeConversation()">Delete</a></li>
+        </ul>
+      </div>
       <!--span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")-->
       <!--    |   3-->
       <!--button.btn.btn-box-tool( data-widget="collapse")-->
@@ -20,7 +26,7 @@
         <div class="direct-chat-info clearfix"><span ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-left' : 'pull-right'" class="direct-chat-name">
               {{currentConversation.members[message._user].profile.firstName}}
               {{currentConversation.members[message._user].profile.lastName}}
-              <{{currentConversation.members[message._user].email}}></span><span ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'" class="direct-chat-timestamp">  {{message.created | date : 'MM-dd h:mm a' }}</span></div><i ng-show="!currentConversation.members[message._user].avatarImage.url" style="font-size:2.5em" class="fa fa-user-secret"></i><img src="{{currentConversation.members[message._user].avatarImage.url}}" ng-show="currentConversation.members[message._user].avatarImage.url" class="direct-chat-img"/>
+              <{{currentConversation.members[message._user].email}}></span><span ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'" class="direct-chat-timestamp">  {{message.created | date : 'MM-dd h:mm a' }}</span></div><i ng-show="!currentConversation.members[message._user].avatarImage.url" style="font-size:2.5em" class="fa fa-user-secret"></i><img ng-src="{{currentConversation.members[message._user].avatarImage.url}}" ng-show="currentConversation.members[message._user].avatarImage.url" class="direct-chat-img"/>
         <div class="direct-chat-text">  {{message.content}}</div>
       </div>
       <div ng-show="!currentConversation">
