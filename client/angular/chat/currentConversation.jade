@@ -12,6 +12,14 @@
                 |   {{otherUser}}
 
         .box-tools.pull-right
+            .btn-group
+                button.btn.btn-default.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                    i.fa.fa-cog
+                    span.caret
+                ul.dropdown-menu
+                    li
+                        a(ng-click="removeConversation()")
+                            |Delete
             //span.badge.bg-blue( data-toggle="tooltip" title="" data-original-title="3 New Messages")
             //    |   3
             //button.btn.btn-box-tool( data-widget="collapse")
@@ -32,7 +40,7 @@
                     span.direct-chat-timestamp(ng-class="currentUser._id===currentConversation.members[message._user]._id ? 'pull-right' : 'pull-left'")
                         |   {{message.created | date : 'MM-dd h:mm a' }}
                 i.fa.fa-user-secret(ng-show="!currentConversation.members[message._user].avatarImage.url" style="font-size:2.5em")
-                img.direct-chat-img( src="{{currentConversation.members[message._user].avatarImage.url}}"
+                img.direct-chat-img( ng-src="{{currentConversation.members[message._user].avatarImage.url}}"
                     ng-show="currentConversation.members[message._user].avatarImage.url")
                 .direct-chat-text
                     |   {{message.content}}
