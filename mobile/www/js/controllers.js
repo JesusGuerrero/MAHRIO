@@ -367,9 +367,10 @@ angular.module('starter.controllers', [])
       $ionicScrollDelegate.scrollBottom(true);
     };
     $scope.sendMessage = function( ) {
-      Chats.sendMessage($scope.chat._id, Object.keys($scope.chat.members), $scope.chat.newMessage).then(function (msg) {
+      var newMessage = $scope.chat.newMessage;
+      $scope.chat.newMessage = '';
+      Chats.sendMessage($scope.chat._id, Object.keys($scope.chat.members), newMessage).then(function (msg) {
         $scope.chat.messages.splice(0, 0, msg);
-        $scope.chat.newMessage = '';
       });
     };
     $scope.menu = function(){
