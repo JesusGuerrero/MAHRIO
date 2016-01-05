@@ -23,6 +23,7 @@
     "angular"     : false,
     "inject"      : false,
     "$"           : false,
+    "alert"       : true,
     
     /* TESTS */
     "describe"    : true,

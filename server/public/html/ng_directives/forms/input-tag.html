@@ -3,7 +3,7 @@
   <div ng-class="{true: 'has-error'}[ hasError() ]" class="form-group">
     <label for="{{id}}" ng-show="label">{{label}}</label>
     <div ng-class="{true: 'input-group'}[ icon !== '']">
-      <input id="{{id}}" type="{{type}}" name="input" ng-model="dataEntry" placeholder="{{placeholder}}" maxlength="{{maxLength}}" ng-minlength="{{minLength}}" ng-required="{{required}}" ng-pattern="regx.pattern" class="form-control"/><span ng-show="icon" class="input-group-addon"><i style="width: 30px" class="fa fa-{{icon}}"></i></span>
+      <input id="{{id}}" type="{{type}}" name="input" ng-model="dataEntry" placeholder="{{placeholder}}" maxlength="{{maxLength}}" ng-minlength="{{minLength}}" ng-required="{{required}}" ng-pattern="regx.pattern" autocorrect="off" autocapitalize="none" class="form-control"/><span ng-show="icon" class="input-group-addon"><i style="width: 30px" class="fa fa-{{icon}}"></i></span>
     </div>
     <div ng-class="{true: 'ng-hide'}[ !hasError() ]"><small class="text-danger">{{ regex.message }}</small></div>
   </div>
