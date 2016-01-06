@@ -11,7 +11,7 @@ var crypto = require('crypto');
 function login (request, reply) {
   if (request.auth.isAuthenticated) { return reply(Boom.badRequest('You Logged In')); }
 
-  User.login(request.payload.email, request.payload.password, function (err, token) {
+  User.login(request.payload.email.toLowerCase(), request.payload.password, function (err, token) {
     if (err) { return reply(Boom.badRequest(err)); }
 
     reply({success: true})
